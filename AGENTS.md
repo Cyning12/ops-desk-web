@@ -4,6 +4,11 @@
 > **范围**：页面、组件、路由、状态管理、API 客户端、SSE 消费。  
 > **边界**：不实现后端逻辑、数据库、LLM 调用。
 
+## Open Folder 说明
+
+在 Claude Code / Cursor 中，**应将本目录 `ops-desk-web/` 作为 Open Folder 根目录**。  
+跨仓文档与统筹见 `../ops-desk-workspace/docs/`。
+
 ---
 
 ## 必读（按顺序）
