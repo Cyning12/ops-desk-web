@@ -1,6 +1,6 @@
 # Task：Web 前端骨架（Epic W1 · web-skeleton）
 
-> **状态**：in_progress  
+> **状态**：completed  
 > **类型**：功能实现（脚手架）  
 > **关联**：`docs/tasks/active/TASK_epic_web_frontend_v1.md` W1 · `docs/_tech_graph/01_struct.md`
 
@@ -40,19 +40,19 @@
 
 **完成态**：
 
-- [ ] `package.json` + `pnpm install` 可跑（vue@3 / vue-router@4 / pinia / element-plus / axios / vite / typescript / vitest / eslint+prettier）
-- [ ] `vite.config.ts`：vue 插件 + dev proxy `/api` → `http://localhost:8000`
-- [ ] `src/main.ts` / `src/App.vue` / `index.html`
-- [ ] `src/router/`：6 条路由 + 占位视图 + AppLayout（侧边导航：Overview/Issues/Pulls/Graph/Chat + 登录页无布局）
-- [ ] `src/api/`：axios 实例（withCredentials、baseURL、snake_case 直传不包外壳）+ 错误规范化
-- [ ] `src/stores/`：Pinia 注册（具体 store 留 W2+）
-- [ ] `src/styles/`：水墨风 CSS 变量 + 全局样式
-- [ ] ESLint + Prettier 配置；`pnpm lint` 通过
-- [ ] Vitest 配置 + ≥1 冒烟测试；`pnpm test` 通过
-- [ ] `pnpm build` 通过；`pnpm dev` 可访问空白骨架页
-- [ ] `docs/_tech_graph/` 同步（02_version.md / graph 如有结构变化）
-- [ ] AGENTS.md 关键约束 SSE 行更正为 fetch + ReadableStream
-- [ ] invoke 落盘 + `harness task close` 归档 + 合并 master
+- [x] `package.json` + `pnpm install` 可跑（vue@3 / vue-router@4 / pinia / element-plus / axios / vite / typescript / vitest / eslint+prettier）
+- [x] `vite.config.ts`：vue 插件 + dev proxy `/api` → `http://localhost:8000`
+- [x] `src/main.ts` / `src/App.vue` / `index.html`
+- [x] `src/router/`：6 条路由 + 占位视图 + AppLayout（侧边导航：Overview/Issues/Pulls/Graph/Chat + 登录页无布局）
+- [x] `src/api/`：axios 实例（withCredentials、baseURL、snake_case 直传不包外壳）+ 错误规范化
+- [x] `src/stores/`：Pinia 注册（具体 store 留 W2+）
+- [x] `src/styles/`：水墨风 CSS 变量 + 全局样式
+- [x] ESLint + Prettier 配置；`pnpm lint` 通过
+- [x] Vitest 配置 + ≥1 冒烟测试；`pnpm test` 通过
+- [x] `pnpm build` 通过；`pnpm dev` 可访问空白骨架页
+- [x] `docs/_tech_graph/` 同步（02_version.md / graph 如有结构变化）
+- [x] AGENTS.md 关键约束 SSE 行更正为 fetch + ReadableStream
+- [x] invoke 落盘 + `harness task close` 归档 + 合并 master
 
 **不做**：任何业务页面实现（W2+）；登录逻辑（W2）；真实接口对接（W3+）；E2E（W8）。
 
@@ -60,12 +60,12 @@
 
 ## 范围
 
-- [ ] `package.json` / `pnpm-lock.yaml` / `tsconfig*.json` / `vite.config.ts` / `index.html`
-- [ ] `src/**`（main / App / router / views 占位 / layouts / api / stores / styles / env.d.ts）
-- [ ] `.eslintrc` / `eslint.config.*` / `.prettierrc*` / `.gitignore` 增补
-- [ ] `vitest` 配置 + `tests/` 或 `src/**/*.spec.ts`
-- [ ] `AGENTS.md`（SSE 约束行更正）
-- [ ] `docs/_tech_graph/`（同步）
+- [x] `package.json` / `pnpm-lock.yaml` / `tsconfig*.json` / `vite.config.ts` / `index.html`
+- [x] `src/**`（main / App / router / views 占位 / layouts / api / stores / styles / env.d.ts）
+- [x] `.eslintrc` / `eslint.config.*` / `.prettierrc*` / `.gitignore` 增补
+- [x] `vitest` 配置 + `tests/` 或 `src/**/*.spec.ts`
+- [x] `AGENTS.md`（SSE 约束行更正）
+- [x] `docs/_tech_graph/`（同步）
 
 ## 非范围
 
@@ -87,13 +87,13 @@
 
 ## 验收标准
 
-- [ ] `pnpm lint` exit 0
-- [ ] `pnpm test` exit 0（≥1 测试）
-- [ ] `pnpm build` exit 0，产物在 `dist/`
-- [ ] `pnpm dev` 启动后 `/login` `/overview` 等 6 路由均可访问（占位内容）
-- [ ] axios 实例 `withCredentials: true` 且 baseURL `/api`
-- [ ] `./scripts/graph-compile.sh` 通过
-- [ ] `npx @cyning/harness verify --target . --task <本task>` PASS
+- [x] `pnpm lint` exit 0
+- [x] `pnpm test` exit 0（≥1 测试）
+- [x] `pnpm build` exit 0，产物在 `dist/`
+- [x] `pnpm dev` 启动后 `/login` `/overview` 等 6 路由均可访问（占位内容）
+- [x] axios 实例 `withCredentials: true` 且 baseURL `/api`
+- [x] `./scripts/graph-compile.sh` 通过
+- [x] `npx @cyning/harness verify --target . --task <本task>` PASS
 
 ---
 
@@ -107,8 +107,17 @@
 
 ---
 
+### 自检结论（00 复检）
+
+- 30 子 agent 交付后 00 复检：`pnpm lint` exit 0、`pnpm test` 4 passed、`pnpm build` exit 0（dist/ 产出）、`./scripts/graph-compile.sh` OK、`harness verify` PASS。
+- 00 修订 `01_struct.md` styles 行：去 `tailwind.config.*` glob（Epic W1 拍板），人签记录补登。
+- 遗留：Element Plus 全量引入致 chunk>500kB 警告，按需引入优化留 W8；harness 产品包 2.3.0 已发布，本 Epic 锁定 2.2.1 不追，留后续升级 task。
+
+---
+
 ## 修订记录
 
 | 日期 | 说明 |
 |---|---|
 | 2026-07-24 | 00统筹起草；双闸代签 approved；SSE/Tailwind/路由槽位三决策拍板 |
+| 2026-07-24 | 30 子 agent 执行 + 00 复检全绿；01_struct.md styles 行修订；invoke 落盘 |

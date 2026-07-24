@@ -9,9 +9,8 @@ Ops Desk Kimi Code 的 Web 前端。
 - Element Plus
 - Pinia
 - Vue Router
-- Tailwind CSS
-- markdown-it + highlight.js
-- `@microsoft/fetch-event-source`
+- 水墨风主题（CSS 变量，不引 Tailwind）
+- Chat SSE：原生 `fetch` + `ReadableStream`
 
 ## 仓库职责
 

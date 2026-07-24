@@ -83,7 +83,7 @@ pnpm build        # 生产构建
 
 - UI 库：**Element Plus**
 - 状态管理：**Pinia**
-- Chat SSE：使用 `@microsoft/fetch-event-source`
+- Chat SSE：原生 `fetch` + `ReadableStream`（不依赖 fetch-event-source）
 - 样式：水墨风（背景 `#F9F9F7`，文字 `#2C2C2C`）
 - 每次新增页面/接口必须同步更新 `docs/_tech_graph/`
 
