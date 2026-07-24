@@ -15,7 +15,7 @@
 | `components` | 通用组件 | `src/components/**` | → — | Element Plus 封装、水墨风 UI 组件 |
 | `api` | API 客户端 | `src/api/**` | → — | 封装 fetch、SSE 消费、错误处理 |
 | `pinia` | 状态管理 | `src/stores/**` | → `api` | Pinia store |
-| `styles` | 样式与主题 | `src/styles/**`, `tailwind.config.*` | → — | Tailwind、水墨风主题 |
+| `styles` | 样式与主题 | `src/styles/**` | → — | 水墨风主题（CSS 变量）；Epic W1 拍板不引 Tailwind |
 
 ## 跨模块契约
 
@@ -29,6 +29,7 @@
 | human_gate_id | status | 签核人 | 日期 | 说明 |
 |---|---|---|---|---|
 | HG-GRAPH-MODULES | approved | | 2026-07-16 | 模块表覆盖 ops-desk-web 一级模块（初稿） |
+| HG-GRAPH-MODULES | approved | 00统筹（代签） | 2026-07-24 | styles 模块去除 tailwind.config.* glob：Epic W1 拍板不引 Tailwind，水墨风用 CSS 变量 |
 
 ## 关联
 
