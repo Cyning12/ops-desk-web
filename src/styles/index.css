@@ -1,0 +1,62 @@
+/**
+ * 水墨风全局样式与 CSS 变量。
+ * 基调：宣纸底色 #F9F9F7，墨色文字 #2C2C2C。
+ */
+
+:root {
+  --ops-bg: #f9f9f7;
+  --ops-bg-paper: #fdfdfa;
+  --ops-text: #2c2c2c;
+  --ops-text-secondary: #6b6b66;
+  --ops-border: #e3e2dc;
+  --ops-accent: #4a5a6a;
+  --ops-accent-soft: #eef1f4;
+  --ops-danger: #a4453b;
+  --ops-radius: 6px;
+  --ops-font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--ops-bg);
+  color: var(--ops-text);
+  font-family: var(--ops-font-family);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--ops-accent);
+  text-decoration: none;
+}
+
+/* 占位视图通用样式（W2–W7 替换实现时可移除） */
+.placeholder-page {
+  max-width: 720px;
+  padding: 48px 32px;
+  margin: 0 auto;
+  background: var(--ops-bg-paper);
+  border: 1px solid var(--ops-border);
+  border-radius: var(--ops-radius);
+}
+
+.placeholder-page__title {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.placeholder-page__desc {
+  margin: 0;
+  color: var(--ops-text-secondary);
+}
