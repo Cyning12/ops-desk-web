@@ -48,13 +48,23 @@ export const http: AxiosInstance = axios.create({
   timeout: 30_000,
 })
 
+/**
+ * 401 未授权回调（由 router 装配时注册，见 src/router/index.ts）。
+ * 通过回调解耦 http → router/store 的循环依赖。
+ */
+let onUnauthorized: (() => void) | null = null
+export function setUnauthorizedHandler(handler: (() => void) | null): void {
+  onUnauthorized = handler
+}
+
 http.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: unknown) => {
     const apiError = normalizeError(error)
     if (apiError.status === 401) {
-      // TODO(W2 web-login): 登录态失效 —— 在此清空会话并跳转 /login
-      // （注意避免在 /login 页面自身触发循环跳转）
+      // login 请求自身的 401（凭证错误）交给表单展示，不触发全局跳转
+      const url = axios.isAxiosError(error) ? (error.config?.url ?? '') : ''
+      if (!url.includes('/ops/auth/login')) onUnauthorized?.()
     }
     return Promise.reject(apiError)
   },
