@@ -1,6 +1,6 @@
 # Task：Harness 2.1.1 → 2.2.1 升级 + AGENTS/CLAUDE 补 Starter 片段（Epic W0）
 
-> **状态**：in_progress  
+> **状态**：completed  
 > **类型**：基础设施  
 > **关联**：`docs/tasks/active/TASK_epic_web_frontend_v1.md` W0 · `../ops-desk-api/AGENTS.md`（Starter 片段参照）
 
@@ -37,13 +37,13 @@
 
 **完成态**：
 
-- [ ] `npx @cyning/harness upgrade --target . --yes` 执行成功，manifest version = 2.2.1
-- [ ] `docs/harness/prompts/` 落盘 2.2.1 prompts；`docs/harness/invokes/` 就位
-- [ ] `AGENTS.md` 含「新会话启动纪律」节 + Harness Starter 片段（pnpm 三件套）
-- [ ] `npx @cyning/harness verify --target .` PASS
-- [ ] `npx @cyning/harness task close --help` 与 `task lint-done` 可用
-- [ ] invoke 落盘 `docs/harness/invokes/by-task/harness-upgrade-2-2-1/`
-- [ ] `harness task close` 归档 + 合并回 master
+- [x] `npx @cyning/harness upgrade --target . --yes` 执行成功，manifest version = 2.2.1
+- [x] `docs/harness/prompts/` 落盘 2.2.1 prompts；`docs/harness/invokes/` 就位
+- [x] `AGENTS.md` 含「新会话启动纪律」节 + Harness Starter 片段（pnpm 三件套）
+- [x] `npx @cyning/harness verify --target .` PASS
+- [x] `npx @cyning/harness task close --help` 与 `task lint-done` 可用
+- [x] invoke 落盘 `docs/harness/invokes/by-task/harness-upgrade-2-2-1/`
+- [x] `harness task close` 归档 + 合并回 master
 
 **不做**：不改 `docs/_tech_graph/` 内容；不创建 src/（W1 范围）。
 
@@ -51,10 +51,10 @@
 
 ## 范围
 
-- [ ] `.cyning-harness/manifest.json`（upgrade 改写）
-- [ ] `docs/harness/`（upgrade 落盘 + invoke）
-- [ ] `AGENTS.md`（补两节）
-- [ ] `docs/tasks/active/task_harness_upgrade_2_2_1.md`（本文件）
+- [x] `.cyning-harness/manifest.json`（upgrade 改写）
+- [x] `docs/harness/`（upgrade 落盘 + invoke）
+- [x] `AGENTS.md`（补两节）
+- [x] `docs/tasks/active/task_harness_upgrade_2_2_1.md`（本文件）
 
 ## 非范围
 
@@ -76,11 +76,11 @@
 
 ## 验收标准
 
-- [ ] `npx @cyning/harness verify --target .` PASS
-- [ ] `npx @cyning/harness task close --help` 正常输出
-- [ ] `npx @cyning/harness task lint-done` 可运行
-- [ ] `grep -c "cyning-harness:begin" AGENTS.md` ≥ 1
-- [ ] `grep "pnpm lint" AGENTS.md` 命中（Verify 表为前端命令）
+- [x] `npx @cyning/harness verify --target .` PASS
+- [x] `npx @cyning/harness task close --help` 正常输出
+- [x] `npx @cyning/harness task lint-done` 可运行
+- [x] `grep -c "cyning-harness:begin" AGENTS.md` ≥ 1
+- [x] `grep "pnpm lint" AGENTS.md` 命中（Verify 表为前端命令）
 
 ---
 
@@ -92,8 +92,19 @@
 
 ---
 
+### 自检结论（执行者）
+
+- `npx @cyning/harness verify --target .` PASS（manifest 2.2.1 / harness-only，双闸 approved）。
+- `task close --help` 与 `task lint-done` 正常输出（CLI v2.2.1）。
+- install 向导曾重写 manifest 丢失 name/tech_graph_dir/tasks_dir/hooks，已手工合并恢复；preset 决策为 harness-only（fullstack-node-py 会带入 Next+pytest CI 样例与 coding_wiki，不适用本仓）。
+- CLAUDE.md 经 `@AGENTS.md` 导入继承 Harness Starter，未重复片段。
+- invoke 已落盘 `docs/harness/invokes/by-task/harness-upgrade-2-2-1/`。
+
+---
+
 ## 修订记录
 
 | 日期 | 说明 |
 |---|---|
 | 2026-07-24 | 00统筹起草；双闸代签 approved（用户授权人闸权限给 00） |
+| 2026-07-24 | 30+40 完成：preset 决策 harness-only（fullstack 会写入不适用本仓的 Next/pytest CI 样例）；manifest 关键字段手工合并保留 |

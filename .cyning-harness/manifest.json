@@ -1,12 +1,13 @@
 {
   "name": "ops-desk-web",
-  "version": "2.1.1",
+  "version": "2.2.1",
   "harness_version": "2",
-  "preset": "fullstack-node-py",
+  "preset": "harness-only",
   "ide": ["cursor","claude","agents"],
   "tech_graph_dir": "docs/_tech_graph",
   "tasks_dir": "docs/tasks",
   "hooks": {
     "graph_compile": "scripts/graph-compile.sh"
-  }
+  },
+  "upgraded_at": "2026-07-24T08:20:16Z"
 }
