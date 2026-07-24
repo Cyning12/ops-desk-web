@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+
+import { useAuthStore } from '../stores/auth'
 
 const route = useRoute()
+const router = useRouter()
+const auth = useAuthStore()
 const activePath = computed(() => route.path)
+
+async function onLogout(): Promise<void> {
+  await auth.logout()
+  await router.push('/login')
+}
 </script>
 
 <template>
@@ -21,6 +30,10 @@ const activePath = computed(() => route.path)
     <el-container>
       <el-header class="app-layout__header" height="56px">
         <span class="app-layout__title">{{ route.meta.title ?? 'Ops Desk' }}</span>
+        <div class="app-layout__user">
+          <span class="app-layout__username">{{ auth.user?.username ?? '' }}</span>
+          <el-button size="small" @click="onLogout">登出</el-button>
+        </div>
       </el-header>
       <el-main class="app-layout__main">
         <router-view />
@@ -61,6 +74,7 @@ const activePath = computed(() => route.path)
 .app-layout__header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   border-bottom: 1px solid var(--ops-border);
   background: var(--ops-bg);
 }
@@ -68,6 +82,17 @@ const activePath = computed(() => route.path)
 .app-layout__title {
   font-size: 16px;
   font-weight: 600;
+}
+
+.app-layout__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-layout__username {
+  font-size: 13px;
+  color: var(--ops-text-secondary);
 }
 
 .app-layout__main {
