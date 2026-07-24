@@ -1,0 +1,181 @@
+{
+  "schema_version": "graph_v2",
+  "freeze_id": "OPS_DESK_API_TECH_GRAPH_FREEZE_20260716_V1",
+  "generated_at": "2026-07-16T03:27:45Z",
+  "graphs": [
+    {
+      "id": "00_main",
+      "title": "ops-desk-web 顶层流程总图",
+      "source_yaml_path": "00_main.graph.yaml"
+    }
+  ],
+  "nodes": [
+    {
+      "graph_id": "00_main",
+      "id": "user",
+      "label": "用户"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "browser",
+      "label": "浏览器"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "app",
+      "label": "Vue 3 App"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "router",
+      "label": "Vue Router"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "pinia",
+      "label": "Pinia Store"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "api_client",
+      "label": "API Client"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "sse_client",
+      "label": "SSE Client"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "pages",
+      "label": "页面组件"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "chat_page",
+      "label": "Chat 页面"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "ops_api",
+      "label": "ops-desk-api"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "api_doc",
+      "label": ">../ops-desk-api/docs/_tech_graph/00_main.md"
+    }
+  ],
+  "edges": [
+    {
+      "graph_id": "00_main",
+      "from": "user",
+      "to": "browser",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "interacts",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "browser",
+      "to": "app",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "loads",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "app",
+      "to": "router",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "mounts",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "app",
+      "to": "pinia",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "uses",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "router",
+      "to": "pages",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "routes",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "pages",
+      "to": "api_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "calls",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "chat_page",
+      "to": "sse_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "streams",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "sse_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "POST /api/ops/chat/stream",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "api_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "HTTP /api/ops/*",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "pages",
+      "to": "chat_page",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "includes",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "ops_api",
+      "to": "api_doc",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "加载",
+      "anchors": [],
+      "sync": true
+    }
+  ]
+}

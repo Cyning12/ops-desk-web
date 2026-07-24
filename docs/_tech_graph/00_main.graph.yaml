@@ -1,0 +1,96 @@
+schema_version: "inform_graph.v3"
+graph_id: "00_main"
+title: "ops-desk-web 顶层流程总图"
+description: "Ops Desk Web 前端架构总图：页面路由、Pinia Store、API Client、SSE Chat 消费与后端 API 的关系。"
+version: "2026-07-16"
+direction: "TB"
+
+nodes:
+  - id: "user"
+    label: "用户"
+    kind: external
+
+  - id: "browser"
+    label: "浏览器"
+    kind: external
+
+  - id: "app"
+    label: "Vue 3 App"
+    kind: struct
+
+  - id: "router"
+    label: "Vue Router"
+    kind: struct
+
+  - id: "pinia"
+    label: "Pinia Store"
+    kind: struct
+
+  - id: "api_client"
+    label: "API Client"
+    kind: flow
+
+  - id: "sse_client"
+    label: "SSE Client"
+    kind: flow
+
+  - id: "pages"
+    label: "页面组件"
+    kind: flow
+
+  - id: "chat_page"
+    label: "Chat 页面"
+    kind: flow
+
+  - id: "ops_api"
+    label: "ops-desk-api"
+    kind: external
+
+  - id: "api_doc"
+    label: ">../ops-desk-api/docs/_tech_graph/00_main.md"
+    kind: external
+
+edges:
+  - from: "user"
+    to: "browser"
+    label: "interacts"
+
+  - from: "browser"
+    to: "app"
+    label: "loads"
+
+  - from: "app"
+    to: "router"
+    label: "mounts"
+
+  - from: "app"
+    to: "pinia"
+    label: "uses"
+
+  - from: "router"
+    to: "pages"
+    label: "routes"
+
+  - from: "pages"
+    to: "api_client"
+    label: "calls"
+
+  - from: "chat_page"
+    to: "sse_client"
+    label: "streams"
+
+  - from: "sse_client"
+    to: "ops_api"
+    label: "POST /api/ops/chat/stream"
+
+  - from: "api_client"
+    to: "ops_api"
+    label: "HTTP /api/ops/*"
+
+  - from: "pages"
+    to: "chat_page"
+    label: "includes"
+
+  - from: "ops_api"
+    to: "api_doc"
+    label: "加载"
