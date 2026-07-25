@@ -121,5 +121,6 @@ pnpm build        # 生产构建
 
 ## 完整库 POINTER
 
-工作区：`docs/harness/prompts/`（10/22/30/40、FRAGMENT_30_*、TEMPLATE_30_gate_stop 等）
+工作区：`docs/harness/prompts/`（10/22/30/40、FRAGMENT_30_*、TEMPLATE_30_gate_stop 等）  
+Runbook：`docs/runbooks/RUNBOOK_harness_upgrade_v1_zh.md`（**harness 版本升级前必读**，含 F1/F2 摩擦变通）
 <!-- cyning-harness:end -->
