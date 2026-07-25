@@ -74,6 +74,15 @@ module_matrix 有数据时的结构未知（当前无 snapshot），前端须**�
 
 1. `AGENTS.md` 2. 本 task 3. `src/api/http.ts`、`src/stores/auth.ts` 4. `/Users/cyning/Desktop/Ops-desk/ops-desk-api/app/ops/graph.py`（响应结构参考，只读）
 
+---
+
+### 自检结论（00 集成复检）
+
+- 集成复检通过；全 null 空态 + 数组/对象 fixture 表格渲染验收通过
+- 合并提交见 master（分支 --no-ff 合入）；invoke 已落盘 by-task 目录。
+
+---
+
 ## 修订记录
 
 | 日期 | 说明 |

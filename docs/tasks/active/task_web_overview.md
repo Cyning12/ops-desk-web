@@ -87,6 +87,15 @@ Overview 页：指标卡片 + trend 图 + sync/scan 状态。后端 `GET /api/op
 
 1. `AGENTS.md` 2. 本 task 3. `src/api/http.ts`、`src/stores/auth.ts`（store 范式）、`src/views/LoginView.vue`（页面范式）、`src/styles/index.css`
 
+---
+
+### 自检结论（00 集成复检）
+
+- 集成复检 69 tests 全绿；空态/trend SVG/水墨风验收通过；00 追认 tests/app.spec.ts 最小化修复
+- 合并提交见 master（分支 --no-ff 合入）；invoke 已落盘 by-task 目录。
+
+---
+
 ## 修订记录
 
 | 日期 | 说明 |

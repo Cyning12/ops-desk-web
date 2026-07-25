@@ -84,6 +84,15 @@ Chat 页：latest session 获取/创建、SSE 流式渲染、输入与状态管�
 
 1. `AGENTS.md` 2. 本 task 3. `/Users/cyning/Desktop/Ops-desk/ops-desk-api/docs/ios/api-auth-chat.md` §3/§4 4. `../ops-desk-workspace/docs/02-backend-analysis/01-sse-chat-design.md` 5. `src/api/http.ts`、`src/stores/auth.ts`
 
+---
+
+### 自检结论（00 集成复检）
+
+- 集成复检通过；00 带 cookie 联调发现后端 session_id 404 缺陷（ops-desk-api fix/chat-stream-session-id 已修复合入），实测 SSE 全序列 200
+- 合并提交见 master（分支 --no-ff 合入）；invoke 已落盘 by-task 目录。
+
+---
+
 ## 修订记录
 
 | 日期 | 说明 |

@@ -77,6 +77,15 @@ Issues 页：列表 + state/label/module 筛选 + 分页。后端 `GET /api/ops/
 
 1. `AGENTS.md` 2. 本 task 3. `src/api/http.ts`、`src/stores/auth.ts`、`src/views/LoginView.vue`
 
+---
+
+### 自检结论（00 集成复检）
+
+- 集成复检通过；筛选重置 page/分页参数/空列表验收通过；updated_at 可 null 渲染「—」
+- 合并提交见 master（分支 --no-ff 合入）；invoke 已落盘 by-task 目录。
+
+---
+
 ## 修订记录
 
 | 日期 | 说明 |
