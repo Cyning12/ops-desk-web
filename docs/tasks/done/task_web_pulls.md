@@ -1,6 +1,6 @@
 # Task：PRs 页（Epic W5 · web-pulls）
 
-> **状态**：in_progress  
+> **状态**：completed  
 > **类型**：功能实现  
 > **关联**：`docs/tasks/active/TASK_epic_web_frontend_v1.md` W5
 
@@ -40,15 +40,15 @@ PRs 页：列表 + state/ci_status 筛选 + 分页。后端 `GET /api/ops/pulls`
 
 **完成态**：
 
-- [ ] `src/api/pulls.ts`：`fetchPulls(params)`
-- [ ] `src/stores/pulls.ts`：filters + 分页 + 加载/错误态
-- [ ] `src/views/PullsView.vue`（替换占位）：
+- [x] `src/api/pulls.ts`：`fetchPulls(params)`
+- [x] `src/stores/pulls.ts`：filters + 分页 + 加载/错误态
+- [x] `src/views/PullsView.vue`（替换占位）：
   - 筛选栏：state（open/closed/merged 下拉）、ci_status（success/failure/pending 等下拉，选项为可配置常量）
   - el-table 列：number、title（draft 前缀「[Draft]」）、state（tag）、ci_status（tag，null 显示「—」）、updated_at
   - el-pagination 联动
   - 空列表 el-empty 态
-- [ ] 单测：store 参数拼装 + 空列表渲染；pnpm 三件套全绿
-- [ ] 联调冒烟：curl 带筛选 200
+- [x] 单测：store 参数拼装 + 空列表渲染；pnpm 三件套全绿
+- [x] 联调冒烟：curl 带筛选 200
 
 **不做**：PR 详情；review 信息（后端未提供）。
 
@@ -66,17 +66,27 @@ PRs 页：列表 + state/ci_status 筛选 + 分页。后端 `GET /api/ops/pulls`
 
 ## 验收标准
 
-- [ ] pnpm 三件套 exit 0
-- [ ] 筛选变更 → page 重置 1 重新请求
-- [ ] draft PR 显示 [Draft] 前缀；ci_status null 显示「—」
-- [ ] 空列表渲染正常
+- [x] pnpm 三件套 exit 0
+- [x] 筛选变更 → page 重置 1 重新请求
+- [x] draft PR 显示 [Draft] 前缀；ci_status null 显示「—」
+- [x] 空列表渲染正常
 
 ## 给执行帽的必读列表
 
 1. `AGENTS.md` 2. 本 task 3. `src/api/http.ts`、`src/stores/auth.ts`、`src/views/LoginView.vue`
+
+---
+
+### 自检结论（00 集成复检）
+
+- 集成复检通过；[Draft] 前缀/ci_status 空值/空列表验收通过
+- 合并提交见 master（分支 --no-ff 合入）；invoke 已落盘 by-task 目录。
+
+---
 
 ## 修订记录
 
 | 日期 | 说明 |
 |---|---|
 | 2026-07-24 | 00统筹起草；双闸代签 approved；实测契约附入 |
+| 2026-07-25 | 30 并行子 agent 执行 + 00 集成复检全绿；invoke 落盘；合并 master |

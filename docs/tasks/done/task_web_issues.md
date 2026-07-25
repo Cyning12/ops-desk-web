@@ -1,6 +1,6 @@
 # Task：Issues 页（Epic W4 · web-issues）
 
-> **状态**：in_progress  
+> **状态**：completed  
 > **类型**：功能实现  
 > **关联**：`docs/tasks/active/TASK_epic_web_frontend_v1.md` W4
 
@@ -41,15 +41,15 @@ Issues 页：列表 + state/label/module 筛选 + 分页。后端 `GET /api/ops/
 
 **完成态**：
 
-- [ ] `src/api/issues.ts`：`fetchIssues(params)`（参数为 undefined 时不拼 query）
-- [ ] `src/stores/issues.ts`：filters 状态 + 分页状态 + 加载/错误态
-- [ ] `src/views/IssuesView.vue`（替换占位）：
+- [x] `src/api/issues.ts`：`fetchIssues(params)`（参数为 undefined 时不拼 query）
+- [x] `src/stores/issues.ts`：filters 状态 + 分页状态 + 加载/错误态
+- [x] `src/views/IssuesView.vue`（替换占位）：
   - 筛选栏：state（open/closed 下拉）、label（文本输入）、module（文本输入）、scan_status（下拉，选项留可配置常量）
   - el-table 列：number、title、state（tag）、labels（多 tag）、module_tag、updated_at（本地化格式）
   - el-pagination：page/page_size/total 联动，切页重新请求
   - 空列表 el-empty 态
-- [ ] 单测：store 参数拼装（筛选+分页组合）+ 空列表渲染；`pnpm lint` / `pnpm test` / `pnpm build` 全绿
-- [ ] 联调冒烟：curl 带筛选参数 200
+- [x] 单测：store 参数拼装（筛选+分页组合）+ 空列表渲染；`pnpm lint` / `pnpm test` / `pnpm build` 全绿
+- [x] 联调冒烟：curl 带筛选参数 200
 
 **不做**：详情页/抽屉；批量操作；列排序（后端固定 updated_at desc）。
 
@@ -68,17 +68,27 @@ Issues 页：列表 + state/label/module 筛选 + 分页。后端 `GET /api/ops/
 
 ## 验收标准
 
-- [ ] pnpm 三件套 exit 0
-- [ ] 筛选变更 → 重新请求且 page 重置 1
-- [ ] 分页切换 → 请求带正确 page/page_size
-- [ ] 空列表渲染正常（当前后端实际状态）
+- [x] pnpm 三件套 exit 0
+- [x] 筛选变更 → 重新请求且 page 重置 1
+- [x] 分页切换 → 请求带正确 page/page_size
+- [x] 空列表渲染正常（当前后端实际状态）
 
 ## 给执行帽的必读列表
 
 1. `AGENTS.md` 2. 本 task 3. `src/api/http.ts`、`src/stores/auth.ts`、`src/views/LoginView.vue`
+
+---
+
+### 自检结论（00 集成复检）
+
+- 集成复检通过；筛选重置 page/分页参数/空列表验收通过；updated_at 可 null 渲染「—」
+- 合并提交见 master（分支 --no-ff 合入）；invoke 已落盘 by-task 目录。
+
+---
 
 ## 修订记录
 
 | 日期 | 说明 |
 |---|---|
 | 2026-07-24 | 00统筹起草；双闸代签 approved；实测契约附入 |
+| 2026-07-25 | 30 并行子 agent 执行 + 00 集成复检全绿；invoke 落盘；合并 master |

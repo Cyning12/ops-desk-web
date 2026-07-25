@@ -1,6 +1,6 @@
 # Task：Graph 页（Epic W6 · web-graph）
 
-> **状态**：in_progress  
+> **状态**：completed  
 > **类型**：功能实现  
 > **关联**：`docs/tasks/active/TASK_epic_web_frontend_v1.md` W6
 
@@ -41,14 +41,14 @@ module_matrix 有数据时的结构未知（当前无 snapshot），前端须**�
 
 **完成态**：
 
-- [ ] `src/api/graph.ts`：`fetchGraph()`
-- [ ] `src/stores/graph.ts`：加载/错误/数据态
-- [ ] `src/views/GraphView.vue`（替换占位）：
+- [x] `src/api/graph.ts`：`fetchGraph()`
+- [x] `src/stores/graph.ts`：加载/错误/数据态
+- [x] `src/views/GraphView.vue`（替换占位）：
   - snapshot 元信息区：repo_id、created_at（null 显示「暂无图谱快照」）
   - module_matrix 表格区：null → el-empty；有数据 → 表格化渲染
   - 空态文案说明「需先在后端执行 scan/graph 生成」
-- [ ] 单测：store + 全 null 空态渲染不报错；pnpm 三件套全绿
-- [ ] 联调冒烟：curl 200（全 null 响应）
+- [x] 单测：store + 全 null 空态渲染不报错；pnpm 三件套全绿
+- [x] 联调冒烟：curl 200（全 null 响应）
 
 **不做**：图可视化（节点/边画布）；snapshot 历史列表。
 
@@ -66,16 +66,26 @@ module_matrix 有数据时的结构未知（当前无 snapshot），前端须**�
 
 ## 验收标准
 
-- [ ] pnpm 三件套 exit 0
-- [ ] 全 null 响应下页面完整渲染无报错（当前后端实际状态）
-- [ ] 构造有数据 fixture 时表格渲染（单测覆盖）
+- [x] pnpm 三件套 exit 0
+- [x] 全 null 响应下页面完整渲染无报错（当前后端实际状态）
+- [x] 构造有数据 fixture 时表格渲染（单测覆盖）
 
 ## 给执行帽的必读列表
 
 1. `AGENTS.md` 2. 本 task 3. `src/api/http.ts`、`src/stores/auth.ts` 4. `/Users/cyning/Desktop/Ops-desk/ops-desk-api/app/ops/graph.py`（响应结构参考，只读）
+
+---
+
+### 自检结论（00 集成复检）
+
+- 集成复检通过；全 null 空态 + 数组/对象 fixture 表格渲染验收通过
+- 合并提交见 master（分支 --no-ff 合入）；invoke 已落盘 by-task 目录。
+
+---
 
 ## 修订记录
 
 | 日期 | 说明 |
 |---|---|
 | 2026-07-24 | 00统筹起草；双闸代签 approved；实测全 null 契约附入 |
+| 2026-07-25 | 30 并行子 agent 执行 + 00 集成复检全绿；invoke 落盘；合并 master |

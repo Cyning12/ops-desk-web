@@ -1,6 +1,6 @@
 # Task：Chat 页 + SSE 流式（Epic W7 · web-chat）
 
-> **状态**：in_progress  
+> **状态**：completed  
 > **类型**：功能实现  
 > **关联**：`docs/tasks/active/TASK_epic_web_frontend_v1.md` W7 · `../ops-desk-workspace/docs/02-backend-analysis/01-sse-chat-design.md`
 
@@ -45,17 +45,17 @@ Chat 页：latest session 获取/创建、SSE 流式渲染、输入与状态管�
 
 **完成态**：
 
-- [ ] `src/composables/useOpsChatSse.ts`：fetch + ReadableStream 读取、`\n\n` 分帧、JSON 解析、事件回调、AbortController 中断、401/网络错误回调
-- [ ] `src/api/chat.ts`：`fetchLatestSession()`（基于 axios 实例）
-- [ ] `src/stores/chat.ts`：session、消息列表（user/assistant/thinking 分块）、streaming 状态、error 状态
-- [ ] `src/views/ChatView.vue`（替换占位）：
+- [x] `src/composables/useOpsChatSse.ts`：fetch + ReadableStream 读取、`\n\n` 分帧、JSON 解析、事件回调、AbortController 中断、401/网络错误回调
+- [x] `src/api/chat.ts`：`fetchLatestSession()`（基于 axios 实例）
+- [x] `src/stores/chat.ts`：session、消息列表（user/assistant/thinking 分块）、streaming 状态、error 状态
+- [x] `src/views/ChatView.vue`（替换占位）：
   - 进入页面获取 latest session
   - 消息列表渲染：用户气泡 / assistant 回答 / thinking 折叠块（el-collapse 或 details 样式）
   - 输入框 + 发送（streaming 中禁用或提供停止按钮 → abort）
   - error 事件可见（el-alert，含 retryable 提示）
   - done 后显示 latency_ms/model（轻量 footer 文案）
-- [ ] 单测：SSE 解析器（伪造 stream 多帧/跨 chunk 半帧/坏 JSON 行容错）+ store 事件流状态迁移；pnpm 三件套全绿
-- [ ] 联调冒烟：`GET /api/ops/chat/sessions/latest` 200；`POST /api/ops/chat/stream` 视后端 LLM 配置可用性而定——若后端 error 事件返回，前端正确渲染错误态也算通过（记录证据）
+- [x] 单测：SSE 解析器（伪造 stream 多帧/跨 chunk 半帧/坏 JSON 行容错）+ store 事件流状态迁移；pnpm 三件套全绿
+- [x] 联调冒烟：`GET /api/ops/chat/sessions/latest` 200；`POST /api/ops/chat/stream` 视后端 LLM 配置可用性而定——若后端 error 事件返回，前端正确渲染错误态也算通过（记录证据）
 
 **不做**：多 session 列表/切换；历史消息加载（后端 v1 未提供）；markdown 渲染（纯文本 + 换行即可，留后续）。
 
@@ -75,17 +75,27 @@ Chat 页：latest session 获取/创建、SSE 流式渲染、输入与状态管�
 
 ## 验收标准
 
-- [ ] pnpm 三件套 exit 0
-- [ ] SSE 解析单测覆盖：完整帧序列、跨 chunk 半帧、坏行容错、error 事件、abort
-- [ ] latest session 获取并展示 session title/id
-- [ ] 流式事件按序渲染（单测模拟 + 联调记录）
+- [x] pnpm 三件套 exit 0
+- [x] SSE 解析单测覆盖：完整帧序列、跨 chunk 半帧、坏行容错、error 事件、abort
+- [x] latest session 获取并展示 session title/id
+- [x] 流式事件按序渲染（单测模拟 + 联调记录）
 
 ## 给执行帽的必读列表
 
 1. `AGENTS.md` 2. 本 task 3. `/Users/cyning/Desktop/Ops-desk/ops-desk-api/docs/ios/api-auth-chat.md` §3/§4 4. `../ops-desk-workspace/docs/02-backend-analysis/01-sse-chat-design.md` 5. `src/api/http.ts`、`src/stores/auth.ts`
+
+---
+
+### 自检结论（00 集成复检）
+
+- 集成复检通过；00 带 cookie 联调发现后端 session_id 404 缺陷（ops-desk-api fix/chat-stream-session-id 已修复合入），实测 SSE 全序列 200
+- 合并提交见 master（分支 --no-ff 合入）；invoke 已落盘 by-task 目录。
+
+---
 
 ## 修订记录
 
 | 日期 | 说明 |
 |---|---|
 | 2026-07-24 | 00统筹起草；双闸代签 approved；SSE 契约附入 |
+| 2026-07-25 | 30 并行子 agent 执行 + 00 集成复检全绿；invoke 落盘；合并 master |
