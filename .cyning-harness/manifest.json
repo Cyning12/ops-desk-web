@@ -1,13 +1,18 @@
 {
-  "name": "ops-desk-web",
-  "version": "2.2.1",
-  "harness_version": "2",
+  "version": "2.11.0",
   "preset": "harness-only",
-  "ide": ["cursor","claude","agents"],
+  "ide": [
+    "cursor",
+    "claude",
+    "agents"
+  ],
+  "from_version": "2.2.1",
+  "upgraded_at": "2026-07-25T03:24:27Z",
+  "name": "ops-desk-web",
+  "harness_version": "2",
   "tech_graph_dir": "docs/_tech_graph",
   "tasks_dir": "docs/tasks",
   "hooks": {
     "graph_compile": "scripts/graph-compile.sh"
-  },
-  "upgraded_at": "2026-07-24T08:20:16Z"
+  }
 }
