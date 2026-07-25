@@ -1,6 +1,6 @@
 # Task：Overview 页（Epic W3 · web-overview）
 
-> **状态**：in_progress  
+> **状态**：completed  
 > **类型**：功能实现  
 > **关联**：`docs/tasks/active/TASK_epic_web_frontend_v1.md` W3
 
@@ -50,16 +50,16 @@ Overview 页：指标卡片 + trend 图 + sync/scan 状态。后端 `GET /api/op
 
 **完成态**：
 
-- [ ] `src/api/overview.ts`：`fetchOverview()`
-- [ ] `src/stores/overview.ts`：加载态/错误态/数据态
-- [ ] `src/views/OverviewView.vue`（替换占位）：
+- [x] `src/api/overview.ts`：`fetchOverview()`
+- [x] `src/stores/overview.ts`：加载态/错误态/数据态
+- [x] `src/views/OverviewView.vue`（替换占位）：
   - 指标卡片：cycle_time / review_time（median_days 天数 + sample_size；null 显示「—」）/ issue_throughput（count + period_days）
   - sync/scan 状态区：sync_status、sync_run（null 显示「暂无同步记录」）、scan_snapshot（null 显示「暂无扫描快照」）
   - trend 图：近 30 天 closed_issues / merged_prs 双线，**手绘 SVG**（不引 echarts 等依赖），全 0 时正常渲染空折线
   - `as_of` 显示数据截止时间
-- [ ] 加载骨架/错误提示（el-alert + 重试按钮）
-- [ ] 单测：store（mock http）+ 空态渲染不报错；`pnpm lint` / `pnpm test` / `pnpm build` 全绿
-- [ ] 联调冒烟：dev server 代理下 curl `/api/ops/overview` 200（登录 cookie）
+- [x] 加载骨架/错误提示（el-alert + 重试按钮）
+- [x] 单测：store（mock http）+ 空态渲染不报错；`pnpm lint` / `pnpm test` / `pnpm build` 全绿
+- [x] 联调冒烟：dev server 代理下 curl `/api/ops/overview` 200（登录 cookie）
 
 **不做**：图表库引入；自动轮询；时间范围切换。
 
@@ -78,10 +78,10 @@ Overview 页：指标卡片 + trend 图 + sync/scan 状态。后端 `GET /api/op
 
 ## 验收标准
 
-- [ ] pnpm 三件套 exit 0
-- [ ] 空数据下页面完整渲染无报错（当前后端实际状态）
-- [ ] trend SVG 在全 0 数据下正常渲染
-- [ ] 样式符合水墨风（#F9F9F7/#2C2C2C 变量）
+- [x] pnpm 三件套 exit 0
+- [x] 空数据下页面完整渲染无报错（当前后端实际状态）
+- [x] trend SVG 在全 0 数据下正常渲染
+- [x] 样式符合水墨风（#F9F9F7/#2C2C2C 变量）
 
 ## 给执行帽的必读列表
 
@@ -92,3 +92,4 @@ Overview 页：指标卡片 + trend 图 + sync/scan 状态。后端 `GET /api/op
 | 日期 | 说明 |
 |---|---|
 | 2026-07-24 | 00统筹起草；双闸代签 approved；实测契约附入；空态为验收重点 |
+| 2026-07-25 | 30 并行子 agent 执行 + 00 集成复检全绿；invoke 落盘；合并 master |
