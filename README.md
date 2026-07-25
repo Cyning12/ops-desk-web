@@ -39,6 +39,23 @@ pnpm build
 
 开发环境通过 Vite proxy 转发 `/api` 到 `http://localhost:8000`。
 
+## 联调
+
+1. 启动后端 `ops-desk-api`（本地 docker 或 uvicorn，监听 `:8000`）
+2. `pnpm dev` 启动前端，`/api/**` 请求经代理直达后端
+3. 登录页使用「用户名 + 邀请密钥」登录（密钥由后端 `scripts/create_initial_user.py` 签发）；会话基于 HttpOnly `ops_session` cookie
+4. 接口细节见 `../ops-desk-api/docs/ios/api-auth-chat.md`
+
+## 构建与部署
+
+```bash
+pnpm build    # 输出 dist/（vue-tsc 类型检查 + vite build）
+pnpm preview  # 本地预览构建产物
+```
+
+- 构建已通过 `manualChunks` 拆分 vendor（vue / element-plus），单 chunk 均低于 500kB
+- dist 为纯静态产物，SPA 深链需服务端 fallback；Nginx 托管配置见 `docs/deployment/nginx-static-hosting.md`
+
 ## 相关仓库
 
 | 仓库 | SSH 地址 |
