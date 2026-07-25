@@ -1,6 +1,6 @@
 # Epic Task：Web 前端 v1（Vue3 + TS + Element Plus）
 
-> **状态**：planning（Epic 母单 · 子任务逐个走 10-task 流程）  
+> **状态**：completed（W0–W8 全部完成并合入 master · 2026-07-25）  
 > **关联**：`../ops-desk-workspace/docs/05-plan/00-migration-roadmap.md` Phase 4 · `../ops-desk-workspace/docs/03-frontend-analysis/00-current-state.md` · `docs/_tech_graph/01_struct.md`  
 > **阻塞关系**：**部署轨（Epic 8）pending 于本 Epic 完成**（用户 2026-07-24 拍板：等 Web 一起部署 API+PG+Web+Nginx+SSL）
 
@@ -50,3 +50,4 @@
 | 日期 | 说明 |
 |---|---|
 | 2026-07-24 | 创建 Epic 母单：W0–W8 拆解（含 harness 2.2.1 导入升级 W0）；部署轨 pending 于本 Epic |
+| 2026-07-25 | W0–W8 全部完成：harness 2.2.1 / 骨架 / 登录 / Overview / Issues / Pulls / Graph / Chat SSE / E2E 联调+构建+Nginx 文档；部署轨（Epic 8）解锁 |
