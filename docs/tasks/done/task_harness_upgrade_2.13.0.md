@@ -1,6 +1,6 @@
 # Task：Harness 升级至 2.13.0（web）
 
-> **状态**：active  
+> **状态**：completed  
 > **类型**：基础设施（过程轨 upgrade）  
 > **关联**：`Projects/docs/harness/guides/CHECKLIST_harness_pilot_dogfood_v1_zh.md` · npm `@cyning/harness@2.13.0` · 对齐 api 已升版本
 
@@ -36,13 +36,13 @@ api 已升至 **2.13.0**；本仓仍为 **2.11.1**。需升级对齐产品包（
 
 **完成态**：
 
-- [ ] `.cyning-harness/manifest.json` → `version: 2.13.0`
-- [ ] 干净工作区单次 `upgrade --yes`（无 `--ide`）**一把过**（无 S5）
-- [ ] `npx @cyning/harness check` → 已是最新
-- [ ] `npx @cyning/harness verify --target . --task <本文件>` PASS
-- [ ] 可选摸底：`lifecycle show` · `discipline show`
-- [ ] invoke 落盘 + 自检回填
-- [ ] Projects checklist 回填（web → 2.13.0）
+- [x] `.cyning-harness/manifest.json` → `version: 2.13.0`
+- [x] 干净工作区单次 `upgrade --yes`（无 `--ide`）**一把过**（无 S5）
+- [x] `npx @cyning/harness check` → 已是最新
+- [x] `npx @cyning/harness verify --target . --task <本文件>` PASS
+- [x] 可选摸底：`lifecycle show` · `discipline show`
+- [x] invoke 落盘 + 自检回填
+- [x] Projects checklist 回填（web → 2.13.0）
 
 **不做**：
 
@@ -73,17 +73,22 @@ api 已升至 **2.13.0**；本仓仍为 **2.11.1**。需升级对齐产品包（
 
 ## 验收标准
 
-- [ ] manifest `version` = `2.13.0`，仅 schema 五字段
-- [ ] 单次 upgrade 退出码 0，无 S5 中止
-- [ ] `harness check` 已是最新
-- [ ] checklist 已回填 web → 2.13.0
-- [ ] `pnpm lint` · `pnpm test` · `pnpm build` 仍绿（过程轨不影响业务）
+- [x] manifest `version` = `2.13.0`，仅 schema 五字段
+- [x] 单次 upgrade 退出码 0，无 S5 中止
+- [x] `harness check` 已是最新
+- [x] checklist 已回填 web → 2.13.0
+- [x] `pnpm lint` · `pnpm test` · `pnpm build` 仍绿（过程轨不影响业务）
 
 ---
 
 ### 自检结论（执行者）
 
-（30/40 后回填）
+- **upgrade 一把过**：干净仓 `npx @cyning/harness@2.13.0 upgrade --target . --yes`（无 `--ide`）；apply → local.json → manifest，无 S5。
+- **manifest**：`version: 2.13.0` · `from_version: 2.11.1` · ide 保持 `cursor,claude,agents` · 仅五字段。
+- **check / verify**：已是最新；`verify --task` PASS。
+- **业务回归**：`pnpm lint` PASS；`pnpm test` **69 passed**；`pnpm build` PASS。
+- **F1b**：本轮未带 `--ide`，未复现。
+- **checklist**：Projects dogfood checklist 回填 web → 2.13.0。
 
 ---
 
@@ -92,3 +97,4 @@ api 已升至 **2.13.0**；本仓仍为 **2.11.1**。需升级对齐产品包（
 | 日期 | 说明 |
 |---|---|
 | 2026-07-26 | 首版 · web 升至 2.13.0 + checklist 回填 |
+| 2026-07-26 | 30/40 完成 · 一把过 · pnpm 三件套绿 |
