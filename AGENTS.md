@@ -92,7 +92,7 @@ pnpm build        # 生产构建
 <!-- cyning-harness:begin -->
 # Harness Starter（业务仓 · 通用 Agent）
 
-> **单源真值**：`AGENTS.md` 读序 + `docs/tasks/active/` + 本文件其余业务约定。  
+> **单源真值**：`docs/coding_wiki/` 读序 + `docs/standards/` + 本文件其余业务约定。  
 > **本片段**：摘要 + **POINTER**；Harness 条文真值在 `docs/harness/prompts/`。
 
 ## 执行 task 前
@@ -106,14 +106,14 @@ pnpm build        # 生产构建
    - **`HG-GRAPH-MODULES` pending** → **30 拒改码**（D4-a）
    - 用户声称与 task 表冲突 → **STOP** · 以 task 表为准
 4. 过程 invoke：`docs/harness/invokes/by-task/<task_slug>/`
-5. 分支纪律：`task/<slug>` / `fix/<description>`，禁止 master 直推
 
 ## Verify（合并前）
 
-| 栈 | 命令 |
-|----|------|
+| 栈 | 命令（与 `.github/workflows/` 一致） |
+|----|--------------------------------------|
 | 前端 | `pnpm lint` → `pnpm test` → `pnpm build` |
-| 图谱 | `./scripts/graph-compile.sh` |
+| 后端 | `pytest tests`（按仓 marker 裁剪） |
+| iOS | `xcodebuild`（见 task `test_strategy_note`） |
 
 ## 关键词
 
@@ -121,6 +121,5 @@ pnpm build        # 生产构建
 
 ## 完整库 POINTER
 
-工作区：`docs/harness/prompts/`（10/22/30/40、FRAGMENT_30_*、TEMPLATE_30_gate_stop 等）  
-Runbook：`docs/runbooks/RUNBOOK_harness_upgrade_v1_zh.md`（**harness 版本升级前必读**，含 F1/F2 摩擦变通）
+工作区：`docs/harness/prompts/`（22/30/TEMPLATE_30_gate_stop 等）
 <!-- cyning-harness:end -->
