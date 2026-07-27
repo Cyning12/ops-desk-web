@@ -1,0 +1,26 @@
+{
+  "schema_version": "obs_timeline.v1",
+  "task_slug": "demo-ready",
+  "task_path": "docs/tasks/active/task_demo_ready.md",
+  "event_count": 2,
+  "returned": 2,
+  "limit": null,
+  "ingested": false,
+  "ingest": null,
+  "events": [
+    {
+      "event_id": "e1",
+      "type": "TaskCreated",
+      "occurred_at": "2026-07-27T10:00:00.000Z",
+      "subject": "task:demo-ready",
+      "summary": "task created · draft"
+    },
+    {
+      "event_id": "e2",
+      "type": "GateApproved",
+      "occurred_at": "2026-07-27T12:00:00.000Z",
+      "subject": "task:demo-ready",
+      "summary": "HG-AUDIT-R1 approved"
+    }
+  ]
+}

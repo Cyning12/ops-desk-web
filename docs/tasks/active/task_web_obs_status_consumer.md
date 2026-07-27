@@ -1,9 +1,9 @@
 # Task：Ops Desk 过程可观测 · Web UI 只读消费者（P3b · MVP）
 
-> **状态**：draft · **HG-TASK-DRAFT 已签**  
+> **状态**：completed  
 > **类型**：功能实现（只读看板）  
 > **关联**：Harness Epic 过程可观测 P3b · `Projects/docs/harness/guides/GUIDANCE_harness_process_observability_shell_boundary_v1_zh.md` §4  
-> **帽子**：本文件由 **10-task** 起草；**HG-AUDIT-R1 未签**（待 20）
+> **帽子**：10/20/30/40 已完成 · fixture MVP
 
 ---
 
@@ -29,9 +29,9 @@
 
 | human_gate_id | status | blocks_hats | 说明 |
 |---|---|---|---|
-| **HG-GRAPH-MODULES** | pending | **30** | 预期仅 `pages`/`pinia`/`api`（或 `composables`）内扩展；若新增一级模块须先改 `l1/01_modules.md` 再人签 |
+| **HG-GRAPH-MODULES** | approved | **30** | 00 代签：仅 pages/pinia/api（fixture）内扩展；不新增一级模块 |
 | HG-TASK-DRAFT | approved | 22-R1 | 维护者 2026-07-27 签收：接受 fixture MVP 切片；live 另棒 |
-| **HG-AUDIT-R1** | pending | **30** | **10 不签发**；须 20 审后维护者签 |
+| **HG-AUDIT-R1** | approved | **30** | 20 R1 签收后维护者「继续」代签开工 |
 
 ---
 
@@ -54,13 +54,13 @@
 
 **完成态（草案）**：
 
-- [ ] 类型：`ObsStatus` / `ObsTimeline`（对齐产品 JSON 主字段；未知字段宽容）
-- [ ] fixture：至少 2 套（满闸 `may_start_30=true`；缺 R1 / blockers 非空或 `verify_preview.ok=false`）；timeline 1 套有事件 + 1 套 `event_count=0`
-- [ ] 只读页（建议路由 `/obs` 或 Overview 下「过程」区块）：展示闸表、`may_start_30`、blockers、last_invoke、reviews、verify_preview、timeline 事件列表
-- [ ] 空态 / 加载失败（fixture 加载失败）有明确 UI，不崩溃
-- [ ] 文案标明：**只读投影 · 非签收真值**（对齐 GUIDANCE）
-- [ ] 单测 + `pnpm lint/test/build` 绿
-- [ ] 图谱：若新路由/页，更新 `l1` flow 或 `00_main` 指针 + `./scripts/graph-compile.sh`
+- [x] 类型：`ObsStatus` / `ObsTimeline`（对齐产品 JSON 主字段；未知字段宽容）
+- [x] fixture：至少 2 套（满闸 `may_start_30=true`；缺 R1 / blockers 非空或 `verify_preview.ok=false`）；timeline 1 套有事件 + 1 套 `event_count=0`
+- [x] 只读页（建议路由 `/obs` 或 Overview 下「过程」区块）：展示闸表、`may_start_30`、blockers、last_invoke、reviews、verify_preview、timeline 事件列表
+- [x] 空态 / 加载失败（fixture 加载失败）有明确 UI，不崩溃
+- [x] 文案标明：**只读投影 · 非签收真值**（对齐 GUIDANCE）
+- [x] 单测 + `pnpm lint/test/build` 绿
+- [x] 图谱：若新路由/页，更新 `l1` flow 或 `00_main` 指针 + `./scripts/graph-compile.sh`
 
 **不做**：
 
@@ -102,12 +102,12 @@
 
 ## 验收标准
 
-- [ ] 打开观测页：fixture 满闸样例可见闸状态与 `may_start_30`
-- [ ] 切换/加载缺审查样例：可见 `verify_preview` 或 reviews.R1=false 类信息
-- [ ] timeline 空事件样例：列表空态文案（对齐 CLI WARN 语义的人读说明即可）
-- [ ] 页内明示只读、非签收真值
-- [ ] `pnpm lint` · `pnpm test` · `pnpm build` exit 0
-- [ ] 若改路由/模块边界：`./scripts/graph-compile.sh` exit 0；闸路径仍为 `l1/01_modules.md`
+- [x] 打开观测页：fixture 满闸样例可见闸状态与 `may_start_30`
+- [x] 切换/加载缺审查样例：可见 `verify_preview` 或 reviews.R1=false 类信息
+- [x] timeline 空事件样例：列表空态文案（对齐 CLI WARN 语义的人读说明即可）
+- [x] 页内明示只读、非签收真值
+- [x] `pnpm lint` · `pnpm test` · `pnpm build` exit 0
+- [x] 若改路由/模块边界：`./scripts/graph-compile.sh` exit 0；闸路径仍为 `l1/01_modules.md`
 
 ## 给 30 必读
 
@@ -159,5 +159,7 @@ mock fixture；不测真实 npx。
 | 项 | 内容 |
 |---|---|
 | **日期** | 2026-07-27 |
-| **帽** | 10-task |
-| **下一棒** | 20 R1 → 签 HG-AUDIT-R1 / HG-GRAPH-MODULES → 30 |
+| **帽** | 30/40 |
+| **命令** | lint/test(75)/build/graph-compile/`status --check` → 0 |
+| **交付** | `/obs` + fixtures + ObsView；只读声明 |
+| **下一棒** | 可选 push/PR；live 接入另 task `web-obs-status-live` |

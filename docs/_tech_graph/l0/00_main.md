@@ -1,7 +1,7 @@
 ---
 graph_id: 00_main
 version: 2026-07-27
-generated_at: 2026-07-27T13:59:46Z
+generated_at: 2026-07-27T14:32:53Z
 source: 00_main.graph.yaml
 ---
 
@@ -22,6 +22,7 @@ flowchart TB
     sse_client[SSE Client]
     pages[页面组件]
     chat_page[Chat 页面]
+    obs_page[过程观测页]
     chat_flow[>../l1/10_flow_chat.md]
     modules_doc[>../l1/01_modules.md]
     ops_api[ops-desk-api]
@@ -34,6 +35,7 @@ flowchart TB
     router --"routes"--> pages
     pages --"calls"--> api_client
     pages --"includes"--> chat_page
+    pages --"includes"--> obs_page
     chat_page --"streams"--> sse_client
     chat_page --"展开"--> chat_flow
     sse_client --"POST /api/ops/chat/stream"--> ops_api
@@ -61,6 +63,7 @@ flowchart TB
 | sse_client | SSE Client | flow |
 | pages | 页面组件 | flow |
 | chat_page | Chat 页面 | flow |
+| obs_page | 过程观测页 | flow |
 | chat_flow | >../l1/10_flow_chat.md | external |
 | modules_doc | >../l1/01_modules.md | external |
 | ops_api | ops-desk-api | external |
@@ -77,6 +80,7 @@ flowchart TB
 | router | pages | -> | depends_on | routes |  |
 | pages | api_client | -> | depends_on | calls |  |
 | pages | chat_page | -> | depends_on | includes |  |
+| pages | obs_page | -> | depends_on | includes |  |
 | chat_page | sse_client | -> | depends_on | streams |  |
 | chat_page | chat_flow | -> | depends_on | 展开 |  |
 | sse_client | ops_api | -> | depends_on | POST /api/ops/chat/stream |  |

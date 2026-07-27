@@ -1,7 +1,7 @@
 {
   "schema_version": "graph_v2",
   "freeze_id": "OPS_DESK_WEB_TECH_GRAPH_FREEZE_20260727_V1",
-  "generated_at": "2026-07-27T13:59:47Z",
+  "generated_at": "2026-07-27T14:32:56Z",
   "graphs": [
     {
       "id": "00_main",
@@ -61,6 +61,11 @@
       "graph_id": "00_main",
       "id": "chat_page",
       "label": "Chat 页面"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "obs_page",
+      "label": "过程观测页"
     },
     {
       "graph_id": "00_main",
@@ -198,6 +203,16 @@
       "graph_id": "00_main",
       "from": "pages",
       "to": "chat_page",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "includes",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "pages",
+      "to": "obs_page",
       "mark": "->",
       "type": "depends_on",
       "label": "includes",

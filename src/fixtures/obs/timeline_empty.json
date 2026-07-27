@@ -1,0 +1,11 @@
+{
+  "schema_version": "obs_timeline.v1",
+  "task_slug": "demo-blocked",
+  "task_path": "docs/tasks/active/task_demo_blocked.md",
+  "event_count": 0,
+  "returned": 0,
+  "limit": null,
+  "ingested": false,
+  "ingest": null,
+  "events": []
+}

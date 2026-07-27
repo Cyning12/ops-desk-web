@@ -45,6 +45,10 @@ nodes:
     label: "Chat 页面"
     kind: flow
 
+  - id: "obs_page"
+    label: "过程观测页"
+    kind: flow
+
   - id: "chat_flow"
     label: ">../l1/10_flow_chat.md"
     kind: external
@@ -88,6 +92,10 @@ edges:
 
   - from: "pages"
     to: "chat_page"
+    label: "includes"
+
+  - from: "pages"
+    to: "obs_page"
     label: "includes"
 
   - from: "chat_page"

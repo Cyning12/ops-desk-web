@@ -1,0 +1,43 @@
+{
+  "schema_version": "obs_status.v1",
+  "task_slug": "demo-ready",
+  "task_path": "docs/tasks/active/task_demo_ready.md",
+  "status": "in_progress",
+  "gates": [
+    {
+      "id": "HG-GRAPH-MODULES",
+      "status": "approved",
+      "blocks_hats": "30"
+    },
+    {
+      "id": "HG-TASK-DRAFT",
+      "status": "approved",
+      "blocks_hats": "22-R1"
+    },
+    {
+      "id": "HG-AUDIT-R1",
+      "status": "approved",
+      "blocks_hats": "30"
+    }
+  ],
+  "may_start_30": true,
+  "blockers": [],
+  "last_invoke": {
+    "path": "docs/harness/invokes/by-task/demo-ready/invoke_30.md",
+    "hat_id": "30"
+  },
+  "reviews": {
+    "R1": true,
+    "CLOSE": false
+  },
+  "verify_preview": {
+    "ok": true,
+    "reason": "只读预览 PASS（非正式 verify · 30 前仍须正式跑）"
+  },
+  "hgm": {
+    "event_count": 2,
+    "last_at": "2026-07-27T12:00:00.000Z"
+  },
+  "kpi_section": false,
+  "next_hint": "闸已齐 · 跑 harness verify --task … 后开 30"
+}
