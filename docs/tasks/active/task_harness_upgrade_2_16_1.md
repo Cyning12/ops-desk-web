@@ -79,8 +79,9 @@
 | **日期** | 2026-07-27 |
 | **manifest** | `2.16.1`（from 2.13.0）· 五字段 · ide 三轨未裁 · preset=`harness-only` |
 | **check** | 已是最新 · exit 0 |
-| **status/timeline** | `obs_status.v1` / `obs_timeline.v1` · timeline WARN 无 HGM exit 0 · `--check` 缺 R1 → exit 2（预期硬语义） |
+| **status/timeline** | `obs_status.v1` / `obs_timeline.v1` · timeline WARN 无 HGM exit 0 · 初轮 `--check` 缺 R1 exit 2；补 R1 后 exit 0 |
 | **ide 是否被裁** | 否（仍 cursor,claude,agents） |
 | **pnpm 三件套** | lint/test(69)/build 全绿；graph-compile 绿（时间戳噪声未入 commit） |
 | **摩擦** | 无；upgrade 净 diff 仅 manifest+local（harness-only 轨内容与 2.13.0 一致） |
-| **下一棒** | 维护者审 diff；可选补 R1 / PR；本棒不 push |
+| **R1** | `docs/harness/reviews/task_harness_upgrade_2_16_1_audit_R1_20260727.md` |
+| **下一棒** | push + PR；P3b 另棒 |
