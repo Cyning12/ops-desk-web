@@ -1,0 +1,130 @@
+schema_version: "inform_graph.v3"
+graph_id: "10_flow_chat"
+title: "Chat 流式对话流程（前端）"
+description: "用户在 Chat 页发送消息：ChatView → chat store → useOpsChatSse → POST /api/ops/chat/stream；会话元数据走 axios fetchLatestSession。"
+version: "2026-07-27"
+layer: "G-L1"
+primary_layer: "G-L1"
+depth: "method"
+direction: "TB"
+
+nodes:
+  - id: "user"
+    label: "用户"
+    kind: external
+
+  - id: "chat_view"
+    label: "ChatView"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/views/ChatView.vue"
+        symbol: "ChatView"
+        kind: component
+
+  - id: "chat_store"
+    label: "useChatStore"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/chat.ts"
+        symbol: "useChatStore"
+        kind: module
+
+  - id: "load_session"
+    label: "loadLatestSession"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/chat.ts"
+        symbol: "loadLatestSession"
+        kind: method
+
+  - id: "send_message"
+    label: "sendMessage"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/chat.ts"
+        symbol: "sendMessage"
+        kind: method
+
+  - id: "fetch_session_api"
+    label: "fetchLatestSession"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/chat.ts"
+        symbol: "fetchLatestSession"
+        kind: method
+
+  - id: "stream_sse"
+    label: "streamOpsChat"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/composables/useOpsChatSse.ts"
+        symbol: "streamOpsChat"
+        kind: method
+
+  - id: "sse_parser"
+    label: "SseFrameParser"
+    kind: struct
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/composables/useOpsChatSse.ts"
+        symbol: "SseFrameParser"
+        kind: class
+
+  - id: "ops_api"
+    label: "ops-desk-api"
+    kind: external
+
+  - id: "api_chat_flow"
+    label: ">../../../ops-desk-api/docs/_tech_graph/l1/10_flow_chat.md"
+    kind: external
+
+edges:
+  - from: "user"
+    to: "chat_view"
+    label: "opens /chat"
+
+  - from: "chat_view"
+    to: "chat_store"
+    label: "binds"
+
+  - from: "chat_view"
+    to: "load_session"
+    label: "onMounted"
+
+  - from: "load_session"
+    to: "fetch_session_api"
+    label: "calls"
+
+  - from: "fetch_session_api"
+    to: "ops_api"
+    label: "GET /ops/chat/sessions/latest"
+
+  - from: "user"
+    to: "send_message"
+    label: "submit"
+
+  - from: "chat_view"
+    to: "send_message"
+    label: "triggers"
+
+  - from: "send_message"
+    to: "stream_sse"
+    label: "starts"
+
+  - from: "stream_sse"
+    to: "sse_parser"
+    label: "parses frames"
+
+  - from: "stream_sse"
+    to: "ops_api"
+    label: "POST /api/ops/chat/stream"
+
+  - from: "ops_api"
+    to: "api_chat_flow"
+    label: "后端展开"

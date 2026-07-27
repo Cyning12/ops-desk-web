@@ -46,29 +46,21 @@ npx @cyning/harness init --preset harness-only --ide cursor,claude,agents --yes
 
 ### 1.3 创建/恢复真实图谱内容
 
-必须存在且符合 `inform_graph.v3` schema 的文件：
+物理分层（G-L0/G-L1/G-L2 · Phase γ）须存在：
 
-- `docs/_tech_graph/00_main.graph.yaml` — 顶层总图
-- `docs/_tech_graph/01_struct.md` — 模块边界表（人签真值）
-- `docs/_tech_graph/02_version.md` — 版本时间线
-- `docs/_tech_graph/99_mermaid_protocol.md` — Mermaid 约定
-- 至少一条主 flow：`docs/_tech_graph/10_flow_*.graph.yaml`
+- `docs/_tech_graph/l0/00_main.graph.yaml` — 顶层总图
+- `docs/_tech_graph/l1/01_modules.md` — 模块边界表（**HG-GRAPH-MODULES** 人签真值）
+- `docs/_tech_graph/l1/10_flow_*.graph.yaml` — 至少一条主 flow（web 试点：chat）
+- `docs/_tech_graph/l2/indexes/` — path/symbol 倒排（chat 试点）
+- `docs/_tech_graph/shared/` — `02_version.md` · `99_mermaid_protocol.md` · **`graph.json`（C1）**
+- 根 `01_struct.md` 为过渡 stub → 指向 `l1/01_modules.md`
+- 操作规程真值：`docs/skills/`（S-L0 / S-L1）
+
+读序见 `docs/_tech_graph/README.md` · `LAYER_README.md`。
 
 ### 1.4 配置编译脚本
 
-`scripts/graph-compile.sh`：
-
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "${ROOT_DIR}"
-npx @cyning/harness graph yaml compile --input docs/_tech_graph --all
-python3 scripts/graph_yaml_to_json.py docs/_tech_graph
-npx @cyning/harness graph yaml check --input docs/_tech_graph --all
-```
-
-`scripts/graph_yaml_to_json.py`：用于生成兼容 harness v2 check 的 `graph.json`。
+`scripts/graph-compile.sh`：递归 compile/check 各层 `*.graph.yaml`，并生成 `shared/graph.json`（根目录过渡双写）。
 
 ### 1.5 首次编译并校验
 
@@ -76,16 +68,11 @@ npx @cyning/harness graph yaml check --input docs/_tech_graph --all
 ./scripts/graph-compile.sh
 ```
 
-输出应包含：
-
-```text
-OK: 00_main
-OK: 10_flow_xxx
-```
+输出应包含 `OK: 00_main` / `OK: 10_flow_xxx`，且 `freeze_id` 含 `OPS_DESK_WEB`。
 
 ### 1.6 人签 HG-GRAPH-MODULES
 
-在 `docs/_tech_graph/01_struct.md` 中填写一级模块表，维护者签核后将 `HG-GRAPH-MODULES` 状态改为 `approved`。
+在 `docs/_tech_graph/l1/01_modules.md` 中填写一级模块表，维护者签核后将 `HG-GRAPH-MODULES` 状态改为 `approved`。
 
 ---
 
@@ -93,27 +80,27 @@ OK: 10_flow_xxx
 
 ### 2.1 必须同步更新图谱的场景
 
-每次新增/修改以下任意一项，都必须先改 `docs/_tech_graph/*.graph.yaml`，再改代码：
+每次新增/修改以下任意一项，都必须先改 `docs/_tech_graph/**/*.graph.yaml`，再改代码：
 
+- 页面 / 路由 / Pinia store 边界
 - REST Endpoint（路径、方法、请求/响应字段）
-- SSE 事件类型或 payload
-- 数据库表或关键字段
-- LangGraph 节点、边、state 字段
+- SSE 事件类型或 payload（前端消费）
 - 模块间调用关系
-- 外部依赖（LLM Provider、数据库、第三方 API）
+- 跨仓契约指针（G-L0 POINTERS）
 
 ### 2.2 增量维护步骤
 
-1. 改 `.graph.yaml` 源文件（唯一人工编辑源）。
-2. 运行 `./scripts/graph-compile.sh` 生成 `.md` + `graph.json`。
+1. 改对应层 `.graph.yaml`（唯一人工编辑源）；chat 符号变更同步 `l2/indexes`。
+2. 运行 `./scripts/graph-compile.sh` 生成 `.md` + `shared/graph.json`。
 3. 确认 check 通过。
-4. 提交 `.graph.yaml` + `.md` + `graph.json`。
+4. 提交 yaml + md + graph.json（含根双写副本）。
 
 ### 2.3 禁止事项
 
 - ❌ 直接手写生成的 `.md` 文件。
 - ❌ 改代码后忘记改图谱。
-- ❌ 在 `site-packages` 改依赖源码来规避图谱约束。
+- ❌ 只改 `.claude/skills` 副本而不回写 `docs/skills/`。
+- ❌ 正文用裸「L0/L1/L2」作架构义（须写 G-L\* / S-L\*）。
 
 ---
 
@@ -127,7 +114,7 @@ OK: 10_flow_xxx
 
 ### 3.2 CI 检查（推荐）
 
-`.github/workflows/tech-graph.yml`：
+`.github/workflows/tech-graph.yml`（本仓若尚未落地 CI，见另棒）：
 
 ```yaml
 name: tech-graph
