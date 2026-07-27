@@ -1,0 +1,34 @@
+# chat 域 path → 节点倒排（G-L2）
+# 源：l1/10_flow_chat.graph.yaml implementedBy
+# 生成策略：手维启动；后续可 --check
+
+version: "2026-07-27"
+graph_id: "10_flow_chat"
+layer: "G-L2"
+
+by_path:
+  "src/views/ChatView.vue":
+    - node_id: chat_view
+      symbol: ChatView
+      kind: component
+  "src/stores/chat.ts":
+    - node_id: chat_store
+      symbol: useChatStore
+      kind: module
+    - node_id: load_session
+      symbol: loadLatestSession
+      kind: method
+    - node_id: send_message
+      symbol: sendMessage
+      kind: method
+  "src/api/chat.ts":
+    - node_id: fetch_session_api
+      symbol: fetchLatestSession
+      kind: method
+  "src/composables/useOpsChatSse.ts":
+    - node_id: stream_sse
+      symbol: streamOpsChat
+      kind: method
+    - node_id: sse_parser
+      symbol: SseFrameParser
+      kind: class

@@ -1,0 +1,378 @@
+{
+  "schema_version": "graph_v2",
+  "freeze_id": "OPS_DESK_WEB_TECH_GRAPH_FREEZE_20260727_V1",
+  "generated_at": "2026-07-27T13:59:47Z",
+  "graphs": [
+    {
+      "id": "00_main",
+      "title": "ops-desk-web 顶层流程总图",
+      "source_yaml_path": "l0/00_main.graph.yaml",
+      "layer": "G-L0"
+    },
+    {
+      "id": "10_flow_chat",
+      "title": "Chat 流式对话流程（前端）",
+      "source_yaml_path": "l1/10_flow_chat.graph.yaml",
+      "layer": "G-L1"
+    }
+  ],
+  "nodes": [
+    {
+      "graph_id": "00_main",
+      "id": "user",
+      "label": "用户"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "browser",
+      "label": "浏览器"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "app",
+      "label": "Vue 3 App"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "router",
+      "label": "Vue Router"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "pinia",
+      "label": "Pinia Store"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "api_client",
+      "label": "API Client"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "sse_client",
+      "label": "SSE Client"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "pages",
+      "label": "页面组件"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "chat_page",
+      "label": "Chat 页面"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "chat_flow",
+      "label": ">../l1/10_flow_chat.md"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "modules_doc",
+      "label": ">../l1/01_modules.md"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "ops_api",
+      "label": "ops-desk-api"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "api_doc",
+      "label": ">../../../ops-desk-api/docs/_tech_graph/l0/00_main.md"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "user",
+      "label": "用户"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "chat_view",
+      "label": "ChatView"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "chat_store",
+      "label": "useChatStore"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "load_session",
+      "label": "loadLatestSession"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "send_message",
+      "label": "sendMessage"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "fetch_session_api",
+      "label": "fetchLatestSession"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "stream_sse",
+      "label": "streamOpsChat"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "sse_parser",
+      "label": "SseFrameParser"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "ops_api",
+      "label": "ops-desk-api"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "api_chat_flow",
+      "label": ">../../../ops-desk-api/docs/_tech_graph/l1/10_flow_chat.md"
+    }
+  ],
+  "edges": [
+    {
+      "graph_id": "00_main",
+      "from": "user",
+      "to": "browser",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "interacts",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "browser",
+      "to": "app",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "loads",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "app",
+      "to": "router",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "mounts",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "app",
+      "to": "pinia",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "uses",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "router",
+      "to": "pages",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "routes",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "pages",
+      "to": "api_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "calls",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "pages",
+      "to": "chat_page",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "includes",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "chat_page",
+      "to": "sse_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "streams",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "chat_page",
+      "to": "chat_flow",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "展开",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "sse_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "POST /api/ops/chat/stream",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "api_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "HTTP /api/ops/*",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "ops_api",
+      "to": "api_doc",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "加载",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "app",
+      "to": "modules_doc",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "模块边界",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "user",
+      "to": "chat_view",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "opens /chat",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "chat_view",
+      "to": "chat_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "binds",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "chat_view",
+      "to": "load_session",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "onMounted",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "load_session",
+      "to": "fetch_session_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "calls",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "fetch_session_api",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "GET /ops/chat/sessions/latest",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "user",
+      "to": "send_message",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "submit",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "chat_view",
+      "to": "send_message",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "triggers",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "send_message",
+      "to": "stream_sse",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "starts",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "stream_sse",
+      "to": "sse_parser",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "parses frames",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "stream_sse",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "POST /api/ops/chat/stream",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "ops_api",
+      "to": "api_chat_flow",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "后端展开",
+      "anchors": [],
+      "sync": true
+    }
+  ]
+}

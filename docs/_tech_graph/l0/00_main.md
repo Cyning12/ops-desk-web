@@ -1,7 +1,7 @@
 ---
 graph_id: 00_main
-version: 2026-07-16
-generated_at: 2026-07-25T03:25:44Z
+version: 2026-07-27
+generated_at: 2026-07-27T13:59:46Z
 source: 00_main.graph.yaml
 ---
 
@@ -22,8 +22,10 @@ flowchart TB
     sse_client[SSE Client]
     pages[页面组件]
     chat_page[Chat 页面]
+    chat_flow[>../l1/10_flow_chat.md]
+    modules_doc[>../l1/01_modules.md]
     ops_api[ops-desk-api]
-    api_doc[>../ops-desk-api/docs/_tech_graph/00_main.md]
+    api_doc[>../../../ops-desk-api/docs/_tech_graph/l0/00_main.md]
 
     user --"interacts"--> browser
     browser --"loads"--> app
@@ -31,11 +33,13 @@ flowchart TB
     app --"uses"--> pinia
     router --"routes"--> pages
     pages --"calls"--> api_client
+    pages --"includes"--> chat_page
     chat_page --"streams"--> sse_client
+    chat_page --"展开"--> chat_flow
     sse_client --"POST /api/ops/chat/stream"--> ops_api
     api_client --"HTTP /api/ops/*"--> ops_api
-    pages --"includes"--> chat_page
     ops_api --"加载"--> api_doc
+    app --"模块边界"--> modules_doc
 
     classDef phase fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     classDef doc fill:#fff8e1,stroke:#ff6f00,stroke-width:1px
@@ -57,8 +61,10 @@ flowchart TB
 | sse_client | SSE Client | flow |
 | pages | 页面组件 | flow |
 | chat_page | Chat 页面 | flow |
+| chat_flow | >../l1/10_flow_chat.md | external |
+| modules_doc | >../l1/01_modules.md | external |
 | ops_api | ops-desk-api | external |
-| api_doc | >../ops-desk-api/docs/_tech_graph/00_main.md | external |
+| api_doc | >../../../ops-desk-api/docs/_tech_graph/l0/00_main.md | external |
 
 ### Edges
 
@@ -70,11 +76,13 @@ flowchart TB
 | app | pinia | -> | depends_on | uses |  |
 | router | pages | -> | depends_on | routes |  |
 | pages | api_client | -> | depends_on | calls |  |
+| pages | chat_page | -> | depends_on | includes |  |
 | chat_page | sse_client | -> | depends_on | streams |  |
+| chat_page | chat_flow | -> | depends_on | 展开 |  |
 | sse_client | ops_api | -> | depends_on | POST /api/ops/chat/stream |  |
 | api_client | ops_api | -> | depends_on | HTTP /api/ops/* |  |
-| pages | chat_page | -> | depends_on | includes |  |
 | ops_api | api_doc | -> | depends_on | 加载 |  |
+| app | modules_doc | -> | depends_on | 模块边界 |  |
 
 ## Sub-graph Links
 

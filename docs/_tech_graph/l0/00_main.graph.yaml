@@ -2,7 +2,10 @@ schema_version: "inform_graph.v3"
 graph_id: "00_main"
 title: "ops-desk-web 顶层流程总图"
 description: "Ops Desk Web 前端架构总图：页面路由、Pinia Store、API Client、SSE Chat 消费与后端 API 的关系。"
-version: "2026-07-16"
+version: "2026-07-27"
+layer: "G-L0"
+primary_layer: "G-L0"
+depth: "framework"
 direction: "TB"
 
 nodes:
@@ -42,12 +45,20 @@ nodes:
     label: "Chat 页面"
     kind: flow
 
+  - id: "chat_flow"
+    label: ">../l1/10_flow_chat.md"
+    kind: external
+
+  - id: "modules_doc"
+    label: ">../l1/01_modules.md"
+    kind: external
+
   - id: "ops_api"
     label: "ops-desk-api"
     kind: external
 
   - id: "api_doc"
-    label: ">../ops-desk-api/docs/_tech_graph/00_main.md"
+    label: ">../../../ops-desk-api/docs/_tech_graph/l0/00_main.md"
     kind: external
 
 edges:
@@ -75,9 +86,17 @@ edges:
     to: "api_client"
     label: "calls"
 
+  - from: "pages"
+    to: "chat_page"
+    label: "includes"
+
   - from: "chat_page"
     to: "sse_client"
     label: "streams"
+
+  - from: "chat_page"
+    to: "chat_flow"
+    label: "展开"
 
   - from: "sse_client"
     to: "ops_api"
@@ -87,10 +106,10 @@ edges:
     to: "ops_api"
     label: "HTTP /api/ops/*"
 
-  - from: "pages"
-    to: "chat_page"
-    label: "includes"
-
   - from: "ops_api"
     to: "api_doc"
     label: "加载"
+
+  - from: "app"
+    to: "modules_doc"
+    label: "模块边界"

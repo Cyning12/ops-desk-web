@@ -25,7 +25,7 @@
 2. **核验人工闸**
    | 闸 | 阻塞 | 真值位置 |
    |---|---|---|
-   | `HG-GRAPH-MODULES` | 30 改码 | `docs/_tech_graph/01_struct.md` |
+   | `HG-GRAPH-MODULES` | 30 改码 | `docs/_tech_graph/l1/01_modules.md` |
    | `HG-AUDIT-R1` | 30 开工 | `docs/tasks/active/task_*.md` 人工闸表 |
 
 3. **确认分支正确**
@@ -45,10 +45,12 @@
 ## 必读（按顺序）
 
 1. **`README.md`** — 本仓说明
-2. **`../ops-desk-workspace/docs/01-scope/00-project-brief.md`** — 项目范围与决策
-3. **`../ops-desk-workspace/docs/03-frontend-analysis/00-current-state.md`** — 前端现状与重构方向
-4. **`../ops-desk-workspace/docs/02-backend-analysis/01-sse-chat-design.md`** — SSE 事件格式与前端示例
-5. **`../ops-desk-workspace/docs/05-plan/00-migration-roadmap.md`** — 阶段计划
+2. **`docs/_tech_graph/README.md`** — 技术图谱读序（G-L 分层 · Phase γ）
+3. **`docs/skills/`** — S-L0 / S-L1 操作规程真值
+4. **`../ops-desk-workspace/docs/01-scope/00-project-brief.md`** — 项目范围与决策
+5. **`../ops-desk-workspace/docs/03-frontend-analysis/00-current-state.md`** — 前端现状与重构方向
+6. **`../ops-desk-workspace/docs/02-backend-analysis/01-sse-chat-design.md`** — SSE 事件格式与前端示例
+7. **`../ops-desk-workspace/docs/05-plan/00-migration-roadmap.md`** — 阶段计划
 
 ---
 
@@ -85,7 +87,7 @@ pnpm build        # 生产构建
 - 状态管理：**Pinia**
 - Chat SSE：原生 `fetch` + `ReadableStream`（不依赖 fetch-event-source）
 - 样式：水墨风（背景 `#F9F9F7`，文字 `#2C2C2C`）
-- 每次新增页面/接口必须同步更新 `docs/_tech_graph/`
+- 每次新增页面/接口必须同步更新 `docs/_tech_graph/`（模块表：`l1/01_modules.md`；flow：`l1/10_flow_*.graph.yaml`；compile：`./scripts/graph-compile.sh`）
 
 ---
 

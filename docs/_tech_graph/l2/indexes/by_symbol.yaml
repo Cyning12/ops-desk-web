@@ -1,0 +1,36 @@
+# chat 域 symbol → path 倒排（G-L2）
+# 源：l1/10_flow_chat.graph.yaml implementedBy
+
+version: "2026-07-27"
+graph_id: "10_flow_chat"
+layer: "G-L2"
+
+by_symbol:
+  ChatView:
+    path: src/views/ChatView.vue
+    node_id: chat_view
+    kind: component
+  useChatStore:
+    path: src/stores/chat.ts
+    node_id: chat_store
+    kind: module
+  loadLatestSession:
+    path: src/stores/chat.ts
+    node_id: load_session
+    kind: method
+  sendMessage:
+    path: src/stores/chat.ts
+    node_id: send_message
+    kind: method
+  fetchLatestSession:
+    path: src/api/chat.ts
+    node_id: fetch_session_api
+    kind: method
+  streamOpsChat:
+    path: src/composables/useOpsChatSse.ts
+    node_id: stream_sse
+    kind: method
+  SseFrameParser:
+    path: src/composables/useOpsChatSse.ts
+    node_id: sse_parser
+    kind: class
