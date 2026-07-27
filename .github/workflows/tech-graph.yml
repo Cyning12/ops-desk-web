@@ -18,6 +18,8 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: "24"
+          # 本 job 只用 npx（npm）；勿启用 packageManager 缓存（会要求 pnpm）
+          package-manager-cache: false
 
       - name: Setup Python
         uses: actions/setup-python@v5
