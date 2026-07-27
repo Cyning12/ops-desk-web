@@ -1,0 +1,43 @@
+{
+  "schema_version": "obs_status.v1",
+  "task_slug": "demo-blocked",
+  "task_path": "docs/tasks/active/task_demo_blocked.md",
+  "status": "draft",
+  "gates": [
+    {
+      "id": "HG-GRAPH-MODULES",
+      "status": "approved",
+      "blocks_hats": "30"
+    },
+    {
+      "id": "HG-TASK-DRAFT",
+      "status": "approved",
+      "blocks_hats": "22-R1"
+    },
+    {
+      "id": "HG-AUDIT-R1",
+      "status": "pending",
+      "blocks_hats": "30"
+    }
+  ],
+  "may_start_30": false,
+  "blockers": ["HG-AUDIT-R1=pending"],
+  "last_invoke": {
+    "path": "docs/harness/invokes/by-task/demo-blocked/invoke_10.md",
+    "hat_id": "10"
+  },
+  "reviews": {
+    "R1": false,
+    "CLOSE": false
+  },
+  "verify_preview": {
+    "ok": false,
+    "reason": "missing R<n> review（docs/harness/reviews/ 无该 task 的 _audit_R 文件）"
+  },
+  "hgm": {
+    "event_count": 0,
+    "last_at": null
+  },
+  "kpi_section": false,
+  "next_hint": "补 20 R1 审查文后再 verify / 开 30"
+}

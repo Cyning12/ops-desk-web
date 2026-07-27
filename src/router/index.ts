@@ -29,6 +29,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: 'Overview' },
       },
       {
+        path: 'obs',
+        name: 'obs',
+        component: () => import('../views/ObsView.vue'),
+        meta: { title: '过程观测' },
+      },
+      {
         path: 'issues',
         name: 'issues',
         component: () => import('../views/IssuesView.vue'),
