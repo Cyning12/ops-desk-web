@@ -1,9 +1,10 @@
 # Task：过程观测侧栏文案英文化（与导航风格对齐）
 
-> **状态**：ready-for-merge  
+> **状态**：completed  
 > **类型**：文案 / UX 一致性（无逻辑变更）  
 > **关联**：`task_web_obs_status_consumer`（P3b 已 merge）  
 > **00 统筹**：维护者指示 — 侧栏「过程观测」改英文，便于观测对照；PR 过 CI 后 merge；生产一般只重构建前端
+> **合入**：PR #5 · `76e5966` · 2026-07-28
 
 ---
 
@@ -45,8 +46,8 @@
 - [x] `AppLayout` 侧栏 `/obs` 文案为 `Observability`
 - [x] `router` `meta.title` 同步为 `Observability`（顶栏一致）
 - [x] `pnpm lint` / `pnpm test` / `pnpm build` 绿
-- [ ] PR → CI 绿 → merge `main`
-- [ ] 通知维护者验收（生产：前端 `pnpm build` + 仅同步 `dist`，一般 `--skip-api`）
+- [x] PR → CI 绿 → merge `main`
+- [x] 通知维护者验收（生产：前端 `pnpm build` + 仅同步 `dist`，一般 `--skip-api`）
 
 ### 非范围
 
