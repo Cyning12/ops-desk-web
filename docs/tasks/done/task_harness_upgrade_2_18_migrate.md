@@ -1,6 +1,6 @@
 # Task：Harness 升级至 2.18.0（web）+ wiki_delta 存量迁移
 
-> **状态**：active  
+> **状态**：completed  
 > **类型**：基础设施（过程轨 upgrade + 文档迁移）  
 > **关联**：npm `@cyning/harness@2.18.0` · wiki_delta close 硬闸 · 经验晋升指针 · `wiki export` · RUNBOOK_harness_upgrade_v1_zh
 
