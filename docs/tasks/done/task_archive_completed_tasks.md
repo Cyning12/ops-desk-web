@@ -87,3 +87,26 @@
 | done 重名 | 无冲突 |
 | 未完成项误搬 | 无（仅搬 completed / 历史 Prompt） |
 | src / CI / 图谱正文 | 未改 |
+
+---
+
+### 自检结论（执行者）
+
+| 项 | 内容 |
+|---|---|
+| **日期** | 2026-07-28 |
+| **合入** | PR [#11](https://github.com/Cyning12/ops-desk-web/pull/11) · `74e5826` · MERGED |
+| **verify** | `VERIFY: PASS`（active 开工 + done 合入前） |
+| **CI** | `frontend` / `tech-graph check` 全绿后 merge |
+| **active/** | 空 |
+| **摩擦** | 本棒合入前已迁 `done/`；`task close` 拒绝对 done 二次 close（预期） |
+| **下一棒** | CLOSE 关账完成；棒 C 在 workspace |
+
+### KPI
+
+| 指标 | 分 / 值 | 说明 |
+|---|---|---|
+| 清单闭环 | 10/10 | 表内 8 + 本 task/PROMPT 均离 active |
+| 误搬风险 | 0 | 未完成项零误搬 |
+| 范围纪律 | 10/10 | 无 src / CI / 图谱正文改动 |
+| 合入质量 | PASS | CI 绿 · squash/merge 干净 |

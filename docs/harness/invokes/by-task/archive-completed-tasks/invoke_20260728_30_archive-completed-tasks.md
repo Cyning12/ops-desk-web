@@ -49,8 +49,20 @@ reviews：R1 存在且签收？**是** · 结论：可开工
 
 ---
 
+## CLOSE
+
+| 项 | 值 |
+|---|---|
+| **结论** | **CLOSE** |
+| **日期** | 2026-07-28 |
+| **PR** | [#11](https://github.com/Cyning12/ops-desk-web/pull/11) MERGED · `74e5826` |
+| **说明** | CI（frontend + tech-graph）全绿后 merge；task 已在 `done/`；`task close` 对 done 二次 close 拒绝属预期 |
+
+---
+
 ## 修订记录
 
 | 日期 | 说明 |
 |------|------|
 | 2026-07-28 | 30/40 · active 归档 PR |
+| 2026-07-28 | CLOSE · PR #11 合入关账 |
