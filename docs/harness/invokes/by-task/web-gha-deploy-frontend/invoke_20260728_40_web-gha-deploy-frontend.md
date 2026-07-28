@@ -4,4 +4,8 @@
 |---|---|
 | **hat** | 40 |
 | **日期** | 2026-07-28 |
-| **结论** | 代码已就绪；维护者配 Secrets + 无口令 key 后 `workflow_dispatch` 验收 |
+| **结论** | **CLOSE** · 生产验收通过 |
+
+- Secrets 已配；GHA 公钥已装服务器。
+- `workflow_dispatch` 成功：https://github.com/Cyning12/ops-desk-web/actions/runs/30324158818
+- 维护者确认生产已正确更新 · task 迁 `docs/tasks/done/`。

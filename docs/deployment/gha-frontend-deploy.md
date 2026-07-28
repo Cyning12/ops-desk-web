@@ -3,7 +3,8 @@
 > **日期**：2026-07-28  
 > **Workflow**：`.github/workflows/deploy-web.yml`  
 > **范围**：仅 `pnpm build` + rsync `dist/` → 服务器；**不**重启 API / Docker Compose  
-> **手动应急**：`ops-desk-workspace/deploy/deploy.sh --skip-api`
+> **手动应急**：`ops-desk-workspace/deploy/deploy.sh --skip-api`  
+> **生产验收**：2026-07-28 通过（run `30324158818`）
 
 ---
 
