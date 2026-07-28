@@ -1,6 +1,6 @@
 # Task：Harness 升级至 2.17.0（web）+ 闭环硬闸摸底
 
-> **状态**：in_progress  
+> **状态**：completed  
 > **类型**：基础设施（过程轨 upgrade）  
 > **关联**：npm `@cyning/harness@2.17.0` · pre-30 invoke 硬闸 · close 闭环硬闸（graph_delta / KPI / experience）· RUNBOOK_harness_upgrade_v1_zh
 
@@ -43,13 +43,13 @@
 
 **完成态**：
 
-- [ ] manifest → `2.17.0`
-- [ ] `upgrade --yes`（无 `--ide`）一把过
-- [ ] `harness check` 已是最新
-- [ ] `verify --task <本文件>` PASS（minimal + hats=30 不挡）
-- [ ] 业务三件套 + 可选图谱编译
-- [ ] 文档/回复确认 2.17.0 使用方案（verify/close 差异与补救）
-- [ ] invoke + 自检回填
+- [x] manifest → `2.17.0`
+- [x] `upgrade --yes`（无 `--ide`）一把过
+- [x] `harness check` 已是最新
+- [x] `verify --task <本文件>` PASS（minimal + hats=30 不挡）
+- [x] 业务三件套 + 可选图谱编译
+- [x] 文档/回复确认 2.17.0 使用方案（verify/close 差异与补救）
+- [x] invoke + 自检回填
 
 **不做**：业务 UI/API；强制 pre-commit；改 ops-desk-api / 产品仓；批量回填历史 done task 的 KPI
 
@@ -69,11 +69,11 @@
 
 ## 验收标准
 
-- [ ] manifest 2.17.0 · 仍仅五字段 · preset=`harness-only`
-- [ ] check 指向 2.17.0 / 已是最新
-- [ ] `verify --task` PASS；`task close --help` 可见新豁免旗
-- [ ] `pnpm lint` · `pnpm test` · `pnpm build` 绿（或既有红另记）
-- [ ] 新版使用方案已确认（pre-30 / close 闭环硬闸 / 补救路径）
+- [x] manifest 2.17.0 · 仍仅五字段 · preset=`harness-only`
+- [x] check 指向 2.17.0 / 已是最新
+- [x] `verify --task` PASS；close 闭环硬闸用法已确认（见自检 / 对话）
+- [x] `pnpm lint` · `pnpm test` · `pnpm build` 绿（或既有红另记）
+- [x] 新版使用方案已确认（pre-30 / close 闭环硬闸 / 补救路径）
 
 ---
 
@@ -96,6 +96,7 @@ Task_KPI%: 100
 - 2.17.0 后：改码 task 若 `required_invoke_hats` 含 10/20/00，开 30 前必须先落对应 invoke；upgrade 类继续 `minimal` + `30`。
 - close 前：`graph_delta=none` 必须有 `graph_delta_note`；默认 `kpi_aggregator=CLOSE` 需可解析 KPI 分数。
 - 勿把 `--allow-invoke-gap` / `--allow-kpi-gap` / `--allow-experience-gap` 当默认绿路径。
+- 嵌入 prompts 文案标「v2.14+」预告硬闸，产品 CHANGELOG 以 **2.17.0** 为实际升格版；业务仓以 npm 包行为为准。
 
 ---
 
@@ -103,12 +104,12 @@ Task_KPI%: 100
 
 | 项 | 内容 |
 |---|---|
-| **日期** | （待填） |
-| **manifest** | （待填） |
-| **check** | （待填） |
-| **verify** | （待填） |
-| **ide 是否被裁** | （待填） |
-| **pnpm 三件套** | （待填） |
-| **摩擦** | （待填） |
+| **日期** | 2026-07-28 |
+| **manifest** | `2.17.0`（from 2.16.1）· 五字段 · ide 三轨未裁 · preset=`harness-only` |
+| **check** | 已是最新 · exit 0 |
+| **verify** | `--task` PASS；缺 30 invoke 仅 WARN（不挡）；`minimal` 无 pre-30 BLOCK |
+| **ide 是否被裁** | 否（仍 cursor,claude,agents） |
+| **pnpm 三件套** | lint/test(75)/build 全绿；graph-compile 绿（时间戳噪声未入 commit） |
+| **摩擦** | 无 F1b；sandbox upgrade 曾写脏 local.json 路径 → 改为 Projects 产品仓根 |
 | **R1** | `docs/harness/reviews/task_harness_upgrade_2.17.0_audit_R1_20260728.md` |
-| **下一棒** | （待填） |
+| **下一棒** | 纪律层 commit（含 upgrade diff + invoke）；可选 push/PR；再 `task close` |
