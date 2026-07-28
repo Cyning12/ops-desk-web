@@ -1,6 +1,6 @@
 # Task：Harness 升级至 2.19.0（web）+ WikiTrack 启用
 
-> **状态**：active  
+> **状态**：completed  
 > **类型**：基础设施（过程轨 upgrade + WikiTrack 入口）  
 > **关联**：npm `@cyning/harness@2.19.0` · `lint-wiki-delta` · `wiki export` · [`RUNBOOK_wikitrack_enable_obsidian_v1_zh.md`](../../harness/RUNBOOK_wikitrack_enable_obsidian_v1_zh.md)  
 > **上游**：api dogfood · 关账 `harness-upgrade-2-18-migrate`
@@ -46,15 +46,15 @@
 
 **完成态**：
 
-- [ ] manifest → `2.19.0`；`check` 已是最新
-- [ ] `upgrade --yes`（无 `--ide`）；恢复 AGENTS / FRAGMENT overlay
-- [ ] `task lint-wiki-delta --scope all` → missing=0
-- [ ] 落盘 `docs/coding_wiki/` 入口（两层 + 互链；单份真值相对链）
-- [ ] 拷贝 RUNBOOK → `docs/harness/RUNBOOK_wikitrack_enable_obsidian_v1_zh.md`
-- [ ] `wiki export --json`：nodes≥4 · edges>0 · warnings=0
-- [ ] 对齐升级 RUNBOOK 版本钉；`verify --task` PASS
-- [ ] `pnpm lint` · `test` · `build` 绿
-- [ ] invoke + 自检；PR 写明禁默认 `--allow-*-gap`；Obsidian vault=`coding_wiki/`
+- [x] manifest → `2.19.0`；`check` 已是最新
+- [x] `upgrade --yes`（无 `--ide`）；恢复 AGENTS / FRAGMENT overlay
+- [x] `task lint-wiki-delta --scope all` → missing=0
+- [x] 落盘 `docs/coding_wiki/` 入口（两层 + 互链；单份真值相对链）
+- [x] 拷贝 RUNBOOK → `docs/harness/RUNBOOK_wikitrack_enable_obsidian_v1_zh.md`
+- [x] `wiki export --json`：nodes≥4 · edges>0 · warnings=0
+- [x] 对齐升级 RUNBOOK 版本钉；`verify --task` PASS
+- [x] `pnpm lint` · `test` · `build` 绿
+- [x] invoke + 自检；PR 写明禁默认 `--allow-*-gap`；Obsidian vault=`coding_wiki/`
 
 **不做**：ops-desk-api / cyning-harness 源码；业务 Vue 页面与 API 客户端；Obsidian 插件 / 力导向 Web UI；回刷已 n/a 的 done task
 
@@ -75,9 +75,50 @@
 
 ## 验收标准
 
-- [ ] manifest 2.19.0 · preset=`harness-only` · ide 三轨未裁
-- [ ] `lint-wiki-delta --scope all` missing=0 · exit 0
-- [ ] `wiki export` nodes≥4 · edges>0 · warnings=0
-- [ ] overlay 已恢复（AGENTS harness 段 · FRAGMENT `l1/01_modules`）
-- [ ] `verify --task` PASS；`pnpm` 三件套绿（或既有红另记）
-- [ ] PR：已启用 WikiTrack；勿默认 `--allow-wiki-gap`
+- [x] manifest 2.19.0 · preset=`harness-only` · ide 三轨未裁
+- [x] `lint-wiki-delta --scope all` missing=0 · exit 0
+- [x] `wiki export` nodes≥4 · edges>0 · warnings=0
+- [x] overlay 已恢复（AGENTS harness 段未冲 · FRAGMENT `l1/01_modules` + `src/**`）
+- [x] `verify --task` PASS；`pnpm` 三件套绿
+- [x] PR：已启用 WikiTrack；勿默认 `--allow-wiki-gap`
+
+---
+
+### KPI
+
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验沉淀（recommended）
+
+- 一把 2.18.0→2.19.0 可行；不必停 2.18.1/2.18.2。
+- `lint-wiki-delta` 会扫 done 下 PROMPT 归档文；须补元信息表 `wiki_delta`+note。`wiki_delta` 若落在非 Harness 元信息表（如拍板表）会被判 missing。
+- Obsidian 只开 `docs/coding_wiki/`；开上级 `docs/` 会刷过程轨孤点。
+- Wiki: docs/coding_wiki
+
+---
+
+### 自检结论（执行者）
+
+| 项 | 内容 |
+|---|---|
+| **日期** | 2026-07-28 |
+| **manifest** | `2.19.0`（from 2.18.0）· 五字段 · ide 三轨未裁 · preset=`harness-only` |
+| **check** | 已是最新（钉 2.19.0）· exit 0；registry 已见 2.19.1（本波不追） |
+| **lint-wiki-delta** | scanned=26 · missing=0 · PASS |
+| **wiki export** | nodes=7 · edges=33 · warnings=[] |
+| **verify** | PASS |
+| **overlay** | AGENTS/CLAUDE 标记段内容未变；FRAGMENT 施加 `l1/01_modules` + `src/**`；local.json 沙箱路径改回产品仓根 |
+| **pnpm 三件套** | lint/test(75)/build 全绿 |
+| **摩擦** | local.json → ephemeral npx 缓存（同既有）；lint 曾漏判：glayer 字段在错误表 + 3 PROMPT 无元信息 |
+| **R1** | `docs/harness/reviews/task_harness_upgrade_2_19_0_audit_R1_20260728.md` |
+| **Wiki** | `docs/coding_wiki` |

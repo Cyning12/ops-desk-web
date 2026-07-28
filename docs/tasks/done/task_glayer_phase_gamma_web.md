@@ -23,6 +23,8 @@
 | **test_strategy_note** | `./scripts/graph-compile.sh`；文件存在性；`pnpm lint/test/build` 不因图谱搬家而红 |
 | **code_quality_bar** | `not_applicable` |
 | **experience_capture** | `recommended` |
+| **wiki_delta** | `n/a` |
+| **wiki_delta_note** | 存量 done · 关账时未启用 WikiTrack（不必回刷为 path） |
 
 ### 拍板默认（C1–C4）
 
@@ -32,8 +34,6 @@
 | C2 | 闸改指 `l1/01_modules` 后，根 stub **≥1 Epic** 再删 |
 | C3 | 「初步完善」= 迁移 DoD + 人签（本 task 仅 web γ） |
 | C4 | 本仓先包递归 export；形状稳后再回灌产品 |
-| **wiki_delta** | `n/a` |
-| **wiki_delta_note** | harness-only · 未启用 WikiTrack |
 
 ### 人工闸
 

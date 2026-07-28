@@ -28,4 +28,17 @@ pre-30 invoke：`minimal` 无 preRequired → **不挡**
 
 ## 执行记录
 
-（升级后回填）
+- **close 上游**：`harness-upgrade-2-18-migrate` → done · CLOSE PASS
+- **upgrade**：`npx --yes @cyning/harness@2.19.0 upgrade --yes --target .` → exit 0 一把过（未带 `--ide`）
+- **manifest**：`2.18.0` → `2.19.0`；preset=`harness-only`；ide=`cursor,claude,agents`（未裁）
+- **overlay**：AGENTS/CLAUDE 标记段与升级前一致；FRAGMENT 施加 `l1/01_modules` + `src/**`；`local.json` 沙箱 ephemeral → `/Users/cyning/Desktop/Projects/cyning-harness`
+- **check**：已是最新 · exit 0
+- **lint-wiki-delta**：初扫 missing=4（3 PROMPT + glayer 字段在拍板表）→ 补齐后 missing=0 · PASS
+- **WikiTrack**：落盘 `docs/coding_wiki/`（含 topics/）+ RUNBOOK 拷贝自 api
+- **wiki export**：nodes=7 · edges=33 · warnings=[]
+- **verify**：PASS
+- **pnpm**：lint / test(75) / build 全绿
+
+| 日期 | 说明 |
+|---|---|
+| 2026-07-28 | upgrade 2.18.0→2.19.0 + WikiTrack 启用 + lint-wiki-delta 补缺 |
