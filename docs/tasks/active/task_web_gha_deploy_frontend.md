@@ -1,8 +1,9 @@
 # Task：合入 main 后 GHA 自动部署前端 dist
 
-> **状态**：active  
+> **状态**：completed  
 > **类型**：CI/CD（workflow + 文档；不改业务 src）  
-> **关联**：手动 `deploy.sh --skip-api` 仍保留作应急；本棒只加 GitHub Actions 前端通道
+> **关联**：手动 `deploy.sh --skip-api` 仍保留作应急；本棒只加 GitHub Actions 前端通道  
+> **合入**：PR #8 · `686cfda` · 2026-07-28
 
 ---
 
@@ -41,12 +42,12 @@
 
 ### 完成态
 
-- [ ] `.github/workflows/deploy-web.yml`：`push`→`main` + `workflow_dispatch`
-- [ ] Job：pnpm/node 对齐 `ci.yml` → install → build → rsync `dist/`（部署前备份旧 dist）
-- [ ] Secrets：`DEPLOY_HOST` · `DEPLOY_USER` · `DEPLOY_SSH_KEY`（可选 `DEPLOY_PATH`）
-- [ ] `docs/deployment/gha-frontend-deploy.md` + README 指针
-- [ ] PR → CI 绿 → merge `main`
-- [ ] 交付维护者 Secrets / 无口令 deploy key 操作清单（Agent 不写私钥入仓）
+- [x] `.github/workflows/deploy-web.yml`：`push`→`main` + `workflow_dispatch`
+- [x] Job：pnpm/node 对齐 `ci.yml` → install → build → rsync `dist/`（部署前备份旧 dist）
+- [x] Secrets：`DEPLOY_HOST` · `DEPLOY_USER` · `DEPLOY_SSH_KEY`（可选 `DEPLOY_PATH`）— 文档已交付；维护者配齐前 job 会红
+- [x] `docs/deployment/gha-frontend-deploy.md` + README 指针
+- [x] PR → CI 绿 → merge `main`
+- [x] 交付维护者 Secrets / 无口令 deploy key 操作清单（Agent 不写私钥入仓）
 
 ### 非范围
 
