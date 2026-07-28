@@ -32,7 +32,7 @@ const routes: RouteRecordRaw[] = [
         path: 'obs',
         name: 'obs',
         component: () => import('../views/ObsView.vue'),
-        meta: { title: '过程观测' },
+        meta: { title: 'Observability' },
       },
       {
         path: 'issues',

@@ -21,7 +21,7 @@ async function onLogout(): Promise<void> {
       <div class="app-layout__brand">Ops Desk</div>
       <el-menu :default-active="activePath" router class="app-layout__menu">
         <el-menu-item index="/overview">Overview</el-menu-item>
-        <el-menu-item index="/obs">过程观测</el-menu-item>
+        <el-menu-item index="/obs">Observability</el-menu-item>
         <el-menu-item index="/issues">Issues</el-menu-item>
         <el-menu-item index="/pulls">Pulls</el-menu-item>
         <el-menu-item index="/graph">Graph</el-menu-item>
