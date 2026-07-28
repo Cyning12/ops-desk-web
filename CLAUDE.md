@@ -33,3 +33,7 @@
 
 工作区：`docs/harness/prompts/`（22/30/TEMPLATE_30_gate_stop 等）
 <!-- cyning-harness:end -->
+
+<!-- cyning-harness-local:begin -->
+仓内定制见 `AGENTS.md` 的 `cyning-harness-local` 块（upgrade 不改写）。
+<!-- cyning-harness-local:end -->

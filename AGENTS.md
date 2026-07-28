@@ -125,3 +125,12 @@ pnpm build        # 生产构建
 
 工作区：`docs/harness/prompts/`（22/30/TEMPLATE_30_gate_stop 等）
 <!-- cyning-harness:end -->
+
+<!-- cyning-harness-local:begin -->
+## Ops-desk-web · Harness 仓内定制（upgrade 不改写本块）
+
+- 质量门：`pnpm lint` → `pnpm test` → `pnpm build`
+- 图谱闸路径：`HG-GRAPH-MODULES` → `docs/_tech_graph/l1/01_modules.md`（profile `graph_modules_path`）
+- 改码目录：业务源码在 `src/**`（FRAGMENT 默认 `packages/**` 以本仓为准）
+- WikiTrack：Obsidian vault 只开 `docs/coding_wiki/`；新 task 勿默认 `wiki_delta=n/a`
+<!-- cyning-harness-local:end -->
