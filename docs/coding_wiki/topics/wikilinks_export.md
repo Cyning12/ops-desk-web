@@ -11,7 +11,7 @@
 
 ## 命令
 
-    npx @cyning/harness@2.19.0 wiki export --json --target .
+    npx @cyning/harness@2.22.1 wiki export --json --target .
 
 ## 相关
 

@@ -1,6 +1,6 @@
 # Task：Harness 升级至 2.22.1（web）· overlay 契约
 
-> **状态**：active  
+> **状态**：completed  
 > **类型**：基础设施（upgrade + §1.2.1 overlay 首次接入）  
 > **关联**：npm `@cyning/harness@2.22.1` · api dogfood 2.22 · RUNBOOK §1.2.1  
 > **上游**：已 CLOSE `harness-upgrade-2-19-0`（WikiTrack 已启用）
@@ -21,7 +21,7 @@
 | **graph_delta** | `none` |
 | **graph_delta_note** | 仅过程轨 / overlay 契约 / 版本钉；不改 Inform 模块边界 |
 | **wiki_delta** | `docs/runbooks/RUNBOOK_harness_upgrade_v1_zh.md` |
-| **wiki_delta_note** | 钉版与 overlay §1.2.1 指针；coding_wiki 仅版本字面 bump 若触及 |
+| **wiki_delta_note** | 钉版与 overlay §1.2.1；顺带 bump coding_wiki 命令版本字面 |
 | **review_hat** | `20` |
 | **review_hat_reason** | `""` |
 | **thinking_profile** | `shortest` |
@@ -42,16 +42,16 @@
 
 ## 背景与目标
 
-本仓 `manifest=2.19.0`；npm latest=`2.22.1`。api 已 dogfood 至 2.22.0（overlay U2）。按产品 RUNBOOK §1.2.1：**先迁 profile `graph_modules_path` + AGENTS local 块并 commit**，再一把升到 **2.22.1**，验收合规零手恢复。
+本仓 `manifest=2.19.0`；npm latest=`2.22.1`。按产品 RUNBOOK §1.2.1：**先迁 profile + AGENTS local 并 commit**，再一把升到 **2.22.1**。
 
 **完成态**：
 
-- [ ] profile `graph_modules_path=l1/01_modules` + AGENTS/CLAUDE local 块（产品 marker 外）
-- [ ] 契约先 commit → `upgrade --yes` → manifest `2.22.1`
-- [ ] FRAGMENT 含 `l1/01_modules`；local 关键词仍在；二次 upgrade overlay 相关 diff 宜空
-- [ ] `check` 已是最新；`lint-wiki-delta` missing=0
-- [ ] 升级 RUNBOOK 钉版；`verify --task`；`pnpm` 三件套绿
-- [ ] invoke + 自检 + CLOSE；更新 PR #15
+- [x] profile `graph_modules_path=l1/01_modules` + AGENTS/CLAUDE local 块（产品 marker 外）
+- [x] 契约先 commit → `upgrade --yes` → manifest `2.22.1`
+- [x] FRAGMENT 含 `l1/01_modules`；local 关键词仍在；二次 upgrade overlay diff 空
+- [x] `check` 已是最新；`lint-wiki-delta` missing=0（含 `--strict`）
+- [x] 升级 RUNBOOK 钉版；`verify --task`；`pnpm` 三件套绿
+- [x] invoke + 自检 + CLOSE；更新 PR #15
 
 **不做**：业务 Vue/API；产品仓源码；强制 CI `--strict`
 
@@ -70,7 +70,44 @@
 
 ## 验收标准
 
-- [ ] manifest=2.22.1 · preset=`harness-only` · ide 未裁
-- [ ] overlay 零手恢复（local + FRAGMENT 路径）
-- [ ] lint-wiki-delta PASS；pnpm 三件套绿
-- [ ] PR 更新说明
+- [x] manifest=2.22.1 · preset=`harness-only` · ide 未裁
+- [x] overlay 零手恢复（local + FRAGMENT 路径）
+- [x] lint-wiki-delta PASS（含 strict）；pnpm 三件套绿
+- [x] PR 更新说明
+
+---
+
+### KPI
+
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验沉淀（recommended）
+
+- ≥2.22 必须先 commit overlay 契约再 upgrade（§1.2.1）；合规路径下二次 upgrade overlay diff 可空。
+- `graph_modules_path` 展开 FRAGMENT；`src/**` 仍非产品字段，记在 AGENTS local。
+- Wiki: docs/runbooks/RUNBOOK_harness_upgrade_v1_zh.md
+
+---
+
+### 自检结论（执行者）
+
+| 项 | 内容 |
+|---|---|
+| **日期** | 2026-07-28 |
+| **manifest** | `2.22.1`（from 2.19.0）· preset=`harness-only` · ide 未裁 |
+| **check** | 已是最新 · exit 0 |
+| **overlay** | local 保留；FRAGMENT=`l1/01_modules`；二次 upgrade overlay diff 空 |
+| **lint-wiki-delta** | missing=0 · strict issues=0 |
+| **pnpm** | lint/test(75)/build 全绿 |
+| **摩擦** | local.json 仍写 ephemeral npx（gitignore 已列；收尾改回产品仓根） |
+| **R1** | `docs/harness/reviews/task_harness_upgrade_2_22_1_audit_R1_20260728.md` |

@@ -9,12 +9,13 @@
 
 ## 本波 active
 
-（关账后清空）无 active · 上一波已 CLOSE：`harness-upgrade-2-18-migrate` · `harness-upgrade-2-19-0`
+（关账后清空）无 active · 上一波已 CLOSE：`harness-upgrade-2-19-0` · `harness-upgrade-2-22-1`
 
 ## 执行帽速链
 
 - Active tasks：`../tasks/active/`
 - WikiTrack RUNBOOK：[`../harness/RUNBOOK_wikitrack_enable_obsidian_v1_zh.md`](../harness/RUNBOOK_wikitrack_enable_obsidian_v1_zh.md)
+- 升级 Checklist：[`../runbooks/RUNBOOK_harness_upgrade_v1_zh.md`](../runbooks/RUNBOOK_harness_upgrade_v1_zh.md)
 
 ## 关账后
 

@@ -21,4 +21,14 @@
 
 ## 执行记录
 
-（升级后回填）
+- **契约**：`profile.graph_modules_path=l1/01_modules`；AGENTS/CLAUDE `cyning-harness-local`（产品 marker 外）→ 先 commit
+- **upgrade**：`npx --yes @cyning/harness@2.22.1 upgrade --yes --target .` → exit 0；stdout `overlay · FRAGMENT graph_modules_path → l1/01_modules` + `hint · overlay`
+- **manifest**：`2.19.0` → `2.22.1`；ide 未裁
+- **二次 upgrade**：overlay 相关 `git diff` **空**（零手恢复 PASS）
+- **check**：已是最新 · exit 0
+- **lint-wiki-delta**：default + `--strict` 均 PASS（missing=0 · issues=0）
+- **local.json**：沙箱 ephemeral → 改回 `/Users/cyning/Desktop/Projects/cyning-harness`
+
+| 日期 | 说明 |
+|---|---|
+| 2026-07-28 | §1.2.1 + 一把升 2.22.1 + 二次 upgrade 验收 |

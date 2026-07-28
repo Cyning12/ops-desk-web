@@ -31,5 +31,5 @@
 
 ## 验证
 
-    npx @cyning/harness@2.19.0 wiki export --json --target .
+    npx @cyning/harness@2.22.1 wiki export --json --target .
     # 期望：nodes≥4 且 edges>0 · warnings=0
