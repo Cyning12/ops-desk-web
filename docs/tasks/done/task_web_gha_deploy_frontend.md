@@ -1,9 +1,11 @@
 # Task：合入 main 后 GHA 自动部署前端 dist
 
-> **状态**：completed  
+> **状态**：CLOSE  
 > **类型**：CI/CD（workflow + 文档；不改业务 src）  
 > **关联**：手动 `deploy.sh --skip-api` 仍保留作应急；本棒只加 GitHub Actions 前端通道  
-> **合入**：PR #8 · `686cfda` · 2026-07-28
+> **合入**：PR #8 · `686cfda` · 2026-07-28  
+> **生产验收**：2026-07-28 维护者确认生产已正确更新 · deploy-web run `30324158818`  
+> **关账**：CLOSE · 迁入 `docs/tasks/done/`
 
 ---
 
@@ -67,3 +69,9 @@
 ## 部署备注
 
 合入后 **首次** 需维护者配齐 Secrets 与 GHA 专用无口令 key，再用 `workflow_dispatch` 验收。
+
+## 关账
+
+- 维护者 2026-07-28：生产站已确认更新正确。
+- GHA 公钥已写入服务器 `authorized_keys`（`ops-desk-web-gha-deploy`）。
+- 后续合入 `main` 自动部署前端；应急仍可用 `deploy.sh --skip-api`。
