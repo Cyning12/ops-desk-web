@@ -20,6 +20,8 @@
 | **test_strategy** | `recommended` |
 | **test_strategy_note** | workflow 命令与本地一致：`pnpm lint` / `pnpm test` / `pnpm build`；另 job `./scripts/graph-compile.sh` |
 | **code_quality_bar** | `not_applicable` |
+| **wiki_delta** | `n/a` |
+| **wiki_delta_note** | harness-only · 未启用 WikiTrack |
 
 ### 人工闸
 

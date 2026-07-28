@@ -6,6 +6,13 @@
 
 ---
 
+## Harness 元信息
+
+| 字段 | 值 |
+|---|---|
+| **wiki_delta** | `n/a` |
+| **wiki_delta_note** | harness-only · 未启用 WikiTrack |
+
 ## 背景
 
 后端 Epic 3–6 已全部完成并合入 master（auth / admin sync / issues / pulls / graph / overview / chat SSE / chat models），真实数据已导入本地。`ops-desk-web` 目前仅有文档骨架，无 `src/`。本 Epic 交付 v1 全部前端页面，完成后启动部署。

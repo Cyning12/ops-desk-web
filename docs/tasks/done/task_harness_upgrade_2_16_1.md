@@ -23,6 +23,8 @@
 | **invoke_retention_profile** | `minimal` |
 | **required_invoke_hats** | `30` |
 | **experience_capture** | `recommended` |
+| **wiki_delta** | `n/a` |
+| **wiki_delta_note** | harness-only · 未启用 WikiTrack |
 
 ### 人工闸
 

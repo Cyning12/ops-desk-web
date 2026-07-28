@@ -5,7 +5,8 @@
 > `Projects/docs/harness/guides/ANALYSIS_upgrade_wizard_friction_20260725_v1_zh.md`。  
 > **2.11.1+**：F1（local.json 自脏）/ F2（死字段 WARN）已在产品修复；§1 旧变通已废止。  
 > **残留**：`--ide` 仍可能在 apply 前写脏 `profile.json` 触发 S5（摩擦 **F1b**）→ 先单独 commit profile，或升级时不要带会改 profile 的 `--ide`。  
-> **2.17.0+**：`verify --task` 对 **pre-30 invoke**（`required ∩ {10,20,00}`）硬闸；`task close` 增 **graph_delta / KPI / experience**。升级类 task 建议 `invoke_retention_profile: minimal` + `required_invoke_hats: 30`，并填 `graph_delta`/`graph_delta_note` 与可解析 `### KPI`。
+> **2.17.0+**：`verify --task` 对 **pre-30 invoke**（`required ∩ {10,20,00}`）硬闸；`task close` 增 **graph_delta / KPI / experience**。升级类 task 建议 `invoke_retention_profile: minimal` + `required_invoke_hats: 30`，并填 `graph_delta`/`graph_delta_note` 与可解析 `### KPI`。  
+> **2.18.0+**：`task close` 增 **wiki_delta**（缺字段 BLOCK；`none`/`n/a` 须 note）；`experience_capture=required` 且 `wiki_delta=path` 时经验节须晋升指针。harness-only / 未启用 WikiTrack → `wiki_delta=n/a` + note。勿默认 `--allow-wiki-gap`。当前钉版 **2.18.0**。
 
 ---
 
@@ -32,8 +33,8 @@
 ## 3. 验证
 
 - [ ] `npx @cyning/harness check` → 「已是最新」
-- [ ] `npx @cyning/harness verify --target . --task <本 upgrade task>` → PASS（**2.11.0+** R\<n\> 审查文；**2.17.0+** pre-30 invoke / graph_delta WARN）
-- [ ] `npx @cyning/harness task close --help` 正常输出（闭环豁免旗见 USER_GUIDE §6.0，勿依赖顶层 help 全文列出）
+- [ ] `npx @cyning/harness verify --target . --task <本 upgrade task>` → PASS（**2.11.0+** R\<n\> 审查文；**2.17.0+** pre-30 invoke / graph_delta WARN；**2.18.0+** wiki_delta WARN，`--strict-wiki-delta` 可 BLOCK）
+- [ ] `npx @cyning/harness task close --help` 正常输出（闭环豁免旗见 USER_GUIDE §6.0：含 `--allow-wiki-gap`；勿当默认绿路径）
 - [ ] 业务三件套回归：`pnpm lint` / `pnpm test` / `pnpm build` exit 0
 - [ ] `./scripts/graph-compile.sh` 通过（若本仓启用图谱）；**还原**仅时间戳噪声，勿入 commit
 - [ ] 只读摸底（可选）：`lifecycle show` / `discipline show` / `status --json`
@@ -55,3 +56,4 @@
 | 2026-07-25 | 首版：两次升级实证提炼；F1/F2 变通写入；死字段恢复动作废止 |
 | 2026-07-26 | **2.11.1 回归**：删 F1/F2 变通；记 F1b（`--ide` 先写 profile） |
 | 2026-07-28 | **2.17.0**：pre-30 / close 闭环硬闸；upgrade task 元信息与 local.json 沙箱路径注意 |
+| 2026-07-28 | **2.18.0**：wiki_delta close 硬闸 + 晋升指针；存量 task 补 `n/a`+note；钉版 2.18.0 |

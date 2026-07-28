@@ -32,6 +32,8 @@
 | C2 | 闸改指 `l1/01_modules` 后，根 stub **≥1 Epic** 再删 |
 | C3 | 「初步完善」= 迁移 DoD + 人签（本 task 仅 web γ） |
 | C4 | 本仓先包递归 export；形状稳后再回灌产品 |
+| **wiki_delta** | `n/a` |
+| **wiki_delta_note** | harness-only · 未启用 WikiTrack |
 
 ### 人工闸
 

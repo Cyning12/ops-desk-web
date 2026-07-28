@@ -17,6 +17,8 @@
 | **orchestration** | 并行子任务（W3–W7 同发，各自 worktree 分支） |
 | **git_branch** | `task/web-graph` |
 | **experience_capture** | `recommended` |
+| **wiki_delta** | `n/a` |
+| **wiki_delta_note** | harness-only · 未启用 WikiTrack |
 
 ### 人工闸
 
