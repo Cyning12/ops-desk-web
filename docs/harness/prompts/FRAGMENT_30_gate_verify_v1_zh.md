@@ -12,7 +12,7 @@
 |---------------|--------------|-----------------|--------|-----------|------------|
 | HG-TASK-DRAFT | {读表} | {若有} | {Y/N} | {Y/N} | … |
 | HG-AUDIT-R1 | {读表} | {若有} | {Y/N} | Y | … |
-| HG-GRAPH-MODULES | {l1/01_modules 或—} | — | — | … | … |
+| HG-GRAPH-MODULES | {l1/01_modules或—} | — | — | … | … |
 
 reviews：task_*_audit_R1_*.md 存在且 R1 通过？ {是/否}（**v2.5+**：`verify` 对 R<n> 审查文**存在性**机械强制 · 缺失即 `VERIFY: BLOCKED · missing R<n> review`；结论通过与否仍由维护者签 `HG-AUDIT-R1` 覆盖）
 
@@ -29,7 +29,7 @@ pre-30 invoke：`required ∩ {10,20,00}` 文件是否齐全？ {是/否}（**v2
 
 ## Agent 纪律
 
-1. **先**输出上表，**再**读源码 / 改 `src/**`。  
+1. **先**输出上表，**再**读源码 / 改 `packages/**`。  
 2. 用户「确认…approved」= **须核验**，非已签事实。  
 3. task §5「可 30」= **预判**，闸真值 **仅** §人工闸表。
 4. 用户「开工」**不**替代 pre-30 invoke / `verify` PASS。
