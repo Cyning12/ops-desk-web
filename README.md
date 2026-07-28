@@ -55,6 +55,7 @@ pnpm preview  # 本地预览构建产物
 
 - 构建已通过 `manualChunks` 拆分 vendor（vue / element-plus），单 chunk 均低于 500kB
 - dist 为纯静态产物，SPA 深链需服务端 fallback；Nginx 托管配置见 `docs/deployment/nginx-static-hosting.md`
+- **合入 `main` 后自动部署前端**：见 `docs/deployment/gha-frontend-deploy.md`（须先配 GitHub Secrets）
 
 ## 相关仓库
 
