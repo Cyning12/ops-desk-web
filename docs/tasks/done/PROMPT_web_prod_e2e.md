@@ -2,6 +2,13 @@
 
 > 用法：在 `ops-desk-web` 目录打开新会话（Open Folder = 该仓根），全文粘贴以下 Prompt，并将 `<INVITE_TOKEN>` 替换为生产邀请密钥（见会话消息，勿写入任何文件）。
 
+## Harness 元信息
+
+| 字段 | 值 |
+|---|---|
+| **wiki_delta** | `n/a` |
+| **wiki_delta_note** | prompt 归档文 · 非 task 关账对象；存量 n/a |
+
 ---
 
 ```text

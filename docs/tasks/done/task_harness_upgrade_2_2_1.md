@@ -17,6 +17,8 @@
 | **orchestration** | 单 task |
 | **git_branch** | `task/harness-upgrade-2-2-1` |
 | **experience_capture** | `recommended` |
+| **wiki_delta** | `n/a` |
+| **wiki_delta_note** | harness-only · 未启用 WikiTrack |
 
 ### 人工闸
 

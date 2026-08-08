@@ -95,7 +95,8 @@ pnpm build        # 生产构建
 # Harness Starter（业务仓 · 通用 Agent）
 
 > **单源真值**：`docs/coding_wiki/` 读序 + `docs/standards/` + 本文件其余业务约定。  
-> **本片段**：摘要 + **POINTER**；Harness 条文真值在 `docs/harness/prompts/`。
+> **本片段**：摘要 + **POINTER**；Harness 条文真值在 `docs/harness/prompts/`。  
+> **仓内定制（v2.22+）**：写在本产品块 **外** 的 `<!-- cyning-harness-local:begin/end -->`；勿改本 begin/end 内文（upgrade 会整块替换）。G-L 布局见 profile `graph_modules_path`。
 
 ## 执行 task 前
 
@@ -125,3 +126,12 @@ pnpm build        # 生产构建
 
 工作区：`docs/harness/prompts/`（22/30/TEMPLATE_30_gate_stop 等）
 <!-- cyning-harness:end -->
+
+<!-- cyning-harness-local:begin -->
+## Ops-desk-web · Harness 仓内定制（upgrade 不改写本块）
+
+- 质量门：`pnpm lint` → `pnpm test` → `pnpm build`
+- 图谱闸路径：`HG-GRAPH-MODULES` → `docs/_tech_graph/l1/01_modules.md`（profile `graph_modules_path`）
+- 改码目录：业务源码在 `src/**`（FRAGMENT 默认 `packages/**` 以本仓为准）
+- WikiTrack：Obsidian vault 只开 `docs/coding_wiki/`；新 task 勿默认 `wiki_delta=n/a`
+<!-- cyning-harness-local:end -->

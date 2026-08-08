@@ -17,6 +17,8 @@
 | **orchestration** | 单 task（Epic 收尾） |
 | **git_branch** | `task/web-e2e-build` |
 | **experience_capture** | `recommended` |
+| **wiki_delta** | `n/a` |
+| **wiki_delta_note** | harness-only · 未启用 WikiTrack |
 
 ### 人工闸
 

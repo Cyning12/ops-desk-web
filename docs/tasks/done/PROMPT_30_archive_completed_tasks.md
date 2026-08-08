@@ -3,6 +3,13 @@
 > 用法：Open Folder = `ops-desk-web` 根；新会话整段粘贴下方复制区。  
 > 00 统筹棒 B · 可与 api 棒 A 并行。
 
+## Harness 元信息
+
+| 字段 | 值 |
+|---|---|
+| **wiki_delta** | `n/a` |
+| **wiki_delta_note** | prompt 归档文 · 非 task 关账对象；存量 n/a |
+
 ---
 
 `````text

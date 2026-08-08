@@ -21,6 +21,8 @@
 | **test_strategy_note** | 无强制 `pnpm test`；核对 active 清单与 done 路径 |
 | **code_quality_bar** | `not_applicable` |
 | **orchestration** | 00 统筹棒 B；00 代签双闸 |
+| **wiki_delta** | `n/a` |
+| **wiki_delta_note** | harness-only · 未启用 WikiTrack |
 
 ### 人工闸
 

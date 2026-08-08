@@ -23,6 +23,8 @@
 | **test_strategy_note** | `./scripts/graph-compile.sh`；文件存在性；`pnpm lint/test/build` 不因图谱搬家而红 |
 | **code_quality_bar** | `not_applicable` |
 | **experience_capture** | `recommended` |
+| **wiki_delta** | `n/a` |
+| **wiki_delta_note** | 存量 done · 关账时未启用 WikiTrack（不必回刷为 path） |
 
 ### 拍板默认（C1–C4）
 
