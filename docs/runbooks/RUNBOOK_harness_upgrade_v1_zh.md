@@ -9,7 +9,8 @@
 > **2.18.0+**：`task close` 增 **wiki_delta**（缺字段 BLOCK；`none`/`n/a` 须 note）；`experience_capture=required` 且 `wiki_delta=path` 时经验节须晋升指针。勿默认 `--allow-wiki-gap`。  
 > **2.19.0+**：`task lint-wiki-delta` 替代手工 `rg -L`；启用 WikiTrack 后新 task **勿再默认 `n/a`**（`path` / `none`+note）。Obsidian vault 只开 `docs/coding_wiki/`。  
 > **2.22.0+**：overlay 部分根治——仓内定制写 `<!-- cyning-harness-local:begin/end -->`（产品 marker **外**）；profile 可选 `graph_modules_path`（本仓 `l1/01_modules`）。  
-> **2.22.1+**：RUNBOOK §1.2.1 **先迁并 commit 契约 → 再 upgrade**（脏树常 S5）。当前钉版 **2.22.1**。
+> **2.22.1+**：RUNBOOK §1.2.1 **先迁并 commit 契约 → 再 upgrade**（脏树常 S5）。  
+> **2.24.0+**：`graph yaml` G-L 递归发现；Skills 封装不随 upgrade 推入本仓。当前钉版 **2.24.0**。
 
 ---
 
@@ -37,8 +38,8 @@
 
 - [ ] `npx @cyning/harness check` → 「已是最新」
 - [ ] `npx @cyning/harness verify --target . --task <本 upgrade task>` → PASS（**2.11.0+** R\<n\> 审查文；**2.17.0+** pre-30 invoke / graph_delta WARN；**2.18.0+** wiki_delta WARN，`--strict-wiki-delta` 可 BLOCK）
-- [ ] `npx @cyning/harness@2.22.1 task lint-wiki-delta --target . --scope all` → missing=0 · exit 0
-- [ ] （若已启用 WikiTrack）`npx @cyning/harness@2.22.1 wiki export --json --target .` → nodes≥4 · edges>0
+- [ ] `npx @cyning/harness@2.24.0 task lint-wiki-delta --target . --scope all` → missing=0 · exit 0
+- [ ] （若已启用 WikiTrack）`npx @cyning/harness@2.24.0 wiki export --json --target .` → nodes≥4 · edges>0
 - [ ] （≥2.22）先完成 overlay 契约（profile `graph_modules_path` + AGENTS local）并 **commit**，再 upgrade；二次 upgrade 后 overlay 相关 diff 宜空
 - [ ] `npx @cyning/harness task close --help` 正常输出（闭环豁免旗见 USER_GUIDE §6.0：含 `--allow-wiki-gap`；勿当默认绿路径）；关账用 `--file`，**勿**加 `--target .`
 - [ ] 业务三件套回归：`pnpm lint` / `pnpm test` / `pnpm build` exit 0
@@ -66,3 +67,4 @@
 | 2026-07-28 | **2.18.0**：wiki_delta close 硬闸 + 晋升指针；存量 task 补 `n/a`+note；钉版 2.18.0 |
 | 2026-07-28 | **2.19.0**：一把升自 2.18.0；lint-wiki-delta；WikiTrack 启用；钉版 2.19.0 |
 | 2026-07-28 | **2.22.1**：一把升自 2.19.0；§1.2.1 overlay 契约；钉版 2.22.1 |
+| 2026-08-16 | **2.24.0**：一把升自 2.22.1（含 2.22.2 / 2.23.0）；钉版 2.24.0；不拉 skills/ |

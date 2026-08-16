@@ -53,15 +53,15 @@
 
 **完成态**：
 
-- [ ] `npx @cyning/harness@2.24.0 upgrade --target . --yes`（无 `--ide`）→ manifest `2.24.0`
-- [ ] `check` → 已是最新
+- [x] `npx @cyning/harness@2.24.0 upgrade --target . --yes`（无 `--ide`）→ manifest `2.24.0`
+- [x] `check` → 已是最新
 - [ ] 二次同版 upgrade：`from_version` 仍为 `2.22.1`（非 null）；overlay diff 空
-- [ ] `task lint-wiki-delta --scope all` missing=0；可选 `--strict`
-- [ ] `wiki export --json`：nodes≥4 · edges>0
-- [ ] RUNBOOK / coding_wiki 命令字面钉 `@2.24.0`
-- [ ] `verify --task` PASS；`pnpm lint` / `test` / `build` 绿
-- [ ] `./scripts/graph-compile.sh` 通过（仅还原时间戳噪声）
-- [ ] invoke + 自检结论；不拉 `skills/` 进本仓
+- [x] `task lint-wiki-delta --scope all` missing=0；可选 `--strict`
+- [x] `wiki export --json`：nodes≥4 · edges>0
+- [x] RUNBOOK / coding_wiki 命令字面钉 `@2.24.0`
+- [x] `verify --task` PASS；`pnpm lint` / `test` / `build` 绿
+- [x] `./scripts/graph-compile.sh` 通过（仅还原时间戳噪声）
+- [x] invoke 已回填；不拉 `skills/` 进本仓（自检/CLOSE 仍待二次 upgrade）
 
 **不做**：业务 Vue/API；cyning-harness 产品仓源码；默认把 `skills/` 同步进 web；改 Chat / LC Evidence 页面；强制 CI `--strict`
 
@@ -83,12 +83,12 @@
 
 ## 验收标准
 
-- [ ] manifest=2.24.0 · preset=`harness-only` · ide 三轨未裁 · `from_version=2.22.1`
-- [ ] `check` 已是最新 · exit 0
-- [ ] overlay：AGENTS/CLAUDE local 块仍在产品 marker 外；FRAGMENT 仍为 `l1/01_modules`
-- [ ] 未新增仓根 `skills/`（2.23 默认不分发执行帽，且本仓不拉动）
-- [ ] lint-wiki-delta PASS；wiki export nodes≥4 · edges>0
-- [ ] pnpm 三件套绿；graph-compile 通过
+- [x] manifest=2.24.0 · preset=`harness-only` · ide 三轨未裁 · `from_version=2.22.1`
+- [x] `check` 已是最新 · exit 0
+- [x] overlay：AGENTS/CLAUDE local 块仍在产品 marker 外；FRAGMENT 仍为 `l1/01_modules`
+- [x] 未新增仓根 `skills/`（2.23 默认不分发执行帽，且本仓不拉动）
+- [x] lint-wiki-delta PASS；wiki export nodes≥4 · edges>0
+- [x] pnpm 三件套绿；graph-compile 通过
 
 ---
 

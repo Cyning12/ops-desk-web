@@ -32,4 +32,19 @@ check / 二次 upgrade / lint-wiki-delta / wiki export / verify --task / pnpm �
 
 ## 执行记录
 
-（upgrade 后回填）
+- **upgrade**：`npx --yes @cyning/harness@2.24.0 upgrade --yes --target .` → exit 0；stdout `overlay · FRAGMENT graph_modules_path → l1/01_modules`；overlay 相关 `git diff` **空**
+- **manifest**：`2.22.1` → `2.24.0`；`from_version=2.22.1`；preset=`harness-only`；ide 未裁
+- **sync**：6 条 Starter 条文补 Skills frontmatter（2.23）；`prompts/README.md` 更新；**未**新增仓根 `skills/`
+- **二次 upgrade**：脏树 S5 中止（符合预期）→ 先 commit apply 再补跑
+- **local.json**：沙箱 ephemeral npx → 改回产品仓根
+- **版本钉**：RUNBOOK / coding_wiki 命令字面 `@2.24.0`
+- **check**：已是最新 · exit 0
+- **lint-wiki-delta**：default + `--strict` 均 PASS（missing=0 · issues=0）
+- **wiki export**：nodes=7 · edges>0 · warnings=0
+- **verify**：`--task` PASS
+- **pnpm**：lint / test(75) / build 全绿
+- **graph-compile**：PASS；时间戳噪声已还原
+
+| 日期 | 说明 |
+|---|---|
+| 2026-08-16 | upgrade 2.22.1→2.24.0 + 钉版；二次 upgrade 待 commit 后补跑 |
