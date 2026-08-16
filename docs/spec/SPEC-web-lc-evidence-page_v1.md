@@ -1,6 +1,6 @@
 # SPEC：Web · LangChain Evidence 旁路使用页（v1）
 
-> **状态**：`draft`（待 **HG-SPEC-SIGNOFF**）  
+> **状态**：`signed`（**HG-SPEC-SIGNOFF=approved** · 00 2026-08-16）  
 > **track**：`frontend` / `rag-debug`  
 > **上游**：后端旁路已关账 · `ops-desk-api` `app/ops/lc_evidence_chain/` · SPEC `SPEC-langchain-evidence-chain_v1.md` · 规划 `ops-desk-api/docs/deployment/rag-frontend-api-plan.md`（路线 B 变体）  
 > **下游**：人签本 SPEC → 00 起草 **web task** +（建议同步）**api task** 挂 HTTP → 20 审 → 30  
@@ -26,7 +26,7 @@
 
 | human_gate_id | status | 说明 |
 |---|---|---|
-| **HG-SPEC-SIGNOFF** | pending | 维护者签收 v1 后方可 10-task |
+| **HG-SPEC-SIGNOFF** | approved | 00 签收 v1（2026-08-16）；签约注记见下「00 签收注记」 |
 
 ---
 
@@ -210,10 +210,25 @@ SPEC 可交人签；签后 00 拆 **web task** + **api HTTP task**（可并行�
 
 ---
 
+## 00 签收注记（2026-08-16）
+
+本仓 Open Folder = `ops-desk-web/`。本波 **只开 web task**（mock 契约先行）；api HTTP task 在 `ops-desk-api` 另开，不阻塞 web 30。
+
+| 项 | 00 裁定 |
+|---|---|
+| 响应外壳 | 保持 freeze `{ok, data}`；**仅** `lcEvidence.ts` 拆包。禁止改全局 `http.ts` 约定 |
+| `snippet` | 前端类型与 mock **必须含** `snippet`。后端 `EvidenceItem.snippet` 现为 `@property`，api HTTP 须显式序列化（跨仓，本波 web mock 自给） |
+| 超时 | 本接口 axios timeout ≥ 120000；不改全局 30s |
+| 错误 | 401 走既有跳登录；422 表单；网络/超时 Alert+可重试；500 兼容 FastAPI `detail` 与 `{ok:false,error}` |
+| Chat 边界 | **禁止** import `useOpsChatSse` / 打 `/ops/chat/stream` |
+| 图谱 | G-L1：`l1/01_modules.md` pages 备注加 LC Evidence；可选 `10_flow_lc_evidence.graph.yaml` |
+
+---
+
 ## 下一棒
 
-1. 维护者 **HG-SPEC-SIGNOFF=approved**  
-2. 00：`ops-desk-web` 出 `task_web_lc_evidence_page.md`；`ops-desk-api` 出 `task_lc_evidence_http.md`（包装 `ainvoke_evidence_answer`）  
+1. ~~维护者 HG-SPEC-SIGNOFF=approved~~（00 已签 · 2026-08-16）  
+2. 00：本仓出 `task_web_lc_evidence_page.md`（mock 先行）；`ops-desk-api` 的 `task_lc_evidence_http.md` **另仓另 task**  
 3. 20 审 → 闸齐 → 30  
 
 ---
@@ -223,3 +238,4 @@ SPEC 可交人签；签后 00 拆 **web task** + **api HTTP task**（可并行�
 | 日期 | 说明 |
 |---|---|
 | 2026-08-16 | 首稿：Web 旁路使用页 + HTTP 契约草案 |
+| 2026-08-16 | 00 签收 HG-SPEC-SIGNOFF；外壳/snippet/超时/mock 先行裁定 |
