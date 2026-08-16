@@ -25,7 +25,7 @@
 | **wiki_delta** | `docs/_tech_graph/l1/01_modules.md` |
 | **wiki_delta_note** | G-L1 模块表增量；真值在 tech_graph |
 | **review_hat** | `20` |
-| **review_hat_reason** | 20-task-audit 审可执行性后，由 00 签 HG-AUDIT-R1；10 不代签 |
+| **review_hat_reason** | `""` |
 | **thinking_profile** | `shortest` |
 | **invoke_retention_profile** | `default` |
 | **required_invoke_hats** | `10,30,40` |
