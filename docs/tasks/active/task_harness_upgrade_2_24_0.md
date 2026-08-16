@@ -55,13 +55,13 @@
 
 - [x] `npx @cyning/harness@2.24.0 upgrade --target . --yes`（无 `--ide`）→ manifest `2.24.0`
 - [x] `check` → 已是最新
-- [ ] 二次同版 upgrade：`from_version` 仍为 `2.22.1`（非 null）；overlay diff 空
+- [x] 二次同版 upgrade：`from_version` 仍为 `2.22.1`（非 null）；overlay diff 空
 - [x] `task lint-wiki-delta --scope all` missing=0；可选 `--strict`
 - [x] `wiki export --json`：nodes≥4 · edges>0
 - [x] RUNBOOK / coding_wiki 命令字面钉 `@2.24.0`
 - [x] `verify --task` PASS；`pnpm lint` / `test` / `build` 绿
 - [x] `./scripts/graph-compile.sh` 通过（仅还原时间戳噪声）
-- [x] invoke 已回填；不拉 `skills/` 进本仓（自检/CLOSE 仍待二次 upgrade）
+- [x] invoke 已回填；不拉 `skills/` 进本仓
 
 **不做**：业务 Vue/API；cyning-harness 产品仓源码；默认把 `skills/` 同步进 web；改 Chat / LC Evidence 页面；强制 CI `--strict`
 
@@ -108,7 +108,9 @@ Task_KPI%: （CLOSE 时填）
 
 ### 经验沉淀（recommended）
 
-（CLOSE 前填；Wiki: docs/runbooks/RUNBOOK_harness_upgrade_v1_zh.md）
+- 2.22.2 后同版 re-upgrade **保留** `from_version`（本仓 U1 已合入产品；2.24.0 二次 upgrade 实证 `2.22.1` 未变 null）。
+- 2.23 Skills 封装只给条文加 frontmatter；`skills/` 不随 upgrade 进本仓。
+- Wiki: docs/runbooks/RUNBOOK_harness_upgrade_v1_zh.md
 
 ---
 
@@ -116,12 +118,12 @@ Task_KPI%: （CLOSE 时填）
 
 | 项 | 内容 |
 |---|---|
-| **日期** | |
-| **manifest** | |
-| **check** | |
-| **overlay** | |
-| **from_version 二次 upgrade** | |
-| **lint-wiki-delta** | |
-| **pnpm** | |
-| **摩擦** | |
+| **日期** | 2026-08-16 |
+| **manifest** | `2.24.0`（from 2.22.1）· preset=`harness-only` · ide 未裁 |
+| **check** | 已是最新 · exit 0 |
+| **overlay** | local 保留；FRAGMENT=`l1/01_modules`；二次 upgrade overlay diff 空 |
+| **from_version 二次 upgrade** | 仍为 `"2.22.1"`（非 null）· 仅 `upgraded_at` 时间戳已还原 |
+| **lint-wiki-delta** | missing=0 · strict issues=0 |
+| **pnpm** | lint/test(75)/build 全绿 |
+| **摩擦** | local.json 仍写 ephemeral npx（收尾改回产品仓根）；未跟踪 `.codex/` 使 verify S5 WARN，不挡 apply |
 | **R1** | `docs/harness/reviews/task_harness_upgrade_2_24_0_audit_R1_20260816.md` |
