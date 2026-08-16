@@ -26,6 +26,7 @@ async function onLogout(): Promise<void> {
         <el-menu-item index="/pulls">Pulls</el-menu-item>
         <el-menu-item index="/graph">Graph</el-menu-item>
         <el-menu-item index="/chat">Chat</el-menu-item>
+        <el-menu-item index="/lc-evidence">LC Evidence</el-menu-item>
       </el-menu>
     </el-aside>
     <el-container>

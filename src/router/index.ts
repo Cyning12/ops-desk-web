@@ -58,6 +58,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/ChatView.vue'),
         meta: { title: 'Chat' },
       },
+      {
+        path: 'lc-evidence',
+        name: 'lc-evidence',
+        component: () => import('../views/LcEvidenceView.vue'),
+        meta: { title: 'LC Evidence' },
+      },
     ],
   },
 ]

@@ -91,7 +91,8 @@ export default defineConfig({
     proxy: {
       // 开发环境将 /api 转发到本地后端（ops-desk-api）
       '/api': {
-        target: 'http://localhost:8000',
+        // 必须用 127.0.0.1：macOS 上 localhost 常走 IPv6，会打到 Docker 映射的 [::]:8000（旧镜像无此路由 → 404），而不是本机 make dev 的 127.0.0.1:8000
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
     },
