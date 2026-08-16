@@ -5,7 +5,7 @@ import type { AxiosInstance, AxiosResponse } from 'axios'
  * 统一 API 客户端。
  *
  * 约定（与 ops-desk-api 对齐）：
- * - baseURL 为 `/api`，dev 环境经 Vite proxy 转发到 http://localhost:8000
+ * - baseURL 为 `/api`，dev 环境经 Vite proxy 转发到 http://127.0.0.1:8000
  * - Cookie 会话认证：`withCredentials: true`
  * - 后端响应为 snake_case、无 `{ ok, data }` 包装外壳 —— 不做任何包装/转换，
  *   调用方直接拿到后端原始响应体

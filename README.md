@@ -37,7 +37,7 @@ pnpm build
 
 ## API 基址
 
-开发环境通过 Vite proxy 转发 `/api` 到 `http://localhost:8000`。
+开发环境通过 Vite proxy 转发 `/api` 到 `http://127.0.0.1:8000`（避免 macOS 上 `localhost` 走 IPv6 打到 Docker `[::]:8000`）。
 
 ## 联调
 
