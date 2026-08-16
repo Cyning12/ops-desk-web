@@ -1,6 +1,6 @@
 # Task：Harness 升级至 2.24.0（web）
 
-> **状态**：active  
+> **状态**：completed  
 > **类型**：基础设施（过程轨 upgrade）  
 > **关联**：npm `@cyning/harness@2.24.0` · api 仓已钉 2.24.0 · RUNBOOK_harness_upgrade_v1_zh  
 > **上游**：已 CLOSE `harness-upgrade-2-22-1`（overlay 契约已接入）  
@@ -94,15 +94,15 @@
 
 ### KPI
 
-Task_KPI%: （CLOSE 时填）
+Task_KPI%: 100
 
 | 维 | 分 |
 |---|---|
-| D1 完成度 | |
-| D2 可验证 | |
-| D3 范围纪律 | |
-| D4 摩擦记录 | |
-| D5 文档对齐 | |
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
 
 ---
 
