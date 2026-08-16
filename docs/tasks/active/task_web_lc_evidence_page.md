@@ -1,6 +1,6 @@
 # Task：Web · LangChain Evidence 旁路使用页（mock 契约先行）
 
-> **状态**：active  
+> **状态**：completed  
 > **类型**：功能实现（新路由页 + client + store）  
 > **关联**：`docs/spec/SPEC-web-lc-evidence-page_v1.md`（signed · HG-SPEC-SIGNOFF=approved · 00 2026-08-16）  
 > **审查对照**：`docs/harness/reviews/spec_web-lc-evidence-page_audit_R1_20260816.md`（20-spec-audit · **pass**）  
@@ -143,7 +143,7 @@
 - [x] Vitest：api client mock（拆包 + snippet）+ store（或视图）绿
 - [x] `pnpm lint` · `pnpm test` · `pnpm build` exit 0
 - [x] `docs/_tech_graph/l1/01_modules.md` pages 备注含 LC Evidence；不新增一级模块；`./scripts/graph-compile.sh` exit 0
-- [ ] 联调 1 问冒烟：**可选** / `blocked_by api`（后端 `lc-evidence-http-v1` 可用时）；**非本波硬验收**
+- [x] 联调 1 问冒烟：**本波豁免**（optional / `blocked_by api`；00 终验确认非硬验收，待 api HTTP task）
 
 ---
 
@@ -212,9 +212,34 @@ task 起草后 `HG-TASK-DRAFT` 留给 00；`HG-AUDIT-R1` **保持 pending** 等 
 | **帽** | 30（含 40） |
 | **命令** | `pnpm lint` exit 0；`pnpm test` exit 0（90 passed）；`pnpm build` exit 0；`./scripts/graph-compile.sh` exit 0（时间戳噪声已还原） |
 | **交付** | `/lc-evidence` 页 + `lcEvidence` client/store + Vitest mock 契约；图谱 pages 备注；invoke `30_40` |
-| **下一棒** | 交还 00；**未** `task close`；联调 1 问仍 optional / `blocked_by api` |
+| **下一棒** | 00 终验通过；本帽 CLOSE |
 | **经验沉淀** | 旁路 invoke 的 120s timeout 必须落在 `lcEvidence.ts` 单次请求 config，不能改 `http.ts` 全局 30s，否则长链会被误杀。`{ok,data}` 只在本 client 拆包，避免破坏 Issues/Chat 直取约定。`gate_action=refuse` 按 200 成功写入 result，不要当成 error。 Wiki: `docs/_tech_graph/l1/01_modules.md` |
-| **KPI** | （留给 00 CLOSE） |
+| **KPI** | 见 ### KPI（00 CLOSE） |
+| **00 终验** | 2026-08-16：独立重跑 lint/test(90)/build 全绿；抽查 timeout=120000、仅 lcEvidence 拆包、http.ts 仍 30s、未 import useOpsChatSse、pages 备注已加 |
+
+---
+
+### KPI
+
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验总结
+
+- 旁路 invoke 的 120s timeout 必须落在 `lcEvidence.ts` 单次请求 config，不能改 `http.ts` 全局 30s。
+- `{ok,data}` 只在本 client 拆包，避免破坏 Issues/Chat 直取约定。
+- `gate_action=refuse` 按 200 成功写入 result，不要当成 error。
+- gate-check 取文件中**首个**含闸 id 的表格行：`review_hat_reason` 勿写入 `HG-AUDIT-R1` 字面，否则会把说明句当成闸 status。
+- Wiki: docs/_tech_graph/l1/01_modules.md
 
 ---
 
@@ -225,3 +250,4 @@ task 起草后 `HG-TASK-DRAFT` 留给 00；`HG-AUDIT-R1` **保持 pending** 等 
 | 2026-08-16 | 10-task 首稿：mock 先行；三闸 GRAPH=approved / TASK-DRAFT=pending / AUDIT=pending |
 | 2026-08-16 | 00 签 HG-TASK-DRAFT 与 HG-AUDIT-R1（20 R1 零阻塞后） |
 | 2026-08-16 | 30（含 40）：实现 `/lc-evidence` + mock 契约单测；硬验收勾选；联调保持未勾 |
+| 2026-08-16 | 00 终验 + CLOSE：KPI 100；联调本波豁免 |
