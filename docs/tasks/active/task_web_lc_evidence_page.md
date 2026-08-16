@@ -51,13 +51,13 @@
 
 **完成态（草案 · 未勾）**：
 
-- [ ] 路由 `/lc-evidence`（需登录，**不要** `meta.public`）；`AppLayout` 侧栏有入口
-- [ ] `src/api/lcEvidence.ts`：axios + `withCredentials`；**本文件** timeout ≥ 120000；仅本文件拆 `{ok,data}`；类型与 mock **必须含** `snippet`
-- [ ] `src/stores/lcEvidence.ts`：query / loading / result / error
-- [ ] `src/views/LcEvidenceView.vue`（可选 `src/components/lc-evidence/*`）按 P0 UI 渲染
-- [ ] Vitest：client + store（或视图）mock 绿；断言 **不**调用 `/ops/chat/stream`；**禁止** import `useOpsChatSse`
-- [ ] `pnpm lint` / `pnpm test` / `pnpm build` exit 0
-- [ ] `docs/_tech_graph/l1/01_modules.md` pages 行备注加 LC Evidence；`./scripts/graph-compile.sh` exit 0
+- [x] 路由 `/lc-evidence`（需登录，**不要** `meta.public`）；`AppLayout` 侧栏有入口
+- [x] `src/api/lcEvidence.ts`：axios + `withCredentials`；**本文件** timeout ≥ 120000；仅本文件拆 `{ok,data}`；类型与 mock **必须含** `snippet`
+- [x] `src/stores/lcEvidence.ts`：query / loading / result / error
+- [x] `src/views/LcEvidenceView.vue`（可选 `src/components/lc-evidence/*`）按 P0 UI 渲染
+- [x] Vitest：client + store（或视图）mock 绿；断言 **不**调用 `/ops/chat/stream`；**禁止** import `useOpsChatSse`
+- [x] `pnpm lint` / `pnpm test` / `pnpm build` exit 0
+- [x] `docs/_tech_graph/l1/01_modules.md` pages 行备注加 LC Evidence；`./scripts/graph-compile.sh` exit 0
 
 ---
 
@@ -135,14 +135,14 @@
 
 ## 验收标准
 
-- [ ] 路由 `/lc-evidence` 可进；侧栏有入口；未登录跳 `/login?redirect=`（复用现网 `beforeEach`，无 `meta.public`）
-- [ ] Mock 提交后 UI 渲染 `evidence` + `answer` + `meta.gate_action`；`refuse` 样例强调「无可用证据」
-- [ ] **禁止**本页默认走 `POST /api/ops/chat/stream`；client/store 单测断言不调用该路径；源码 **禁止** import `useOpsChatSse`
-- [ ] `lcEvidence.ts`：仅本文件拆 `{ok,data}`；类型与 mock **必须含** `snippet`；本接口 timeout ≥ 120000；**未**改 `http.ts` 全局 timeout/外壳
-- [ ] P0 UI：多行 query；提交中禁用；Meta 条三字段；evidence `relevance` 色标；answer 纯文本+换行；空态/加载/错误三分态
-- [ ] Vitest：api client mock（拆包 + snippet）+ store（或视图）绿
-- [ ] `pnpm lint` · `pnpm test` · `pnpm build` exit 0
-- [ ] `docs/_tech_graph/l1/01_modules.md` pages 备注含 LC Evidence；不新增一级模块；`./scripts/graph-compile.sh` exit 0
+- [x] 路由 `/lc-evidence` 可进；侧栏有入口；未登录跳 `/login?redirect=`（复用现网 `beforeEach`，无 `meta.public`）
+- [x] Mock 提交后 UI 渲染 `evidence` + `answer` + `meta.gate_action`；`refuse` 样例强调「无可用证据」
+- [x] **禁止**本页默认走 `POST /api/ops/chat/stream`；client/store 单测断言不调用该路径；源码 **禁止** import `useOpsChatSse`
+- [x] `lcEvidence.ts`：仅本文件拆 `{ok,data}`；类型与 mock **必须含** `snippet`；本接口 timeout ≥ 120000；**未**改 `http.ts` 全局 timeout/外壳
+- [x] P0 UI：多行 query；提交中禁用；Meta 条三字段；evidence `relevance` 色标；answer 纯文本+换行；空态/加载/错误三分态
+- [x] Vitest：api client mock（拆包 + snippet）+ store（或视图）绿
+- [x] `pnpm lint` · `pnpm test` · `pnpm build` exit 0
+- [x] `docs/_tech_graph/l1/01_modules.md` pages 备注含 LC Evidence；不新增一级模块；`./scripts/graph-compile.sh` exit 0
 - [ ] 联调 1 问冒烟：**可选** / `blocked_by api`（后端 `lc-evidence-http-v1` 可用时）；**非本波硬验收**
 
 ---
@@ -208,11 +208,13 @@ task 起草后 `HG-TASK-DRAFT` 留给 00；`HG-AUDIT-R1` **保持 pending** 等 
 
 | 项 | 内容 |
 |---|---|
-| **日期** | （待 30/40 回填） |
-| **帽** | 10-task 起草；30/40 未开工 |
-| **命令** | （待 30：`pnpm lint` / `pnpm test` / `pnpm build` / `./scripts/graph-compile.sh`） |
-| **交付** | 本波 10 仅交付 task + invoke；业务码未改 |
-| **下一棒** | 00 签 `HG-TASK-DRAFT` → 20-task-audit → 00 签 `HG-AUDIT-R1` |
+| **日期** | 2026-08-16 |
+| **帽** | 30（含 40） |
+| **命令** | `pnpm lint` exit 0；`pnpm test` exit 0（90 passed）；`pnpm build` exit 0；`./scripts/graph-compile.sh` exit 0（时间戳噪声已还原） |
+| **交付** | `/lc-evidence` 页 + `lcEvidence` client/store + Vitest mock 契约；图谱 pages 备注；invoke `30_40` |
+| **下一棒** | 交还 00；**未** `task close`；联调 1 问仍 optional / `blocked_by api` |
+| **经验沉淀** | 旁路 invoke 的 120s timeout 必须落在 `lcEvidence.ts` 单次请求 config，不能改 `http.ts` 全局 30s，否则长链会被误杀。`{ok,data}` 只在本 client 拆包，避免破坏 Issues/Chat 直取约定。`gate_action=refuse` 按 200 成功写入 result，不要当成 error。 Wiki: `docs/_tech_graph/l1/01_modules.md` |
+| **KPI** | （留给 00 CLOSE） |
 
 ---
 
@@ -222,3 +224,4 @@ task 起草后 `HG-TASK-DRAFT` 留给 00；`HG-AUDIT-R1` **保持 pending** 等 
 |---|---|
 | 2026-08-16 | 10-task 首稿：mock 先行；三闸 GRAPH=approved / TASK-DRAFT=pending / AUDIT=pending |
 | 2026-08-16 | 00 签 HG-TASK-DRAFT 与 HG-AUDIT-R1（20 R1 零阻塞后） |
+| 2026-08-16 | 30（含 40）：实现 `/lc-evidence` + mock 契约单测；硬验收勾选；联调保持未勾 |

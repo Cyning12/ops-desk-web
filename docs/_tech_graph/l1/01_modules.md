@@ -12,7 +12,7 @@
 |-----------|------|-----------|----------------------|-------------|
 | `entry` | 入口与配置 | `src/main.ts`, `vite.config.ts` | → `router`, `pinia` | Vue 应用实例、Vite 配置 |
 | `router` | 路由层 | `src/router/**` | → `pages` | Vue Router 路由定义 |
-| `pages` | 页面组件 | `src/views/**`, `src/pages/**` | → `components`, `api`, `pinia` | Login / Overview / Issues / Pulls / Graph / Chat |
+| `pages` | 页面组件 | `src/views/**`, `src/pages/**` | → `components`, `api`, `pinia` | Login / Overview / Issues / Pulls / Graph / Chat / LC Evidence（`/lc-evidence`，LangChain 旁路实验页） |
 | `components` | 通用组件 | `src/components/**` | → — | Element Plus 封装、水墨风 UI 组件 |
 | `api` | API 客户端 | `src/api/**` | → — | 封装 fetch、SSE 消费、错误处理 |
 | `pinia` | 状态管理 | `src/stores/**` | → `api` | Pinia store |
