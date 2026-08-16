@@ -1,10 +1,10 @@
 # Task：Web · LangChain Evidence 旁路使用页（mock 契约先行）
 
-> **状态**：draft  
+> **状态**：active  
 > **类型**：功能实现（新路由页 + client + store）  
 > **关联**：`docs/spec/SPEC-web-lc-evidence-page_v1.md`（signed · HG-SPEC-SIGNOFF=approved · 00 2026-08-16）  
 > **审查对照**：`docs/harness/reviews/spec_web-lc-evidence-page_audit_R1_20260816.md`（20-spec-audit · **pass**）  
-> **帽子**：10-task 起草 · 待 00 签 `HG-TASK-DRAFT` · 待 20-task-audit · **禁止**本波签发 `HG-AUDIT-R1`
+> **帽子**：10-task 已起草 · 00 已签 `HG-TASK-DRAFT` · 待 20-task-audit · **禁止**本波在 20 前签发 `HG-AUDIT-R1`
 
 ---
 
@@ -37,7 +37,7 @@
 | human_gate_id | status | blocks_hats | 说明 |
 |---|---|---|---|
 | **HG-GRAPH-MODULES** | approved | **30** | 00 代签 2026-08-16：G-L1 pages/api/pinia 增量，不新增一级模块 |
-| HG-TASK-DRAFT | pending | 22-R1 | 留给 00 签；10-task 不写成 approved |
+| HG-TASK-DRAFT | approved | 22-R1 | 00 签 2026-08-16：接受 mock 先行 + 00 冻结点 |
 | **HG-AUDIT-R1** | pending | **30** | 20-task-audit 后再由 00 签；**禁止**写成 approved |
 
 ---
