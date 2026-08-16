@@ -4,7 +4,7 @@
 > **类型**：功能实现（新路由页 + client + store）  
 > **关联**：`docs/spec/SPEC-web-lc-evidence-page_v1.md`（signed · HG-SPEC-SIGNOFF=approved · 00 2026-08-16）  
 > **审查对照**：`docs/harness/reviews/spec_web-lc-evidence-page_audit_R1_20260816.md`（20-spec-audit · **pass**）  
-> **帽子**：10-task 已起草 · 00 已签 `HG-TASK-DRAFT` · 待 20-task-audit · **禁止**本波在 20 前签发 `HG-AUDIT-R1`
+> **帽子**：10-task 已起草 · 00 已签 `HG-TASK-DRAFT` 与 `HG-AUDIT-R1` · 20-task-audit R1 零阻塞
 
 ---
 
@@ -38,7 +38,7 @@
 |---|---|---|---|
 | **HG-GRAPH-MODULES** | approved | **30** | 00 代签 2026-08-16：G-L1 pages/api/pinia 增量，不新增一级模块 |
 | HG-TASK-DRAFT | approved | 22-R1 | 00 签 2026-08-16：接受 mock 先行 + 00 冻结点 |
-| **HG-AUDIT-R1** | pending | **30** | 20-task-audit 后再由 00 签；**禁止**写成 approved |
+| **HG-AUDIT-R1** | approved | **30** | 00 签 2026-08-16：已读 20 R1 零阻塞；mock 先行开工 |
 
 ---
 
@@ -162,7 +162,7 @@
 6. 图谱：`docs/_tech_graph/l1/01_modules.md`（只改 pages 备注，不新增一级模块）
 7. 风格：本仓无 `docs/standards/CODING_*_L2`，跟现网 Vue/TS（Element Plus、Pinia、水墨风）
 
-**30 未齐闸时拒开工**：`HG-TASK-DRAFT` 与 `HG-AUDIT-R1` 在本起草时均为 **pending**。须 00 签草稿 + 20-task-audit + 00 签 `HG-AUDIT-R1` 后方可改码。
+**30 闸**：`HG-GRAPH-MODULES` / `HG-TASK-DRAFT` / `HG-AUDIT-R1` 均为 **approved**（00 2026-08-16）。20-task-audit R1 内容零阻塞。可 30。
 
 ---
 
@@ -221,3 +221,4 @@ task 起草后 `HG-TASK-DRAFT` 留给 00；`HG-AUDIT-R1` **保持 pending** 等 
 | 日期 | 说明 |
 |---|---|
 | 2026-08-16 | 10-task 首稿：mock 先行；三闸 GRAPH=approved / TASK-DRAFT=pending / AUDIT=pending |
+| 2026-08-16 | 00 签 HG-TASK-DRAFT 与 HG-AUDIT-R1（20 R1 零阻塞后） |
