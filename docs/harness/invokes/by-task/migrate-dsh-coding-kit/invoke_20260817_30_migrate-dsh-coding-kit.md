@@ -35,6 +35,8 @@ pre-30 invoke：`minimal` → 无 preRequired，不挡 30。
 
 ## 摩擦（FEEDBACK 候选）
 
+> 已落盘交产品：`docs/harness/evidence/FEEDBACK_dsh_coding_kit_1_2_1_from_ops_desk_web_20260817.md`（D1=P1 peer 链 · D2=P2 adapter 字面 · D3=P3 钉版漂移 · D4=环境）。
+
 - **F1 · peer 链断**：`dsh-coding-kit@1.2.1` 的 peerDependencies（`@deepseek-ai/cordis` / `dsh-tools`）深层依赖未公开发布的 `@deepseek-ai/dsh-type-meta`，pnpm 默认 `auto-install-peers=true` 直接装失败。CLI 纯用法本不需要 peer。建议产品侧：peer 改 `peerDependenciesMeta.optional=true`，或 README 迁移节注明 pnpm 需关 auto-install-peers
 - **F2 · adapter 字面滞后**：`assets/ide/adapters/*.example`（1.2.1）内文仍写 `npx @cyning/harness verify`；业务仓只能手改命令字面，无 sync 代劳
 - **F3 · 沙箱/环境**：本机 `~/.npm` 属主损坏致 npx EACCES（绕过：`npm_config_cache=/tmp/npm-cache` 或 `pnpm exec`）；DSH 文件沙箱下 pnpm 回退仓内 `.pnpm-store`（已 gitignore），仓外首次 `pnpm install` 会提示 relink 一次
