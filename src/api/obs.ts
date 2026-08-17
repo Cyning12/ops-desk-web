@@ -1,5 +1,5 @@
 /**
- * 过程可观测只读契约（对齐 @cyning/harness obs_status.v1 / obs_timeline.v1）。
+ * 过程可观测只读契约（对齐 dsh-coding-kit obs_status.v1 / obs_timeline.v1，原 @cyning/harness）。
  * 本棒仅从 fixture 加载；禁止在浏览器执行 npx。
  */
 
