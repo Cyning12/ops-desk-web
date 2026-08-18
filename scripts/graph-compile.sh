@@ -32,7 +32,7 @@ echo "[coding-kit] compiling graph yaml -> md (${#GRAPH_INPUT_DIRS[@]} dir(s))"
 for dir in "${GRAPH_INPUT_DIRS[@]}"; do
   rel="${dir#"${ROOT_DIR}"/}"
   echo "  compile --input ${rel}"
-  pnpm exec dsh-coding-kit graph yaml compile --input "${dir}" --all
+  npx dsh-coding-kit graph yaml compile --input "${dir}" --all
 done
 
 echo "[custom] generating shared/graph.json from yaml sources (recursive)"
@@ -42,7 +42,7 @@ echo "[coding-kit] checking graph consistency"
 for dir in "${GRAPH_INPUT_DIRS[@]}"; do
   rel="${dir#"${ROOT_DIR}"/}"
   echo "  check --input ${rel}"
-  pnpm exec dsh-coding-kit graph yaml check --input "${dir}" --all --graph-json "${GRAPH_JSON}"
+  npx dsh-coding-kit graph yaml check --input "${dir}" --all --graph-json "${GRAPH_JSON}"
 done
 
 echo "done"
