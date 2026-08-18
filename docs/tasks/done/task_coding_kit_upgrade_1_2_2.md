@@ -1,6 +1,6 @@
 # Task：dsh-coding-kit 升级至 1.2.2（web · FEEDBACK 修复验收）
 
-> **状态**：30/40 完成 · 待 CLOSE  
+> **状态**：completed  
 > **类型**：基础设施（过程轨 upgrade + FEEDBACK 验收）  
 > **关联**：npm `dsh-coding-kit@1.2.2` · `docs/harness/evidence/FEEDBACK_dsh_coding_kit_1_2_1_from_ops_desk_web_20260817.md`（D1/D2/D3）  
 > **上游**：`task/migrate-dsh-coding-kit`（1.2.1 迁移，待 CLOSE/合并）  
@@ -76,3 +76,41 @@
 - [x] manifest：`version=1.2.2` · `from_version=1.2.1` · preset/ide 未裁
 - [x] `.npmrc` 已移除；`CI=true pnpm install --frozen-lockfile` exit 0
 - [x] `check` exit 0；`verify --task` PASS；graph-compile 绿；三件套绿
+
+---
+
+### KPI
+
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验沉淀（recommended）
+
+- FEEDBACK 闭环节奏：1.2.1 落盘 D1/D2/D3 → 产品同日发 1.2.2 → 本仓逐项验收（净仓安装 / adapter 反向 grep / 钉版 grep）全 ✅。
+- peer 标 `optional` 后，`.npmrc auto-install-peers=false` 变通可移除；lockfile `settings.autoInstallPeers` 回默认 `true`，`--frozen-lockfile` 验证复装绿。
+- Wiki: docs/runbooks/RUNBOOK_harness_upgrade_v1_zh.md
+
+---
+
+### 自检结论（执行者）
+
+| 项 | 内容 |
+|---|---|
+| **日期** | 2026-08-17 |
+| **manifest** | `1.2.2`（from 1.2.1）· preset=`harness-only` · ide 未裁 |
+| **D1** | ✅ 净仓 pnpm 默认配置 `pnpm add dsh-coding-kit@1.2.2` 成功；peer 未被自动安装 |
+| **D2** | ✅ 1.2.2 adapters 四件命令字面全为 `npx dsh-coding-kit`；零 `@cyning/harness` |
+| **D3** | ✅ README 迁移节钉版 = 1.2.2 |
+| **变通移除** | `.npmrc` 已删；lockfile 回默认；frozen 复装绿 |
+| **check / verify** | exit 0 / PASS |
+| **pnpm** | lint/test(90)/build 全绿；graph-compile 绿（噪声已还原） |
+| **invoke** | `docs/harness/invokes/by-task/coding-kit-upgrade-1-2-2/invoke_20260817_30_coding-kit-upgrade-1-2-2.md` |
