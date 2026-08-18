@@ -11,7 +11,8 @@
 > **2.22.0+**：overlay 部分根治——仓内定制写 `<!-- cyning-harness-local:begin/end -->`（产品 marker **外**）；profile 可选 `graph_modules_path`（本仓 `l1/01_modules`）。  
 > **2.22.1+**：RUNBOOK §1.2.1 **先迁并 commit 契约 → 再 upgrade**（脏树常 S5）。  
 > **2.24.0+**：`graph yaml` G-L 递归发现；Skills 封装不随 upgrade 推入本仓。
-> **dsh-coding-kit 1.2.1+**：产品迁仓更名（`@cyning/harness` → `dsh-coding-kit`，CLI 语义对齐 2.24.0）；命令前缀 `npx dsh-coding-kit`；manifest 目录仍 `.cyning-harness/`。当前钉版 **1.2.1**。
+> **dsh-coding-kit 1.2.1+**：产品迁仓更名（`@cyning/harness` → `dsh-coding-kit`，CLI 语义对齐 2.24.0）；命令前缀 `npx dsh-coding-kit`；manifest 目录仍 `.cyning-harness/`。
+> **1.2.2+**：peer 已标 optional（D1 修复，pnpm 默认配置可直装；`.npmrc` 变通已移除）；adapter 示例命令字面已换名（D2 修复）。当前钉版 **1.2.2**。
 
 ---
 
@@ -70,3 +71,4 @@
 | 2026-07-28 | **2.22.1**：一把升自 2.19.0；§1.2.1 overlay 契约；钉版 2.22.1 |
 | 2026-08-16 | **2.24.0**：一把升自 2.22.1（含 2.22.2 / 2.23.0）；钉版 2.24.0；不拉 skills/ |
 | 2026-08-17 | **dsh-coding-kit 1.2.1**：迁仓更名；命令前缀更换；钉版 1.2.1；pnpm 需 `--config.auto-install-peers=false`（peer 链含未发布包） |
+| 2026-08-17 | **dsh-coding-kit 1.2.2**：FEEDBACK D1/D2/D3 修复验收；移除 `.npmrc` 变通；钉版 1.2.2 |

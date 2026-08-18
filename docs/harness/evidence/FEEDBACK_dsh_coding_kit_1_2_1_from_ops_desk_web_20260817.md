@@ -9,6 +9,8 @@
 > **迁移 task**：`docs/tasks/active/task_migrate_dsh_coding_kit.md`（分支 `task/migrate-dsh-coding-kit`）  
 > **执行留痕**：`docs/harness/invokes/by-task/migrate-dsh-coding-kit/invoke_20260817_30_migrate-dsh-coding-kit.md`
 
+> **修复确认（2026-08-17 · 复查 @1.2.2）**：✅ **D1** peer 已标 `optional`（净仓 pnpm 默认配置安装通过，peer 未被自动安装）；✅ **D2** adapters 三文件命令字面已换 `npx dsh-coding-kit`（零 `@cyning/harness` 残留）；✅ **D3** README 迁移节钉版已刷新为 1.2.2。本仓已升级钉 1.2.2 并移除 `.npmrc` 变通（lockfile 回默认 `autoInstallPeers: true`，`--frozen-lockfile` 绿）。验收留痕：`docs/harness/invokes/by-task/coding-kit-upgrade-1-2-2/`。
+
 ---
 
 ## 1. 总判
