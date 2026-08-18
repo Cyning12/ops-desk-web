@@ -11,7 +11,7 @@
 
 ## 命令
 
-    npx dsh-coding-kit@1.2.1 wiki export --json --target .
+    npx dsh-coding-kit@1.2.2 wiki export --json --target .
 
 ## 相关
 
