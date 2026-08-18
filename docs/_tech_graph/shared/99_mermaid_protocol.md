@@ -6,7 +6,7 @@
 ## 0. YAML-first 工作流
 
 - **唯一人工编辑源**：`docs/_tech_graph/**/*.graph.yaml`（如 `l0/00_main.graph.yaml`、`l1/10_flow_chat.graph.yaml`）。
-- **生成物**：同名 `*.md` 由 `npx @cyning/harness graph yaml compile`（经 `./scripts/graph-compile.sh`）生成。
+- **生成物**：同名 `*.md` 由 `npx dsh-coding-kit graph yaml compile`（经 `./scripts/graph-compile.sh`）生成。
 - **禁止手写 `.md`**：如需改图，改 YAML 源后重新运行编译脚本；`--check` 模式可检测 `.md` 与 `.graph.yaml` 是否同步。
 - **历史 `.ai.md` 双轨已弃用**：Post-G0 后不再维护 `.md` + `.ai.md` 两份文件；所有结构化信息（锚点、边类型）集中在 YAML 源中。
 
