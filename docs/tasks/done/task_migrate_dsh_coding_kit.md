@@ -1,6 +1,6 @@
 # Task：迁移 @cyning/harness → dsh-coding-kit@1.2.1（web）
 
-> **状态**：30/40 完成 · 待 CLOSE  
+> **状态**：completed  
 > **类型**：基础设施（过程轨 migrate）  
 > **关联**：npm `dsh-coding-kit@1.2.1`（latest）· 产品仓 [Cyning12/dsh-coding-kit](https://github.com/Cyning12/dsh-coding-kit) · 旧包 `@cyning/harness@2.24.0`  
 > **触发**：维护者（2026-08-17 对话）：「对当前项目进行迁移」
@@ -91,7 +91,40 @@
 
 ---
 
-## 40 自检结论（2026-08-17）
+### KPI
 
-全部完成态与验收标准达成；执行明细与摩擦 F1–F3 见 `docs/harness/invokes/by-task/migrate-dsh-coding-kit/invoke_20260817_30_migrate-dsh-coding-kit.md`。
-CLOSE：`pnpm exec dsh-coding-kit task close --file docs/tasks/active/task_migrate_dsh_coding_kit.md --yes`（维护者确认后执行）。
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验沉淀（recommended）
+
+- pnpm 10 默认 `auto-install-peers=true` 会被 dsh-coding-kit 1.2.1 的宿主 peer 链（含未发布包）卡死；变通 `.npmrc auto-install-peers=false` + lockfile 重解，1.2.2（peer optional）后已移除。
+- upgrade 不刷 IDE begin/end 块；1.2.1 adapter 示例字面滞后，指令块命令需手改（1.2.2 已修）。
+- FEEDBACK 已落盘交产品：`docs/harness/evidence/FEEDBACK_dsh_coding_kit_1_2_1_from_ops_desk_web_20260817.md`。
+- Wiki: docs/runbooks/RUNBOOK_harness_upgrade_v1_zh.md
+
+---
+
+### 自检结论（执行者）
+
+| 项 | 内容 |
+|---|---|
+| **日期** | 2026-08-17 |
+| **manifest** | `1.2.1`（from 2.24.0）· preset=`harness-only` · ide 未裁 |
+| **check** | 已是最新 · exit 0 |
+| **verify --task** | PASS（三闸 approved 正确识别） |
+| **graph-compile** | 绿 · 时间戳噪声已还原 |
+| **pnpm** | lint/test(90)/build 全绿；`--frozen-lockfile` 绿 |
+| **鲜活引用** | grep `npx @cyning/harness` = 0（残余仅历史 S2） |
+| **local 块** | AGENTS/CLAUDE `cyning-harness-local` 逐字未变 |
+| **摩擦** | F1 peer 链（→ FEEDBACK D1）· F2 adapter 字面（→ D2）· F3 环境（npm 属主 / 沙箱 store） |
+| **invoke** | `docs/harness/invokes/by-task/migrate-dsh-coding-kit/invoke_20260817_30_migrate-dsh-coding-kit.md` |
