@@ -64,6 +64,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/LcEvidenceView.vue'),
         meta: { title: 'LC Evidence' },
       },
+      {
+        path: 'lg-rag',
+        name: 'lg-rag',
+        component: () => import('../views/LgRagView.vue'),
+        meta: { title: 'LG RAG' },
+      },
     ],
   },
 ]
