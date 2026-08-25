@@ -1,0 +1,9 @@
+npm warn Unknown env config "devdir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+task: task_web_dsh_kit_upgrade_probe_1_6_1.md
+| gate | status | blocks_30 | 30 影响 |
+|------|--------|-----------|--------|
+| HG-TASK-DRAFT | approved | 22-R1 | — |
+| HG-AUDIT-R1 | approved | 30 | ✅ 可 30 |
+| HG-GRAPH-MODULES | approved | — | ✅ |
+
+VERIFY: PASS · task_web_dsh_kit_upgrade_probe_1_6_1.md

@@ -1,0 +1,35 @@
+
+> ops-desk-web@0.1.0 test /Users/cyning/Desktop/Ops-desk/ops-desk-web
+> vitest run
+
+
+ RUN  v3.2.7 /Users/cyning/Desktop/Ops-desk/ops-desk-web
+
+ ✓ tests/chat-sse.spec.ts (9 tests) 11ms
+ ✓ tests/lg-rag-api.spec.ts (12 tests) 5ms
+ ✓ tests/pulls-store.spec.ts (5 tests) 4ms
+ ✓ tests/lg-rag-store.spec.ts (5 tests) 6ms
+ ✓ tests/chat-store.spec.ts (7 tests) 8ms
+ ✓ tests/lc-evidence-api.spec.ts (6 tests) 5ms
+ ✓ tests/overview-store.spec.ts (4 tests) 4ms
+ ✓ tests/auth-store.spec.ts (7 tests) 4ms
+ ✓ tests/issues-store.spec.ts (10 tests) 6ms
+ ✓ tests/lc-evidence-store.spec.ts (4 tests) 4ms
+ ✓ tests/app.spec.ts (1 test) 29ms
+ ✓ tests/overview-view.spec.ts (3 tests) 41ms
+ ✓ tests/obs-store.spec.ts (3 tests) 3ms
+ ✓ tests/router-guard.spec.ts (5 tests) 931ms
+   ✓ router 认证守卫 > 未登录访问受保护路由 → 重定向 /login?redirect=<原路径>  837ms
+ ✓ tests/obs-view.spec.ts (3 tests) 83ms
+ ✓ tests/graph-view.spec.ts (4 tests) 89ms
+ ✓ tests/http.spec.ts (3 tests) 1ms
+ ✓ tests/graph-store.spec.ts (5 tests) 15ms
+ ✓ tests/lc-evidence-view.spec.ts (5 tests) 212ms
+ ✓ tests/pulls-view.spec.ts (3 tests) 247ms
+ ✓ tests/issues-view.spec.ts (3 tests) 317ms
+
+ Test Files  21 passed (21)
+      Tests  107 passed (107)
+   Start at  21:35:55
+   Duration  2.08s (transform 927ms, setup 0ms, collect 9.00s, tests 2.02s, environment 8.61s, prepare 1.35s)
+

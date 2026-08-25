@@ -1,7 +1,7 @@
 ---
 graph_id: 10_flow_chat
 version: 2026-07-27
-generated_at: 2026-08-22T02:45:47Z
+generated_at: 2026-08-25T13:42:21Z
 source: 10_flow_chat.graph.yaml
 ---
 
@@ -13,32 +13,35 @@ source: 10_flow_chat.graph.yaml
 
 ```mermaid
 flowchart TB
-    user[用户]
-    chat_view[ChatView]
-    chat_store[useChatStore]
-    load_session[loadLatestSession]
-    send_message[sendMessage]
-    fetch_session_api[fetchLatestSession]
-    stream_sse[streamOpsChat]
-    sse_parser[SseFrameParser]
-    ops_api[ops-desk-api]
-    api_chat_flow[>../../../ops-desk-api/docs/_tech_graph/l1/10_flow_chat.md]
+    user["用户"]
+    chat_view["ChatView"]
+    chat_store["useChatStore"]
+    load_session["loadLatestSession"]
+    send_message["sendMessage"]
+    fetch_session_api["fetchLatestSession"]
+    stream_sse["streamOpsChat"]
+    sse_parser["SseFrameParser"]
+    ops_api["ops-desk-api"]
+    api_chat_flow[">../../../ops-desk-api/docs/_tech_graph/l1/10_flow_chat.md"]
 
-    user --"opens /chat"--> chat_view
-    chat_view --"binds"--> chat_store
-    chat_view --"onMounted"--> load_session
-    load_session --"calls"--> fetch_session_api
-    fetch_session_api --"GET /ops/chat/sessions/latest"--> ops_api
-    user --"submit"--> send_message
-    chat_view --"triggers"--> send_message
-    send_message --"starts"--> stream_sse
-    stream_sse --"parses frames"--> sse_parser
-    stream_sse --"POST /api/ops/chat/stream"--> ops_api
-    ops_api --"后端展开"--> api_chat_flow
+    user -->|"opens /chat"| chat_view
+    chat_view -->|"binds"| chat_store
+    chat_view -->|"onMounted"| load_session
+    load_session -->|"calls"| fetch_session_api
+    fetch_session_api -->|"GET /ops/chat/sessions/latest"| ops_api
+    user -->|"submit"| send_message
+    chat_view -->|"triggers"| send_message
+    send_message -->|"starts"| stream_sse
+    stream_sse -->|"parses frames"| sse_parser
+    stream_sse -->|"POST /api/ops/chat/stream"| ops_api
+    ops_api -->|"后端展开"| api_chat_flow
 
     classDef phase fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     classDef doc fill:#fff8e1,stroke:#ff6f00,stroke-width:1px
     classDef infra fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px
+    class chat_view,chat_store,load_session,send_message,fetch_session_api,stream_sse phase
+    class sse_parser doc
+    class user,ops_api,api_chat_flow infra
 ```
 
 ## Structured Data

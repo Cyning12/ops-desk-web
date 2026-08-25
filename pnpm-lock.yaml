@@ -40,8 +40,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.11(@vue/compiler-dom@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40(typescript@5.8.3))
       dsh-coding-kit:
-        specifier: 1.2.2
-        version: 1.2.2
+        specifier: 1.6.1
+        version: 1.6.1
       eslint:
         specifier: ^9.32.0
         version: 9.39.5
@@ -919,8 +919,8 @@ packages:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
 
-  dsh-coding-kit@1.2.2:
-    resolution: {integrity: sha512-szf2QrjuI4V1mWv5/M2YKZjQ5yxsphweQD4YgSVkcSigbODR7XYVqvLClJeKmRhZjFtgx7pYfoPvqyCSeFf9jw==}
+  dsh-coding-kit@1.6.1:
+    resolution: {integrity: sha512-RuukmfPxiOpukL/6F+GRYC0vtt3SDu6V84p/wtkDdi+iNI1mmjunUg+klluoydu93tW6BukzM21dfHvGkIBYVQ==}
     engines: {node: ^22.19.0 || >=24.0.0}
     hasBin: true
     peerDependencies:
@@ -2632,7 +2632,7 @@ snapshots:
 
   delayed-stream@1.0.0: {}
 
-  dsh-coding-kit@1.2.2:
+  dsh-coding-kit@1.6.1:
     dependencies:
       js-yaml: 4.3.0
 
