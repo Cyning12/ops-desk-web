@@ -1,0 +1,1 @@
+用法: npx dsh-coding-kit verify [--target PATH] [--task FILE | --spec FILE] [--json] [--allow-no-review] [--allow-invoke-gap] [--allow-no-spec-review]

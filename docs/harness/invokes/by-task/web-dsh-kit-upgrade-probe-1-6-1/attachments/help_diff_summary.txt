@@ -1,0 +1,156 @@
+# help diff · dsh-coding-kit 1.2.2 → 1.6.1
+# generated: 2026-08-25
+# cache: npm_config_cache=/tmp/npm-cache-web-kit
+
+======== TOP --help ========
+--- /Users/cyning/Desktop/Ops-desk/ops-desk-web/docs/harness/invokes/by-task/web-dsh-kit-upgrade-probe-1-6-1/attachments/help_top_1.2.2.txt	2026-08-25 21:34:41
++++ /Users/cyning/Desktop/Ops-desk/ops-desk-web/docs/harness/invokes/by-task/web-dsh-kit-upgrade-probe-1-6-1/attachments/help_top_1.6.1.txt	2026-08-25 21:34:47
+@@ -1,20 +1,21 @@
+-dsh-coding-kit CLI (v1.2.2)
++dsh-coding-kit CLI (v1.6.1)
+ 
+ 用法:
+   npx dsh-coding-kit --version | -V
+   npx dsh-coding-kit --help | -h
+-  npx dsh-coding-kit init [--preset NAME] [--target PATH] [--yes]
++  npx dsh-coding-kit init [--preset NAME] [--target PATH] [--yes]  （NAME 词表: harness-only）
+   npx dsh-coding-kit upgrade [--target PATH] [--yes]
++  npx dsh-coding-kit refresh-ide-blocks [--target PATH] [--dry-run] [--yes] [--json]
+   npx dsh-coding-kit check [--target PATH]
+-  npx dsh-coding-kit verify [--target PATH] [--task FILE]
+-  npx dsh-coding-kit gate-check [--target PATH] [--task FILE]
++  npx dsh-coding-kit verify [--target PATH] [--task FILE | --spec FILE] [--json]
++  npx dsh-coding-kit gate-check [--target PATH] [--task FILE] [--json]
+   npx dsh-coding-kit audit [--target PATH] [--task FILE]
+   npx dsh-coding-kit task lint --file PATH
+   npx dsh-coding-kit task close --file PATH [--yes]
+   npx dsh-coding-kit status [--target PATH] [--task FILE] [--json] [--check]
+   npx dsh-coding-kit timeline --task FILE [--target PATH] [--json] [--limit N] [--ingest]
+   npx dsh-coding-kit lifecycle show [--json]
+-  npx dsh-coding-kit lifecycle dry-run --transition ID --from STATE [--task PATH]
++  npx dsh-coding-kit lifecycle dry-run --transition ID --from STATE [--task PATH] [--target PATH]
+   npx dsh-coding-kit discipline show [--json]
+   npx dsh-coding-kit graph yaml compile|check|export …
+   npx dsh-coding-kit graph ingest|snapshot|axioms …
+
+======== verify --help ========
+# NOTE: 1.2.2 verify --help falls through to top-level help; 1.6.1 prints dedicated one-liner
+--- /Users/cyning/Desktop/Ops-desk/ops-desk-web/docs/harness/invokes/by-task/web-dsh-kit-upgrade-probe-1-6-1/attachments/help_verify_1.2.2.txt	2026-08-25 21:35:27
++++ /Users/cyning/Desktop/Ops-desk/ops-desk-web/docs/harness/invokes/by-task/web-dsh-kit-upgrade-probe-1-6-1/attachments/help_verify_1.6.1.txt	2026-08-25 21:35:28
+@@ -1,29 +1 @@
+-dsh-coding-kit CLI (v1.2.2)
+-
+-用法:
+-  npx dsh-coding-kit --version | -V
+-  npx dsh-coding-kit --help | -h
+-  npx dsh-coding-kit init [--preset NAME] [--target PATH] [--yes]
+-  npx dsh-coding-kit upgrade [--target PATH] [--yes]
+-  npx dsh-coding-kit check [--target PATH]
+-  npx dsh-coding-kit verify [--target PATH] [--task FILE]
+-  npx dsh-coding-kit gate-check [--target PATH] [--task FILE]
+-  npx dsh-coding-kit audit [--target PATH] [--task FILE]
+-  npx dsh-coding-kit task lint --file PATH
+-  npx dsh-coding-kit task close --file PATH [--yes]
+-  npx dsh-coding-kit status [--target PATH] [--task FILE] [--json] [--check]
+-  npx dsh-coding-kit timeline --task FILE [--target PATH] [--json] [--limit N] [--ingest]
+-  npx dsh-coding-kit lifecycle show [--json]
+-  npx dsh-coding-kit lifecycle dry-run --transition ID --from STATE [--task PATH]
+-  npx dsh-coding-kit discipline show [--json]
+-  npx dsh-coding-kit graph yaml compile|check|export …
+-  npx dsh-coding-kit graph ingest|snapshot|axioms …
+-  npx dsh-coding-kit sync index [--target PATH]
+-  npx dsh-coding-kit skills install [--target DIR] [--out DIR] [--global] [--force] [--with-execute-hats]
+-  npx dsh-coding-kit skills build [--with-execute-hats]
+-  npx dsh-coding-kit skills check
+-  npx dsh-coding-kit wiki export --json [--target PATH]
+-  npx dsh-coding-kit task lint-done [--target PATH]
+-  npx dsh-coding-kit task lint-wiki-delta [--target PATH]
+-  npx dsh-coding-kit task check --file PATH
+-
++用法: npx dsh-coding-kit verify [--target PATH] [--task FILE | --spec FILE] [--json] [--allow-no-review] [--allow-invoke-gap] [--allow-no-spec-review]
+
+======== upgrade --help ========
+# NOTE: 1.2.2 upgrade --help falls through to top-level; 1.6.1 dedicated one-liner
+--- /Users/cyning/Desktop/Ops-desk/ops-desk-web/docs/harness/invokes/by-task/web-dsh-kit-upgrade-probe-1-6-1/attachments/help_upgrade_1.2.2.txt	2026-08-25 21:35:28
++++ /Users/cyning/Desktop/Ops-desk/ops-desk-web/docs/harness/invokes/by-task/web-dsh-kit-upgrade-probe-1-6-1/attachments/help_upgrade_1.6.1.txt	2026-08-25 21:35:29
+@@ -1,29 +1 @@
+-dsh-coding-kit CLI (v1.2.2)
+-
+-用法:
+-  npx dsh-coding-kit --version | -V
+-  npx dsh-coding-kit --help | -h
+-  npx dsh-coding-kit init [--preset NAME] [--target PATH] [--yes]
+-  npx dsh-coding-kit upgrade [--target PATH] [--yes]
+-  npx dsh-coding-kit check [--target PATH]
+-  npx dsh-coding-kit verify [--target PATH] [--task FILE]
+-  npx dsh-coding-kit gate-check [--target PATH] [--task FILE]
+-  npx dsh-coding-kit audit [--target PATH] [--task FILE]
+-  npx dsh-coding-kit task lint --file PATH
+-  npx dsh-coding-kit task close --file PATH [--yes]
+-  npx dsh-coding-kit status [--target PATH] [--task FILE] [--json] [--check]
+-  npx dsh-coding-kit timeline --task FILE [--target PATH] [--json] [--limit N] [--ingest]
+-  npx dsh-coding-kit lifecycle show [--json]
+-  npx dsh-coding-kit lifecycle dry-run --transition ID --from STATE [--task PATH]
+-  npx dsh-coding-kit discipline show [--json]
+-  npx dsh-coding-kit graph yaml compile|check|export …
+-  npx dsh-coding-kit graph ingest|snapshot|axioms …
+-  npx dsh-coding-kit sync index [--target PATH]
+-  npx dsh-coding-kit skills install [--target DIR] [--out DIR] [--global] [--force] [--with-execute-hats]
+-  npx dsh-coding-kit skills build [--with-execute-hats]
+-  npx dsh-coding-kit skills check
+-  npx dsh-coding-kit wiki export --json [--target PATH]
+-  npx dsh-coding-kit task lint-done [--target PATH]
+-  npx dsh-coding-kit task lint-wiki-delta [--target PATH]
+-  npx dsh-coding-kit task check --file PATH
+-
++用法: npx dsh-coding-kit upgrade [--target PATH] [--yes]
+
+======== graph yaml --help ========
+# NOTE: 1.2.2 falls through to top-level; 1.6.1 dedicated graph subcommand help
+--- /Users/cyning/Desktop/Ops-desk/ops-desk-web/docs/harness/invokes/by-task/web-dsh-kit-upgrade-probe-1-6-1/attachments/help_graph_yaml_1.2.2.txt	2026-08-25 21:35:30
++++ /Users/cyning/Desktop/Ops-desk/ops-desk-web/docs/harness/invokes/by-task/web-dsh-kit-upgrade-probe-1-6-1/attachments/help_graph_yaml_1.6.1.txt	2026-08-25 21:35:31
+@@ -1,29 +1,11 @@
+-dsh-coding-kit CLI (v1.2.2)
++用法: npx dsh-coding-kit graph <子命令> [选项]
+ 
+-用法:
+-  npx dsh-coding-kit --version | -V
+-  npx dsh-coding-kit --help | -h
+-  npx dsh-coding-kit init [--preset NAME] [--target PATH] [--yes]
+-  npx dsh-coding-kit upgrade [--target PATH] [--yes]
+-  npx dsh-coding-kit check [--target PATH]
+-  npx dsh-coding-kit verify [--target PATH] [--task FILE]
+-  npx dsh-coding-kit gate-check [--target PATH] [--task FILE]
+-  npx dsh-coding-kit audit [--target PATH] [--task FILE]
+-  npx dsh-coding-kit task lint --file PATH
+-  npx dsh-coding-kit task close --file PATH [--yes]
+-  npx dsh-coding-kit status [--target PATH] [--task FILE] [--json] [--check]
+-  npx dsh-coding-kit timeline --task FILE [--target PATH] [--json] [--limit N] [--ingest]
+-  npx dsh-coding-kit lifecycle show [--json]
+-  npx dsh-coding-kit lifecycle dry-run --transition ID --from STATE [--task PATH]
+-  npx dsh-coding-kit discipline show [--json]
+-  npx dsh-coding-kit graph yaml compile|check|export …
+-  npx dsh-coding-kit graph ingest|snapshot|axioms …
+-  npx dsh-coding-kit sync index [--target PATH]
+-  npx dsh-coding-kit skills install [--target DIR] [--out DIR] [--global] [--force] [--with-execute-hats]
+-  npx dsh-coding-kit skills build [--with-execute-hats]
+-  npx dsh-coding-kit skills check
+-  npx dsh-coding-kit wiki export --json [--target PATH]
+-  npx dsh-coding-kit task lint-done [--target PATH]
+-  npx dsh-coding-kit task lint-wiki-delta [--target PATH]
+-  npx dsh-coding-kit task check --file PATH
++子命令:
++  graph yaml compile --graph-id ID [--target PATH] [--input DIR] [--output FILE]
++  graph yaml compile --all [--target PATH] [--input DIR] [--no-recursive]
++  graph yaml check --graph-id ID [--target PATH] [--input DIR] [--graph-json FILE]
++  graph yaml export --input DIR [--out FILE] [--no-recursive]
++  graph ingest [--target PATH] [--actor ACTOR] [--dry-run]
++  graph snapshot [--target PATH]
++  graph axioms check [--target PATH] [--json]
+ 
+
+======== graph yaml compile/check/export --help ========
+# 1.6.1: compile/check/export --help 与 graph yaml --help 同文（无独立更细 usage）
+--- compile: 1.6.1 vs graph yaml parent ---
+--- check: 1.6.1 vs graph yaml parent ---
+--- export: 1.6.1 vs graph yaml parent ---

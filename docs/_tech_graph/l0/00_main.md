@@ -1,7 +1,7 @@
 ---
 graph_id: 00_main
 version: 2026-07-27
-generated_at: 2026-08-22T02:45:47Z
+generated_at: 2026-08-25T13:42:21Z
 source: 00_main.graph.yaml
 ---
 
@@ -13,39 +13,42 @@ Ops Desk Web 前端架构总图：页面路由、Pinia Store、API Client、SSE 
 
 ```mermaid
 flowchart TB
-    user[用户]
-    browser[浏览器]
-    app[Vue 3 App]
-    router[Vue Router]
-    pinia[Pinia Store]
-    api_client[API Client]
-    sse_client[SSE Client]
-    pages[页面组件]
-    chat_page[Chat 页面]
-    obs_page[过程观测页]
-    chat_flow[>../l1/10_flow_chat.md]
-    modules_doc[>../l1/01_modules.md]
-    ops_api[ops-desk-api]
-    api_doc[>../../../ops-desk-api/docs/_tech_graph/l0/00_main.md]
+    user["用户"]
+    browser["浏览器"]
+    app["Vue 3 App"]
+    router["Vue Router"]
+    pinia["Pinia Store"]
+    api_client["API Client"]
+    sse_client["SSE Client"]
+    pages["页面组件"]
+    chat_page["Chat 页面"]
+    obs_page["过程观测页"]
+    chat_flow[">../l1/10_flow_chat.md"]
+    modules_doc[">../l1/01_modules.md"]
+    ops_api["ops-desk-api"]
+    api_doc[">../../../ops-desk-api/docs/_tech_graph/l0/00_main.md"]
 
-    user --"interacts"--> browser
-    browser --"loads"--> app
-    app --"mounts"--> router
-    app --"uses"--> pinia
-    router --"routes"--> pages
-    pages --"calls"--> api_client
-    pages --"includes"--> chat_page
-    pages --"includes"--> obs_page
-    chat_page --"streams"--> sse_client
-    chat_page --"展开"--> chat_flow
-    sse_client --"POST /api/ops/chat/stream"--> ops_api
-    api_client --"HTTP /api/ops/*"--> ops_api
-    ops_api --"加载"--> api_doc
-    app --"模块边界"--> modules_doc
+    user -->|"interacts"| browser
+    browser -->|"loads"| app
+    app -->|"mounts"| router
+    app -->|"uses"| pinia
+    router -->|"routes"| pages
+    pages -->|"calls"| api_client
+    pages -->|"includes"| chat_page
+    pages -->|"includes"| obs_page
+    chat_page -->|"streams"| sse_client
+    chat_page -->|"展开"| chat_flow
+    sse_client -->|"POST /api/ops/chat/stream"| ops_api
+    api_client -->|"HTTP /api/ops/*"| ops_api
+    ops_api -->|"加载"| api_doc
+    app -->|"模块边界"| modules_doc
 
     classDef phase fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     classDef doc fill:#fff8e1,stroke:#ff6f00,stroke-width:1px
     classDef infra fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px
+    class api_client,sse_client,pages,chat_page,obs_page phase
+    class app,router,pinia doc
+    class user,browser,chat_flow,modules_doc,ops_api,api_doc infra
 ```
 
 ## Structured Data

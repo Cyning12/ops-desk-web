@@ -1,0 +1,1 @@
+用法: npx dsh-coding-kit upgrade [--target PATH] [--yes]

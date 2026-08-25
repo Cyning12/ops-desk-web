@@ -1,0 +1,11 @@
+用法: npx dsh-coding-kit graph <子命令> [选项]
+
+子命令:
+  graph yaml compile --graph-id ID [--target PATH] [--input DIR] [--output FILE]
+  graph yaml compile --all [--target PATH] [--input DIR] [--no-recursive]
+  graph yaml check --graph-id ID [--target PATH] [--input DIR] [--graph-json FILE]
+  graph yaml export --input DIR [--out FILE] [--no-recursive]
+  graph ingest [--target PATH] [--actor ACTOR] [--dry-run]
+  graph snapshot [--target PATH]
+  graph axioms check [--target PATH] [--json]
+
