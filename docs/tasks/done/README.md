@@ -51,6 +51,7 @@
 | 关账日 | task | freeze_id / 摘要 |
 |--------|------|------------------|
 | 2026-08-31 | [`task_web_lg_rag_sse_t2.md`](./task_web_lg_rag_sse_t2.md) | `lg-rag-sse-v1` · 主 Chat 切 lg-rag SSE · PR #23 MERGED |
+| 2026-08-31 | [`task_coding_kit_upgrade_1_10_0.md`](./task_coding_kit_upgrade_1_10_0.md) | kit 1.10.0 · 补跑 upgrade · D-PIN |
 
 ---
 
@@ -77,7 +78,7 @@
 | 日期 | 摘要 |
 |------|------|
 | YYYY-MM-DD | 初版 Hub（cyning-harness 模板嵌入） |
-| 2026-08-31 | 增 web 表 · 归档 `task_web_lg_rag_sse_t2.md`（PR #23） |
+| 2026-08-31 | 增 web 表 · 归档 `task_web_lg_rag_sse_t2.md`（PR #23）· `task_coding_kit_upgrade_1_10_0.md` |
 
 ## 给维护者
 

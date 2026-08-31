@@ -13,7 +13,8 @@
 > **2.24.0+**：`graph yaml` G-L 递归发现；Skills 封装不随 upgrade 推入本仓。
 > **dsh-coding-kit 1.2.1+**：产品迁仓更名（`@cyning/harness` → `dsh-coding-kit`，CLI 语义对齐 2.24.0）；命令前缀 `npx dsh-coding-kit`；manifest 目录仍 `.cyning-harness/`。
 > **1.2.2+**：peer 已标 optional（D1 修复，pnpm 默认配置可直装；`.npmrc` 变通已移除）；adapter 示例命令字面已换名（D2 修复）。  
-> **1.6.1**：与 ops-desk-api 对齐；`graph-compile.sh` D-PIN（`KIT_CLI=dsh-coding-kit@1.6.1` + `npx --yes`）；当前钉版 **1.6.1**。
+> **1.6.1**：与 ops-desk-api 对齐；`graph-compile.sh` D-PIN（`KIT_CLI=dsh-coding-kit@1.6.1` + `npx --yes`）。  
+> **1.10.0**：补跑官方 `upgrade`（#21 仅钉 package 未升 manifest）；`KIT_CLI=dsh-coding-kit@1.10.0`；当前钉版 **1.10.0**。
 
 ---
 
@@ -41,8 +42,8 @@
 
 - [ ] `npx dsh-coding-kit check` → 「已是最新」
 - [ ] `npx dsh-coding-kit verify --target . --task <本 upgrade task>` → PASS（**2.11.0+** R\<n\> 审查文；**2.17.0+** pre-30 invoke / graph_delta WARN；**2.18.0+** wiki_delta WARN，`--strict-wiki-delta` 可 BLOCK）
-- [ ] `npx dsh-coding-kit@1.6.1 task lint-wiki-delta --target . --scope all` → missing=0 · exit 0
-- [ ] （若已启用 WikiTrack）`npx dsh-coding-kit@1.6.1 wiki export --json --target .` → nodes≥4 · edges>0
+- [ ] `npx dsh-coding-kit@1.10.0 task lint-wiki-delta --target . --scope all` → missing=0 · exit 0
+- [ ] （若已启用 WikiTrack）`npx dsh-coding-kit@1.10.0 wiki export --json --target .` → nodes≥4 · edges>0
 - [ ] （≥2.22）先完成 overlay 契约（profile `graph_modules_path` + AGENTS local）并 **commit**，再 upgrade；二次 upgrade 后 overlay 相关 diff 宜空
 - [ ] `npx dsh-coding-kit task close --help` 正常输出（闭环豁免旗见 USER_GUIDE §6.0：含 `--allow-wiki-gap`；勿当默认绿路径）；关账用 `--file`，**勿**加 `--target .`
 - [ ] 业务三件套回归：`pnpm lint` / `pnpm test` / `pnpm build` exit 0
@@ -74,3 +75,4 @@
 | 2026-08-17 | **dsh-coding-kit 1.2.1**：迁仓更名；命令前缀更换；钉版 1.2.1；pnpm 需 `--config.auto-install-peers=false`（peer 链含未发布包） |
 | 2026-08-17 | **dsh-coding-kit 1.2.2**：FEEDBACK D1/D2/D3 修复验收；移除 `.npmrc` 变通；钉版 1.2.2 |
 | 2026-08-25 | **dsh-coding-kit 1.6.1**：跳版自 1.2.2；D-PIN graph-compile；钉版 1.6.1 |
+| 2026-08-31 | **dsh-coding-kit 1.10.0**：补跑 upgrade（manifest 自 1.6.1）；KIT_CLI / package 三钉一致；钉版 1.10.0 |
