@@ -20,7 +20,7 @@
 ## 00 待办（web Agent 执行）
 
 1. **Open Folder** = `ops-desk-web/`  
-2. 读 task：[`task_web_lg_rag_sse_t2_joint.md`](../../../../tasks/active/task_web_lg_rag_sse_t2_joint.md)  
+2. 读 task：[`task_web_lg_rag_sse_t2.md`](../../../../tasks/active/task_web_lg_rag_sse_t2.md)  
 3. 读 Spec：[`SPEC-web-lg-rag-sse-t2_v1.md`](../../../../spec/SPEC-web-lg-rag-sse-t2_v1.md)  
 4. 读 api 联调：[`05_lg_rag_transport_and_session_plan_v0.md`](../../../../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) §10–§11  
 5. **HG-SPEC-SIGNOFF** → approved（§0 冻结）  

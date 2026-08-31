@@ -3,7 +3,7 @@
 > **状态**：`active`（2026-08-31 · **web 00 签收** · HG-SPEC-SIGNOFF approved · §0 冻结生效）  
 > **freeze_id**：`lg-rag-sse-v1`（对齐 api `05_lg_rag_transport_and_session_plan_v0.md` §4.2）  
 > **上游 api**：`POST /api/ops/lg-rag/stream` · 分支 `task/lg-rag-sse-stream-updates` 或合入后 master  
-> **关联 task**：[`task_web_lg_rag_sse_t2_joint`](../tasks/active/task_web_lg_rag_sse_t2_joint.md)  
+> **关联 task**：[`task_web_lg_rag_sse_t2`](../tasks/active/task_web_lg_rag_sse_t2.md)  
 > **联调真值**：api `05` §10–§11 · [`CHECKLIST_lg_rag_sse_joint_release_v1.md`](../checklists/CHECKLIST_lg_rag_sse_joint_release_v1.md)
 
 ---

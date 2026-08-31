@@ -45,7 +45,9 @@
 
 api T2 已提供 `POST /api/ops/lg-rag/stream`（`lg-rag-sse-v1`）。产品主线 **弃用 chat stream**；本 task 让 **主 Chat UI** 改走 lg-rag SSE，并完成与 api 的 **T2 联调**，通过人工 checklist 后与 api **联合发版**。
 
-**完成态（草案）**：
+## 验收标准
+
+> 完成态（30 交付时逐项勾选；联调签字项由维护者 checklist §1 承载）：
 
 - [ ] `src/composables/useLgRagSse.ts`（或等价）：解析 §4.2 事件 · `credentials:'include'` · timeout ≥300s  
 - [ ] `ChatView` / `chat` store：**发送走 `/stream`** · 渲染 progress + answer  
@@ -106,6 +108,14 @@ pnpm lint && pnpm test && pnpm build
 # 可选
 ./scripts/graph-compile.sh
 ```
+
+---
+
+## 40 自检
+
+### 自检结论
+
+（待 40 填写：lint / test / build / graph-compile 结果与结论）
 
 ---
 
