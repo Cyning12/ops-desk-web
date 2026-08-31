@@ -1,6 +1,6 @@
 # Task：Web · lg-rag SSE T4 · 断联 / replay（cursor 续看 · seq 去重）
 
-> **状态**：active（2026-08-31 · web 00 起草签收 · 待 30 实现）  
+> **状态**：completed（2026-08-31 CLOSE · PR [#26](https://github.com/Cyning12/ops-desk-web/pull/26) MERGED · HG-JOINT-DEBUG 凭 40 脚本化联调证据过 · 00 统筹归档）  
 > **类型**：传输 / SSE resume（跨仓联调）  
 > **统筹**：**web 00 Agent** 签收 · 排 30 实现 · **禁止 ops-desk-api Agent 改本仓 Vue/TS**  
 > **上游 Spec**：api [`05_lg_rag_transport_and_session_plan_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) §4.2 · §10.3（T4 已回写实现句）  
@@ -42,7 +42,7 @@
 | **HG-TASK-DRAFT** | approved | 22-R1 | 2026-08-31 · web 00 签 · 维护者 Prompt 授权（阶段 A · 起草 web T4 task · 闸 · 派 30） |
 | **HG-GRAPH-MODULES** | approved | **30** | 2026-08-31 · web 00 预签（授权代签文档闸）· graph_delta=update 限 `10_flow_chat` 备注 · 不新增一级模块 |
 | **HG-AUDIT-R1** | approved | **30** | 2026-08-31 · web 00 代签（维护者授权）· R1 审 [reviews/task_web_lg_rag_sse_t4_audit_R1_20260831.md](../../harness/reviews/task_web_lg_rag_sse_t4_audit_R1_20260831.md) pass-with-notes · 0 阻塞 · 6 非阻塞 note（N1–N3 已随签收入 task · N4–N6 由 30 内决） |
-| **HG-JOINT-DEBUG** | pending | **merge** | T4 联调：DevTools offline → 恢复后帧不丢不重复（40 脚本化联调记录 **或** 维护者亲签）· 未过前 web PR **勿 auto-merge** |
+| **HG-JOINT-DEBUG** | approved | **merge** | 2026-08-31 · web 00 凭 [invoke_40](../../harness/invokes/by-task/web-lg-rag-sse-t4/invoke_20260831_40_web-lg-rag-sse-t4.md) 脚本化联调证据签收（闸表双通道之脚本化通道）：A–K 11 项全过 · offline 后帧不丢不重复 · replay 至 done · 404/401/422 ✓ |
 
 ---
 
@@ -159,7 +159,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 | graph | `./scripts/graph-compile.sh` | 0 | ✅ OK 00_main / 10_flow_chat（`01_modules.md` 零 diff） |
 | verify | `npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_sse_t4.md` | 0 | ✅ VERIFY: PASS |
 
-联调（HG-JOINT-DEBUG 承载 · 40 脚本化留证，详见 invoke_40）：本地 api（master · #103+#104 · 补跑 `alembic upgrade head` 落 `ops_lg_rag_run_events`）+ curl 实测 A–K 11 项全过：live 帧顶层 cursor ✓ · mid-stream kill 后 replay after_seq=1 补发 seq2,3（不丢不重复）✓ · 完整 run replay 至 done ✓ · after_seq 只重放 seq>N ✓ · 空流 0 帧 HTTP 200 ✓ · 未知 run_id 404 ✓ · 未登录 401 ✓ · 非法 body 422 ✓。web PR 仍 **勿 auto-merge**（闸表 HG-JOINT-DEBUG 待维护者核证据后签）。
+联调（HG-JOINT-DEBUG 承载 · 40 脚本化留证，详见 invoke_40）：本地 api（master · #103+#104 · 补跑 `alembic upgrade head` 落 `ops_lg_rag_run_events`）+ curl 实测 A–K 11 项全过：live 帧顶层 cursor ✓ · mid-stream kill 后 replay after_seq=1 补发 seq2,3（不丢不重复）✓ · 完整 run replay 至 done ✓ · after_seq 只重放 seq>N ✓ · 空流 0 帧 HTTP 200 ✓ · 未知 run_id 404 ✓ · 未登录 401 ✓ · 非法 body 422 ✓。HG-JOINT-DEBUG：2026-08-31 · **web 00 凭 40 脚本化证据签收 approved**（双通道之脚本化通道）；api 侧「断开即取消 generator · done 不落盘」发现属 api 范围，已入 invoke_40 遗留并回填 WAVE_READINESS 备注。
 
 ---
 
@@ -181,6 +181,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者 Prompt 阶段 A 授权 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · api T4 #103 已 MERGED 为背景 |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note）→ **00** 代签 HG-AUDIT-R1 · N1 api 指针改 done/ · N2 测试口径修正 · N3 live 401 钉清 active-run · 闸全开可派 30 |
+| 2026-08-31 | **00 CLOSE**：HG-JOINT-DEBUG 凭 invoke_40 证据签收 → PR #26 MERGED → 验收 10/10 · KPI 100 · 归档 done/ → WAVE_READINESS §1 回填（T5 判定） |
 | 2026-08-31 | **30/40** 交付：active-run 持久化/终态清除 · seq 去重 · resumeFromCursor（replay 复用同管线）· 续看双条 UI · 18 新测例（155 全绿）· 五闸全绿；R1-N4 空流保留 active-run + 提示 · N5 渲染进新建 assistant（processFrame 提取复用）· N6 abort 即终态清除（产品语义维持 00 定夺）；40 脚本化联调 11 项全过（api 侧 generator 取消发现入 invoke_40 遗留） |
 
 ## 合入 / 联调策略
@@ -188,3 +189,40 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 - web PR：**勿 auto-merge**（close_pr_policy=required）
 - api 已 api-only 先合（#103 MERGED）；web 合入前须 HG-JOINT-DEBUG 过（40 脚本化联调记录或维护者亲签）
 - 联调通过标准：offline → 恢复后帧不丢不重复 · 断连跑完可 replay 至 `done` · answer 不重复 append（对齐 api `05` §10.3）
+
+---
+
+### KPI
+
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验沉淀（recommended）
+
+- replay 与 live 复用同一 `LgRagSseFrameParser` + 帧处理管线（processFrame 提取）即可闭环；去重在 store 层 per run_id 记 lastAppliedSeq，answer 天然幂等但仍按 seq 挡重。
+- 刷新后续看渲染目标须新建 assistant 消息（R1-N5），否则 replay 帧无挂载点。
+- **api 侧实证**：客户端断开即取消 SSE generator，断开后帧（含 done）不再产生/落盘——「断连跑完 replay 至 done」仅当服务端先于断开跑完时成立；web 行为自洽（无 done 保留 active-run + 提示），api 侧建议另 task 评估。
+- 本机 dev DB 首次联调须先 `alembic upgrade head`（T4 事件表），否则 replay 500。
+- Wiki: `docs/coding_wiki/volatile.md`（见 wiki_delta_note）。
+
+---
+
+## CLOSE
+
+| 项 | 值 |
+|---|---|
+| 日期 | 2026-08-31 |
+| web PR | [#26](https://github.com/Cyning12/ops-desk-web/pull/26) MERGED |
+| 联调 | HG-JOINT-DEBUG approved · web 00 凭 invoke_40 脚本化证据签收（A–K 全过） |
+| 交付 | active-run 持久化/终态清除 · 断网/刷新手动「续看」· replay 复用同管线 · seq 去重（answer 不重复）· 404/422 清态 · 双提示条 UI |
+| 归档 | `docs/tasks/done/task_web_lg_rag_sse_t4.md` |
+| 下一棒 | WAVE_READINESS §1 回填 → T5 判定（api T5 契约未立 → 阻塞 · 仅通知 api 00） |

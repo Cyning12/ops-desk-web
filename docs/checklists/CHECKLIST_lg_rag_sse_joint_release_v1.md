@@ -62,8 +62,8 @@
 
 ## 3. T4 断联 / replay（后续）
 
-- [ ] 断网后行为符合 T4 契约  
-- [ ] replay 不重复渲染同一 `seq`  
+- [x] 断网后行为符合 T4 契约（2026-08-31 · invoke_40 脚本化证据 A–K：offline mid-stream → replay 补发不丢不重复 · 404/401/422 ✓）  
+- [x] replay 不重复渲染同一 `seq`（Vitest seq 去重断言 + 联调证据 C/E/F）  
 - [ ] **T4 CLOSE 后**：已打开 api [`WAVE_READINESS_lg_rag_sse_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/WAVE_READINESS_lg_rag_sse_v0.md) §1 并回填「能否开 T5」结论  
 
 ---

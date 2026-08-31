@@ -50,6 +50,7 @@
 
 | 关账日 | task | freeze_id / 摘要 |
 |--------|------|------------------|
+| 2026-08-31 | [`task_web_lg_rag_sse_t4.md`](./task_web_lg_rag_sse_t4.md) | `lg-rag-sse-v1` · 断联/replay 续看 · cursor + seq 去重 · PR #26 MERGED |
 | 2026-08-31 | [`task_web_lg_rag_sse_t3.md`](./task_web_lg_rag_sse_t3.md) | `lg-rag-sse-v1` · Chat 稳定 thread_id 会话连续性 · 刷新恢复 · PR #25 MERGED |
 | 2026-08-31 | [`task_web_lg_rag_sse_t2.md`](./task_web_lg_rag_sse_t2.md) | `lg-rag-sse-v1` · 主 Chat 切 lg-rag SSE · PR #23 MERGED |
 | 2026-08-31 | [`task_coding_kit_upgrade_1_10_0.md`](./task_coding_kit_upgrade_1_10_0.md) | kit 1.10.0 · 补跑 upgrade · D-PIN |
@@ -81,6 +82,7 @@
 | YYYY-MM-DD | 初版 Hub（cyning-harness 模板嵌入） |
 | 2026-08-31 | 增 web 表 · 归档 `task_web_lg_rag_sse_t2.md`（PR #23）· `task_coding_kit_upgrade_1_10_0.md` |
 | 2026-08-31 | 归档 `task_web_lg_rag_sse_t3.md`（PR #25 · HG-JOINT-DEBUG 维护者亲签） |
+| 2026-08-31 | 归档 `task_web_lg_rag_sse_t4.md`（PR #26 · HG-JOINT-DEBUG 凭 invoke_40 脚本化证据签收） |
 
 ## 给维护者
 
