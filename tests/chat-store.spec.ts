@@ -2,18 +2,18 @@ import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ApiError } from '../src/api/http'
-import type { ChatSseCallbacks } from '../src/composables/useOpsChatSse'
+import type { LgRagSseCallbacks } from '../src/composables/useLgRagSse'
 
 vi.mock('../src/api/chat', () => ({
   fetchLatestSession: vi.fn(),
 }))
 
-vi.mock('../src/composables/useOpsChatSse', () => ({
-  streamOpsChat: vi.fn(),
+vi.mock('../src/composables/useLgRagSse', () => ({
+  streamLgRag: vi.fn(),
 }))
 
 import { fetchLatestSession } from '../src/api/chat'
-import { streamOpsChat } from '../src/composables/useOpsChatSse'
+import { streamLgRag } from '../src/composables/useLgRagSse'
 import { useAuthStore } from '../src/stores/auth'
 import { useChatStore } from '../src/stores/chat'
 
@@ -25,16 +25,16 @@ const fakeSession = {
   updated_at: '2026-07-24T01:00:00',
 }
 
-let captured: ChatSseCallbacks
+let captured: LgRagSseCallbacks
 let abortMock: ReturnType<typeof vi.fn>
 
-describe('stores/chat', () => {
+describe('stores/chat（T2 · lg-rag SSE）', () => {
   beforeEach(async () => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
 
     abortMock = vi.fn(() => captured.onAborted?.())
-    vi.mocked(streamOpsChat).mockImplementation((_input, callbacks) => {
+    vi.mocked(streamLgRag).mockImplementation((_input, callbacks) => {
       captured = callbacks ?? {}
       return { abort: abortMock, done: Promise.resolve() }
     })
@@ -61,32 +61,35 @@ describe('stores/chat', () => {
     expect(fresh.sessionError).toBe('server boom')
   })
 
-  it('sendMessage 事件流：user/assistant 消息入列，thinking 分块、answer 增量拼接、done 收尾', () => {
+  it('sendMessage 走 lg-rag stream：query/mode=supervisor，thread_id 留空（T2）', () => {
     const chat = useChatStore()
     chat.sendMessage('  你好  ')
 
-    expect(streamOpsChat).toHaveBeenCalledWith(
-      { message: '你好', sessionId: 's-1', model: null },
-      expect.any(Object),
-    )
+    expect(streamLgRag).toHaveBeenCalledWith({ query: '你好', mode: 'supervisor' }, expect.any(Object))
+    const input = vi.mocked(streamLgRag).mock.calls[0][0]
+    expect(input).not.toHaveProperty('threadId')
     expect(chat.streaming).toBe(true)
     expect(chat.messages).toHaveLength(2)
     expect(chat.messages[0]).toMatchObject({ role: 'user', content: '你好' })
     expect(chat.messages[1]).toMatchObject({ role: 'assistant', content: '' })
+  })
 
-    captured.onEvent?.({ event_type: 'run.start', agent_role: 'system', payload: { run_id: 'r-1' } })
-    captured.onEvent?.({ event_type: 'thinking', agent_role: 'intent', payload: { content: '理解' } })
-    captured.onEvent?.({ event_type: 'thinking', agent_role: 'intent', payload: { content: '意图' } })
-    captured.onEvent?.({ event_type: 'thinking', agent_role: 'context', payload: { content: '加载上下文' } })
-    captured.onEvent?.({ event_type: 'answer', agent_role: 'answer', payload: { content: '回答' } })
-    captured.onEvent?.({ event_type: 'answer', agent_role: 'answer', payload: { content: '片段' } })
+  it('事件流：node/subtask progress 入进度块，answer 整段填入，done 收尾', () => {
+    const chat = useChatStore()
+    chat.sendMessage('你好')
+
+    captured.onEvent?.({ event_type: 'run.start', agent_role: 'system', payload: { run_id: 'r-1', thread_id: 't-1', mode: 'supervisor' } })
+    captured.onEvent?.({ event_type: 'node.progress', agent_role: 'intent', payload: { summary: '意图识别完成' } })
+    captured.onEvent?.({ event_type: 'subtask.progress', agent_role: 'rag_subtask', payload: { summary: '检索完成' } })
+    captured.onEvent?.({ event_type: 'answer', agent_role: 'aggregator', payload: { content: '整段终答' } })
 
     const assistant = chat.messages[1]
+    // 进度事件各成一块（不做 chat thinking 式增量聚合）
     expect(assistant.thinking).toEqual([
-      { role: 'intent', content: '理解意图' },
-      { role: 'context', content: '加载上下文' },
+      { role: 'intent', content: '意图识别完成' },
+      { role: 'rag_subtask', content: '检索完成' },
     ])
-    expect(assistant.content).toBe('回答片段')
+    expect(assistant.content).toBe('整段终答')
     expect(chat.streaming).toBe(true)
 
     captured.onEvent?.({
@@ -99,6 +102,46 @@ describe('stores/chat', () => {
     expect(chat.error).toBeNull()
   })
 
+  it('进度帧按 api 真实 payload 键形渲染（route/subtasks/subtask_result/answer_preview）', () => {
+    const chat = useChatStore()
+    chat.sendMessage('你好')
+
+    // 与 api sse_stream._summarize_payload 产出对齐的帧形
+    captured.onEvent?.({
+      event_type: 'node.progress',
+      agent_role: 'supervisor',
+      payload: { route: 'rag', subtasks: [{ id: 't1', query: 'Kimi Code aborted' }] },
+    })
+    captured.onEvent?.({
+      event_type: 'subtask.progress',
+      agent_role: 'rag_subtask',
+      payload: { subtask_result: { id: 't1', hits: 3 }, answer_preview: '根据检索…' },
+    })
+    // 空摘要帧（无已知键 → 兜底键名；完全空 → 丢弃）
+    captured.onEvent?.({ event_type: 'node.progress', agent_role: 'critic', payload: { foo: 1 } })
+    captured.onEvent?.({ event_type: 'node.progress', agent_role: 'x', payload: {} })
+
+    const blocks = chat.messages[1].thinking
+    expect(blocks[0].role).toBe('supervisor')
+    expect(blocks[0].content).toContain('route: rag')
+    expect(blocks[0].content).toContain('subtasks:')
+    expect(blocks[1].role).toBe('rag_subtask')
+    expect(blocks[1].content).toContain('subtask_result:')
+    expect(blocks[1].content).toContain('answer_preview: 根据检索…')
+    expect(blocks[2]).toEqual({ role: 'critic', content: 'foo' })
+    expect(blocks).toHaveLength(3) // 空 payload 帧被丢弃
+  })
+
+  it('answer 整段语义：重复 answer 帧取最新（非增量拼接）', () => {
+    const chat = useChatStore()
+    chat.sendMessage('你好')
+
+    captured.onEvent?.({ event_type: 'answer', agent_role: 'aggregator', payload: { content: '第一版' } })
+    captured.onEvent?.({ event_type: 'answer', agent_role: 'aggregator', payload: { content: '整段终答' } })
+
+    expect(chat.messages[1].content).toBe('整段终答')
+  })
+
   it('error 事件：停止 streaming 并记录 stage/message/retryable', () => {
     const chat = useChatStore()
     chat.sendMessage('你好')
@@ -106,11 +149,11 @@ describe('stores/chat', () => {
     captured.onEvent?.({
       event_type: 'error',
       agent_role: 'system',
-      payload: { stage: 'llm', message: 'model unavailable', retryable: false },
+      payload: { stage: 'supervisor', message: 'model unavailable', retryable: false },
     })
 
     expect(chat.streaming).toBe(false)
-    expect(chat.error).toEqual({ stage: 'llm', message: 'model unavailable', retryable: false })
+    expect(chat.error).toEqual({ stage: 'supervisor', message: 'model unavailable', retryable: false })
   })
 
   it('传输层错误：network 错误 retryable=true', () => {
@@ -121,6 +164,16 @@ describe('stores/chat', () => {
 
     expect(chat.streaming).toBe(false)
     expect(chat.error).toEqual({ stage: 'network', message: 'Failed to fetch', retryable: true })
+  })
+
+  it('client 超时：stage=timeout 且 retryable', () => {
+    const chat = useChatStore()
+    chat.sendMessage('你好')
+
+    captured.onError?.({ kind: 'timeout', status: null, message: '响应超时（>300s），请稍后重试' })
+
+    expect(chat.streaming).toBe(false)
+    expect(chat.error).toEqual({ stage: 'timeout', message: '响应超时（>300s），请稍后重试', retryable: true })
   })
 
   it('传输层 401：清空 auth 会话并给出 auth 错误', () => {
@@ -136,6 +189,15 @@ describe('stores/chat', () => {
     expect(auth.isLoggedIn).toBe(false)
     expect(chat.streaming).toBe(false)
     expect(chat.error).toEqual({ stage: 'auth', message: '登录已过期，请重新登录', retryable: false })
+  })
+
+  it('422 预检：query 超 8000 字不发请求，写入 validation 错误', () => {
+    const chat = useChatStore()
+    chat.sendMessage('x'.repeat(8001))
+
+    expect(streamLgRag).not.toHaveBeenCalled()
+    expect(chat.streaming).toBe(false)
+    expect(chat.error).toMatchObject({ stage: 'validation', retryable: false })
   })
 
   it('stopStreaming：调用 abort，标记 interrupted，可继续重发', () => {
@@ -160,10 +222,10 @@ describe('stores/chat', () => {
   it('streaming 中忽略重复发送；无 session 时忽略发送', async () => {
     const chat = useChatStore()
     chat.sendMessage('第一条')
-    expect(streamOpsChat).toHaveBeenCalledTimes(1)
+    expect(streamLgRag).toHaveBeenCalledTimes(1)
 
     chat.sendMessage('第二条（应被忽略）')
-    expect(streamOpsChat).toHaveBeenCalledTimes(1)
+    expect(streamLgRag).toHaveBeenCalledTimes(1)
     expect(chat.messages).toHaveLength(2)
 
     // 无 session

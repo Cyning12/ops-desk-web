@@ -20,7 +20,7 @@
 ## 00 待办（web Agent 执行）
 
 1. **Open Folder** = `ops-desk-web/`  
-2. 读 task：[`task_web_lg_rag_sse_t2_joint.md`](../../../../tasks/active/task_web_lg_rag_sse_t2_joint.md)  
+2. 读 task：[`task_web_lg_rag_sse_t2.md`](../../../../tasks/active/task_web_lg_rag_sse_t2.md)  
 3. 读 Spec：[`SPEC-web-lg-rag-sse-t2_v1.md`](../../../../spec/SPEC-web-lg-rag-sse-t2_v1.md)  
 4. 读 api 联调：[`05_lg_rag_transport_and_session_plan_v0.md`](../../../../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) §10–§11  
 5. **HG-SPEC-SIGNOFF** → approved（§0 冻结）  
@@ -45,6 +45,6 @@
 
 | 闸 | status | 日期 | 备注 |
 |---|---|---|---|
-| HG-SPEC-SIGNOFF | pending | | |
-| HG-TASK-DRAFT | pending | | |
-| HG-JOINT-DEBUG | pending | | checklist 附件路径 |
+| HG-SPEC-SIGNOFF | **approved** | 2026-08-31 | web 00 签 · SPEC §0 冻结生效（维护者令「签收」） |
+| HG-TASK-DRAFT | **approved** | 2026-08-31 | web 00 签 · task 人工闸表已回写 |
+| HG-JOINT-DEBUG | **approved** | 2026-08-31 | 维护者 cyning 亲签 · `docs/checklists/CHECKLIST_lg_rag_sse_joint_release_v1.md` §1.4（全勾） |
