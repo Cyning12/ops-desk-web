@@ -56,6 +56,11 @@ function onStop(): void {
 function onNewSession(): void {
   chat.startNewSession()
 }
+
+// T4：手动触发 replay 续看（断连错误条 / 刷新「上次回答未完成」条共用；不自动 replay）
+function onResume(): void {
+  chat.resumeFromCursor()
+}
 </script>
 
 <template>
@@ -83,6 +88,22 @@ function onNewSession(): void {
       title="已恢复上次会话上下文（历史消息不回显）"
       @close="chat.dismissRestoredNotice()"
     />
+
+    <el-alert
+      v-if="chat.resumeNotice && chat.activeRun"
+      class="chat-page__alert"
+      type="warning"
+      show-icon
+      title="上次回答未完成"
+      @close="chat.dismissResumeNotice()"
+    >
+      <div class="chat-page__alert-body">
+        <span>断线前的回答可从中断处继续查看</span>
+        <el-button size="small" plain :disabled="chat.streaming" @click="onResume">
+          续看
+        </el-button>
+      </div>
+    </el-alert>
 
     <el-alert
       v-if="chat.sessionError"
@@ -133,10 +154,21 @@ function onNewSession(): void {
       show-icon
       :closable="false"
       :title="`[${chat.error.stage}] ${chat.error.message}`"
-      :description="chat.error.retryable ? '可重试：请重新发送消息' : '不可重试，请联系管理员'"
-    />
-    <p v-else-if="chat.interrupted" class="chat-page__hint">已中断，可修改后重新发送。</p>
-    <p v-else-if="chat.lastDone" class="chat-page__hint">
+    >
+      <div class="chat-page__alert-body">
+        <span>{{
+          chat.canResume
+            ? '连接中断，已收到的内容不会丢失'
+            : chat.error.retryable
+              ? '可重试：请重新发送消息'
+              : '不可重试，请联系管理员'
+        }}</span>
+        <el-button v-if="chat.canResume" size="small" plain @click="onResume">续看</el-button>
+      </div>
+    </el-alert>
+    <p v-if="chat.resumeHint" class="chat-page__hint">{{ chat.resumeHint }}</p>
+    <p v-if="!chat.error && chat.interrupted" class="chat-page__hint">已中断，可修改后重新发送。</p>
+    <p v-if="!chat.error && !chat.interrupted && chat.lastDone" class="chat-page__hint">
       完成 · 耗时 {{ chat.lastDone.latency_ms }}ms<template v-if="chat.lastDone.model">
         · 模型 {{ chat.lastDone.model }}</template
       >
@@ -227,6 +259,12 @@ function onNewSession(): void {
 .chat-page__alert {
   margin-top: 12px;
   flex: none;
+}
+
+.chat-page__alert-body {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .chat-page__messages {
