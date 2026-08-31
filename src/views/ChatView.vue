@@ -52,6 +52,10 @@ function onSend(): void {
 function onStop(): void {
   chat.stopStreaming()
 }
+
+function onNewSession(): void {
+  chat.startNewSession()
+}
 </script>
 
 <template>
@@ -63,7 +67,22 @@ function onStop(): void {
         <span class="chat-page__session-id">#{{ chat.session.id }}</span>
       </p>
       <p v-else-if="chat.sessionLoading" class="chat-page__session">加载会话中…</p>
+      <span v-if="chat.threadId" class="chat-page__thread-id" :title="chat.threadId">
+        thread {{ chat.threadId.slice(0, 8) }}
+      </span>
+      <el-button class="chat-page__new-session" size="small" plain @click="onNewSession">
+        新会话
+      </el-button>
     </header>
+
+    <el-alert
+      v-if="chat.restoredNotice"
+      class="chat-page__alert"
+      type="info"
+      show-icon
+      title="已恢复上次会话上下文（历史消息不回显）"
+      @close="chat.dismissRestoredNotice()"
+    />
 
     <el-alert
       v-if="chat.sessionError"
@@ -192,6 +211,17 @@ function onStop(): void {
   font-family: monospace;
   font-size: 12px;
   opacity: 0.7;
+}
+
+.chat-page__thread-id {
+  font-family: monospace;
+  font-size: 12px;
+  opacity: 0.55;
+}
+
+.chat-page__new-session {
+  flex: none;
+  margin-left: auto;
 }
 
 .chat-page__alert {

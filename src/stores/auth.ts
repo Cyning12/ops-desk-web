@@ -59,6 +59,13 @@ export const useAuthStore = defineStore('auth', () => {
   function clearSession(): void {
     user.value = null
     ready.value = true
+    // T3（R1-N1）：登出/401 同步清 lg-rag thread_id 本地持久化，避免同浏览器换账号串号。
+    // 键名与 stores/chat.ts LG_RAG_THREAD_ID_STORAGE_KEY 保持一致（避免 auth→chat 循环 import，此处直写）
+    try {
+      window.localStorage.removeItem('ops.lg-rag.thread-id')
+    } catch {
+      // localStorage 不可用：静默降级
+    }
   }
 
   return { user, ready, isLoggedIn, ensureMe, login, logout, clearSession }

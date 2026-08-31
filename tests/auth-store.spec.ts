@@ -115,4 +115,17 @@ describe('stores/auth', () => {
     expect(auth.user).toBeNull()
     expect(auth.isLoggedIn).toBe(false)
   })
+
+  it('clearSession / logout 同步清 lg-rag thread_id 本地持久化（T3 · R1-N1 防换账号串号）', async () => {
+    window.localStorage.setItem('ops.lg-rag.thread-id', 't-x')
+    const auth = useAuthStore()
+
+    auth.clearSession()
+    expect(window.localStorage.getItem('ops.lg-rag.thread-id')).toBeNull()
+
+    window.localStorage.setItem('ops.lg-rag.thread-id', 't-y')
+    vi.mocked(apiLogout).mockResolvedValue(undefined)
+    await auth.logout()
+    expect(window.localStorage.getItem('ops.lg-rag.thread-id')).toBeNull()
+  })
 })
