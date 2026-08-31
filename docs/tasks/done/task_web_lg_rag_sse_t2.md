@@ -4,7 +4,7 @@
 > **类型**：跨仓联调 / 传输切换  
 > **统筹**：**web 00 Agent** 签收 Spec · 排 30 实现 · **禁止 ops-desk-api Agent 改本仓 Vue/TS**  
 > **上游 Spec**：[`SPEC-web-lg-rag-sse-t2_v1.md`](../../spec/SPEC-web-lg-rag-sse-t2_v1.md) · api [`05_lg_rag_transport_and_session_plan_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) §10–§11  
-> **上游 api task**：[`task_lg_rag_sse_stream_updates`](../../../ops-desk-api/docs/tasks/active/task_lg_rag_sse_stream_updates.md) · 分支 `task/lg-rag-sse-stream-updates`  
+> **上游 api task**：[`task_lg_rag_sse_stream_updates`](../../../ops-desk-api/docs/tasks/done/task_lg_rag_sse_stream_updates.md)（已归档 done/ · 2026-08-31 指针修正）· 分支 `task/lg-rag-sse-stream-updates`；api T3 [`task_lg_rag_session_continuity`](../../../ops-desk-api/docs/tasks/done/task_lg_rag_session_continuity.md) 已 MERGED（api [#100](https://github.com/Cyning12/ops-desk-api/pull/100)）  
 > **人工 checklist**：[`CHECKLIST_lg_rag_sse_joint_release_v1.md`](../../checklists/CHECKLIST_lg_rag_sse_joint_release_v1.md)（**发版闸门**）
 
 ---
@@ -100,7 +100,7 @@ api T2 已提供 `POST /api/ops/lg-rag/stream`（`lg-rag-sse-v1`）。产品主�
 | 依赖 | 说明 |
 |---|---|
 | api `/stream` | 联调可用 api 分支部署或本地 `uvicorn` + web dev proxy |
-| api PR | [`task/lg-rag-sse-stream-updates`](../../../ops-desk-api/docs/tasks/active/task_lg_rag_sse_stream_updates.md) · **勿先 merge web  alone** |
+| api PR | [`task/lg-rag-sse-stream-updates`](../../../ops-desk-api/docs/tasks/done/task_lg_rag_sse_stream_updates.md)（已归档 done/ · 2026-08-31 指针修正）· **勿先 merge web  alone** |
 | 发版 | checklist 全勾 → merge api → merge web → 生产冒烟（见 checklist §4） |
 
 ---
