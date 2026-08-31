@@ -49,13 +49,13 @@ api T2 已提供 `POST /api/ops/lg-rag/stream`（`lg-rag-sse-v1`）。产品主�
 
 > 完成态（30 交付时逐项勾选；联调签字项由维护者 checklist §1 承载）：
 
-- [ ] `src/composables/useLgRagSse.ts`（或等价）：解析 §4.2 事件 · `credentials:'include'` · timeout ≥300s  
-- [ ] `ChatView` / `chat` store：**发送走 `/stream`** · 渲染 progress + answer  
-- [ ] **主路径废弃** `useOpsChatSse`（文件可保留但 Chat **不得** import；Vitest 断言）  
-- [ ] `/lg-rag` invoke 页 **不改**  
-- [ ] Vitest + lint + build 绿  
-- [ ] G-L1 chat flow 备注更新 · graph-compile 绿（若本仓 CI 要求）  
-- [ ] 维护者 checklist T2 **全勾** · PR **勿 auto-merge** 直至联调通过  
+- [x] `src/composables/useLgRagSse.ts`（或等价）：解析 §4.2 事件 · `credentials:'include'` · timeout ≥300s（30 · 2026-08-31：`LG_RAG_STREAM_TIMEOUT_MS=300_000`）  
+- [x] `ChatView` / `chat` store：**发送走 `/stream`** · 渲染 progress + answer（30：`streamLgRag {query, mode:'supervisor'}` · thread_id 留空）  
+- [x] **主路径废弃** `useOpsChatSse`（文件可保留但 Chat **不得** import；Vitest 断言）（30：`tests/chat-stream-deprecation.spec.ts` 静态守卫）  
+- [x] `/lg-rag` invoke 页 **不改**（30：`api/lgRag.ts` / `LgRagView` 零 diff）  
+- [x] Vitest + lint + build 绿（40 · 2026-08-31：125 tests passed）  
+- [x] G-L1 chat flow 备注更新 · graph-compile 绿（30：yaml 改 + compile OK）  
+- [ ] 维护者 checklist T2 **全勾** · PR **勿 auto-merge** 直至联调通过（**待维护者** · HG-JOINT-DEBUG）  
 
 ---
 
@@ -115,7 +115,17 @@ pnpm lint && pnpm test && pnpm build
 
 ### 自检结论
 
-（待 40 填写：lint / test / build / graph-compile 结果与结论）
+> 40 · 2026-08-31 · web 00 线
+
+| 闸 | 命令 | 结果 |
+|---|---|---|
+| lint | `pnpm lint` | ✅ exit 0 |
+| test | `pnpm test` | ✅ 23 files / **125 tests passed** |
+| build | `pnpm build` | ✅ built（vue-tsc 无错） |
+| graph | `./scripts/graph-compile.sh` | ✅ OK 10_flow_chat |
+| verify | `npx dsh-coding-kit verify --task …` | ✅ VERIFY PASS（30 前） |
+
+**结论**：自检全绿；唯一未勾验收条 = 维护者 checklist T2（HG-JOINT-DEBUG，须真实联调，不在 00 代签授权范围）。
 
 ---
 
