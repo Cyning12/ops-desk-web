@@ -1,6 +1,6 @@
 # Task：Web · lg-rag SSE T2 联调（主 Chat 切流 · 废弃 chat stream）
 
-> **状态**：active（2026-08-31 · **api 00 代起草** · 待 web **00 统筹签收**）  
+> **状态**：active（2026-08-31 · **api 00 代起草** · **web 00 已统筹签收**）  
 > **类型**：跨仓联调 / 传输切换  
 > **统筹**：**web 00 Agent** 签收 Spec · 排 30 实现 · **禁止 ops-desk-api Agent 改本仓 Vue/TS**  
 > **上游 Spec**：[`SPEC-web-lg-rag-sse-t2_v1.md`](../../spec/SPEC-web-lg-rag-sse-t2_v1.md) · api [`05_lg_rag_transport_and_session_plan_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) §10–§11  
@@ -33,8 +33,8 @@
 
 | human_gate_id | status | blocks_hats | 说明 |
 |---|---|---|---|
-| **HG-SPEC-SIGNOFF** | pending | 22/30 | `SPEC-web-lg-rag-sse-t2_v1.md` · **web 00** 签 |
-| **HG-TASK-DRAFT** | pending | 22-R1 | 本 task · **web 00** 签 |
+| **HG-SPEC-SIGNOFF** | **approved**（2026-08-31 · web 00 签 · 维护者令「签收」） | 22/30 | `SPEC-web-lg-rag-sse-t2_v1.md` §0 冻结生效 |
+| **HG-TASK-DRAFT** | **approved**（2026-08-31 · web 00 签） | 22-R1 | 本 task 草案签收 · 可排 10 task 审 |
 | **HG-GRAPH-MODULES** | pending | **30** | 随 30 更新 G-L1 chat flow 备注 |
 | **HG-AUDIT-R1** | pending | **30** | 20-task-audit 通过后 **web 00** 签 |
 | **HG-JOINT-DEBUG** | pending | **merge** | 维护者签 checklist §T2 · **与 api PR 同日发版前** |

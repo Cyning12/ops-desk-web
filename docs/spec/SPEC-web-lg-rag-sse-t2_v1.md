@@ -1,6 +1,6 @@
 # SPEC：Web · lg-rag SSE T2（主 Chat 切流 · 废弃 chat stream）
 
-> **状态**：`draft`（待 00 签收 · HG-SPEC-SIGNOFF）  
+> **状态**：`active`（2026-08-31 · **web 00 签收** · HG-SPEC-SIGNOFF approved · §0 冻结生效）  
 > **freeze_id**：`lg-rag-sse-v1`（对齐 api `05_lg_rag_transport_and_session_plan_v0.md` §4.2）  
 > **上游 api**：`POST /api/ops/lg-rag/stream` · 分支 `task/lg-rag-sse-stream-updates` 或合入后 master  
 > **关联 task**：[`task_web_lg_rag_sse_t2_joint`](../tasks/active/task_web_lg_rag_sse_t2_joint.md)  
@@ -8,7 +8,9 @@
 
 ---
 
-## 0. 签收注记（00 冻结 · 待签）
+## 0. 签收注记（00 冻结 · 已签）
+
+> **签收**：2026-08-31 · **web 00 Agent** · 维护者令「签收」· freeze_id `lg-rag-sse-v1` 生效；下表为 30 改码冻结真值。
 
 | 项 | 冻结值 |
 |---|---|
@@ -100,3 +102,4 @@ api T2 已交付 `lg-rag-sse-v1` SSE（节点 updates + 整段 `answer`）。产
 | 日期 | 说明 |
 |---|---|
 | 2026-08-31 | 初版：T2 主 Chat 切 lg-rag SSE · 废弃 chat stream 主路径 |
+| 2026-08-31 | **HG-SPEC-SIGNOFF=approved**（web 00 签收 · 维护者令「签收」）；§0 冻结生效；状态 draft→active，可排 10 task 审 / 20 R1 / 30 实现 |
