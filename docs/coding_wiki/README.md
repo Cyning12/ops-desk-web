@@ -31,5 +31,5 @@
 
 ## 验证
 
-    npx dsh-coding-kit@1.6.1 wiki export --json --target .
+    npx dsh-coding-kit@1.10.0 wiki export --json --target .
     # 期望：nodes≥4 且 edges>0 · warnings=0

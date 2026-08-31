@@ -1,6 +1,6 @@
 # Task：Web · lg-rag SSE T2 联调（主 Chat 切流 · 废弃 chat stream）
 
-> **状态**：active（2026-08-31 · **api 00 代起草** · **web 00 已统筹签收**）  
+> **状态**：completed（2026-08-31 CLOSE · PR [#23](https://github.com/Cyning12/ops-desk-web/pull/23) MERGED · 00 统筹归档）  
 > **类型**：跨仓联调 / 传输切换  
 > **统筹**：**web 00 Agent** 签收 Spec · 排 30 实现 · **禁止 ops-desk-api Agent 改本仓 Vue/TS**  
 > **上游 Spec**：[`SPEC-web-lg-rag-sse-t2_v1.md`](../../spec/SPEC-web-lg-rag-sse-t2_v1.md) · api [`05_lg_rag_transport_and_session_plan_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) §10–§11  
@@ -15,18 +15,22 @@
 |---|---|
 | **task_slug** | `web-lg-rag-sse-t2` |
 | **git_branch** | `task/web-lg-rag-sse-t2` |
+| **related_pr** | `#23` |
 | **implement_repo** | `ops-desk-web` |
 | **orchestration** | **00 统筹** → 10 task 审 → 30 实现 → 40 自检；api 仓仅 Spec/PR，**不改本仓代码** |
 | **test_strategy** | `required` |
 | **test_strategy_note** | Vitest mock SSE 帧序；断言主 Chat **不**调 `/ops/chat/stream`；`pnpm lint/test/build`；可选 `./scripts/graph-compile.sh` |
 | **code_quality_bar** | `L2_frontend` |
 | **graph_change_layer** | `G-L1` |
-| **graph_delta** | `update` |
+| **graph_delta** | `docs/_tech_graph/l1/10_flow_chat.graph.yaml` |
 | **graph_delta_note** | `10_flow_chat` / pages 备注：主 Chat 传输改为 lg-rag SSE；不新增一级模块 |
 | **wiki_delta** | `n/a` |
+| **wiki_delta_note** | 联调/传输切换；无 coding_wiki 增量；真值在 tech_graph flow 备注与 Spec/checklist |
 | **review_hat** | `20` |
 | **required_invoke_hats** | `10,00,30,40` |
 | **invoke_retention_profile** | `default` |
+| **experience_capture** | `recommended` |
+| **kpi_aggregator** | `CLOSE` |
 | **freeze_id** | `lg-rag-sse-v1` |
 
 ### 人工闸
@@ -125,14 +129,37 @@ pnpm lint && pnpm test && pnpm build
 | graph | `./scripts/graph-compile.sh` | ✅ OK 10_flow_chat |
 | verify | `npx dsh-coding-kit verify --task …` | ✅ VERIFY PASS（30 前） |
 
-**结论**：自检全绿；唯一未勾验收条 = 维护者 checklist T2（HG-JOINT-DEBUG，须真实联调，不在 00 代签授权范围）。
+**结论**：自检全绿；维护者 checklist T2 / HG-JOINT-DEBUG 已亲签；web PR #23 已 MERGED。
 
 ---
 
-## CLOSE（待）
+### KPI
+
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验沉淀（recommended）
+
+- 进度帧 payload 键（`intent/route/subtasks/…`）与旧 `summary/content/message` 不一致时须显式 `summarizeProgress`，否则 UI 静默丢帧。
+- T2 `answer` 为整段下发属契约设计；打字机属 T5，勿当 bug。
+- Wiki: n/a（见 wiki_delta_note）
+
+---
+
+## CLOSE
 
 | 项 | 值 |
 |---|---|
-| api PR | 联调通过后与 web **同日** merge |
-| web PR | **勿 auto-merge** 直至 HG-JOINT-DEBUG approved |
-| checklist | 归档勾选记录至 invoke 40 附件 |
+| 日期 | 2026-08-31 |
+| web PR | [#23](https://github.com/Cyning12/ops-desk-web/pull/23) MERGED |
+| checklist | HG-JOINT-DEBUG approved · §1.4 亲签 |
+| 归档 | `docs/tasks/done/task_web_lg_rag_sse_t2.md` |
