@@ -37,7 +37,7 @@
 | **HG-TASK-DRAFT** | approved | 22-R1 | 2026-08-31 · web 00 签 · 本 task 草案签收 |
 | **HG-GRAPH-MODULES** | approved | **30** | 2026-08-31 · web 00 预签（维护者授权代签文档闸）· graph_delta=update 限 `10_flow_chat` 备注 · 不新增一级模块（对齐 lc-evidence/lg-rag-page 先例） |
 | **HG-AUDIT-R1** | approved | **30** | 2026-08-31 · web 00 代签（维护者授权）· R1 审 [reviews/task_web_lg_rag_sse_t2_audit_R1_20260831.md](../../harness/reviews/task_web_lg_rag_sse_t2_audit_R1_20260831.md) pass-with-notes · 0 阻塞 · 5 非阻塞 note（30 内决） |
-| **HG-JOINT-DEBUG** | pending | **merge** | 维护者签 checklist §T2 · **与 api PR 同日发版前** |
+| **HG-JOINT-DEBUG** | approved | **merge** | 2026-08-31 · 维护者 cyning 亲签 checklist §1.4（T2 联调通过 · 本地环境 · 双 PR 允许 merge） |
 
 ---
 
@@ -55,7 +55,7 @@ api T2 已提供 `POST /api/ops/lg-rag/stream`（`lg-rag-sse-v1`）。产品主�
 - [x] `/lg-rag` invoke 页 **不改**（30：`api/lgRag.ts` / `LgRagView` 零 diff）  
 - [x] Vitest + lint + build 绿（40 · 2026-08-31：125 tests passed）  
 - [x] G-L1 chat flow 备注更新 · graph-compile 绿（30：yaml 改 + compile OK）  
-- [ ] 维护者 checklist T2 **全勾** · PR **勿 auto-merge** 直至联调通过（**待维护者** · HG-JOINT-DEBUG）  
+- [x] 维护者 checklist T2 **全勾** · PR **勿 auto-merge** 直至联调通过（2026-08-31 · cyning 签 §1.4）  
 
 ---
 

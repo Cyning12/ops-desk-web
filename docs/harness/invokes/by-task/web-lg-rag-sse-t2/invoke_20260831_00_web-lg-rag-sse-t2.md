@@ -47,4 +47,4 @@
 |---|---|---|---|
 | HG-SPEC-SIGNOFF | **approved** | 2026-08-31 | web 00 签 · SPEC §0 冻结生效（维护者令「签收」） |
 | HG-TASK-DRAFT | **approved** | 2026-08-31 | web 00 签 · task 人工闸表已回写 |
-| HG-JOINT-DEBUG | pending | | checklist 附件路径（30 完成后维护者签） |
+| HG-JOINT-DEBUG | **approved** | 2026-08-31 | 维护者 cyning 亲签 · `docs/checklists/CHECKLIST_lg_rag_sse_joint_release_v1.md` §1.4（全勾） |

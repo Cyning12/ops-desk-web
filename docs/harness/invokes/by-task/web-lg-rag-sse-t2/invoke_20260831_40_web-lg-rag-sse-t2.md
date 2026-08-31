@@ -33,7 +33,7 @@
 | HG-TASK-DRAFT | approved | web 00 · 2026-08-31 |
 | HG-GRAPH-MODULES | approved | web 00 预签 · 2026-08-31（维护者授权代签文档闸） |
 | HG-AUDIT-R1 | approved | web 00 代签 · 2026-08-31（R1 pass-with-notes · 0 阻塞） |
-| **HG-JOINT-DEBUG** | **pending** | **维护者亲签**（checklist §1.4 · 联调通过后与 api 同日发版）—— **00 代签授权不覆盖此闸，本波到此停** |
+| **HG-JOINT-DEBUG** | **approved** | 2026-08-31 · **维护者 cyning 亲签** checklist §1.4（本地联调全勾 · 双 PR 允许 merge） |
 
 ## 联调待办（维护者 · checklist §1）
 
