@@ -4,7 +4,7 @@
 > **类型**：传输 / SSE resume（跨仓联调）  
 > **统筹**：**web 00 Agent** 签收 · 排 30 实现 · **禁止 ops-desk-api Agent 改本仓 Vue/TS**  
 > **上游 Spec**：api [`05_lg_rag_transport_and_session_plan_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) §4.2 · §10.3（T4 已回写实现句）  
-> **上游 api task**：[`task_lg_rag_sse_resume`](../../../ops-desk-api/docs/tasks/active/task_lg_rag_sse_resume.md) · api PR [#103](https://github.com/Cyning12/ops-desk-api/pull/103) **MERGED**（api-only 先合已执行）  
+> **上游 api task**：[`task_lg_rag_sse_resume`](../../../ops-desk-api/docs/tasks/done/task_lg_rag_sse_resume.md)（已归档 done/ · R1-N1 修正）· api PR [#103](https://github.com/Cyning12/ops-desk-api/pull/103) **MERGED**（api-only 先合已执行）  
 > **前置**：web T3 CLOSE · [`task_web_lg_rag_sse_t3`](../done/task_web_lg_rag_sse_t3.md) · web PR [#25](https://github.com/Cyning12/ops-desk-web/pull/25) MERGED（稳定 thread_id 已可用）  
 > **人工 checklist**：[`CHECKLIST_lg_rag_sse_joint_release_v1.md`](../../checklists/CHECKLIST_lg_rag_sse_joint_release_v1.md) §3（T4 段）
 
@@ -41,7 +41,7 @@
 |---|---|---|---|
 | **HG-TASK-DRAFT** | approved | 22-R1 | 2026-08-31 · web 00 签 · 维护者 Prompt 授权（阶段 A · 起草 web T4 task · 闸 · 派 30） |
 | **HG-GRAPH-MODULES** | approved | **30** | 2026-08-31 · web 00 预签（授权代签文档闸）· graph_delta=update 限 `10_flow_chat` 备注 · 不新增一级模块 |
-| **HG-AUDIT-R1** | pending | **30** | 待 20-task-audit R1 pass 后 web 00 代签 · review 落盘 `docs/harness/reviews/task_web_lg_rag_sse_t4_audit_R1_20260831.md` |
+| **HG-AUDIT-R1** | approved | **30** | 2026-08-31 · web 00 代签（维护者授权）· R1 审 [reviews/task_web_lg_rag_sse_t4_audit_R1_20260831.md](../../harness/reviews/task_web_lg_rag_sse_t4_audit_R1_20260831.md) pass-with-notes · 0 阻塞 · 6 非阻塞 note（N1–N3 已随签收入 task · N4–N6 由 30 内决） |
 | **HG-JOINT-DEBUG** | pending | **merge** | T4 联调：DevTools offline → 恢复后帧不丢不重复（40 脚本化联调记录 **或** 维护者亲签）· 未过前 web PR **勿 auto-merge** |
 
 ---
@@ -64,6 +64,7 @@ web 现状（T3 后）：主 Chat 走 lg-rag SSE · 稳定 thread_id · run.star
 | replay 请求 | `POST /api/ops/lg-rag/replay` · body **`{run_id, after_seq}`**（首选；`{cursor}` 为等价备选）· `credentials:'include'` · SSE 帧形状同 live → **复用同一帧解析/渲染管线** |
 | 去重 | per run_id 记 `lastAppliedSeq`；`seq <= lastAppliedSeq` 的帧忽略；**answer 不重复 append**（整段覆盖语义幂等但仍按 seq 去重）；thinking 块同帧不重复入列 |
 | replay 失败 | 404（未知/跨用户 run）→ 清 active-run + 提示「已无法续看」；422 → 同上；401 → 清 + 跳登录；replay 网络错 → 保留 active-run 可再点「续看」 |
+| live 401 | 同步清 thread_id（T3）**且清 active-run**（R1-N3 钉死）· 跳登录 |
 | freeze | 沿用 `lg-rag-sse-v1`；不新增 `event_type`；不改帧序 |
 | 模块 | 不新增一级模块；`01_modules.md` 零 diff；仅 `10_flow_chat` 备注 |
 | 合入 | web PR **勿 auto-merge**；HG-JOINT-DEBUG 过后方可 merge |
@@ -75,7 +76,7 @@ web 现状（T3 后）：主 Chat 走 lg-rag SSE · 稳定 thread_id · run.star
 - `src/stores/chat.ts`：run_id/seq/cursor 捕获（含 run.start 起记 run）· active-run 持久化/终态清除 · `resumeFromCursor()`（replay 续看）· seq 去重 · replay 404/422/401 处理
 - `src/composables/useLgRagSse.ts`：新增 `replayLgRag({run_id, after_seq})`（或等价；**复用** `LgRagSseFrameParser` 与回调形状）；live 侧零破坏
 - `src/views/ChatView.vue`：断连「续看」条 + 刷新「上次回答未完成·续看」条（Element Plus · 水墨风）
-- `tests/`：replay spec（mock 帧序含 cursor · 去重 · after_seq body · 404/422）+ chat store 既有 137 例不破
+- `tests/`：replay spec（mock 帧序含 cursor · 去重 · after_seq body · 404/422）+ 既有测试全套不破（137 例 · 其中 chat-store 22 例，R1-N2 口径修正）
 - `docs/_tech_graph/l1/10_flow_chat.graph.yaml`（及 .md）备注 + `graph-compile` 绿
 - `docs/coding_wiki/volatile.md`：本 task 短注
 
@@ -169,6 +170,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 | 日期 | 说明 |
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者 Prompt 阶段 A 授权 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · api T4 #103 已 MERGED 为背景 |
+| 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note）→ **00** 代签 HG-AUDIT-R1 · N1 api 指针改 done/ · N2 测试口径修正 · N3 live 401 钉清 active-run · 闸全开可派 30 |
 
 ## 合入 / 联调策略
 
