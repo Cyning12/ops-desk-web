@@ -9,7 +9,7 @@
 
 ## 本波 active
 
-- **`web-lg-rag-sse-t3`**（2026-08-31 · 30/40 交付）：主 Chat thread_id 会话连续性——客户端不自生成 id，首轮留空由 api 生成、`run.start` payload 捕获落 `localStorage`（key `ops.lg-rag.thread-id`，不可用则内存态降级）；刷新恢复仅后端上下文（不回显历史消息）；401/登出清除；已存 id 404/422 清 id + 提示、不自动重发。真值：`docs/tasks/active/task_web_lg_rag_sse_t3.md`（00 定夺表）+ api `05_lg_rag_transport_and_session_plan_v0.md` §4.2/§10.2。
+- **`web-lg-rag-sse-t4`**（2026-08-31 · 30/40 交付）：断联/replay 续看——每帧捕获可选顶层 `cursor`（缺失以 run_id+seq 合成），active-run 落 `localStorage`（key `ops.lg-rag.active-run`，终态 done/error/abort 即清除）；断网/刷新后手动「续看」→ `POST /api/ops/lg-rag/replay` body `{run_id, after_seq}`（帧形状同 live，复用同一解析/渲染管线，渲染进新建 assistant 消息）；per run_id 记 `lastAppliedSeq`，`seq<=lastAppliedSeq` 帧整体忽略（answer 不重复 append · thinking 不重复）；replay 404/422 清 active-run 不重试，401（live/replay）清 thread_id+active-run 跳登录。真值：`docs/tasks/active/task_web_lg_rag_sse_t4.md`（00 定夺表）+ api `05_lg_rag_transport_and_session_plan_v0.md` §4.2/§10.3。
 
 ## 执行帽速链
 

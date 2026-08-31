@@ -97,16 +97,16 @@ web 现状（T3 后）：主 Chat 走 lg-rag SSE · 稳定 thread_id · run.star
 
 > 完成态（30 交付时逐项勾选；联调项由 HG-JOINT-DEBUG 承载）：
 
-- [ ] live 帧 `cursor`（或 run_id+seq 合成）捕获并持久化 active-run；run 终态（done/error/abort）即清除（Vitest 断言）
-- [ ] 断网/超时 mid-stream → 错误条 + 「续看」按钮；点击后 replay body = `{run_id, after_seq: lastSeq}`（Vitest 断言 fetch 入参）
-- [ ] replay 帧复用同一渲染管线；**同 run_id+seq 去重不重复 append**（answer 不重复 · thinking 不重复；断言）
-- [ ] 刷新/重进：有未完成 active-run → 「上次回答未完成·续看」条；无则 T3 恢复提示；终态后不再出现
-- [ ] replay 404/422 → 清 active-run + 用户可见提示；不自动重试；401 → 清 + 跳登录
-- [ ] replay 流中途再断 → lastSeq 已推进 · 可再点「续看」接力
-- [ ] `useOpsChatSse` 静态守卫绿 · `/lg-rag` invoke 页 **零 diff**
-- [ ] `pnpm lint` / `pnpm test` / `pnpm build` 绿；`./scripts/graph-compile.sh` 绿；`verify` PASS
-- [ ] `10_flow_chat` 备注更新；`volatile.md` 短注落盘
-- [ ] 联调（40 脚本化记录或维护者签）：DevTools offline mid-stream → 恢复后 replay 帧不丢、不重复；断连期间服务端跑完的可 replay 至 `done`
+- [x] live 帧 `cursor`（或 run_id+seq 合成）捕获并持久化 active-run；run 终态（done/error/abort）即清除（Vitest 断言）
+- [x] 断网/超时 mid-stream → 错误条 + 「续看」按钮；点击后 replay body = `{run_id, after_seq: lastSeq}`（Vitest 断言 fetch 入参）
+- [x] replay 帧复用同一渲染管线；**同 run_id+seq 去重不重复 append**（answer 不重复 · thinking 不重复；断言）
+- [x] 刷新/重进：有未完成 active-run → 「上次回答未完成·续看」条；无则 T3 恢复提示；终态后不再出现
+- [x] replay 404/422 → 清 active-run + 用户可见提示；不自动重试；401 → 清 + 跳登录
+- [x] replay 流中途再断 → lastSeq 已推进 · 可再点「续看」接力
+- [x] `useOpsChatSse` 静态守卫绿 · `/lg-rag` invoke 页 **零 diff**
+- [x] `pnpm lint` / `pnpm test` / `pnpm build` 绿；`./scripts/graph-compile.sh` 绿；`verify` PASS
+- [x] `10_flow_chat` 备注更新；`volatile.md` 短注落盘
+- [x] 联调（40 脚本化记录 · 证据见 invoke_40 §联调证据）：mid-stream 断连 → replay 补发漏收帧（不丢不重复、严格递增）；完整 run 可 replay 至 `done`；404/401/422/空流边界实测。**api 侧发现**：客户端断开即取消 SSE generator，已 yield 帧落盘但后续帧（含 done）不再产生——「断连期间跑完 replay 至 done」仅在服务端先于断开跑完时成立（见 invoke_40 遗留）
 
 ---
 
@@ -149,7 +149,17 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 
 ### 自检结论
 
-> 30/40 交付时回填：lint / test / build / graph-compile / verify 退出码与结论表（对齐 T3 格式）。
+> 30/40 交付（2026-08-31 · 同上下文执行）：
+
+| 闸 | 命令 | 退出码 | 结果 |
+|---|---|---|---|
+| lint | `pnpm lint` | 0 | ✅ |
+| test | `pnpm test` | 0 | ✅ 23 files / **155** tests passed（T4 新增 18 例：chat-store +13 · lg-rag-sse replay +4 · auth-store +1；既有 137 例全绿） |
+| build | `pnpm build` | 0 | ✅ vue-tsc + vite build |
+| graph | `./scripts/graph-compile.sh` | 0 | ✅ OK 00_main / 10_flow_chat（`01_modules.md` 零 diff） |
+| verify | `npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_sse_t4.md` | 0 | ✅ VERIFY: PASS |
+
+联调（HG-JOINT-DEBUG 承载 · 40 脚本化留证，详见 invoke_40）：本地 api（master · #103+#104 · 补跑 `alembic upgrade head` 落 `ops_lg_rag_run_events`）+ curl 实测 A–K 11 项全过：live 帧顶层 cursor ✓ · mid-stream kill 后 replay after_seq=1 补发 seq2,3（不丢不重复）✓ · 完整 run replay 至 done ✓ · after_seq 只重放 seq>N ✓ · 空流 0 帧 HTTP 200 ✓ · 未知 run_id 404 ✓ · 未登录 401 ✓ · 非法 body 422 ✓。web PR 仍 **勿 auto-merge**（闸表 HG-JOINT-DEBUG 待维护者核证据后签）。
 
 ---
 
@@ -171,6 +181,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者 Prompt 阶段 A 授权 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · api T4 #103 已 MERGED 为背景 |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note）→ **00** 代签 HG-AUDIT-R1 · N1 api 指针改 done/ · N2 测试口径修正 · N3 live 401 钉清 active-run · 闸全开可派 30 |
+| 2026-08-31 | **30/40** 交付：active-run 持久化/终态清除 · seq 去重 · resumeFromCursor（replay 复用同管线）· 续看双条 UI · 18 新测例（155 全绿）· 五闸全绿；R1-N4 空流保留 active-run + 提示 · N5 渲染进新建 assistant（processFrame 提取复用）· N6 abort 即终态清除（产品语义维持 00 定夺）；40 脚本化联调 11 项全过（api 侧 generator 取消发现入 invoke_40 遗留） |
 
 ## 合入 / 联调策略
 
