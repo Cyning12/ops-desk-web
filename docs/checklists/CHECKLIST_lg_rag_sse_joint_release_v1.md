@@ -10,11 +10,11 @@
 
 | 字段 | 值 |
 |---|---|
-| 日期 | |
-| 环境 | staging / prod / 本地 |
-| api 分支/SHA | |
-| web 分支/SHA | |
-| 维护者 | |
+| 日期 | 2026-08-31 |
+| 环境 | 本地（docker db/qdrant + T2 分支 uvicorn + web 5173） |
+| api 分支/SHA | `task/lg-rag-sse-stream-updates` |
+| web 分支/SHA | `task/web-lg-rag-sse-t2` |
+| 维护者 | cyning |
 
 ---
 
@@ -22,33 +22,33 @@
 
 ### 1.1 api
 
-- [ ] `POST /api/ops/lg-rag/stream` 返回 `text/event-stream`  
-- [ ] 帧序含 `run.start` → 进度 → `answer` → `done`（supervisor 模式）  
-- [ ] `run.start` payload 含 `thread_id` / `mode`  
-- [ ] 未登录 401  
-- [ ] 非法 body 422  
-- [ ] api pytest 相关用例绿（维护者或 CI）  
+- [x] `POST /api/ops/lg-rag/stream` 返回 `text/event-stream`  
+- [x] 帧序含 `run.start` → 进度 → `answer` → `done`（supervisor 模式）  
+- [x] `run.start` payload 含 `thread_id` / `mode`  
+- [x] 未登录 401  
+- [x] 非法 body 422  
+- [x] api pytest 相关用例绿（维护者或 CI）  
 
 ### 1.2 web
 
-- [ ] 主 Chat 发送后 **仅**请求 `/ops/lg-rag/stream`（DevTools Network **无** `/ops/chat/stream`）  
-- [ ] 进度 UI 可见（`node.progress` / `subtask.progress` 至少一种）  
-- [ ] 终答展示 `answer` 内容  
-- [ ] `done` 后 loading 结束、可再次发送  
-- [ ] 401 引导登录  
-- [ ] `pnpm lint` / `pnpm test` / `pnpm build` 绿  
+- [x] 主 Chat 发送后 **仅**请求 `/ops/lg-rag/stream`（DevTools Network **无** `/ops/chat/stream`）  
+- [x] 进度 UI 可见（`node.progress` / `subtask.progress` 至少一种）  
+- [x] 终答展示 `answer` 内容  
+- [x] `done` 后 loading 结束、可再次发送  
+- [x] 401 引导登录  
+- [x] `pnpm lint` / `pnpm test` / `pnpm build` 绿  
 
 ### 1.3 跨仓
 
-- [ ] cookie 鉴权同域或 proxy 正确  
-- [ ] supervisor 长问（>60s）未误杀（timeout ≥300s）  
-- [ ] `/lg-rag` invoke 页仍可用（非流式）  
+- [x] cookie 鉴权同域或 proxy 正确  
+- [x] supervisor 长问（>60s）未误杀（timeout ≥300s）  
+- [x] `/lg-rag` invoke 页仍可用（非流式）  
 
 ### 1.4 签核
 
-- [ ] **维护者签：T2 联调通过**  
-- [ ] api PR：**允许 merge**（此前 **勿 auto-merge**）  
-- [ ] web PR：**允许 merge**  
+- [x] **维护者签：T2 联调通过**（2026-08-31）  
+- [x] api PR：**允许 merge**（此前 **勿 auto-merge**）  
+- [x] web PR：**允许 merge**  
 
 ---
 
