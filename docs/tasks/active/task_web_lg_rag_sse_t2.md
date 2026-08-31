@@ -33,10 +33,10 @@
 
 | human_gate_id | status | blocks_hats | 说明 |
 |---|---|---|---|
-| **HG-SPEC-SIGNOFF** | **approved**（2026-08-31 · web 00 签 · 维护者令「签收」） | 22/30 | `SPEC-web-lg-rag-sse-t2_v1.md` §0 冻结生效 |
-| **HG-TASK-DRAFT** | **approved**（2026-08-31 · web 00 签） | 22-R1 | 本 task 草案签收 · 可排 10 task 审 |
-| **HG-GRAPH-MODULES** | **approved**（2026-08-31 · web 00 预签 · 维护者授权代签文档闸） | **30** | graph_delta=update 限 `10_flow_chat` 备注 · 不新增一级模块（对齐 lc-evidence/lg-rag-page 先例） |
-| **HG-AUDIT-R1** | **approved**（2026-08-31 · web 00 代签 · 维护者授权 · R1 审 [reviews/task_web_lg_rag_sse_t2_audit_R1_20260831.md](../../harness/reviews/task_web_lg_rag_sse_t2_audit_R1_20260831.md) pass-with-notes） | **30** | 0 阻塞 · 5 非阻塞 note（30 内决） |
+| **HG-SPEC-SIGNOFF** | approved | 22/30 | 2026-08-31 · web 00 签 · 维护者令「签收」· `SPEC-web-lg-rag-sse-t2_v1.md` §0 冻结生效 |
+| **HG-TASK-DRAFT** | approved | 22-R1 | 2026-08-31 · web 00 签 · 本 task 草案签收 |
+| **HG-GRAPH-MODULES** | approved | **30** | 2026-08-31 · web 00 预签（维护者授权代签文档闸）· graph_delta=update 限 `10_flow_chat` 备注 · 不新增一级模块（对齐 lc-evidence/lg-rag-page 先例） |
+| **HG-AUDIT-R1** | approved | **30** | 2026-08-31 · web 00 代签（维护者授权）· R1 审 [reviews/task_web_lg_rag_sse_t2_audit_R1_20260831.md](../../harness/reviews/task_web_lg_rag_sse_t2_audit_R1_20260831.md) pass-with-notes · 0 阻塞 · 5 非阻塞 note（30 内决） |
 | **HG-JOINT-DEBUG** | pending | **merge** | 维护者签 checklist §T2 · **与 api PR 同日发版前** |
 
 ---
