@@ -64,13 +64,14 @@
 
 - [x] 断网后行为符合 T4 契约（2026-08-31 · invoke_40 脚本化证据 A–K：offline mid-stream → replay 补发不丢不重复 · 404/401/422 ✓）  
 - [x] replay 不重复渲染同一 `seq`（Vitest seq 去重断言 + 联调证据 C/E/F）  
-- [ ] **T4 CLOSE 后**：已打开 api [`WAVE_READINESS_lg_rag_sse_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/WAVE_READINESS_lg_rag_sse_v0.md) §1 并回填「能否开 T5」结论  
+- [ ] **T4 CLOSE 后**：已打开 api [`WAVE_READINESS_lg_rag_sse_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/WAVE_READINESS_lg_rag_sse_v0.md) §1 并回填「能否开 T5」结论（**web-00 已判定 = T5 阻塞—待 api 契约**；回填 api 仓因跨仓写权限挂起 · patch 备妥见收口报告）  
 
 ---
 
 ## 4. T5 Token 流（后续）
 
-> 开工前必读就绪入口：[`WAVE_READINESS_lg_rag_sse_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/WAVE_READINESS_lg_rag_sse_v0.md) §1。
+> 开工前必读就绪入口：[`WAVE_READINESS_lg_rag_sse_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/WAVE_READINESS_lg_rag_sse_v0.md) §1。  
+> **2026-08-31 · web-00 判定**：§1 行 1/2/3/5 满足、行 4 未勾（api T5 契约/freeze 未立 · 无 active/done task）→ **T5 阻塞—待 api 00 钉契约**；web 不派 30、不扩 scope。
 
 - [ ] 终答打字机与 `done` 衔接  
 - [ ] 与 T2 整段 `answer` 分支正确  
@@ -100,3 +101,4 @@
 |---|---|
 | 2026-08-31 | 初版：T2–T6 分段 · 维护者发版闸门 |
 | 2026-08-31 | §3/§4：链 api `WAVE_READINESS_lg_rag_sse_v0.md`（web T4 后查 T5） |
+| 2026-08-31 | §3 T4 两项勾（invoke_40 证据）· §4 注明 T5 阻塞—待 api 契约（web-00 判定） |
