@@ -94,17 +94,17 @@ web T2 时主 Chat 发送 **thread_id 留空**（每问新 uuid，无多轮上�
 
 > 完成态（30 交付时逐项勾选；联调签字项由维护者 HG-JOINT-DEBUG 承载）：
 
-- [ ] 同会话第二次发送 body 带 **同一** `thread_id`（Vitest 断言 `streamLgRag` 入参）
-- [ ] `run.start` 捕获 `thread_id` 并写入 localStorage（mock 帧序断言）
-- [ ] 刷新/重进：已存 id → 恢复并显示提示条；发送带该 id（Vitest + 手测）
-- [ ] 「新会话」：清 id + 清消息 + 清提示；下轮 body 无 `thread_id`
-- [ ] 已存 id 遇 404/422：清本地 id + 用户可见提示；**不自动重发**
-- [ ] 401：清本地 id + 跳登录（沿用 T2 行为，回归不破）
-- [ ] （可选）ChatView 展示当前 thread_id 短码 / session 元数据
-- [ ] `useOpsChatSse` 仍禁止 import（`tests/chat-stream-deprecation.spec.ts` 静态守卫绿）
-- [ ] `/lg-rag` invoke 页 **零 diff**
-- [ ] `pnpm lint` / `pnpm test` / `pnpm build` 绿；`./scripts/graph-compile.sh` 绿
-- [ ] `10_flow_chat` 备注更新；`volatile.md` 短注落盘
+- [x] 同会话第二次发送 body 带 **同一** `thread_id`（Vitest 断言 `streamLgRag` 入参）—— `tests/chat-store.spec.ts` T3 describe 第 1 例
+- [x] `run.start` 捕获 `thread_id` 并写入 localStorage（mock 帧序断言；含续帧回显幂等 R1-N2）
+- [x] 刷新/重进：已存 id → 恢复并显示提示条；发送带该 id（Vitest `createRestoredChat` 例；手测留维护者联调）
+- [x] 「新会话」：清 id + 清消息 + 清提示；下轮 body 无 `thread_id`（`startNewSession()` · streaming 中先 abort，R1-N4）
+- [x] 已存 id 遇 404/422：清本地 id + 用户可见提示；**不自动重发**（断言 `streamLgRag` 仅调用 1 次）
+- [x] 401：清本地 id + 跳登录（沿用 T2 行为，回归不破）；另登出路径 `clearSession/logout` 同步清 id（R1-N1，auth-store spec 断言）
+- [x] （可选）ChatView 展示当前 thread_id 短码 / session 元数据—— header 展示 `thread <前 8 位>`（hover 全量，R1-N5 采纳）
+- [x] `useOpsChatSse` 仍禁止 import（`tests/chat-stream-deprecation.spec.ts` 静态守卫绿）
+- [x] `/lg-rag` invoke 页 **零 diff**（`LgRagView.vue` / `api/lgRag.ts` / `useLgRagSse.ts` 均未改；`git diff` 可核）
+- [x] `pnpm lint` / `pnpm test` / `pnpm build` 绿；`./scripts/graph-compile.sh` 绿（见「自检结论」）
+- [x] `10_flow_chat` 备注更新；`volatile.md` 短注落盘（`01_modules.md` 零 diff）
 - [ ] 联调（维护者签）：同 thread 续问有上下文 · 新 thread 隔离 · 超长历史压缩后 SSE 仍 `done`
 
 ---
@@ -146,7 +146,18 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 
 ### 自检结论
 
-> 30/40 交付时回填：`pnpm lint` / `pnpm test` / `pnpm build` / `graph-compile` / `verify` 退出码与结论表（对齐 T2 40 自检格式）。
+> 30/40 交付回填（2026-08-31 · 同上下文执行）：
+
+| 闸 | 命令 | 退出码 | 结论 |
+|---|---|---|---|
+| lint | `pnpm lint` | 0 | ✅ ESLint 全绿 |
+| test | `pnpm test` | 0 | ✅ 23 files / 137 tests passed（chat-store 22 例含 T3 新增 10 例 · auth-store 8 例含 N1 例 · 静态守卫绿） |
+| build | `pnpm build` | 0 | ✅ vue-tsc + vite build 通过 |
+| graph | `./scripts/graph-compile.sh` | 0 | ✅ OK 00_main / 10_flow_chat（`01_modules.md` 零 diff） |
+| verify | `npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_sse_t3.md` | 0 | ✅ VERIFY: PASS |
+
+- 人工闸：HG-TASK-DRAFT / HG-GRAPH-MODULES / HG-AUDIT-R1 = approved（开工前 GATE_VERIFY 已核）；**HG-JOINT-DEBUG = pending（blocks merge）**，web PR 勿 auto-merge。
+- 联调项（验收最后一条）未勾：维护者亲签 HG-JOINT-DEBUG 承载，非 30/40 自检范围。
 
 ---
 
@@ -168,6 +179,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者 Prompt 授权 web T3 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · api T3 #100 已 MERGED 为背景 |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 5 note）→ **00** 代签 HG-AUDIT-R1 · 闸全开可派 30 |
+| 2026-08-31 | **30+40** 实现交付：chat store thread_id 持久化/恢复/捕获/失效清理 + startNewSession；auth clearSession 同步清 id（R1-N1）；ChatView 恢复提示条/新会话按钮/thread 短码（R1-N5 采纳）；useLgRagSse 零 diff（R1-N3 不做响应头校验）；验收 12 项勾 11（联调项待维护者 HG-JOINT-DEBUG）；lint/test/build/graph/verify 全绿 |
 
 ## 合入 / 联调策略
 
