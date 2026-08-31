@@ -15,7 +15,7 @@ vi.mock('../src/composables/useLgRagSse', () => ({
 import { fetchLatestSession } from '../src/api/chat'
 import { streamLgRag } from '../src/composables/useLgRagSse'
 import { useAuthStore } from '../src/stores/auth'
-import { useChatStore } from '../src/stores/chat'
+import { LG_RAG_THREAD_ID_STORAGE_KEY, useChatStore } from '../src/stores/chat'
 
 const fakeSession = {
   id: 's-1',
@@ -30,6 +30,7 @@ let abortMock: ReturnType<typeof vi.fn>
 
 describe('stores/chat（T2 · lg-rag SSE）', () => {
   beforeEach(async () => {
+    window.localStorage.clear()
     setActivePinia(createPinia())
     vi.clearAllMocks()
 
@@ -234,5 +235,186 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
     const empty = useChatStore()
     empty.sendMessage('没有 session')
     expect(empty.messages).toHaveLength(0)
+  })
+
+  describe('T3 · thread_id 会话连续性', () => {
+    /** 预置 localStorage 后重建 store，模拟刷新/重进 */
+    async function createRestoredChat(id: string) {
+      window.localStorage.setItem(LG_RAG_THREAD_ID_STORAGE_KEY, id)
+      setActivePinia(createPinia())
+      vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
+      const chat = useChatStore()
+      await chat.loadLatestSession()
+      return chat
+    }
+
+    it('run.start 捕获 thread_id 并写入 localStorage；同会话续问带同一 id；续帧回显幂等', () => {
+      const chat = useChatStore()
+      chat.sendMessage('第一问')
+
+      captured.onEvent?.({
+        event_type: 'run.start',
+        agent_role: 'system',
+        payload: { run_id: 'r-1', thread_id: 't-abc' },
+      })
+      expect(chat.threadId).toBe('t-abc')
+      expect(window.localStorage.getItem(LG_RAG_THREAD_ID_STORAGE_KEY)).toBe('t-abc')
+
+      captured.onEvent?.({ event_type: 'done', payload: { latency_ms: 1, model: 'm' } })
+      chat.sendMessage('第二问')
+      expect(vi.mocked(streamLgRag).mock.calls[1][0]).toEqual({
+        query: '第二问',
+        mode: 'supervisor',
+        threadId: 't-abc',
+      })
+
+      // 续问轮 run.start 回显同 id：幂等覆盖写，localStorage 值不变（R1-N2）
+      captured.onEvent?.({
+        event_type: 'run.start',
+        agent_role: 'system',
+        payload: { run_id: 'r-2', thread_id: 't-abc' },
+      })
+      expect(chat.threadId).toBe('t-abc')
+      expect(window.localStorage.getItem(LG_RAG_THREAD_ID_STORAGE_KEY)).toBe('t-abc')
+    })
+
+    it('run.start 缺 thread_id：记 warn，本轮无续写，不阻断展示', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+
+      captured.onEvent?.({ event_type: 'run.start', agent_role: 'system', payload: { run_id: 'r-1' } })
+      captured.onEvent?.({ event_type: 'answer', payload: { content: '仍正常展示' } })
+
+      expect(warn).toHaveBeenCalledOnce()
+      expect(chat.threadId).toBeNull()
+      expect(window.localStorage.getItem(LG_RAG_THREAD_ID_STORAGE_KEY)).toBeNull()
+      expect(chat.messages[1].content).toBe('仍正常展示')
+      warn.mockRestore()
+    })
+
+    it('刷新/重进：已存 id 恢复 + 提示条；发送带该 id；不回显历史消息', async () => {
+      const chat = await createRestoredChat('t-stored')
+
+      expect(chat.threadId).toBe('t-stored')
+      expect(chat.restoredNotice).toBe(true)
+      expect(chat.messages).toHaveLength(0)
+
+      chat.sendMessage('恢复后第一问')
+      expect(vi.mocked(streamLgRag).mock.calls[0][0]).toEqual({
+        query: '恢复后第一问',
+        mode: 'supervisor',
+        threadId: 't-stored',
+      })
+
+      chat.dismissRestoredNotice()
+      expect(chat.restoredNotice).toBe(false)
+    })
+
+    it('startNewSession：清 id + 清消息 + 清提示 + 清 localStorage；下轮 body 无 thread_id', async () => {
+      const chat = await createRestoredChat('t-stored')
+      chat.sendMessage('旧会话消息')
+      captured.onEvent?.({ event_type: 'done', payload: { latency_ms: 1, model: 'm' } })
+      expect(chat.messages).toHaveLength(2)
+
+      chat.startNewSession()
+
+      expect(chat.threadId).toBeNull()
+      expect(chat.restoredNotice).toBe(false)
+      expect(chat.messages).toHaveLength(0)
+      expect(chat.error).toBeNull()
+      expect(chat.lastDone).toBeNull()
+      expect(window.localStorage.getItem(LG_RAG_THREAD_ID_STORAGE_KEY)).toBeNull()
+
+      chat.sendMessage('新会话第一问')
+      const input = vi.mocked(streamLgRag).mock.calls[1][0]
+      expect(input).not.toHaveProperty('threadId')
+    })
+
+    it('startNewSession：streaming 中先 abort 再清（R1-N4）', async () => {
+      const chat = await createRestoredChat('t-stored')
+      chat.sendMessage('进行中')
+      expect(chat.streaming).toBe(true)
+
+      chat.startNewSession()
+
+      expect(abortMock).toHaveBeenCalledTimes(1)
+      expect(chat.streaming).toBe(false)
+      expect(chat.interrupted).toBe(false)
+      expect(chat.threadId).toBeNull()
+    })
+
+    it('已存 id 遇 404：清本地 id + 用户可见提示，不自动重发', async () => {
+      const chat = await createRestoredChat('t-stored')
+      chat.sendMessage('续问')
+
+      captured.onError?.({ kind: 'http', status: 404, message: 'thread not found' })
+
+      expect(chat.threadId).toBeNull()
+      expect(window.localStorage.getItem(LG_RAG_THREAD_ID_STORAGE_KEY)).toBeNull()
+      expect(chat.streaming).toBe(false)
+      expect(chat.error).toEqual({ stage: 'session', message: '会话已失效，请重新发送', retryable: true })
+      expect(streamLgRag).toHaveBeenCalledTimes(1) // 不自动重发
+    })
+
+    it('已存 id 遇 422：清本地 id + 校验提示，不自动重发', async () => {
+      const chat = await createRestoredChat('t-stored')
+      chat.sendMessage('续问')
+
+      captured.onError?.({ kind: 'http', status: 422, message: 'thread_id too long' })
+
+      expect(chat.threadId).toBeNull()
+      expect(window.localStorage.getItem(LG_RAG_THREAD_ID_STORAGE_KEY)).toBeNull()
+      expect(chat.error?.stage).toBe('session')
+      expect(chat.error?.message).toContain('会话校验未通过')
+      expect(streamLgRag).toHaveBeenCalledTimes(1)
+    })
+
+    it('未带 thread_id 的请求遇 404/422：按通用传输错误处理，不动本地 id', () => {
+      const chat = useChatStore()
+      chat.sendMessage('首轮')
+
+      captured.onError?.({ kind: 'http', status: 422, message: 'query invalid' })
+
+      expect(chat.error).toEqual({ stage: 'http', message: 'query invalid', retryable: true })
+      expect(chat.threadId).toBeNull()
+    })
+
+    it('401：清本地 id + 清 auth 会话（沿用 T2 跳登录）', async () => {
+      const chat = await createRestoredChat('t-stored')
+      const auth = useAuthStore()
+      auth.user = { id: 'u-1', username: 'admin', role: 'maintainer' }
+      auth.ready = true
+      chat.sendMessage('续问')
+
+      captured.onError?.({ kind: 'http', status: 401, message: 'Invalid or expired session' })
+
+      expect(chat.threadId).toBeNull()
+      expect(window.localStorage.getItem(LG_RAG_THREAD_ID_STORAGE_KEY)).toBeNull()
+      expect(auth.isLoggedIn).toBe(false)
+      expect(chat.error).toEqual({ stage: 'auth', message: '登录已过期，请重新登录', retryable: false })
+    })
+
+    it('localStorage 不可用：内存态降级，不 crash；刷新即新会话', () => {
+      const getItem = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+        throw new Error('denied')
+      })
+      const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+        throw new Error('denied')
+      })
+
+      setActivePinia(createPinia())
+      const chat = useChatStore()
+      expect(chat.threadId).toBeNull() // 读降级为 null
+      expect(chat.restoredNotice).toBe(false)
+
+      chat.session = fakeSession
+      chat.sendMessage('你好')
+      captured.onEvent?.({ event_type: 'run.start', payload: { run_id: 'r-1', thread_id: 't-mem' } })
+      expect(chat.threadId).toBe('t-mem') // 内存态仍生效
+
+      getItem.mockRestore()
+      setItem.mockRestore()
+    })
   })
 })
