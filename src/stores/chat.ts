@@ -41,6 +41,45 @@ function payloadString(event: LgRagSseEvent, key: string): string {
 }
 
 /**
+ * 进度帧 payload → 单行摘要（api sse_stream._summarize_payload 真实键形）：
+ * - 优先直出 summary/content/message（字符串键）
+ * - 否则按已知键拼 `key: value`（JSON 截断），最多 3 段
+ * - 兜底列出 payload 键名
+ */
+const PROGRESS_DIRECT_KEYS = ['summary', 'content', 'message'] as const
+const PROGRESS_DETAIL_KEYS = [
+  'intent',
+  'route',
+  'critic_verdict',
+  'subtasks',
+  'allowed_capability_ids',
+  'subtask_result',
+  'answer_preview',
+  'retry_count',
+  'rebinding_count',
+  'keys',
+] as const
+
+function summarizeProgress(payload: Record<string, unknown> | undefined): string {
+  if (!payload) return ''
+  for (const key of PROGRESS_DIRECT_KEYS) {
+    const value = payload[key]
+    if (typeof value === 'string' && value) return value
+  }
+  const parts: string[] = []
+  for (const key of PROGRESS_DETAIL_KEYS) {
+    const value = payload[key]
+    if (value === undefined || value === null) continue
+    const text = typeof value === 'string' ? value : JSON.stringify(value)
+    if (!text) continue
+    parts.push(`${key}: ${text.length > 80 ? text.slice(0, 79) + '…' : text}`)
+    if (parts.length >= 3) break
+  }
+  if (parts.length) return parts.join(' · ')
+  return Object.keys(payload).slice(0, 5).join(', ')
+}
+
+/**
  * Chat 会话状态（T2 · freeze lg-rag-sse-v1）：
  * - 进入页面 loadLatestSession() 获取/创建 session（元数据端点，T2 保留门控）
  * - sendMessage() 追加 user/assistant 消息并启动 lg-rag SSE 流（POST /api/ops/lg-rag/stream）；
@@ -91,11 +130,8 @@ export const useChatStore = defineStore('chat', () => {
         break
       case 'node.progress':
       case 'subtask.progress': {
-        // 节点完成摘要（非全文 dump · api §4.2）；摘要键未冻结，按常见键兜底
-        const content =
-          payloadString(event, 'summary') ||
-          payloadString(event, 'content') ||
-          payloadString(event, 'message')
+        // 节点完成摘要（非全文 dump · api §4.2）；payload 键形以 api _summarize_payload 为准
+        const content = summarizeProgress(event.payload)
         if (!content) break
         assistant.thinking.push({ role: event.agent_role ?? event.event_type, content })
         break

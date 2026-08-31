@@ -44,6 +44,12 @@
 5. 全勾 §1.4 → 允许 merge api PR → merge web PR → 生产冒烟（checklist §6）
 6. 勾选记录附本 invoke 后归档 task CLOSE
 
+## 30 修订（2026-08-31 · 联调反馈）
+
+- **进度帧不可见修复**：维护者实测发现主 Chat 不显示节点进度。根因：api `_summarize_payload` 产出的进度帧 payload 键为 `intent/route/subtasks/subtask_result/answer_preview` 等，**无** `summary/content/message`，30 初版 store 只认后三键 → 进度帧被静默丢弃。
+- 修复：`stores/chat.ts` 新增 `summarizeProgress`（直出键优先 · 已知键 `key: value` 截断拼接 · 兜底键名）；补真实帧形测试；126 tests 绿 · lint/build 绿。
+- 另澄清：T2 `answer` 为**整段**下发（契约设计，打字机属 T5）；「一次性输出整段终答」非 bug。
+
 ## 遗留（非阻塞）
 
 - api 仓 2 处旧 task 文件名链接（`task_web_lg_rag_sse_t2_joint` → 已改名 `task_web_lg_rag_sse_t2`）：`05_lg_rag_transport_and_session_plan_v0.md` §10 指针 · `task_lg_rag_sse_stream_updates.md` 依赖表 → api 侧顺手修

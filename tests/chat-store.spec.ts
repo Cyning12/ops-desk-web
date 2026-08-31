@@ -102,6 +102,36 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
     expect(chat.error).toBeNull()
   })
 
+  it('进度帧按 api 真实 payload 键形渲染（route/subtasks/subtask_result/answer_preview）', () => {
+    const chat = useChatStore()
+    chat.sendMessage('你好')
+
+    // 与 api sse_stream._summarize_payload 产出对齐的帧形
+    captured.onEvent?.({
+      event_type: 'node.progress',
+      agent_role: 'supervisor',
+      payload: { route: 'rag', subtasks: [{ id: 't1', query: 'Kimi Code aborted' }] },
+    })
+    captured.onEvent?.({
+      event_type: 'subtask.progress',
+      agent_role: 'rag_subtask',
+      payload: { subtask_result: { id: 't1', hits: 3 }, answer_preview: '根据检索…' },
+    })
+    // 空摘要帧（无已知键 → 兜底键名；完全空 → 丢弃）
+    captured.onEvent?.({ event_type: 'node.progress', agent_role: 'critic', payload: { foo: 1 } })
+    captured.onEvent?.({ event_type: 'node.progress', agent_role: 'x', payload: {} })
+
+    const blocks = chat.messages[1].thinking
+    expect(blocks[0].role).toBe('supervisor')
+    expect(blocks[0].content).toContain('route: rag')
+    expect(blocks[0].content).toContain('subtasks:')
+    expect(blocks[1].role).toBe('rag_subtask')
+    expect(blocks[1].content).toContain('subtask_result:')
+    expect(blocks[1].content).toContain('answer_preview: 根据检索…')
+    expect(blocks[2]).toEqual({ role: 'critic', content: 'foo' })
+    expect(blocks).toHaveLength(3) // 空 payload 帧被丢弃
+  })
+
   it('answer 整段语义：重复 answer 帧取最新（非增量拼接）', () => {
     const chat = useChatStore()
     chat.sendMessage('你好')
