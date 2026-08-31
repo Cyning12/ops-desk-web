@@ -1,13 +1,13 @@
 ---
 graph_id: 10_flow_chat
-version: 2026-07-27
-generated_at: 2026-08-25T13:42:21Z
+version: 2026-08-31
+generated_at: 2026-08-31T02:57:16Z
 source: 10_flow_chat.graph.yaml
 ---
 
 # Chat 流式对话流程（前端）
 
-用户在 Chat 页发送消息：ChatView → chat store → useOpsChatSse → POST /api/ops/chat/stream；会话元数据走 axios fetchLatestSession。
+用户在 Chat 页发送消息：ChatView → chat store → useLgRagSse → POST /api/ops/lg-rag/stream（freeze lg-rag-sse-v1 · 2026-08-31 起主 Chat 切 lg-rag SSE，废弃 chat stream 主路径）；会话元数据走 axios fetchLatestSession（T2 保留）。
 
 ## Mermaid
 
@@ -19,8 +19,8 @@ flowchart TB
     load_session["loadLatestSession"]
     send_message["sendMessage"]
     fetch_session_api["fetchLatestSession"]
-    stream_sse["streamOpsChat"]
-    sse_parser["SseFrameParser"]
+    stream_sse["streamLgRag"]
+    sse_parser["LgRagSseFrameParser"]
     ops_api["ops-desk-api"]
     api_chat_flow[">../../../ops-desk-api/docs/_tech_graph/l1/10_flow_chat.md"]
 
@@ -33,7 +33,7 @@ flowchart TB
     chat_view -->|"triggers"| send_message
     send_message -->|"starts"| stream_sse
     stream_sse -->|"parses frames"| sse_parser
-    stream_sse -->|"POST /api/ops/chat/stream"| ops_api
+    stream_sse -->|"POST /api/ops/lg-rag/stream"| ops_api
     ops_api -->|"后端展开"| api_chat_flow
 
     classDef phase fill:#e1f5fe,stroke:#01579b,stroke-width:2px
@@ -56,8 +56,8 @@ flowchart TB
 | load_session | loadLatestSession | flow |
 | send_message | sendMessage | flow |
 | fetch_session_api | fetchLatestSession | flow |
-| stream_sse | streamOpsChat | flow |
-| sse_parser | SseFrameParser | struct |
+| stream_sse | streamLgRag | flow |
+| sse_parser | LgRagSseFrameParser | struct |
 | ops_api | ops-desk-api | external |
 | api_chat_flow | >../../../ops-desk-api/docs/_tech_graph/l1/10_flow_chat.md | external |
 
@@ -74,5 +74,5 @@ flowchart TB
 | chat_view | send_message | -> | depends_on | triggers |  |
 | send_message | stream_sse | -> | depends_on | starts |  |
 | stream_sse | sse_parser | -> | depends_on | parses frames |  |
-| stream_sse | ops_api | -> | depends_on | POST /api/ops/chat/stream |  |
+| stream_sse | ops_api | -> | depends_on | POST /api/ops/lg-rag/stream |  |
 | ops_api | api_chat_flow | -> | depends_on | 后端展开 |  |

@@ -4,8 +4,8 @@ import { defineStore } from 'pinia'
 import { fetchLatestSession } from '../api/chat'
 import type { ChatSession } from '../api/chat'
 import type { ApiError } from '../api/http'
-import { streamOpsChat } from '../composables/useOpsChatSse'
-import type { ChatSseController, ChatSseEvent } from '../composables/useOpsChatSse'
+import { streamLgRag } from '../composables/useLgRagSse'
+import type { LgRagSseController, LgRagSseEvent } from '../composables/useLgRagSse'
 import { useAuthStore } from './auth'
 
 /** assistant 消息的思考过程分块（按 agent_role 聚合） */
@@ -35,17 +35,18 @@ export interface ChatDoneInfo {
   model: string
 }
 
-function payloadString(event: ChatSseEvent, key: string): string {
+function payloadString(event: LgRagSseEvent, key: string): string {
   const value = event.payload?.[key]
   return typeof value === 'string' ? value : ''
 }
 
 /**
- * Chat 会话状态：
- * - 进入页面 loadLatestSession() 获取/创建 session
- * - sendMessage() 追加 user/assistant 消息并启动 SSE 流；
- *   thinking 增量进 thinking 块、answer 增量拼接 content、done/error 收尾
+ * Chat 会话状态（T2 · freeze lg-rag-sse-v1）：
+ * - 进入页面 loadLatestSession() 获取/创建 session（元数据端点，T2 保留门控）
+ * - sendMessage() 追加 user/assistant 消息并启动 lg-rag SSE 流（POST /api/ops/lg-rag/stream）；
+ *   node.progress/subtask.progress 进进度块、answer 整段填入 content、done/error 收尾
  * - stopStreaming() abort 中断，可继续重发
+ * - 主路径已废弃 chat stream（旧 SSE 封装仅留文件/单测对照，本 store 禁止 import）
  */
 export const useChatStore = defineStore('chat', () => {
   const session = ref<ChatSession | null>(null)
@@ -60,7 +61,7 @@ export const useChatStore = defineStore('chat', () => {
   const error = ref<ChatErrorState | null>(null)
   const lastDone = ref<ChatDoneInfo | null>(null)
 
-  let controller: ChatSseController | null = null
+  let controller: LgRagSseController | null = null
   let messageSeq = 0
 
   async function loadLatestSession(): Promise<void> {
@@ -83,21 +84,25 @@ export const useChatStore = defineStore('chat', () => {
     return message
   }
 
-  function handleEvent(event: ChatSseEvent, assistant: ChatMessage): void {
+  function handleEvent(event: LgRagSseEvent, assistant: ChatMessage): void {
     switch (event.event_type) {
       case 'run.start':
+        // run_id / thread_id 仅日志价值（T2）；T4 replay 再消费 seq/cursor
         break
-      case 'thinking': {
-        const content = payloadString(event, 'content')
+      case 'node.progress':
+      case 'subtask.progress': {
+        // 节点完成摘要（非全文 dump · api §4.2）；摘要键未冻结，按常见键兜底
+        const content =
+          payloadString(event, 'summary') ||
+          payloadString(event, 'content') ||
+          payloadString(event, 'message')
         if (!content) break
-        const role = event.agent_role ?? 'thinking'
-        const last = assistant.thinking[assistant.thinking.length - 1]
-        if (last && last.role === role) last.content += content
-        else assistant.thinking.push({ role, content })
+        assistant.thinking.push({ role: event.agent_role ?? event.event_type, content })
         break
       }
       case 'answer':
-        assistant.content += payloadString(event, 'content')
+        // T2 整段 answer（非 delta）；重复帧取最新整段
+        assistant.content = payloadString(event, 'content')
         break
       case 'done': {
         const latency = event.payload?.latency_ms
@@ -133,13 +138,21 @@ export const useChatStore = defineStore('chat', () => {
     lastDone.value = null
     interrupted.value = false
 
+    // 422 预检（SPEC §3.1：query 1..8000）；后端仍兜底校验
+    if (content.length > 8000) {
+      pushMessage('user').content = content
+      pushMessage('assistant')
+      error.value = { stage: 'validation', message: '消息过长（上限 8000 字），请精简后重发', retryable: false }
+      return
+    }
+
     pushMessage('user').content = content
     const assistant = pushMessage('assistant')
 
     streaming.value = true
-    const sessionId = session.value.id
-    controller = streamOpsChat(
-      { message: content, sessionId, model: null },
+    // T2：thread_id 留空由 api 生成（run.start 返回）；多轮续写属 T3
+    controller = streamLgRag(
+      { query: content, mode: 'supervisor' },
       {
         onEvent: (event) => handleEvent(event, assistant),
         onError: (transportError) => {
@@ -150,7 +163,7 @@ export const useChatStore = defineStore('chat', () => {
             error.value = { stage: 'auth', message: '登录已过期，请重新登录', retryable: false }
           } else {
             error.value = {
-              stage: transportError.kind === 'http' ? 'http' : 'network',
+              stage: transportError.kind,
               message: transportError.message,
               retryable: true,
             }

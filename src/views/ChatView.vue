@@ -88,7 +88,7 @@ function onStop(): void {
         <div class="chat-message__bubble">
           <template v-if="message.role === 'assistant'">
             <el-collapse v-if="message.thinking.length" class="chat-message__thinking">
-              <el-collapse-item title="思考过程" name="thinking">
+              <el-collapse-item title="节点进度" name="thinking">
                 <div
                   v-for="(block, index) in message.thinking"
                   :key="index"
@@ -100,7 +100,7 @@ function onStop(): void {
               </el-collapse-item>
             </el-collapse>
             <span v-if="message.content" class="chat-message__text">{{ message.content }}</span>
-            <span v-else-if="chat.streaming" class="chat-message__pending">思考中…</span>
+            <span v-else-if="chat.streaming" class="chat-message__pending">处理中…</span>
           </template>
           <span v-else class="chat-message__text">{{ message.content }}</span>
         </div>

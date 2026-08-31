@@ -1,8 +1,8 @@
 schema_version: "inform_graph.v3"
 graph_id: "10_flow_chat"
 title: "Chat 流式对话流程（前端）"
-description: "用户在 Chat 页发送消息：ChatView → chat store → useOpsChatSse → POST /api/ops/chat/stream；会话元数据走 axios fetchLatestSession。"
-version: "2026-07-27"
+description: "用户在 Chat 页发送消息：ChatView → chat store → useLgRagSse → POST /api/ops/lg-rag/stream（freeze lg-rag-sse-v1 · 2026-08-31 起主 Chat 切 lg-rag SSE，废弃 chat stream 主路径）；会话元数据走 axios fetchLatestSession（T2 保留）。"
+version: "2026-08-31"
 layer: "G-L1"
 primary_layer: "G-L1"
 depth: "method"
@@ -59,21 +59,21 @@ nodes:
         kind: method
 
   - id: "stream_sse"
-    label: "streamOpsChat"
+    label: "streamLgRag"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/composables/useOpsChatSse.ts"
-        symbol: "streamOpsChat"
+      - path: "src/composables/useLgRagSse.ts"
+        symbol: "streamLgRag"
         kind: method
 
   - id: "sse_parser"
-    label: "SseFrameParser"
+    label: "LgRagSseFrameParser"
     kind: struct
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/composables/useOpsChatSse.ts"
-        symbol: "SseFrameParser"
+      - path: "src/composables/useLgRagSse.ts"
+        symbol: "LgRagSseFrameParser"
         kind: class
 
   - id: "ops_api"
@@ -123,7 +123,7 @@ edges:
 
   - from: "stream_sse"
     to: "ops_api"
-    label: "POST /api/ops/chat/stream"
+    label: "POST /api/ops/lg-rag/stream"
 
   - from: "ops_api"
     to: "api_chat_flow"
