@@ -62,12 +62,15 @@
 
 ## 3. T4 断联 / replay（后续）
 
-- [ ] 断网后行为符合 T4 契约  
-- [ ] replay 不重复渲染同一 `seq`  
+- [x] 断网后行为符合 T4 契约（2026-08-31 · invoke_40 脚本化证据 A–K：offline mid-stream → replay 补发不丢不重复 · 404/401/422 ✓）  
+- [x] replay 不重复渲染同一 `seq`（Vitest seq 去重断言 + 联调证据 C/E/F）  
+- [ ] **T4 CLOSE 后**：已打开 api [`WAVE_READINESS_lg_rag_sse_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/WAVE_READINESS_lg_rag_sse_v0.md) §1 并回填「能否开 T5」结论  
 
 ---
 
 ## 4. T5 Token 流（后续）
+
+> 开工前必读就绪入口：[`WAVE_READINESS_lg_rag_sse_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/WAVE_READINESS_lg_rag_sse_v0.md) §1。
 
 - [ ] 终答打字机与 `done` 衔接  
 - [ ] 与 T2 整段 `answer` 分支正确  
@@ -96,3 +99,4 @@
 | 日期 | 说明 |
 |---|---|
 | 2026-08-31 | 初版：T2–T6 分段 · 维护者发版闸门 |
+| 2026-08-31 | §3/§4：链 api `WAVE_READINESS_lg_rag_sse_v0.md`（web T4 后查 T5） |

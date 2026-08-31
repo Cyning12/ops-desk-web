@@ -10,12 +10,17 @@ vi.mock('../src/api/chat', () => ({
 
 vi.mock('../src/composables/useLgRagSse', () => ({
   streamLgRag: vi.fn(),
+  replayLgRag: vi.fn(),
 }))
 
 import { fetchLatestSession } from '../src/api/chat'
-import { streamLgRag } from '../src/composables/useLgRagSse'
+import { replayLgRag, streamLgRag } from '../src/composables/useLgRagSse'
 import { useAuthStore } from '../src/stores/auth'
-import { LG_RAG_THREAD_ID_STORAGE_KEY, useChatStore } from '../src/stores/chat'
+import {
+  LG_RAG_ACTIVE_RUN_STORAGE_KEY,
+  LG_RAG_THREAD_ID_STORAGE_KEY,
+  useChatStore,
+} from '../src/stores/chat'
 
 const fakeSession = {
   id: 's-1',
@@ -27,6 +32,8 @@ const fakeSession = {
 
 let captured: LgRagSseCallbacks
 let abortMock: ReturnType<typeof vi.fn>
+let replayCaptured: LgRagSseCallbacks
+let replayAbortMock: ReturnType<typeof vi.fn>
 
 describe('stores/chat（T2 · lg-rag SSE）', () => {
   beforeEach(async () => {
@@ -38,6 +45,11 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
     vi.mocked(streamLgRag).mockImplementation((_input, callbacks) => {
       captured = callbacks ?? {}
       return { abort: abortMock, done: Promise.resolve() }
+    })
+    replayAbortMock = vi.fn(() => replayCaptured.onAborted?.())
+    vi.mocked(replayLgRag).mockImplementation((_input, callbacks) => {
+      replayCaptured = callbacks ?? {}
+      return { abort: replayAbortMock, done: Promise.resolve() }
     })
 
     vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
@@ -415,6 +427,307 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
 
       getItem.mockRestore()
       setItem.mockRestore()
+    })
+  })
+
+  describe('T4 · 断联 / replay 续看（cursor 捕获 · seq 去重）', () => {
+    function readActiveRun(): { run_id: string; last_seq: number } | null {
+      const raw = window.localStorage.getItem(LG_RAG_ACTIVE_RUN_STORAGE_KEY)
+      return raw ? (JSON.parse(raw) as { run_id: string; last_seq: number }) : null
+    }
+
+    /** 断网 mid-stream 的标准前置：live 收到 run.start+progress+answer（seq 1..3）后网络错误 */
+    function seedBrokenLive(chat: ReturnType<typeof useChatStore>, runId = 'r-1') {
+      chat.sendMessage('你好')
+      captured.onEvent?.({
+        event_type: 'run.start', run_id: runId, seq: 1, cursor: runId + ':1',
+        agent_role: 'system', payload: { run_id: runId, thread_id: 't-1' },
+      })
+      captured.onEvent?.({
+        event_type: 'node.progress', run_id: runId, seq: 2, cursor: runId + ':2',
+        agent_role: 'intent', payload: { summary: '意图识别完成' },
+      })
+      captured.onEvent?.({
+        event_type: 'answer', run_id: runId, seq: 3, cursor: runId + ':3',
+        agent_role: 'aggregator', payload: { content: '前半' },
+      })
+      captured.onError?.({ kind: 'network', status: null, message: 'Failed to fetch' })
+    }
+
+    it('live 帧 cursor/seq 捕获 → active-run 持久化；done 终态即清除', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+
+      captured.onEvent?.({
+        event_type: 'run.start', run_id: 'r-1', seq: 1, cursor: 'r-1:1',
+        payload: { run_id: 'r-1', thread_id: 't-1' },
+      })
+      captured.onEvent?.({
+        event_type: 'node.progress', run_id: 'r-1', seq: 2, cursor: 'r-1:2',
+        agent_role: 'intent', payload: { summary: '意图识别完成' },
+      })
+      captured.onEvent?.({
+        event_type: 'answer', run_id: 'r-1', seq: 3, cursor: 'r-1:3',
+        payload: { content: '部分' },
+      })
+
+      expect(chat.activeRun).toMatchObject({ run_id: 'r-1', last_seq: 3, thread_id: 't-1' })
+      expect(readActiveRun()).toMatchObject({ run_id: 'r-1', last_seq: 3 })
+
+      captured.onEvent?.({
+        event_type: 'done', run_id: 'r-1', seq: 4, cursor: 'r-1:4',
+        payload: { latency_ms: 1, model: 'm' },
+      })
+      expect(chat.activeRun).toBeNull()
+      expect(readActiveRun()).toBeNull()
+    })
+
+    it('帧缺顶层 cursor：以 run_id+seq 合成；仅 cursor 帧：解析合成 run_id/seq', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+
+      captured.onEvent?.({ event_type: 'run.start', run_id: 'r-1', seq: 1, payload: { run_id: 'r-1', thread_id: 't-1' } })
+      captured.onEvent?.({ event_type: 'answer', run_id: 'r-1', seq: 5, payload: { content: 'A' } })
+      expect(chat.activeRun).toMatchObject({ run_id: 'r-1', last_seq: 5 })
+
+      // 仅 cursor 的帧（run_id/seq 缺失）：从 cursor 合成
+      captured.onEvent?.({ event_type: 'answer', cursor: 'r-1:7', payload: { content: 'B' } })
+      expect(chat.activeRun).toMatchObject({ run_id: 'r-1', last_seq: 7 })
+      expect(chat.messages[1].content).toBe('B')
+    })
+
+    it('error 事件 / 手动 abort 均为终态：清除 active-run（N6 停止后不可续看）', () => {
+      const chat = useChatStore()
+      chat.sendMessage('第一问')
+      captured.onEvent?.({ event_type: 'run.start', run_id: 'r-1', seq: 1, cursor: 'r-1:1', payload: { run_id: 'r-1', thread_id: 't-1' } })
+      captured.onEvent?.({ event_type: 'answer', run_id: 'r-1', seq: 2, cursor: 'r-1:2', payload: { content: 'A' } })
+      expect(readActiveRun()).not.toBeNull()
+
+      captured.onEvent?.({ event_type: 'error', run_id: 'r-1', seq: 3, cursor: 'r-1:3', payload: { stage: 'supervisor', message: 'boom', retryable: false } })
+      expect(chat.activeRun).toBeNull()
+      expect(readActiveRun()).toBeNull()
+
+      chat.sendMessage('第二问')
+      captured.onEvent?.({ event_type: 'run.start', run_id: 'r-2', seq: 1, cursor: 'r-2:1', payload: { run_id: 'r-2', thread_id: 't-1' } })
+      captured.onEvent?.({ event_type: 'answer', run_id: 'r-2', seq: 2, cursor: 'r-2:2', payload: { content: 'B' } })
+      expect(readActiveRun()).toMatchObject({ run_id: 'r-2', last_seq: 2 })
+
+      chat.stopStreaming()
+      expect(chat.activeRun).toBeNull()
+      expect(readActiveRun()).toBeNull()
+      expect(chat.canResume).toBe(false)
+    })
+
+    it('断网 mid-stream：active-run 保留 + 错误条 + 续看 → replay body={run_id,after_seq:lastSeq}，帧渲染进新消息', () => {
+      const chat = useChatStore()
+      seedBrokenLive(chat)
+
+      expect(chat.streaming).toBe(false)
+      expect(chat.error?.stage).toBe('network')
+      expect(chat.canResume).toBe(true)
+      expect(readActiveRun()).toMatchObject({ run_id: 'r-1', last_seq: 3 })
+
+      chat.resumeFromCursor()
+      expect(replayLgRag).toHaveBeenCalledWith({ run_id: 'r-1', after_seq: 3 }, expect.any(Object))
+      expect(chat.messages).toHaveLength(3) // 新 assistant 承接 replay 帧
+      expect(chat.streaming).toBe(true)
+
+      replayCaptured.onEvent?.({ event_type: 'answer', run_id: 'r-1', seq: 4, cursor: 'r-1:4', payload: { content: '整段终答' } })
+      replayCaptured.onEvent?.({ event_type: 'done', run_id: 'r-1', seq: 5, cursor: 'r-1:5', payload: { latency_ms: 1, model: 'm' } })
+
+      expect(chat.messages[2].content).toBe('整段终答')
+      expect(chat.messages[1].content).toBe('前半') // 原消息不动
+      expect(chat.activeRun).toBeNull()
+      expect(readActiveRun()).toBeNull()
+      expect(chat.streaming).toBe(false)
+      expect(chat.resumeHint).toBeNull()
+    })
+
+    it('seq 去重：seq<=lastAppliedSeq 帧忽略（answer 不重复 · thinking 不重复）；跨 run 重置基线', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+
+      captured.onEvent?.({ event_type: 'run.start', run_id: 'r-1', seq: 1, cursor: 'r-1:1', payload: { run_id: 'r-1', thread_id: 't-1' } })
+      captured.onEvent?.({ event_type: 'node.progress', run_id: 'r-1', seq: 2, cursor: 'r-1:2', agent_role: 'intent', payload: { summary: 'P1' } })
+      captured.onEvent?.({ event_type: 'answer', run_id: 'r-1', seq: 3, cursor: 'r-1:3', payload: { content: 'A1' } })
+      // 重复/回退帧（replay 与 live 已收帧重叠的防御场景）
+      captured.onEvent?.({ event_type: 'node.progress', run_id: 'r-1', seq: 2, cursor: 'r-1:2', agent_role: 'intent', payload: { summary: 'P1-dup' } })
+      captured.onEvent?.({ event_type: 'answer', run_id: 'r-1', seq: 3, cursor: 'r-1:3', payload: { content: 'A1-dup' } })
+      captured.onEvent?.({ event_type: 'run.start', run_id: 'r-1', seq: 1, cursor: 'r-1:1', payload: { run_id: 'r-1', thread_id: 't-1' } })
+
+      const assistant = chat.messages[1]
+      expect(assistant.thinking).toEqual([{ role: 'intent', content: 'P1' }])
+      expect(assistant.content).toBe('A1')
+
+      // 新 seq 仍正常应用
+      captured.onEvent?.({ event_type: 'answer', run_id: 'r-1', seq: 4, cursor: 'r-1:4', payload: { content: 'A2' } })
+      expect(assistant.content).toBe('A2')
+
+      // 跨 run：run_id 变化 → 去重基线重置
+      captured.onEvent?.({ event_type: 'run.start', run_id: 'r-2', seq: 1, cursor: 'r-2:1', payload: { run_id: 'r-2', thread_id: 't-1' } })
+      captured.onEvent?.({ event_type: 'answer', run_id: 'r-2', seq: 2, cursor: 'r-2:2', payload: { content: 'B1' } })
+      expect(assistant.content).toBe('B1')
+    })
+
+    it('live 401：清 thread_id + 清 active-run（R1-N3）+ 清 auth', () => {
+      const auth = useAuthStore()
+      auth.user = { id: 'u-1', username: 'admin', role: 'maintainer' }
+      auth.ready = true
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.({ event_type: 'run.start', run_id: 'r-1', seq: 1, cursor: 'r-1:1', payload: { run_id: 'r-1', thread_id: 't-1' } })
+      captured.onEvent?.({ event_type: 'answer', run_id: 'r-1', seq: 2, cursor: 'r-1:2', payload: { content: 'A' } })
+      expect(readActiveRun()).not.toBeNull()
+
+      captured.onError?.({ kind: 'http', status: 401, message: 'Invalid or expired session' })
+
+      expect(chat.threadId).toBeNull()
+      expect(window.localStorage.getItem(LG_RAG_THREAD_ID_STORAGE_KEY)).toBeNull()
+      expect(chat.activeRun).toBeNull()
+      expect(readActiveRun()).toBeNull()
+      expect(auth.isLoggedIn).toBe(false)
+      expect(chat.error?.stage).toBe('auth')
+    })
+
+    it('replay 404/422：清 active-run + 用户可见提示，不自动重试', () => {
+      const chat = useChatStore()
+      seedBrokenLive(chat)
+      chat.resumeFromCursor()
+      replayCaptured.onError?.({ kind: 'http', status: 404, message: 'run not found' })
+
+      expect(chat.activeRun).toBeNull()
+      expect(readActiveRun()).toBeNull()
+      expect(chat.error?.stage).toBe('resume')
+      expect(chat.error?.message).toContain('已无法续看')
+      expect(chat.canResume).toBe(false)
+      expect(replayLgRag).toHaveBeenCalledTimes(1) // 不自动重试
+
+      // 422（非法游标防御）：同语义（新一轮 run 用新 run_id——run_id 由 api 生成唯一）
+      seedBrokenLive(chat, 'r-2')
+      chat.resumeFromCursor()
+      expect(vi.mocked(replayLgRag).mock.calls[1][0]).toEqual({ run_id: 'r-2', after_seq: 3 })
+      replayCaptured.onError?.({ kind: 'http', status: 422, message: 'invalid cursor' })
+      expect(chat.activeRun).toBeNull()
+      expect(chat.error?.stage).toBe('resume')
+      expect(chat.error?.message).toContain('校验未通过')
+      expect(replayLgRag).toHaveBeenCalledTimes(2)
+    })
+
+    it('replay 401：清 thread_id + 清 active-run + 清 auth 跳登录', () => {
+      const auth = useAuthStore()
+      auth.user = { id: 'u-1', username: 'admin', role: 'maintainer' }
+      auth.ready = true
+      const chat = useChatStore()
+      seedBrokenLive(chat)
+      chat.resumeFromCursor()
+
+      replayCaptured.onError?.({ kind: 'http', status: 401, message: 'Invalid or expired session' })
+
+      expect(chat.threadId).toBeNull()
+      expect(chat.activeRun).toBeNull()
+      expect(readActiveRun()).toBeNull()
+      expect(window.localStorage.getItem(LG_RAG_THREAD_ID_STORAGE_KEY)).toBeNull()
+      expect(auth.isLoggedIn).toBe(false)
+      expect(chat.error).toEqual({ stage: 'auth', message: '登录已过期，请重新登录', retryable: false })
+    })
+
+    it('replay 网络错：保留 active-run 可再点续看；流再断 lastSeq 已推进可接力', () => {
+      const chat = useChatStore()
+      seedBrokenLive(chat)
+      chat.resumeFromCursor()
+      expect(vi.mocked(replayLgRag).mock.calls[0][0]).toEqual({ run_id: 'r-1', after_seq: 3 })
+
+      // replay 中途推进到 seq 4 后再断
+      replayCaptured.onEvent?.({ event_type: 'answer', run_id: 'r-1', seq: 4, cursor: 'r-1:4', payload: { content: 'A4' } })
+      replayCaptured.onError?.({ kind: 'network', status: null, message: 'Failed to fetch' })
+
+      expect(chat.streaming).toBe(false)
+      expect(chat.error?.stage).toBe('network')
+      expect(chat.activeRun).toMatchObject({ run_id: 'r-1', last_seq: 4 })
+      expect(chat.canResume).toBe(true)
+
+      // 接力续看：after_seq 用推进后的新值
+      chat.resumeFromCursor()
+      expect(vi.mocked(replayLgRag).mock.calls[1][0]).toEqual({ run_id: 'r-1', after_seq: 4 })
+    })
+
+    it('replay 空流（0 帧 onDone）：保留 active-run + 「暂无新进度」提示（N4）；部分帧无终态 → 接力提示', () => {
+      const chat = useChatStore()
+      seedBrokenLive(chat)
+      chat.resumeFromCursor()
+      replayCaptured.onDone?.()
+
+      expect(chat.streaming).toBe(false)
+      expect(chat.activeRun).toMatchObject({ run_id: 'r-1', last_seq: 3 })
+      expect(chat.resumeHint).toBe('暂无新进度，稍后再点「续看」')
+
+      // 有部分新帧但未见终态：提示接力
+      chat.resumeFromCursor()
+      replayCaptured.onEvent?.({ event_type: 'answer', run_id: 'r-1', seq: 4, cursor: 'r-1:4', payload: { content: 'A4' } })
+      replayCaptured.onDone?.()
+      expect(chat.activeRun).toMatchObject({ run_id: 'r-1', last_seq: 4 })
+      expect(chat.resumeHint).toBe('回答仍在生成中，可稍后再次「续看」接力')
+    })
+
+    it('刷新/重进：有未完成 active-run → 「上次回答未完成·续看」条；续看渲染进新消息（N5）；终态后条不再出现', async () => {
+      window.localStorage.setItem(
+        LG_RAG_ACTIVE_RUN_STORAGE_KEY,
+        JSON.stringify({ run_id: 'r-9', last_seq: 7, thread_id: 't-9', updated_at: '2026-08-31T00:00:00Z' }),
+      )
+      setActivePinia(createPinia())
+      vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
+      const chat = useChatStore()
+
+      expect(chat.activeRun).toMatchObject({ run_id: 'r-9', last_seq: 7, thread_id: 't-9' })
+      expect(chat.resumeNotice).toBe(true)
+      expect(chat.restoredNotice).toBe(false) // thread-id 未存：无 T3 条
+      expect(chat.messages).toHaveLength(0) // 历史不回显（T3 钉死）
+
+      chat.resumeFromCursor()
+      expect(replayLgRag).toHaveBeenCalledWith({ run_id: 'r-9', after_seq: 7 }, expect.any(Object))
+      expect(chat.resumeNotice).toBe(false)
+      expect(chat.messages).toHaveLength(1) // 新建 assistant 承接
+
+      replayCaptured.onEvent?.({ event_type: 'answer', run_id: 'r-9', seq: 8, cursor: 'r-9:8', payload: { content: '补发终答' } })
+      replayCaptured.onEvent?.({ event_type: 'done', run_id: 'r-9', seq: 9, cursor: 'r-9:9', payload: { latency_ms: 1, model: 'm' } })
+      expect(chat.messages[0].content).toBe('补发终答')
+      expect(chat.activeRun).toBeNull()
+      expect(readActiveRun()).toBeNull()
+
+      // 终态后再刷新：条不再出现
+      setActivePinia(createPinia())
+      const fresh = useChatStore()
+      expect(fresh.resumeNotice).toBe(false)
+      expect(fresh.canResume).toBe(false)
+    })
+
+    it('刷新/重进：仅有 thread_id 无 active-run → 沿用 T3 恢复提示，无续看条', async () => {
+      window.localStorage.setItem(LG_RAG_THREAD_ID_STORAGE_KEY, 't-stored')
+      setActivePinia(createPinia())
+      vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
+      const chat = useChatStore()
+      await chat.loadLatestSession()
+
+      expect(chat.restoredNotice).toBe(true)
+      expect(chat.resumeNotice).toBe(false)
+      expect(chat.canResume).toBe(false)
+    })
+
+    it('startNewSession：清 active-run + 续看条（新会话显式放弃旧上下文）', async () => {
+      window.localStorage.setItem(
+        LG_RAG_ACTIVE_RUN_STORAGE_KEY,
+        JSON.stringify({ run_id: 'r-9', last_seq: 7, thread_id: 't-9', updated_at: 'x' }),
+      )
+      setActivePinia(createPinia())
+      vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
+      const chat = useChatStore()
+      await chat.loadLatestSession()
+      expect(chat.resumeNotice).toBe(true)
+
+      chat.startNewSession()
+      expect(chat.activeRun).toBeNull()
+      expect(readActiveRun()).toBeNull()
+      expect(chat.resumeNotice).toBe(false)
     })
   })
 })

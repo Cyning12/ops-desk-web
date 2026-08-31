@@ -19,6 +19,8 @@ export interface LgRagSseEvent {
   seq?: number
   ts_ms?: number
   agent_role?: string
+  /** T4：可选顶层续看游标 "{run_id}:{seq}"（与 run_id/seq 并列；缺失时消费方以 run_id+seq 合成） */
+  cursor?: string
   /** run.start · node.progress · subtask.progress · answer · done · error */
   event_type: string
   payload?: Record<string, unknown>
@@ -98,6 +100,9 @@ export class LgRagSseFrameParser {
 /** 实际请求路径（dev 经 Vite proxy /api → 127.0.0.1:8000） */
 export const LG_RAG_STREAM_PATH = '/api/ops/lg-rag/stream'
 
+/** T4 replay 请求路径（api §10.3：重放 seq > after_seq 的已存帧，SSE 形状同 live） */
+export const LG_RAG_REPLAY_PATH = '/api/ops/lg-rag/replay'
+
 /** client 超时（对齐 lgRag invoke 页 supervisor 实测 100–250s · SPEC §0 ≥300000ms） */
 export const LG_RAG_STREAM_TIMEOUT_MS = 300_000
 
@@ -117,6 +122,38 @@ export function streamLgRag(
   input: StreamLgRagInput,
   callbacks: LgRagSseCallbacks = {},
 ): LgRagSseController {
+  const body: Record<string, unknown> = {
+    query: input.query,
+    mode: input.mode ?? 'supervisor',
+  }
+  if (input.threadId) body.thread_id = input.threadId
+  return postLgRagSse(LG_RAG_STREAM_PATH, body, callbacks)
+}
+
+export interface ReplayLgRagInput {
+  /** 目标 run（未知/跨用户 → 404） */
+  run_id: string
+  /** 重放 seq > after_seq 的已存帧（0 = 从头重放） */
+  after_seq: number
+}
+
+/**
+ * T4：replay 续看（api §10.3）——POST /api/ops/lg-rag/replay，body {run_id, after_seq}，
+ * SSE 帧形状同 live，复用同一 LgRagSseFrameParser 与回调形状；live 侧零改动。
+ */
+export function replayLgRag(
+  input: ReplayLgRagInput,
+  callbacks: LgRagSseCallbacks = {},
+): LgRagSseController {
+  return postLgRagSse(LG_RAG_REPLAY_PATH, { run_id: input.run_id, after_seq: input.after_seq }, callbacks)
+}
+
+/** live / replay 共用的 SSE POST 管线（fetch + client 超时 + 帧解析 + 错误分类；live 行为与 T2/T3 完全一致） */
+function postLgRagSse(
+  path: string,
+  body: Record<string, unknown>,
+  callbacks: LgRagSseCallbacks,
+): LgRagSseController {
   const abortController = new AbortController()
   /** 区分用户主动 abort 与 client 超时中止 */
   let timedOut = false
@@ -125,16 +162,10 @@ export function streamLgRag(
     abortController.abort()
   }, LG_RAG_STREAM_TIMEOUT_MS)
 
-  const body: Record<string, unknown> = {
-    query: input.query,
-    mode: input.mode ?? 'supervisor',
-  }
-  if (input.threadId) body.thread_id = input.threadId
-
   const done = (async () => {
     let response: Response
     try {
-      response = await fetch(LG_RAG_STREAM_PATH, {
+      response = await fetch(path, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

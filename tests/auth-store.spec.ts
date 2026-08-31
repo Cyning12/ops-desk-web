@@ -128,4 +128,17 @@ describe('stores/auth', () => {
     await auth.logout()
     expect(window.localStorage.getItem('ops.lg-rag.thread-id')).toBeNull()
   })
+
+  it('clearSession / logout 同步清 lg-rag active-run 续看游标（T4 · 换账号后 replay 必 404/401）', async () => {
+    window.localStorage.setItem('ops.lg-rag.active-run', JSON.stringify({ run_id: 'r-x', last_seq: 3, thread_id: 't-x', updated_at: 'x' }))
+    const auth = useAuthStore()
+
+    auth.clearSession()
+    expect(window.localStorage.getItem('ops.lg-rag.active-run')).toBeNull()
+
+    window.localStorage.setItem('ops.lg-rag.active-run', JSON.stringify({ run_id: 'r-y', last_seq: 1, thread_id: 't-y', updated_at: 'x' }))
+    vi.mocked(apiLogout).mockResolvedValue(undefined)
+    await auth.logout()
+    expect(window.localStorage.getItem('ops.lg-rag.active-run')).toBeNull()
+  })
 })

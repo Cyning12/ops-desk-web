@@ -1,9 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import {
+  LG_RAG_REPLAY_PATH,
   LG_RAG_STREAM_PATH,
   LG_RAG_STREAM_TIMEOUT_MS,
   LgRagSseFrameParser,
+  replayLgRag,
   streamLgRag,
 } from '../src/composables/useLgRagSse'
 import type { LgRagSseEvent } from '../src/composables/useLgRagSse'
@@ -299,5 +301,84 @@ describe('streamLgRag', () => {
     expect(onError).toHaveBeenCalledTimes(1)
     expect(onError.mock.calls[0][0]).toMatchObject({ kind: 'timeout', status: null })
     expect(onAborted).not.toHaveBeenCalled()
+  })
+})
+
+describe('replayLgRag（T4 · api §10.3 · 形状同 live · 复用同一解析器）', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('replay 请求：POST /api/ops/lg-rag/replay · body {run_id, after_seq} · credentials include · 帧按序回调（含 cursor 透传）', async () => {
+    const replayAnswer = {
+      run_id: 'r-1', seq: 4, ts_ms: 4, cursor: 'r-1:4',
+      agent_role: 'aggregator', event_type: 'answer', payload: { content: '补发终答' },
+    }
+    const replayDone = {
+      run_id: 'r-1', seq: 5, ts_ms: 5, cursor: 'r-1:5',
+      agent_role: 'system', event_type: 'done', payload: {},
+    }
+    const fetchMock = vi.fn().mockResolvedValue(sseResponse([frame(replayAnswer) + frame(replayDone)]))
+    vi.stubGlobal('fetch', fetchMock)
+
+    const events: LgRagSseEvent[] = []
+    const onDone = vi.fn()
+    const controller = replayLgRag({ run_id: 'r-1', after_seq: 3 }, { onEvent: (e) => events.push(e), onDone })
+    await controller.done
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+    expect(url).toBe(LG_RAG_REPLAY_PATH)
+    expect(url).toBe('/api/ops/lg-rag/replay')
+    expect(init.method).toBe('POST')
+    expect(init.credentials).toBe('include')
+    expect((init.headers as Record<string, string>).Accept).toBe('text/event-stream')
+    expect(JSON.parse(init.body as string)).toEqual({ run_id: 'r-1', after_seq: 3 })
+
+    expect(events.map((e) => e.event_type)).toEqual(['answer', 'done'])
+    expect(events[0].cursor).toBe('r-1:4')
+    expect(events[0].seq).toBe(4)
+    expect(onDone).toHaveBeenCalledTimes(1)
+  })
+
+  it('replay 404（未知/跨用户 run）· 422（非法 cursor 防御）：onError kind=http 带状态码与 detail', async () => {
+    for (const status of [404, 422]) {
+      const response = {
+        ok: false,
+        status,
+        body: null,
+        json: () => Promise.resolve({ detail: 'err-' + String(status) }),
+      } as unknown as Response
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue(response))
+
+      const onError = vi.fn()
+      const controller = replayLgRag({ run_id: 'r-x', after_seq: 1 }, { onError })
+      await controller.done
+      expect(onError).toHaveBeenCalledWith({ kind: 'http', status, message: 'err-' + String(status) })
+    }
+  })
+
+  it('replay 401：onError kind=http status=401', async () => {
+    const response = {
+      ok: false,
+      status: 401,
+      body: null,
+      json: () => Promise.resolve({ detail: 'Invalid or expired session' }),
+    } as unknown as Response
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(response))
+
+    const onError = vi.fn()
+    const controller = replayLgRag({ run_id: 'r-1', after_seq: 3 }, { onError })
+    await controller.done
+    expect(onError).toHaveBeenCalledWith({ kind: 'http', status: 401, message: 'Invalid or expired session' })
+  })
+
+  it('replay 网络错误：onError kind=network（active-run 去留由 store 决策）', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Failed to fetch')))
+
+    const onError = vi.fn()
+    const controller = replayLgRag({ run_id: 'r-1', after_seq: 3 }, { onError })
+    await controller.done
+    expect(onError).toHaveBeenCalledWith({ kind: 'network', status: null, message: 'Failed to fetch' })
   })
 })

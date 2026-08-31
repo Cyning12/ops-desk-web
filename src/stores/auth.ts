@@ -61,8 +61,10 @@ export const useAuthStore = defineStore('auth', () => {
     ready.value = true
     // T3（R1-N1）：登出/401 同步清 lg-rag thread_id 本地持久化，避免同浏览器换账号串号。
     // 键名与 stores/chat.ts LG_RAG_THREAD_ID_STORAGE_KEY 保持一致（避免 auth→chat 循环 import，此处直写）
+    // T4：active-run 续看游标同清（键名对齐 chat.ts LG_RAG_ACTIVE_RUN_STORAGE_KEY）——换账号后 replay 必 404/401，残留只会误导
     try {
       window.localStorage.removeItem('ops.lg-rag.thread-id')
+      window.localStorage.removeItem('ops.lg-rag.active-run')
     } catch {
       // localStorage 不可用：静默降级
     }
