@@ -1,6 +1,6 @@
 # Task：Web · lg-rag SSE T3 · thread_id 会话连续性（稳定续问 · 刷新恢复）
 
-> **状态**：active（2026-08-31 · web 00 起草签收 · 待 30 实现）  
+> **状态**：completed（2026-08-31 CLOSE · PR [#25](https://github.com/Cyning12/ops-desk-web/pull/25) MERGED · 维护者联调亲签 · 00 统筹归档）  
 > **类型**：session / 前端状态配套（跨仓联调收尾）  
 > **统筹**：**web 00 Agent** 签收 · 排 30 实现 · **禁止 ops-desk-api Agent 改本仓 Vue/TS**  
 > **上游 Spec**：api [`05_lg_rag_transport_and_session_plan_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) §4.2 · §10.2（T3 已回写实现句）· 本仓 [`SPEC-web-lg-rag-sse-t2_v1.md`](../../spec/SPEC-web-lg-rag-sse-t2_v1.md)（契约不变）  
@@ -42,7 +42,7 @@
 | **HG-TASK-DRAFT** | approved | 22-R1 | 2026-08-31 · web 00 签 · 维护者 Prompt 授权「起草 web T3 task · 授权签收所有过程文档」 |
 | **HG-GRAPH-MODULES** | approved | **30** | 2026-08-31 · web 00 预签（维护者授权代签文档闸）· graph_delta=update 限 `10_flow_chat` 备注 · 不新增一级模块（对齐 T2 先例） |
 | **HG-AUDIT-R1** | approved | **30** | 2026-08-31 · web 00 代签（维护者授权签收过程文档）· R1 审 [reviews/task_web_lg_rag_sse_t3_audit_R1_20260831.md](../../harness/reviews/task_web_lg_rag_sse_t3_audit_R1_20260831.md) pass-with-notes · 0 阻塞 · 5 非阻塞 note（30 内决） |
-| **HG-JOINT-DEBUG** | pending | **merge** | T3 联调（同 thread 续问有上下文 · 新 thread 隔离）· **维护者亲签** · 未签前 web PR **勿 auto-merge** |
+| **HG-JOINT-DEBUG** | approved | **merge** | 2026-08-31 · **维护者 cyning 亲签**（令「牵手」）· T3 联调四用例通过：同 thread 续问有上下文 · 新 thread 隔离 · 刷新恢复续问 · 压缩后 SSE 仍 `done` |
 
 ---
 
@@ -105,7 +105,7 @@ web T2 时主 Chat 发送 **thread_id 留空**（每问新 uuid，无多轮上�
 - [x] `/lg-rag` invoke 页 **零 diff**（`LgRagView.vue` / `api/lgRag.ts` / `useLgRagSse.ts` 均未改；`git diff` 可核）
 - [x] `pnpm lint` / `pnpm test` / `pnpm build` 绿；`./scripts/graph-compile.sh` 绿（见「自检结论」）
 - [x] `10_flow_chat` 备注更新；`volatile.md` 短注落盘（`01_modules.md` 零 diff）
-- [ ] 联调（维护者签）：同 thread 续问有上下文 · 新 thread 隔离 · 超长历史压缩后 SSE 仍 `done`
+- [x] 联调（维护者签）：同 thread 续问有上下文 · 新 thread 隔离 · 超长历史压缩后 SSE 仍 `done`（2026-08-31 · cyning 亲签 HG-JOINT-DEBUG · 令「牵手」）
 
 ---
 
@@ -179,6 +179,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者 Prompt 授权 web T3 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · api T3 #100 已 MERGED 为背景 |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 5 note）→ **00** 代签 HG-AUDIT-R1 · 闸全开可派 30 |
+| 2026-08-31 | **维护者 cyning** 联调亲签 HG-JOINT-DEBUG（令「牵手」）→ **00 CLOSE**：验收 12/12 · KPI 100 · 归档 done/ |
 | 2026-08-31 | **30+40** 实现交付：chat store thread_id 持久化/恢复/捕获/失效清理 + startNewSession；auth clearSession 同步清 id（R1-N1）；ChatView 恢复提示条/新会话按钮/thread 短码（R1-N5 采纳）；useLgRagSse 零 diff（R1-N3 不做响应头校验）；验收 12 项勾 11（联调项待维护者 HG-JOINT-DEBUG）；lint/test/build/graph/verify 全绿 |
 
 ## 合入 / 联调策略
@@ -186,3 +187,39 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 - web PR：**勿 auto-merge**（close_pr_policy=required）
 - api 已 api-only 先合（#100 MERGED）；web 本 PR 合入**不阻塞 api**，但合入前须 HG-JOINT-DEBUG 维护者亲签
 - 联调通过标准：同 thread 续问有上下文 · 新 thread 隔离 · 刷新恢复续问 · 超长历史压缩后 SSE 仍 `done`（对齐 api `05` §10.2）
+
+---
+
+### KPI
+
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验沉淀（recommended）
+
+- thread_id 捕获走 `run.start` payload 即可，**无需**为响应头 `X-Ops-Lg-Rag-Thread-Id` 扩展 composable（R1-N3 内决：保持 `useLgRagSse` 零 diff，契约变更时再议）。
+- 401/登出清 id 须挂 auth store `clearSession` 单点（R1-N1），否则 SSE fetch 绕 axios 拦截器时会漏清。
+- 恢复策略「后端上下文连续 + 前端历史不回显」须 UI 提示条显式声明，否则用户误判为新会话。
+- Wiki: `docs/coding_wiki/volatile.md`（见 wiki_delta_note）。
+
+---
+
+## CLOSE
+
+| 项 | 值 |
+|---|---|
+| 日期 | 2026-08-31 |
+| web PR | [#25](https://github.com/Cyning12/ops-desk-web/pull/25) MERGED |
+| 联调 | HG-JOINT-DEBUG approved · 维护者 cyning 亲签（令「牵手」）· 四用例全过 |
+| 交付 | Chat 稳定 thread_id（localStorage `ops.lg-rag.thread-id`）· 刷新恢复 + 提示条 · 新会话按钮 · 404/422 清 id 不自动重发 · thread 短码展示 |
+| 归档 | `docs/tasks/done/task_web_lg_rag_sse_t3.md` |
+| 下一棒 | T4 replay/cursor（另 task · api 侧先动）· T5 token delta（另 task） |
