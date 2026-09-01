@@ -1,6 +1,6 @@
 # Task：Web · 图谱 P1a · G-L1 新建 10_flow_lg_rag（lg-rag 页流程 + l2 indexes 同步）
 
-> **状态**：active（2026-08-31 · web 00 起草签收 · 待 30 实现）  
+> **状态**：completed（2026-08-31 CLOSE · PR [#33](https://github.com/Cyning12/ops-desk-web/pull/33) MERGED · 纯图谱波 CI 绿收口 · 00 统筹归档）  
 > **类型**：图谱/文档（无业务代码变更）  
 > **统筹**：**web 00 Agent** 签收 · 排 30 实现  
 > **上游 SPEC**：[`SPEC-web-tech-graph-incremental-completion_v1.md`](../../spec/SPEC-web-tech-graph-incremental-completion_v1.md) §3 P1（flow 补全 · lg-rag 优先）+ P2 先行切片（lg_rag 域 indexes 同步 · 防脱节）  
@@ -164,7 +164,44 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l1_
 |---|---|
 | 2026-08-31 | **00** 起草 · P0 CLOSE（#31）续开 P1a · 维护者「提前签收task」授权沿用 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · l2 lg_rag 域 indexes 同波同步（防脱节） |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note）→ **00** 即签 HG-AUDIT-R1 · N4 l2 README 失真入范围 · N3/N6 交 30 内决 · 注记：N1 旧帽名沿用系列口径 · N2 SPEC P2 例证已被 chat 试点覆盖（本 task 落 invoke 链新符号 · 合法）· N5 graph.json 时间戳 diff 容忍（P0 同型） |
+| 2026-08-31 | **00 CLOSE**：CI 绿 + 00 抽查（7/7 · src 零 diff · flow+indexes 落位）→ PR #33 MERGED → KPI 100 · 归档 done/ |
 | 2026-08-31 | **30/40** 交付：新建 `10_flow_lg_rag.graph.yaml`（9 implementedBy 全 grep 实证）+ compile 产物 · l2 indexes 扩 lg_rag 域（N3 内决：同文件多域分段 + `graph_id`→`graph_ids` 列表 + 头注双域来源；N6 内决：裸符号键维持 · 两域 18 键零撞键已核 · 撞键时改 `path#symbol` 复合键留 P2）· `01_modules.md` pages 行补 Obs + 关联节 + 人签 · l2 README 覆盖域 chat+lg_rag（N4）· volatile 短注 · 验收 7 条全勾 · 五闸退出码全 0（见自检结论表） |
+
+---
+
+### KPI
+
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验沉淀（recommended）
+
+- 新 flow 与同域 l2 indexes 同 task 落地，可直接消灭「有 flow 无 indexes」脱节窗口（对齐 api 05 §9 义务 · 防 T6 前脱重复发）。
+- l2 indexes 多域扩展形态：同文件分段 + graph_ids 列表即可；by_symbol 裸符号键撞键时再升级 path#symbol 复合键（本波 18 键零撞键机检）。
+- Wiki: `docs/coding_wiki/volatile.md`（见 wiki_delta_note）。
+
+---
+
+## CLOSE
+
+| 项 | 值 |
+|---|---|
+| 日期 | 2026-08-31 |
+| web PR | [#33](https://github.com/Cyning12/ops-desk-web/pull/33) MERGED |
+| 交付 | `10_flow_lg_rag`（11 节点 13 边 · 9 implementedBy 全实证）· l2 indexes lg_rag 域 9 条目 · l2 README 覆盖域更正 · modules 补 Obs + 关联 + 人签 |
+| 归档 | `docs/tasks/done/task_web_graph_l1_flow_lg_rag.md` |
+| 下一棒 | SPEC P1 其余页 flow（overview/issues/pulls/graph/lc_evidence/obs/login · 优先级待维护者定）→ P2 其余域 indexes → P3 双写收敛+CI 强化 |
+
+---
 
 ## 合入策略
 
