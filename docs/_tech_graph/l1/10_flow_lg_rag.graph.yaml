@@ -1,0 +1,148 @@
+schema_version: "inform_graph.v3"
+graph_id: "10_flow_lg_rag"
+title: "LG RAG 旁路 invoke 流程（前端）"
+description: "用户在 LG RAG 旁路实验页（/lg-rag）提交 query：LgRagView → useLgRagStore.invoke → api/lgRag.invokeLgRag → api/http axios → POST /api/ops/lg-rag/invoke → ops_api。旁注：① route=refuse / gate_action=refuse 为 200 成功态（lgRag.ts L141 · store L15 · view isRefuse L19–23 三处互证），写入 result 而非 error；② 非流式（freeze lg-rag-http-v1 · lgRag.ts L139），SSE 主线在 10_flow_chat 不重复建模；③ thread_id 续写回填：「用此 thread_id 继续」把响应 result.thread_id 回填输入框（store useThreadId L42–44 · 进程内有效），invoke 时非空 thread_id 入请求体（store L64–65）；④ mode 三档 router / basic / supervisor（lgRag.ts L13 LgRagMode）；⑤ 单次超时 300s 落在 invokeLgRag 请求 config（LG_RAG_TIMEOUT_MS L6 · L152），不改 http 全局 30s；⑥ 404/502 统一文案「旁路 API 不可用」（mapLgRagError L106–116）；取消（abort/新 invoke 抢占）不写 error（isCanceledError L85–93 · store L70–72）；elapsedSeconds 为 loading 期间秒计时（store L25 声明 · L59–61 setInterval · finally 停表）。"
+version: "2026-08-31"
+layer: "G-L1"
+primary_layer: "G-L1"
+depth: "method"
+direction: "TB"
+
+nodes:
+  - id: "user"
+    label: "用户"
+    kind: external
+
+  - id: "lg_rag_view"
+    label: "LgRagView"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/views/LgRagView.vue"
+        symbol: "LgRagView"
+        kind: component
+
+  - id: "lg_rag_store"
+    label: "useLgRagStore"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/lgRag.ts"
+        symbol: "useLgRagStore"
+        kind: module
+
+  - id: "invoke_action"
+    label: "invoke"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/lgRag.ts"
+        symbol: "invoke"
+        kind: method
+
+  - id: "abort_action"
+    label: "abort"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/lgRag.ts"
+        symbol: "abort"
+        kind: method
+
+  - id: "use_thread_id"
+    label: "useThreadId"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/lgRag.ts"
+        symbol: "useThreadId"
+        kind: method
+
+  - id: "elapsed_timer"
+    label: "elapsedSeconds（等待秒计时）"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/lgRag.ts"
+        symbol: "elapsedSeconds"
+        kind: state
+
+  - id: "invoke_api"
+    label: "invokeLgRag"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/lgRag.ts"
+        symbol: "invokeLgRag"
+        kind: method
+
+  - id: "invoke_path"
+    label: "LG_RAG_INVOKE_PATH"
+    kind: struct
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/lgRag.ts"
+        symbol: "LG_RAG_INVOKE_PATH"
+        kind: const
+
+  - id: "http_client"
+    label: "http（axios · baseURL=/api）"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/http.ts"
+        symbol: "http"
+        kind: module
+
+  - id: "ops_api"
+    label: "ops-desk-api"
+    kind: external
+
+edges:
+  - from: "user"
+    to: "lg_rag_view"
+    label: "opens /lg-rag"
+
+  - from: "lg_rag_view"
+    to: "lg_rag_store"
+    label: "binds"
+
+  - from: "lg_rag_view"
+    to: "invoke_action"
+    label: "onSubmit（store.invoke · L70）"
+
+  - from: "invoke_action"
+    to: "abort_action"
+    label: "先中止前次在途请求（L47）"
+
+  - from: "invoke_action"
+    to: "elapsed_timer"
+    label: "启动秒计时（L59–61 · finally 停表）"
+
+  - from: "invoke_action"
+    to: "invoke_api"
+    label: "await（signal 透传 · L68）"
+
+  - from: "invoke_api"
+    to: "invoke_path"
+    label: "http.post(LG_RAG_INVOKE_PATH, body, {timeout:300s, signal})（L151–154）"
+
+  - from: "invoke_path"
+    to: "http_client"
+    label: "相对 baseURL=/api（'/ops/lg-rag/invoke'）"
+
+  - from: "http_client"
+    to: "ops_api"
+    label: "POST /api/ops/lg-rag/invoke（非流式）"
+
+  - from: "lg_rag_view"
+    to: "abort_action"
+    label: "中止 click（store.abort · L83）"
+
+  - from: "lg_rag_view"
+    to: "use_thread_id"
+    label: "「用此 thread_id 继续」click（L87）"
+
+  - from: "use_thread_id"
+    to: "lg_rag_store"
+    label: "回填 threadId（result.thread_id → 输入框 · L42–44）"

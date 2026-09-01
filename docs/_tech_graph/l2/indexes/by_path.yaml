@@ -1,12 +1,15 @@
-# chat 域 path → 节点倒排（G-L2）
-# 源：l1/10_flow_chat.graph.yaml implementedBy
+# path → 节点倒排（G-L2 · 多域：chat + lg_rag）
+# 源：l1/10_flow_chat.graph.yaml · l1/10_flow_lg_rag.graph.yaml 的 implementedBy
 # 生成策略：手维启动；后续可 --check
+# 形态决策（R1-N3 · 30 内决 2026-08-31）：同文件多域分段（不拆分 *_lg_rag 文件对）；
+#   graph_id 单值升级为 graph_ids 列表承接双域；按域分段注释。
 
 version: "2026-08-31"
-graph_id: "10_flow_chat"
+graph_ids: ["10_flow_chat", "10_flow_lg_rag"]
 layer: "G-L2"
 
 by_path:
+  # ── chat 域（10_flow_chat）──
   "src/views/ChatView.vue":
     - node_id: chat_view
       symbol: ChatView
@@ -38,3 +41,35 @@ by_path:
     - node_id: sse_parser
       symbol: LgRagSseFrameParser
       kind: class
+  # ── lg_rag 域（10_flow_lg_rag）──
+  "src/views/LgRagView.vue":
+    - node_id: lg_rag_view
+      symbol: LgRagView
+      kind: component
+  "src/stores/lgRag.ts":
+    - node_id: lg_rag_store
+      symbol: useLgRagStore
+      kind: module
+    - node_id: invoke_action
+      symbol: invoke
+      kind: method
+    - node_id: abort_action
+      symbol: abort
+      kind: method
+    - node_id: use_thread_id
+      symbol: useThreadId
+      kind: method
+    - node_id: elapsed_timer
+      symbol: elapsedSeconds
+      kind: state
+  "src/api/lgRag.ts":
+    - node_id: invoke_api
+      symbol: invokeLgRag
+      kind: method
+    - node_id: invoke_path
+      symbol: LG_RAG_INVOKE_PATH
+      kind: const
+  "src/api/http.ts":
+    - node_id: http_client
+      symbol: http
+      kind: module

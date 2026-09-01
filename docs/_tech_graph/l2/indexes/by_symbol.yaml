@@ -1,11 +1,14 @@
-# chat 域 symbol → path 倒排（G-L2）
-# 源：l1/10_flow_chat.graph.yaml implementedBy
+# symbol → path 倒排（G-L2 · 多域：chat + lg_rag）
+# 源：l1/10_flow_chat.graph.yaml · l1/10_flow_lg_rag.graph.yaml 的 implementedBy
+# 键决策（R1-N6 · 30 内决 2026-08-31）：本波 chat/lg_rag 两域 18 键零撞键（已核），
+#   维持裸符号键；后续域扩展若遇泛名撞键（如 invoke/abort/http），改 path#symbol 复合键。
 
 version: "2026-08-31"
-graph_id: "10_flow_chat"
+graph_ids: ["10_flow_chat", "10_flow_lg_rag"]
 layer: "G-L2"
 
 by_symbol:
+  # ── chat 域（10_flow_chat）──
   ChatView:
     path: src/views/ChatView.vue
     node_id: chat_view
@@ -42,3 +45,40 @@ by_symbol:
     path: src/composables/useLgRagSse.ts
     node_id: sse_parser
     kind: class
+  # ── lg_rag 域（10_flow_lg_rag）──
+  LgRagView:
+    path: src/views/LgRagView.vue
+    node_id: lg_rag_view
+    kind: component
+  useLgRagStore:
+    path: src/stores/lgRag.ts
+    node_id: lg_rag_store
+    kind: module
+  invoke:
+    path: src/stores/lgRag.ts
+    node_id: invoke_action
+    kind: method
+  abort:
+    path: src/stores/lgRag.ts
+    node_id: abort_action
+    kind: method
+  useThreadId:
+    path: src/stores/lgRag.ts
+    node_id: use_thread_id
+    kind: method
+  elapsedSeconds:
+    path: src/stores/lgRag.ts
+    node_id: elapsed_timer
+    kind: state
+  invokeLgRag:
+    path: src/api/lgRag.ts
+    node_id: invoke_api
+    kind: method
+  LG_RAG_INVOKE_PATH:
+    path: src/api/lgRag.ts
+    node_id: invoke_path
+    kind: const
+  http:
+    path: src/api/http.ts
+    node_id: http_client
+    kind: module
