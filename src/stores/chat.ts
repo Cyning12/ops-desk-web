@@ -180,7 +180,8 @@ function summarizeProgress(payload: Record<string, unknown> | undefined): string
  *   done/error/abort/传输层终断后停止追加（迟到帧忽略）；无 delta 帧自然降级 T2 整段行为；
  *   replay 含 delta 帧复用同一 processFrame 管线
  * - stopStreaming() abort 中断，可继续重发
- * - 主路径已废弃 chat stream（旧 SSE 封装仅留文件/单测对照，本 store 禁止 import）
+ * - 主路径传输 = lg-rag SSE；旧 chat stream 已弃用（api 410 Gone · web 封装随 T6 删除；
+ *   切流史见 docs/tasks/done/task_web_lg_rag_sse_t2.md）
  */
 export const useChatStore = defineStore('chat', () => {
   const session = ref<ChatSession | null>(null)

@@ -2,7 +2,7 @@
 # 源：l1/10_flow_chat.graph.yaml implementedBy
 # 生成策略：手维启动；后续可 --check
 
-version: "2026-07-27"
+version: "2026-08-31"
 graph_id: "10_flow_chat"
 layer: "G-L2"
 
@@ -21,14 +21,20 @@ by_path:
     - node_id: send_message
       symbol: sendMessage
       kind: method
+    - node_id: resume_from_cursor
+      symbol: resumeFromCursor
+      kind: method
   "src/api/chat.ts":
     - node_id: fetch_session_api
       symbol: fetchLatestSession
       kind: method
-  "src/composables/useOpsChatSse.ts":
+  "src/composables/useLgRagSse.ts":
     - node_id: stream_sse
-      symbol: streamOpsChat
+      symbol: streamLgRag
+      kind: method
+    - node_id: replay_sse
+      symbol: replayLgRag
       kind: method
     - node_id: sse_parser
-      symbol: SseFrameParser
+      symbol: LgRagSseFrameParser
       kind: class
