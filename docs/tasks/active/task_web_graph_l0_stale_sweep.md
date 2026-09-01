@@ -81,14 +81,14 @@ G-L0 顶层图自 2026-07-27 未跟进：`sse_client → ops_api` 边 label 仍 
 
 > 完成态（30 交付时逐项勾选）：
 
-- [ ] l0 yaml 全文无 `chat/stream` 字样（grep 断言）· `sse_client → ops_api` label = `POST /api/ops/lg-rag/stream`
-- [ ] 7 个新页节点 + `includes` 边齐（grep/yamllint 断言 · 与 `src/views/` 9 页清单一一对应：Chat/Obs 已有 + 新增 7）
-- [ ] `lg_rag_page → api_client` 调用边存在
-- [ ] `version` = `2026-08-31`
-- [ ] `./scripts/graph-compile.sh` 绿 · `00_main.md` / 双写 graph.json 再生成（diff 仅本 task 变更面）
-- [ ] `pnpm lint` / `pnpm test` / `pnpm build` 回归绿（src 零变更 · diff 断言 `git diff main --stat -- src/` 为空）
-- [ ] `graph.json` 再生成允许含时间戳 diff 行（R1-N4 · 正常产物噪声 · 不算验收缺口）
-- [ ] `volatile.md` 短注落盘 · `verify` PASS
+- [x] l0 yaml 全文无 `chat/stream` 字样（grep 断言 exit 1 零命中 · 2026-08-31 30/40）· `sse_client → ops_api` label = `POST /api/ops/lg-rag/stream`
+- [x] 7 个新页节点 + `includes` 边齐（grep 断言 · 与 `src/views/` 实证 9 页清单一一对应：Chat/Obs 已有 + 新增 7）
+- [x] `lg_rag_page → api_client` 调用边存在（label `calls（invoke · POST /api/ops/lg-rag/invoke）` · 实证链 grep 核过）
+- [x] `version` = `2026-08-31`
+- [x] `./scripts/graph-compile.sh` 绿（exit 0 · OK 00_main/10_flow_chat）· `00_main.md` / 双写 graph.json 再生成（diff 仅本 task 变更面）
+- [x] `pnpm lint` / `pnpm test` / `pnpm build` 回归绿（全 exit 0 · 22 files / 153 tests）· src 零变更（`git diff main --stat -- src/` 空输出）
+- [x] `graph.json` 再生成允许含时间戳 diff 行（R1-N4 · 正常产物噪声 · 不算验收缺口）
+- [x] `volatile.md` 短注落盘 · `verify` PASS（exit 0）
 
 ---
 
@@ -125,7 +125,18 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l0_
 
 ### 自检结论
 
-> 30/40 交付时回填：compile / lint / test / build / verify 退出码与结论表。
+> 30/40 交付回填（2026-08-31 · 同上下文执行）：
+
+| 闸 | 命令 | 退出码 | 结论 |
+|---|---|---|---|
+| graph | `./scripts/graph-compile.sh` | 0 | ✅ OK 00_main / 10_flow_chat · graph.json 双写再生成（33 nodes / 37 edges） |
+| lint | `pnpm lint` | 0 | ✅ 无告警 |
+| test | `pnpm test` | 0 | ✅ 22 files / 153 tests passed |
+| build | `pnpm build` | 0 | ✅ vue-tsc + vite build |
+| verify | `npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l0_stale_sweep.md` | 0 | ✅ VERIFY: PASS |
+
+grep/diff 断言：l0 无 `chat/stream`（grep exit 1）· 7 新页节点+includes 边+lg_rag_page→api_client 齐 · version=2026-08-31 · `git diff main --stat -- src/` 空（src 零变更）· l1/l2/scripts/CI 零越界。
+留痕：`docs/harness/invokes/by-task/web-graph-l0-stale-sweep/invoke_20260831_30_*.md` · `invoke_20260831_40_*.md`。
 
 ---
 
@@ -146,6 +157,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l0_
 |---|---|
 | 2026-08-31 | **00** 起草 · SPEC HG-SPEC-SIGNOFF 已签（维护者令）· kit 1.10.0 已最新免升级波 · 维护者令「提前签收task」授权 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note）→ **00** 即签 HG-AUDIT-R1 · N4 graph.json 时间戳 diff 合规 · N5 l0 description 旧表述入范围 · N6 sse_client 语义注记入范围 · 勘误：N1 闸表 blocks_hats 旧帽名 22-R1（沿用系列口径不改）· N2 SPEC G2 表述过宽（obs_page 已存在 · P0 节点 7 个为 G-L0 层内合法扩面）· N3 modules pages 行未含 Obs（留 P1 补） |
+| 2026-08-31 | **30/40** 交付：l0 边 label → lg-rag/stream · sse_client 语义注记 · description 主线改写 · 7 页节点+includes+invoke 边 · version 刷新；compile/lint/test/build/verify 全 exit 0；验收 8 项全勾；volatile 短注落盘；invoke_30/40 留痕；src 零变更（diff 断言空） |
 
 ## 合入策略
 
