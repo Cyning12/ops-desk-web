@@ -50,6 +50,7 @@
 
 | 关账日 | task | freeze_id / 摘要 |
 |--------|------|------------------|
+| 2026-08-31 | [`task_web_graph_l2_key_unify.md`](./task_web_graph_l2_key_unify.md) | 图谱 P2 收尾 · by_symbol 复合键统一（69 条目）· PR #35 MERGED · **P2 全清** |
 | 2026-08-31 | [`task_web_graph_l1_flow_pages.md`](./task_web_graph_l1_flow_pages.md) | 图谱 P1b · 7 页 flow 补全 + l2 7 域复合键 · PR #34 MERGED · **P1 全清** |
 | 2026-08-31 | [`task_web_graph_l1_flow_lg_rag.md`](./task_web_graph_l1_flow_lg_rag.md) | 图谱 P1a · 新建 10_flow_lg_rag + l2 lg_rag 域 indexes · PR #33 MERGED |
 | 2026-08-31 | [`task_web_graph_l0_stale_sweep.md`](./task_web_graph_l0_stale_sweep.md) | 图谱 P0 · l0 脱节清扫（边/节点对齐 lg-rag 主线）· PR #31 MERGED |
@@ -93,6 +94,7 @@
 | 2026-08-31 | 图谱 SPEC 签收（PR #30）· P0 归档 `task_web_graph_l0_stale_sweep.md`（PR #31） |
 | 2026-08-31 | P1a 归档 `task_web_graph_l1_flow_lg_rag.md`（PR #33 · l2 lg_rag 域同步） |
 | 2026-08-31 | P1b 归档 `task_web_graph_l1_flow_pages.md`（PR #34 · 7 页 flow · P1 全清） |
+| 2026-08-31 | P2 归档 `task_web_graph_l2_key_unify.md`（PR #35 · by_symbol 复合键统一） |
 
 ## 给维护者
 

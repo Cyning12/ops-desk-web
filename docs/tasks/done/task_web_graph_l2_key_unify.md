@@ -1,6 +1,6 @@
 # Task：Web · 图谱 P2 收尾 · by_symbol 键形态统一（裸键 → path#symbol 复合键）
 
-> **状态**：active（2026-08-31 · web 00 起草签收 · 待 30 实现）  
+> **状态**：completed（2026-08-31 CLOSE · PR [#35](https://github.com/Cyning12/ops-desk-web/pull/35) MERGED · 纯图谱波 CI 绿收口 · 00 统筹归档）  
 > **类型**：图谱/文档（一致性清扫 · 无业务代码变更）  
 > **统筹**：**web 00 Agent** 签收 · 排 30 实现  
 > **上游 SPEC**：[`SPEC-web-tech-graph-incremental-completion_v1.md`](../../spec/SPEC-web-tech-graph-incremental-completion_v1.md) §3 P2（l2 indexes 扩展收尾）  
@@ -160,7 +160,44 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l2_
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者令「P2收尾后再进P3」· P1b CLOSE（#34）· 闸沿用「提前签收」授权 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · 迁移面实证：18 裸键（chat+lg_rag 含 http 例外）+ 51 复合键 |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 4 note）→ **00** 即签 HG-AUDIT-R1 · R1 预演：迁移后撞键=0 · 75 (path,symbol) 对去重=69 与条目数吻合 · N1 http 命中 7 校正验收口径 · N4 README 双形态句入范围 |
+| 2026-08-31 | **00 CLOSE**：CI 绿 + 00 抽查（6/6 · 零裸键 · 69 复合键 · compile OK · src 零 diff）→ PR #35 MERGED → KPI 100 · 归档 done/ · **SPEC P2 全清** |
 | 2026-08-31 | **30+40** 交付：18 裸键 → `path#symbol` 复合键（值零变更 · 机检四断言全 PASS exit 0）· 头注/README/01_modules 人签/volatile 短注更新 · compile/lint/test/build/verify 全绿 · invoke_30 + invoke_40 落盘 |
+
+---
+
+### KPI
+
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验沉淀（recommended）
+
+- 键形态迁移用「值全等 snapshot 断言」兜底（迁移前先存值集合），纯形态变更可机检零风险。
+- 决策史头注（P1a N6 → P1b R1-N1 → P2 统一）让三波演进可追溯；统一后头注只留一句历史指针。
+- Wiki: `docs/coding_wiki/volatile.md`（见 wiki_delta_note）。
+
+---
+
+## CLOSE
+
+| 项 | 值 |
+|---|---|
+| 日期 | 2026-08-31 |
+| web PR | [#35](https://github.com/Cyning12/ops-desk-web/pull/35) MERGED |
+| 交付 | by_symbol 18 裸键 → `path#symbol` 复合键（69 条目值零变更）· 头注/README/modules 人签同步 · 机检四断言（零裸键/值全等/撞键=0/flow 一一对应） |
+| 归档 | `docs/tasks/done/task_web_graph_l2_key_unify.md` |
+| 下一棒 | SPEC **P3**：双写收敛（根 graph.json 去留待维护者拍板）+ CI 一致性检查（l0 边 label vs src · l2↔flow） |
+
+---
 
 ## 合入策略
 
