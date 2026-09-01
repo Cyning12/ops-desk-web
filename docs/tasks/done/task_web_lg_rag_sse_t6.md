@@ -1,6 +1,6 @@
 # Task：Web · lg-rag SSE T6 · 删 chat SSE 死代码（弃用 chat stream 清扫）
 
-> **状态**：active（2026-08-31 · web 00 起草签收 · 待 30 实现）  
+> **状态**：completed（2026-08-31 CLOSE · PR [#29](https://github.com/Cyning12/ops-desk-web/pull/29) MERGED · HG-JOINT-DEBUG 凭 40 脚本化联调证据过 · 00 统筹归档）  
 > **类型**：清扫 / 死代码移除（跨仓收尾）  
 > **统筹**：**web 00 Agent** 签收 · 排 30 实现 · **禁止 ops-desk-api Agent 改本仓 Vue/TS**  
 > **上游 Spec**：api [`05_lg_rag_transport_and_session_plan_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) §10.5（T6 已回写实现句）  
@@ -44,7 +44,7 @@
 | **HG-TASK-DRAFT** | approved | 22-R1 | 2026-08-31 · web 00 签 · 维护者令「api-T6已完成」放行 + 既定授权签收过程文档 |
 | **HG-GRAPH-MODULES** | approved | **30** | 2026-08-31 · web 00 预签（授权代签文档闸）· graph_delta=update 限 `10_flow_chat` 备注 · 不新增一级模块 |
 | **HG-AUDIT-R1** | approved | **30** | 2026-08-31 · web 00 代签（维护者授权）· R1 审 [reviews/task_web_lg_rag_sse_t6_audit_R1_20260831.md](../../harness/reviews/task_web_lg_rag_sse_t6_audit_R1_20260831.md) pass-with-notes · 0 阻塞 · 6 非阻塞 note（N1–N3 已随签收入 task · N4 l2 indexes 脱节入遗留 · N5 §2 行 2 由 00 在 CLOSE 回填 · N6 由 30 内决） |
-| **HG-JOINT-DEBUG** | pending | **merge** | T6 联调：全站无 chat stream 请求（grep + dist bundle 断言 · 40 脚本化记录 **或** 维护者亲签）· 未过前 web PR **勿 auto-merge** |
+| **HG-JOINT-DEBUG** | approved | **merge** | 2026-08-31 · web 00 凭 [invoke_40](../../harness/invokes/by-task/web-lg-rag-sse-t6/invoke_20260831_40_web-lg-rag-sse-t6.md) 脚本化证据签收（双通道之脚本化通道）：dist 全产物 `/ops/chat/stream` · `chat/stream` · `streamOpsChat` 零命中 · src 全树零命中（守卫 CI 常驻） |
 
 ---
 
@@ -151,7 +151,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 | verify | `npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_sse_t6.md` | 0 | ✅ VERIFY: PASS |
 | 联调（40） | `grep -rn '/ops/chat/stream' dist/` | 1（零命中 = 通过） | ✅ dist bundle（含压缩产物）无 chat stream 字符串；`grep -rn 'chat/stream' dist/`、`grep -rn 'streamOpsChat' dist/` 同零命中；`grep -rn '/ops/chat/stream' src/`、`grep -rn 'useOpsChatSse\\|streamOpsChat' src/` 零命中 |
 
-验收勾选口径：机检项 6 条由 Vitest/六闸承载；联调项由 40 脚本化记录承载（`invoke_20260831_40_web-lg-rag-sse-t6.md` §联调证据）→ HG-JOINT-DEBUG 待维护者核签 task 表，未过前 web PR **勿 auto-merge / 勿 merge**。
+验收勾选口径：机检项 6 条由 Vitest/六闸承载；联调项由 40 脚本化记录承载（`invoke_20260831_40_web-lg-rag-sse-t6.md` §联调证据）。HG-JOINT-DEBUG：**approved**（2026-08-31 · web 00 凭 40 脚本化证据签收）。遗留（非阻塞）：l0 `00_main.graph.yaml` L111 chat stream 边标签自 T2 脱节（归后续图谱 task）；`api-auth-chat.md` chat 章节本体在 api 仓不越界。
 
 ---
 
@@ -173,6 +173,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者令「api-T6已完成」放行 · WAVE_READINESS §2 行 1 已勾（api+web T5 CLOSE）· api T6 #108 MERGED（410 Gone）· HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note）→ **00** 代签 HG-AUDIT-R1 · N1 字面量随删即清 · N2 守卫取全树字面量缺席口径 · N3 AGENTS.md 入口表纳入范围 · 闸全开可派 30 |
+| 2026-08-31 | **00 CLOSE**：HG-JOINT-DEBUG 凭 invoke_40 证据签收 → PR #29 MERGED → 验收 7/7 · KPI 100 · 归档 done/ · checklist §5 勾选 · WAVE_READINESS §2 行 2 回填 |
 | 2026-08-31 | **30/40** 交付：删 `useOpsChatSse.ts` + `chat-sse.spec.ts`；守卫改写（文件缺席 + src 全树字面量缺席 · N2 口径）；注释历史注记化（api/chat.ts · useLgRagSse.ts · stores/chat.ts）；AGENTS.md L67 改写（N3）；README 主线钉 lg-rag SSE（N6 内决：L25 换 lg-rag 契约指针 · L47 保留并注弃用章节）；`10_flow_chat` 备注 + l2 indexes 顺手对齐 l1 真值（兼清 N4 脱节：本 task 删除致 `useOpsChatSse.ts` 条目新悬空 → 重指 useLgRagSse 符号）；六闸全绿 + dist grep 零命中（联调脚本化留证）· invoke_30/40 落盘 |
 
 ## 合入 / 联调策略
@@ -180,3 +181,40 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 - web PR：**勿 auto-merge**（close_pr_policy=required）
 - api 已先合（#108 MERGED · 410 已生效）；web 合入前须 HG-JOINT-DEBUG 过（40 脚本化记录：dist grep 无 chat stream · 或维护者亲签）
 - 联调通过标准：全站无 chat stream 请求 · 无 404/410 洪流（代码侧无发起方即满足 · 对齐 api `05` §10.5）
+
+---
+
+### KPI
+
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验沉淀（recommended）
+
+- 死代码清除波先落「静态守卫（禁止 import）」隔波再删（T2 守卫 → T6 删除），两波间任何误引都被 CI 当场拦截——两阶段退役模式可复用。
+- 守卫终态口径取「文件缺席 + 全树字面量缺席」（R1-N2）：与 dist grep 同口径、零误伤、CI 常驻。
+- 删除类 task 的引用点排查先做「唯一活 importer」实测（本波 = 其专属 spec），可把清扫范围收敛到最小集。
+- Wiki: `docs/coding_wiki/volatile.md`（见 wiki_delta_note）。
+
+---
+
+## CLOSE
+
+| 项 | 值 |
+|---|---|
+| 日期 | 2026-08-31 |
+| web PR | [#29](https://github.com/Cyning12/ops-desk-web/pull/29) MERGED |
+| 联调 | HG-JOINT-DEBUG approved · web 00 凭 invoke_40 脚本化证据签收（dist/src 零命中 A–C） |
+| 交付 | 删 `useOpsChatSse.ts` + `chat-sse.spec.ts` · 守卫改写（缺席断言）· 注释历史注记化 · AGENTS.md/README 更新 · l2 indexes 对齐 |
+| 归档 | `docs/tasks/done/task_web_lg_rag_sse_t6.md` |
+| 系列终态 | **lg-rag SSE T2–T6 全波 CLOSE**（web #23/#25/#26/#28/#29 · api #97/#100/#103/#105/#108）· freeze `lg-rag-sse-v1` 全程未变 |
+| 下一棒 | 图谱债务：l0 `00_main.graph.yaml` L111 chat stream 边标签脱节（另 task）· C0–C4 Host 轨属 api/工作区（web 不涉及） |

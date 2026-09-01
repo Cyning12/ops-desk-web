@@ -80,9 +80,9 @@
 
 ## 5. T6 弃 chat（后续）
 
-- [ ] api chat stream 下线或 410  
-- [ ] web 删除 `useOpsChatSse` 死代码  
-- [ ] 全站监控无 chat stream 404 洪流  
+- [x] api chat stream 下线或 410（api PR #108 MERGED · 410 Gone + Deprecation/Link 头）  
+- [x] web 删除 `useOpsChatSse` 死代码（web PR #29 · 守卫改「文件缺席 + 字面量缺席」CI 常驻）  
+- [x] 全站监控无 chat stream 404 洪流（代码侧无发起方：dist/src 全树零命中 · invoke_40 证据 A–C）  
 
 ---
 
@@ -103,3 +103,4 @@
 | 2026-08-31 | §3/§4：链 api `WAVE_READINESS_lg_rag_sse_v0.md`（web T4 后查 T5） |
 | 2026-08-31 | §3 T4 两项勾（invoke_40 证据）· §4 注明 T5 阻塞—待 api 契约（web-00 判定） |
 | 2026-08-31 | §3 末项勾（§1 回填 · api #107）· §4 T5 两项勾（invoke_40 证据 · web #28 MERGED） |
+| 2026-08-31 | §5 T6 三项勾（api #108 · web #29 · dist/src 零命中）· **T2–T6 全段闭环** |

@@ -50,6 +50,7 @@
 
 | 关账日 | task | freeze_id / 摘要 |
 |--------|------|------------------|
+| 2026-08-31 | [`task_web_lg_rag_sse_t6.md`](./task_web_lg_rag_sse_t6.md) | 删 chat SSE 死代码（api 410）· 守卫缺席断言 · PR #29 MERGED · **T2–T6 闭环** |
 | 2026-08-31 | [`task_web_lg_rag_sse_t5.md`](./task_web_lg_rag_sse_t5.md) | `lg-rag-sse-v1` · answer delta 打字机（delta 追加/final 替换）· PR #28 MERGED |
 | 2026-08-31 | [`task_web_lg_rag_sse_t4.md`](./task_web_lg_rag_sse_t4.md) | `lg-rag-sse-v1` · 断联/replay 续看 · cursor + seq 去重 · PR #26 MERGED |
 | 2026-08-31 | [`task_web_lg_rag_sse_t3.md`](./task_web_lg_rag_sse_t3.md) | `lg-rag-sse-v1` · Chat 稳定 thread_id 会话连续性 · 刷新恢复 · PR #25 MERGED |
@@ -85,6 +86,7 @@
 | 2026-08-31 | 归档 `task_web_lg_rag_sse_t3.md`（PR #25 · HG-JOINT-DEBUG 维护者亲签） |
 | 2026-08-31 | 归档 `task_web_lg_rag_sse_t4.md`（PR #26 · HG-JOINT-DEBUG 凭 invoke_40 脚本化证据签收） |
 | 2026-08-31 | 归档 `task_web_lg_rag_sse_t5.md`（PR #28 · HG-JOINT-DEBUG 凭 invoke_40 脚本化证据签收） |
+| 2026-08-31 | 归档 `task_web_lg_rag_sse_t6.md`（PR #29 · HG-JOINT-DEBUG 凭 invoke_40 证据签收）· lg-rag SSE T2–T6 全波闭环 |
 
 ## 给维护者
 
