@@ -1,7 +1,7 @@
 {
   "schema_version": "graph_v2",
   "freeze_id": "OPS_DESK_WEB_TECH_GRAPH_FREEZE_20260901_V1",
-  "generated_at": "2026-09-01T05:49:11Z",
+  "generated_at": "2026-09-01T06:30:20Z",
   "graphs": [
     {
       "id": "00_main",
@@ -16,9 +16,51 @@
       "layer": "G-L1"
     },
     {
+      "id": "10_flow_graph",
+      "title": "Graph 图谱快照页加载流程（前端）",
+      "source_yaml_path": "l1/10_flow_graph.graph.yaml",
+      "layer": "G-L1"
+    },
+    {
+      "id": "10_flow_issues",
+      "title": "Issues 列表页查询流程（前端）",
+      "source_yaml_path": "l1/10_flow_issues.graph.yaml",
+      "layer": "G-L1"
+    },
+    {
+      "id": "10_flow_lc_evidence",
+      "title": "LC Evidence 旁路 invoke 流程（前端）",
+      "source_yaml_path": "l1/10_flow_lc_evidence.graph.yaml",
+      "layer": "G-L1"
+    },
+    {
       "id": "10_flow_lg_rag",
       "title": "LG RAG 旁路 invoke 流程（前端）",
       "source_yaml_path": "l1/10_flow_lg_rag.graph.yaml",
+      "layer": "G-L1"
+    },
+    {
+      "id": "10_flow_login",
+      "title": "Login 登录 / 登出流程（前端）",
+      "source_yaml_path": "l1/10_flow_login.graph.yaml",
+      "layer": "G-L1"
+    },
+    {
+      "id": "10_flow_obs",
+      "title": "Obs 过程可观测页加载流程（前端 · fixture 驱动）",
+      "source_yaml_path": "l1/10_flow_obs.graph.yaml",
+      "layer": "G-L1"
+    },
+    {
+      "id": "10_flow_overview",
+      "title": "Overview 总览页加载流程（前端）",
+      "source_yaml_path": "l1/10_flow_overview.graph.yaml",
+      "layer": "G-L1"
+    },
+    {
+      "id": "10_flow_pulls",
+      "title": "Pull Requests 列表页查询流程（前端）",
+      "source_yaml_path": "l1/10_flow_pulls.graph.yaml",
       "layer": "G-L1"
     }
   ],
@@ -189,6 +231,146 @@
       "label": ">../../../ops-desk-api/docs/_tech_graph/l1/10_flow_chat.md"
     },
     {
+      "graph_id": "10_flow_graph",
+      "id": "user",
+      "label": "用户"
+    },
+    {
+      "graph_id": "10_flow_graph",
+      "id": "graph_view",
+      "label": "GraphView"
+    },
+    {
+      "graph_id": "10_flow_graph",
+      "id": "graph_store",
+      "label": "useGraphStore"
+    },
+    {
+      "graph_id": "10_flow_graph",
+      "id": "load_action",
+      "label": "load"
+    },
+    {
+      "graph_id": "10_flow_graph",
+      "id": "fetch_graph_api",
+      "label": "fetchGraph"
+    },
+    {
+      "graph_id": "10_flow_graph",
+      "id": "http_client",
+      "label": "http（axios · baseURL=/api）"
+    },
+    {
+      "graph_id": "10_flow_graph",
+      "id": "ops_api",
+      "label": "ops-desk-api"
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "id": "user",
+      "label": "用户"
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "id": "issues_view",
+      "label": "IssuesView"
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "id": "issues_store",
+      "label": "useIssuesStore"
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "id": "load_action",
+      "label": "load"
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "id": "apply_filters",
+      "label": "applyFilters"
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "id": "reset_filters",
+      "label": "resetFilters"
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "id": "set_page",
+      "label": "setPage"
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "id": "set_page_size",
+      "label": "setPageSize"
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "id": "build_issue_params",
+      "label": "buildIssueParams"
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "id": "fetch_issues_api",
+      "label": "fetchIssues"
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "id": "http_client",
+      "label": "http（axios · baseURL=/api）"
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "id": "ops_api",
+      "label": "ops-desk-api"
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "id": "user",
+      "label": "用户"
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "id": "lc_evidence_view",
+      "label": "LcEvidenceView"
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "id": "lc_evidence_store",
+      "label": "useLcEvidenceStore"
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "id": "invoke_action",
+      "label": "invoke"
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "id": "abort_action",
+      "label": "abort"
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "id": "invoke_api",
+      "label": "invokeLcEvidence"
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "id": "invoke_path",
+      "label": "LC_EVIDENCE_INVOKE_PATH"
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "id": "http_client",
+      "label": "http（axios · baseURL=/api）"
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "id": "ops_api",
+      "label": "ops-desk-api"
+    },
+    {
       "graph_id": "10_flow_lg_rag",
       "id": "user",
       "label": "用户"
@@ -240,6 +422,206 @@
     },
     {
       "graph_id": "10_flow_lg_rag",
+      "id": "ops_api",
+      "label": "ops-desk-api"
+    },
+    {
+      "graph_id": "10_flow_login",
+      "id": "user",
+      "label": "用户"
+    },
+    {
+      "graph_id": "10_flow_login",
+      "id": "login_view",
+      "label": "LoginView"
+    },
+    {
+      "graph_id": "10_flow_login",
+      "id": "app_layout",
+      "label": "AppLayout"
+    },
+    {
+      "graph_id": "10_flow_login",
+      "id": "auth_store",
+      "label": "useAuthStore"
+    },
+    {
+      "graph_id": "10_flow_login",
+      "id": "login_action",
+      "label": "login"
+    },
+    {
+      "graph_id": "10_flow_login",
+      "id": "logout_action",
+      "label": "logout"
+    },
+    {
+      "graph_id": "10_flow_login",
+      "id": "login_api",
+      "label": "api login"
+    },
+    {
+      "graph_id": "10_flow_login",
+      "id": "logout_api",
+      "label": "api logout"
+    },
+    {
+      "graph_id": "10_flow_login",
+      "id": "http_client",
+      "label": "http（axios · baseURL=/api）"
+    },
+    {
+      "graph_id": "10_flow_login",
+      "id": "ops_api",
+      "label": "ops-desk-api"
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "id": "user",
+      "label": "用户"
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "id": "obs_view",
+      "label": "ObsView"
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "id": "obs_store",
+      "label": "useObsStore"
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "id": "load_action",
+      "label": "load"
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "id": "set_status_scenario",
+      "label": "setStatusScenario"
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "id": "load_status_fixture",
+      "label": "loadObsStatusFixture"
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "id": "load_timeline_fixture",
+      "label": "loadObsTimelineFixture"
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "id": "status_fixtures",
+      "label": "status fixtures（ready / blocked）"
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "id": "timeline_fixtures",
+      "label": "timeline fixtures（empty / events）"
+    },
+    {
+      "graph_id": "10_flow_overview",
+      "id": "user",
+      "label": "用户"
+    },
+    {
+      "graph_id": "10_flow_overview",
+      "id": "overview_view",
+      "label": "OverviewView"
+    },
+    {
+      "graph_id": "10_flow_overview",
+      "id": "overview_store",
+      "label": "useOverviewStore"
+    },
+    {
+      "graph_id": "10_flow_overview",
+      "id": "load_action",
+      "label": "load"
+    },
+    {
+      "graph_id": "10_flow_overview",
+      "id": "fetch_overview_api",
+      "label": "fetchOverview"
+    },
+    {
+      "graph_id": "10_flow_overview",
+      "id": "http_client",
+      "label": "http（axios · baseURL=/api）"
+    },
+    {
+      "graph_id": "10_flow_overview",
+      "id": "ops_api",
+      "label": "ops-desk-api"
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "id": "user",
+      "label": "用户"
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "id": "pulls_view",
+      "label": "PullsView"
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "id": "pulls_store",
+      "label": "usePullsStore"
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "id": "load_action",
+      "label": "load"
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "id": "set_filter",
+      "label": "setFilter"
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "id": "set_page",
+      "label": "setPage"
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "id": "set_page_size",
+      "label": "setPageSize"
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "id": "retry_action",
+      "label": "retry"
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "id": "build_params",
+      "label": "buildParams"
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "id": "pull_state_options",
+      "label": "PULL_STATE_OPTIONS"
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "id": "pull_ci_status_options",
+      "label": "PULL_CI_STATUS_OPTIONS"
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "id": "fetch_pulls_api",
+      "label": "fetchPulls"
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "id": "http_client",
+      "label": "http（axios · baseURL=/api）"
+    },
+    {
+      "graph_id": "10_flow_pulls",
       "id": "ops_api",
       "label": "ops-desk-api"
     }
@@ -616,6 +998,306 @@
       "sync": true
     },
     {
+      "graph_id": "10_flow_graph",
+      "from": "user",
+      "to": "graph_view",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "opens /graph",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_graph",
+      "from": "graph_view",
+      "to": "graph_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "binds",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_graph",
+      "from": "graph_view",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "onMounted（L8–9）· 刷新（L87）/ 重试（L98）click",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_graph",
+      "from": "load_action",
+      "to": "fetch_graph_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "await（幂等防重入 · L23/L27）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_graph",
+      "from": "fetch_graph_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.get('/ops/graph')（L26）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_graph",
+      "from": "http_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "GET /api/ops/graph",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "user",
+      "to": "issues_view",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "opens /issues",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "issues_view",
+      "to": "issues_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "binds",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "issues_view",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "onMounted（L50–51）· 重试 click（L100）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "issues_view",
+      "to": "apply_filters",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "查询 click（草稿入筛选 · L23）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "issues_view",
+      "to": "reset_filters",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "重置 click（L28）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "issues_view",
+      "to": "set_page",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "翻页（L32）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "issues_view",
+      "to": "set_page_size",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "每页条数变更（L36）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "apply_filters",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "page=1 重新请求（L67–71）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "reset_filters",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "page=1 重新请求（L74–78）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "set_page",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "重新请求（L81–84）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "set_page_size",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "page=1 重新请求（L87–91）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "load_action",
+      "to": "build_issue_params",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "拼装筛选+分页参数（L54）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "build_issue_params",
+      "to": "fetch_issues_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "FetchIssuesParams",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "fetch_issues_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.get('/ops/issues', {params})（L47 · 空值不拼 query L39–46）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_issues",
+      "from": "http_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "GET /api/ops/issues",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "from": "user",
+      "to": "lc_evidence_view",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "opens /lc-evidence",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "from": "lc_evidence_view",
+      "to": "lc_evidence_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "binds",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "from": "lc_evidence_view",
+      "to": "invoke_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "onSubmit（store.invoke · L43/L52）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "from": "invoke_action",
+      "to": "abort_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "先中止前次在途请求（L24）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "from": "invoke_action",
+      "to": "invoke_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "await（signal 透传 · L34）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "from": "invoke_api",
+      "to": "invoke_path",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.post(LC_EVIDENCE_INVOKE_PATH, {query}, {timeout:120s, signal})（L153–157）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "from": "invoke_path",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "相对 baseURL=/api（'/ops/lc-evidence/invoke'）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "from": "http_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "POST /api/ops/lc-evidence/invoke（非流式）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lc_evidence",
+      "from": "lc_evidence_view",
+      "to": "abort_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "取消 click（store.abort · L56/L86）",
+      "anchors": [],
+      "sync": true
+    },
+    {
       "graph_id": "10_flow_lg_rag",
       "from": "user",
       "to": "lg_rag_view",
@@ -732,6 +1414,416 @@
       "mark": "->",
       "type": "depends_on",
       "label": "回填 threadId（result.thread_id → 输入框 · L42–44）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_login",
+      "from": "user",
+      "to": "login_view",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "opens /login",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_login",
+      "from": "login_view",
+      "to": "auth_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "binds",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_login",
+      "from": "login_view",
+      "to": "login_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "submit（auth.login · L28 · 成功 push redirect//overview L30）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_login",
+      "from": "login_action",
+      "to": "login_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "await（L44）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_login",
+      "from": "login_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.post('/ops/auth/login', {username, invite_token})（L19–22）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_login",
+      "from": "http_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "POST /api/ops/auth/login（Set-Cookie HttpOnly ops_session）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_login",
+      "from": "app_layout",
+      "to": "logout_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "登出 click（auth.logout · AppLayout L13）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_login",
+      "from": "logout_action",
+      "to": "logout_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "await（失败忽略 · finally clearSession L48–56）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_login",
+      "from": "logout_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.post('/ops/auth/logout')（L34）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_login",
+      "from": "http_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "POST /api/ops/auth/logout（服务端删 session 清 cookie）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "from": "user",
+      "to": "obs_view",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "opens /obs",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "from": "obs_view",
+      "to": "obs_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "binds",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "from": "obs_view",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "onMounted（L9–10）· 重新加载（L56）/ 重试（L68）click",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "from": "obs_view",
+      "to": "set_status_scenario",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "场景切换 el-select（L31/L49）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "from": "set_status_scenario",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "联动 timelineScenario 后重新加载（L44–49）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "from": "load_action",
+      "to": "load_status_fixture",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "Promise.all（L30–33）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "from": "load_action",
+      "to": "load_timeline_fixture",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "Promise.all（L30–33）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "from": "load_status_fixture",
+      "to": "status_fixtures",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "dynamic import（L58–61 · 本地 JSON · 无后端调用）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_obs",
+      "from": "load_timeline_fixture",
+      "to": "timeline_fixtures",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "dynamic import（L68–71 · 本地 JSON · 无后端调用）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_overview",
+      "from": "user",
+      "to": "overview_view",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "opens /overview",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_overview",
+      "from": "overview_view",
+      "to": "overview_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "binds",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_overview",
+      "from": "overview_view",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "onMounted（L9–10）· 重试 click（L129）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_overview",
+      "from": "load_action",
+      "to": "fetch_overview_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "await（幂等防重入 · L20/L24）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_overview",
+      "from": "fetch_overview_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.get('/ops/overview')（L62）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_overview",
+      "from": "http_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "GET /api/ops/overview",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "user",
+      "to": "pulls_view",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "opens /pulls",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "pulls_view",
+      "to": "pulls_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "binds",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "pulls_view",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "onMounted（L32–33）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "pulls_view",
+      "to": "pull_state_options",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "渲染 state 选项（L49）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "pulls_view",
+      "to": "pull_ci_status_options",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "渲染 ci_status 选项（L58）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "pulls_view",
+      "to": "set_filter",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "筛选变更即查（L47/L56）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "pulls_view",
+      "to": "set_page",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "翻页（L112）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "pulls_view",
+      "to": "retry_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "重试 click（L70）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "set_filter",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "page=1 重新请求（L59–64）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "set_page",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "重新请求（同值跳过 · L66–70）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "set_page_size",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "page=1 重新请求（L72–77）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "retry_action",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "按当前筛选/分页重新请求（L80–82）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "load_action",
+      "to": "build_params",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "拼装筛选+分页参数（L44）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "build_params",
+      "to": "fetch_pulls_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "FetchPullsParams（空值已剔除 · L33–38）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "fetch_pulls_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.get('/ops/pulls', {params})（L40）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_pulls",
+      "from": "http_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "GET /api/ops/pulls",
       "anchors": [],
       "sync": true
     }

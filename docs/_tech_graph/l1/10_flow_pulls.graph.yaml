@@ -1,0 +1,191 @@
+schema_version: "inform_graph.v3"
+graph_id: "10_flow_pulls"
+title: "Pull Requests 列表页查询流程（前端）"
+description: "用户打开 PR 页（/pulls）：PullsView onMounted → usePullsStore.load → buildParams 拼装参数 → api/pulls.fetchPulls → api/http axios → GET /api/ops/pulls → ops_api。旁注：① 筛选即改即查——setFilter 变更 state/ci_status 直接 page=1 重新请求（store L59–64 · view el-select L47/L56），选项来自可配置常量 PULL_STATE_OPTIONS（open/closed/merged · api L33）与 PULL_CI_STATUS_OPTIONS（success/failure/pending · api L36 · view L49/L58 渲染）；② setPage/setPageSize 与当前值相同则直接返回不重打（store L66–77）；③ 空值筛选参数拼装时剔除（buildParams store L33–38 · api 头注 L38）；④ 错误态清空 items/total 并写 error，「重试」走 retry → load（store L50–53/L80–82 · view L70）。"
+version: "2026-08-31"
+layer: "G-L1"
+primary_layer: "G-L1"
+depth: "method"
+direction: "TB"
+
+nodes:
+  - id: "user"
+    label: "用户"
+    kind: external
+
+  - id: "pulls_view"
+    label: "PullsView"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/views/PullsView.vue"
+        symbol: "PullsView"
+        kind: component
+
+  - id: "pulls_store"
+    label: "usePullsStore"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/pulls.ts"
+        symbol: "usePullsStore"
+        kind: module
+
+  - id: "load_action"
+    label: "load"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/pulls.ts"
+        symbol: "load"
+        kind: method
+
+  - id: "set_filter"
+    label: "setFilter"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/pulls.ts"
+        symbol: "setFilter"
+        kind: method
+
+  - id: "set_page"
+    label: "setPage"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/pulls.ts"
+        symbol: "setPage"
+        kind: method
+
+  - id: "set_page_size"
+    label: "setPageSize"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/pulls.ts"
+        symbol: "setPageSize"
+        kind: method
+
+  - id: "retry_action"
+    label: "retry"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/pulls.ts"
+        symbol: "retry"
+        kind: method
+
+  - id: "build_params"
+    label: "buildParams"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/pulls.ts"
+        symbol: "buildParams"
+        kind: method
+
+  - id: "pull_state_options"
+    label: "PULL_STATE_OPTIONS"
+    kind: struct
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/pulls.ts"
+        symbol: "PULL_STATE_OPTIONS"
+        kind: const
+
+  - id: "pull_ci_status_options"
+    label: "PULL_CI_STATUS_OPTIONS"
+    kind: struct
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/pulls.ts"
+        symbol: "PULL_CI_STATUS_OPTIONS"
+        kind: const
+
+  - id: "fetch_pulls_api"
+    label: "fetchPulls"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/pulls.ts"
+        symbol: "fetchPulls"
+        kind: method
+
+  - id: "http_client"
+    label: "http（axios · baseURL=/api）"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/http.ts"
+        symbol: "http"
+        kind: module
+
+  - id: "ops_api"
+    label: "ops-desk-api"
+    kind: external
+
+edges:
+  - from: "user"
+    to: "pulls_view"
+    label: "opens /pulls"
+
+  - from: "pulls_view"
+    to: "pulls_store"
+    label: "binds"
+
+  - from: "pulls_view"
+    to: "load_action"
+    label: "onMounted（L32–33）"
+
+  - from: "pulls_view"
+    to: "pull_state_options"
+    label: "渲染 state 选项（L49）"
+
+  - from: "pulls_view"
+    to: "pull_ci_status_options"
+    label: "渲染 ci_status 选项（L58）"
+
+  - from: "pulls_view"
+    to: "set_filter"
+    label: "筛选变更即查（L47/L56）"
+
+  - from: "pulls_view"
+    to: "set_page"
+    label: "翻页（L112）"
+
+  - from: "pulls_view"
+    to: "retry_action"
+    label: "重试 click（L70）"
+
+  - from: "set_filter"
+    to: "load_action"
+    label: "page=1 重新请求（L59–64）"
+
+  - from: "set_page"
+    to: "load_action"
+    label: "重新请求（同值跳过 · L66–70）"
+
+  - from: "set_page_size"
+    to: "load_action"
+    label: "page=1 重新请求（L72–77）"
+
+  - from: "retry_action"
+    to: "load_action"
+    label: "按当前筛选/分页重新请求（L80–82）"
+
+  - from: "load_action"
+    to: "build_params"
+    label: "拼装筛选+分页参数（L44）"
+
+  - from: "build_params"
+    to: "fetch_pulls_api"
+    label: "FetchPullsParams（空值已剔除 · L33–38）"
+
+  - from: "fetch_pulls_api"
+    to: "http_client"
+    label: "http.get('/ops/pulls', {params})（L40）"
+
+  - from: "http_client"
+    to: "ops_api"
+    label: "GET /api/ops/pulls"

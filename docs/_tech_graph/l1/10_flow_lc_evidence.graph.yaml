@@ -1,0 +1,118 @@
+schema_version: "inform_graph.v3"
+graph_id: "10_flow_lc_evidence"
+title: "LC Evidence 旁路 invoke 流程（前端）"
+description: "用户在 LC Evidence 旁路实验页（/lc-evidence）提交 query：LcEvidenceView → useLcEvidenceStore.invoke → api/lcEvidence.invokeLcEvidence → api/http axios → POST /api/ops/lc-evidence/invoke → ops_api。旁注：① gate_action=refuse 为 200 成功态，写入 result 而非 error（store 头注 L9 · view isRefuse L21 互证）；② 响应为 {ok,data} 信封，仅 api 层拆封（unwrapEnvelope L135–142 · 其余接口直取无外壳）；③ 非流式（freeze lc-evidence-http-v1 · api L27 注）；④ 单次超时 120s 落在 invokeLcEvidence 请求 config（LC_EVIDENCE_TIMEOUT_MS L6 · L156），不改 http 全局 30s；⑤ 404/502 统一文案「旁路 API 不可用」（LC_EVIDENCE_UNAVAILABLE_MESSAGE L11 · mapLcEvidenceError L108–118），500 兼容 FastAPI detail 与 {ok:false,error}；⑥ 取消（abort/新 invoke 抢占）不写 error（isCanceledError L87–95 · store L36–38）。"
+version: "2026-08-31"
+layer: "G-L1"
+primary_layer: "G-L1"
+depth: "method"
+direction: "TB"
+
+nodes:
+  - id: "user"
+    label: "用户"
+    kind: external
+
+  - id: "lc_evidence_view"
+    label: "LcEvidenceView"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/views/LcEvidenceView.vue"
+        symbol: "LcEvidenceView"
+        kind: component
+
+  - id: "lc_evidence_store"
+    label: "useLcEvidenceStore"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/lcEvidence.ts"
+        symbol: "useLcEvidenceStore"
+        kind: module
+
+  - id: "invoke_action"
+    label: "invoke"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/lcEvidence.ts"
+        symbol: "invoke"
+        kind: method
+
+  - id: "abort_action"
+    label: "abort"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/lcEvidence.ts"
+        symbol: "abort"
+        kind: method
+
+  - id: "invoke_api"
+    label: "invokeLcEvidence"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/lcEvidence.ts"
+        symbol: "invokeLcEvidence"
+        kind: method
+
+  - id: "invoke_path"
+    label: "LC_EVIDENCE_INVOKE_PATH"
+    kind: struct
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/lcEvidence.ts"
+        symbol: "LC_EVIDENCE_INVOKE_PATH"
+        kind: const
+
+  - id: "http_client"
+    label: "http（axios · baseURL=/api）"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/http.ts"
+        symbol: "http"
+        kind: module
+
+  - id: "ops_api"
+    label: "ops-desk-api"
+    kind: external
+
+edges:
+  - from: "user"
+    to: "lc_evidence_view"
+    label: "opens /lc-evidence"
+
+  - from: "lc_evidence_view"
+    to: "lc_evidence_store"
+    label: "binds"
+
+  - from: "lc_evidence_view"
+    to: "invoke_action"
+    label: "onSubmit（store.invoke · L43/L52）"
+
+  - from: "invoke_action"
+    to: "abort_action"
+    label: "先中止前次在途请求（L24）"
+
+  - from: "invoke_action"
+    to: "invoke_api"
+    label: "await（signal 透传 · L34）"
+
+  - from: "invoke_api"
+    to: "invoke_path"
+    label: "http.post(LC_EVIDENCE_INVOKE_PATH, {query}, {timeout:120s, signal})（L153–157）"
+
+  - from: "invoke_path"
+    to: "http_client"
+    label: "相对 baseURL=/api（'/ops/lc-evidence/invoke'）"
+
+  - from: "http_client"
+    to: "ops_api"
+    label: "POST /api/ops/lc-evidence/invoke（非流式）"
+
+  - from: "lc_evidence_view"
+    to: "abort_action"
+    label: "取消 click（store.abort · L56/L86）"

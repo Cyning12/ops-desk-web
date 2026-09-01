@@ -1,0 +1,88 @@
+schema_version: "inform_graph.v3"
+graph_id: "10_flow_overview"
+title: "Overview 总览页加载流程（前端）"
+description: "用户打开总览页（/overview）：OverviewView onMounted → useOverviewStore.load → api/overview.fetchOverview → api/http axios → GET /api/ops/overview → ops_api。旁注：① load() 幂等防重入——进行中的请求未完成前重复调用直接返回（store L20）；② 失败不污染已有数据——保留上一次成功 data，error 供页面 el-alert + 「重试」（store 头注 L11–12 · view L121–129）；③ 后端 dev 库为空属正常返回：median_days=null / sync_run=null / trend 全 0，页面按空态渲染（api 头注 L7–9 · MedianMetric L12–16 / TrendPoint L39–44 类型在案）；④ 401 由 http 全局拦截器处理跳登录（api L60 注 · http.ts L60–71）。"
+version: "2026-08-31"
+layer: "G-L1"
+primary_layer: "G-L1"
+depth: "method"
+direction: "TB"
+
+nodes:
+  - id: "user"
+    label: "用户"
+    kind: external
+
+  - id: "overview_view"
+    label: "OverviewView"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/views/OverviewView.vue"
+        symbol: "OverviewView"
+        kind: component
+
+  - id: "overview_store"
+    label: "useOverviewStore"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/overview.ts"
+        symbol: "useOverviewStore"
+        kind: module
+
+  - id: "load_action"
+    label: "load"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/overview.ts"
+        symbol: "load"
+        kind: method
+
+  - id: "fetch_overview_api"
+    label: "fetchOverview"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/overview.ts"
+        symbol: "fetchOverview"
+        kind: method
+
+  - id: "http_client"
+    label: "http（axios · baseURL=/api）"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/http.ts"
+        symbol: "http"
+        kind: module
+
+  - id: "ops_api"
+    label: "ops-desk-api"
+    kind: external
+
+edges:
+  - from: "user"
+    to: "overview_view"
+    label: "opens /overview"
+
+  - from: "overview_view"
+    to: "overview_store"
+    label: "binds"
+
+  - from: "overview_view"
+    to: "load_action"
+    label: "onMounted（L9–10）· 重试 click（L129）"
+
+  - from: "load_action"
+    to: "fetch_overview_api"
+    label: "await（幂等防重入 · L20/L24）"
+
+  - from: "fetch_overview_api"
+    to: "http_client"
+    label: "http.get('/ops/overview')（L62）"
+
+  - from: "http_client"
+    to: "ops_api"
+    label: "GET /api/ops/overview"

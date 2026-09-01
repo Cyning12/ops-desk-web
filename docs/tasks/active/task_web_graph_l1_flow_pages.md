@@ -85,13 +85,13 @@ P1a 已交付 `10_flow_lg_rag` 并立「flow + 同域 l2 indexes 同波同步」
 
 > 完成态（30 交付时逐项勾选）：
 
-- [ ] 7 个 flow yaml 新建：各自实证链节点/边齐 · 页级旁注（特有语义）· compile 生成对应 .md
-- [ ] 全部 `implementedBy` 符号在 src 真实存在（逐符号 grep 断言 · 30 附证据清单进 invoke_30）
-- [ ] l2 indexes 7 域条目与各自 flow implementedBy 一一对应（机检断言）；by_symbol 撞键=0 或已升级复合键
-- [ ] `01_modules.md` 关联节 7 链接齐 + 人签记录追加 · `l2/README.md` 覆盖域更正
-- [ ] `./scripts/graph-compile.sh` 绿 · graph.json 双写再生成
-- [ ] `pnpm lint` / `pnpm test` / `pnpm build` 回归绿 · `git diff main --stat -- src/` 为空
-- [ ] `volatile.md` 短注落盘 · `verify` PASS
+- [x] 7 个 flow yaml 新建：各自实证链节点/边齐 · 页级旁注（特有语义）· compile 生成对应 .md（57 条 implementedBy · obs 止 fixture 旁注「本地 fixture 驱动 · 无后端调用」）
+- [x] 全部 `implementedBy` 符号在 src 真实存在（逐符号 grep 断言 · 30 附证据清单进 invoke_30 · python 机检 ALL ASSERTIONS PASS）
+- [x] l2 indexes 7 域条目与各自 flow implementedBy 一一对应（机检断言 exit 0）；by_symbol 新条目 51 键全 `path#symbol` 复合键 · 撞键=0 · 既有 18 裸键不迁移（http 共享节点单条 · 30 内决）
+- [x] `01_modules.md` 关联节 7 链接齐 + 人签记录追加 · `l2/README.md` 覆盖域更正（全模块 9 域清单）
+- [x] `./scripts/graph-compile.sh` 绿（10 graphs / 112 nodes / 120 edges · check 全 OK）· graph.json 双写再生成
+- [x] `pnpm lint` / `pnpm test` / `pnpm build` 回归绿 · `git diff main --stat -- src/` 为空（exit 0 无输出）
+- [x] `volatile.md` 短注落盘 · `verify` PASS（exit 0）
 
 ---
 
@@ -131,6 +131,18 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l1_
 
 > 30/40 交付时回填：compile / lint / test / build / verify 退出码与结论表。
 
+| 闸 | 命令 | 退出码 | 结论 |
+|---|---|---|---|
+| compile | `./scripts/graph-compile.sh` | 0 | 9 个 l1 flow 全生成 .md · graph check 全 OK · graph.json 双写再生成（10 graphs / 112 nodes / 120 edges） |
+| lint | `pnpm lint` | 0 | 绿 |
+| test | `pnpm test` | 0 | 绿 |
+| build | `pnpm build` | 0 | 绿 |
+| verify | `npx dsh-coding-kit verify --target . --task …` | 0 | VERIFY: PASS（30 改码前后各跑一次均 PASS） |
+| 机检 | python3 yaml 断言（57 implementedBy 符号实证 · indexes↔flow 一一对应 · by_symbol 撞键=0） | 0 | ALL ASSERTIONS PASS |
+| src 零变更 | `git diff main --stat -- src/` | 0（无输出） | 纯图谱波断言成立 |
+
+结论：40 自检通过 · 可交 00 收口（PR 勿 auto-merge · CI 绿后 00 merge）。
+
 ---
 
 ## 给执行帽（30）必读列表
@@ -151,6 +163,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l1_
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者令「继续P1」· P1a CLOSE（#33）· 闸沿用「提前签收」授权 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · 7 页 00 预实证锚点已核（router/stores/api 全量在案） |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note · 7/7 页锚点全量复核通过）→ **00** 即签 HG-AUDIT-R1 · N1 by_symbol 撞键必然 → 本波直接启用 `path#symbol` 复合键（既有裸键不迁移）· N2 obs 链止 fixture 入 00 定夺 · 勘误 N3：SPEC P1 枚举漏 `10_flow_graph`（G3 意图覆盖 · 本 task 范围已含 graph 页 · SPEC 已签不改正文） |
+| 2026-08-31 | **30** 实现交付：7 flow yaml 新建（57 implementedBy 全 src 实证 · 00 预实证锚点 7/7 复核无偏差）· l2 indexes 7 域同波（by_symbol 51 复合键 + 18 裸键双形态 · http 共享节点单条 30 内决）· 01_modules 关联节/人签 · l2 README 全模块清单 · volatile 短注 · compile/lint/test/build/verify 全绿 · src 零 diff。**40** 自检通过（结论表见上 · invoke_30/40 落盘 by-task 目录） |
 
 ## 合入策略
 

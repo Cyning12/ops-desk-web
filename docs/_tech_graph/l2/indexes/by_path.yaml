@@ -1,11 +1,13 @@
-# path → 节点倒排（G-L2 · 多域：chat + lg_rag）
-# 源：l1/10_flow_chat.graph.yaml · l1/10_flow_lg_rag.graph.yaml 的 implementedBy
+# path → 节点倒排（G-L2 · 多域：chat + lg_rag + overview/issues/pulls/graph/lc_evidence/obs/login）
+# 源：l1/10_flow_*.graph.yaml（9 个）的 implementedBy
 # 生成策略：手维启动；后续可 --check
 # 形态决策（R1-N3 · 30 内决 2026-08-31）：同文件多域分段（不拆分 *_lg_rag 文件对）；
-#   graph_id 单值升级为 graph_ids 列表承接双域；按域分段注释。
+#   graph_id 单值升级为 graph_ids 列表承接多域；按域分段注释。
+# 2026-08-31 P1b（task_web_graph_l1_flow_pages）：新增 7 域分段；
+#   src/api/http.ts 的 http_client 节点被全部 9 个 flow 复用（node_id 同），单列「共享」段不重复。
 
 version: "2026-08-31"
-graph_ids: ["10_flow_chat", "10_flow_lg_rag"]
+graph_ids: ["10_flow_chat", "10_flow_lg_rag", "10_flow_overview", "10_flow_issues", "10_flow_pulls", "10_flow_graph", "10_flow_lc_evidence", "10_flow_obs", "10_flow_login"]
 layer: "G-L2"
 
 by_path:
@@ -69,7 +71,194 @@ by_path:
     - node_id: invoke_path
       symbol: LG_RAG_INVOKE_PATH
       kind: const
+  # ── 共享（全部 9 个 flow 复用同一 http 实例 · 各 flow node_id 同为 http_client）──
   "src/api/http.ts":
     - node_id: http_client
       symbol: http
       kind: module
+  # ── overview 域（10_flow_overview）──
+  "src/views/OverviewView.vue":
+    - node_id: overview_view
+      symbol: OverviewView
+      kind: component
+  "src/stores/overview.ts":
+    - node_id: overview_store
+      symbol: useOverviewStore
+      kind: module
+    - node_id: load_action
+      symbol: load
+      kind: method
+  "src/api/overview.ts":
+    - node_id: fetch_overview_api
+      symbol: fetchOverview
+      kind: method
+  # ── issues 域（10_flow_issues）──
+  "src/views/IssuesView.vue":
+    - node_id: issues_view
+      symbol: IssuesView
+      kind: component
+  "src/stores/issues.ts":
+    - node_id: issues_store
+      symbol: useIssuesStore
+      kind: module
+    - node_id: load_action
+      symbol: load
+      kind: method
+    - node_id: apply_filters
+      symbol: applyFilters
+      kind: method
+    - node_id: reset_filters
+      symbol: resetFilters
+      kind: method
+    - node_id: set_page
+      symbol: setPage
+      kind: method
+    - node_id: set_page_size
+      symbol: setPageSize
+      kind: method
+    - node_id: build_issue_params
+      symbol: buildIssueParams
+      kind: method
+  "src/api/issues.ts":
+    - node_id: fetch_issues_api
+      symbol: fetchIssues
+      kind: method
+  # ── pulls 域（10_flow_pulls）──
+  "src/views/PullsView.vue":
+    - node_id: pulls_view
+      symbol: PullsView
+      kind: component
+  "src/stores/pulls.ts":
+    - node_id: pulls_store
+      symbol: usePullsStore
+      kind: module
+    - node_id: load_action
+      symbol: load
+      kind: method
+    - node_id: set_filter
+      symbol: setFilter
+      kind: method
+    - node_id: set_page
+      symbol: setPage
+      kind: method
+    - node_id: set_page_size
+      symbol: setPageSize
+      kind: method
+    - node_id: retry_action
+      symbol: retry
+      kind: method
+    - node_id: build_params
+      symbol: buildParams
+      kind: method
+  "src/api/pulls.ts":
+    - node_id: fetch_pulls_api
+      symbol: fetchPulls
+      kind: method
+    - node_id: pull_state_options
+      symbol: PULL_STATE_OPTIONS
+      kind: const
+    - node_id: pull_ci_status_options
+      symbol: PULL_CI_STATUS_OPTIONS
+      kind: const
+  # ── graph 域（10_flow_graph）──
+  "src/views/GraphView.vue":
+    - node_id: graph_view
+      symbol: GraphView
+      kind: component
+  "src/stores/graph.ts":
+    - node_id: graph_store
+      symbol: useGraphStore
+      kind: module
+    - node_id: load_action
+      symbol: load
+      kind: method
+  "src/api/graph.ts":
+    - node_id: fetch_graph_api
+      symbol: fetchGraph
+      kind: method
+  # ── lc_evidence 域（10_flow_lc_evidence）──
+  "src/views/LcEvidenceView.vue":
+    - node_id: lc_evidence_view
+      symbol: LcEvidenceView
+      kind: component
+  "src/stores/lcEvidence.ts":
+    - node_id: lc_evidence_store
+      symbol: useLcEvidenceStore
+      kind: module
+    - node_id: invoke_action
+      symbol: invoke
+      kind: method
+    - node_id: abort_action
+      symbol: abort
+      kind: method
+  "src/api/lcEvidence.ts":
+    - node_id: invoke_api
+      symbol: invokeLcEvidence
+      kind: method
+    - node_id: invoke_path
+      symbol: LC_EVIDENCE_INVOKE_PATH
+      kind: const
+  # ── obs 域（10_flow_obs · fixture 驱动无后端）──
+  "src/views/ObsView.vue":
+    - node_id: obs_view
+      symbol: ObsView
+      kind: component
+  "src/stores/obs.ts":
+    - node_id: obs_store
+      symbol: useObsStore
+      kind: module
+    - node_id: load_action
+      symbol: load
+      kind: method
+    - node_id: set_status_scenario
+      symbol: setStatusScenario
+      kind: method
+  "src/api/obs.ts":
+    - node_id: load_status_fixture
+      symbol: loadObsStatusFixture
+      kind: method
+    - node_id: load_timeline_fixture
+      symbol: loadObsTimelineFixture
+      kind: method
+  "src/fixtures/obs/status_ready.json":
+    - node_id: status_fixtures
+      symbol: default
+      kind: const
+  "src/fixtures/obs/status_blocked.json":
+    - node_id: status_fixtures
+      symbol: default
+      kind: const
+  "src/fixtures/obs/timeline_empty.json":
+    - node_id: timeline_fixtures
+      symbol: default
+      kind: const
+  "src/fixtures/obs/timeline_events.json":
+    - node_id: timeline_fixtures
+      symbol: default
+      kind: const
+  # ── login 域（10_flow_login）──
+  "src/views/LoginView.vue":
+    - node_id: login_view
+      symbol: LoginView
+      kind: component
+  "src/layouts/AppLayout.vue":
+    - node_id: app_layout
+      symbol: AppLayout
+      kind: component
+  "src/stores/auth.ts":
+    - node_id: auth_store
+      symbol: useAuthStore
+      kind: module
+    - node_id: login_action
+      symbol: login
+      kind: method
+    - node_id: logout_action
+      symbol: logout
+      kind: method
+  "src/api/auth.ts":
+    - node_id: login_api
+      symbol: login
+      kind: method
+    - node_id: logout_api
+      symbol: logout
+      kind: method

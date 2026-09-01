@@ -1,0 +1,129 @@
+schema_version: "inform_graph.v3"
+graph_id: "10_flow_obs"
+title: "Obs 过程可观测页加载流程（前端 · fixture 驱动）"
+description: "用户打开可观测页（/obs）：ObsView onMounted → useObsStore.load → api/obs.loadObsStatusFixture + loadObsTimelineFixture（Promise.all）→ 动态 import 本地 JSON fixture。**本地 fixture 驱动 · 无后端调用**（实证链止于 fixture：无 http/ops_api 段 · R1-N2）。旁注：① 只读契约对齐 dsh-coding-kit obs_status.v1 / obs_timeline.v1，本棒仅从 fixture 加载、禁止在浏览器执行 npx（api 头注 L1–4）；② fixture 场景切换：status ready/blocked（ObsStatusScenario · api L50）× timeline empty/events（api L53），setStatusScenario 语义联动——满闸配 events、阻塞配 empty（store L44–49 · view el-select L31/L49）；③ 加载失败不抛未捕获异常，error 写字符串供 el-alert + 重试（store L36–41 · view L60–68）；④ 数据源为 src/fixtures/obs/ 四个 JSON（status_ready/status_blocked/timeline_empty/timeline_events · dynamic import api L58–61/L68–71）。"
+version: "2026-08-31"
+layer: "G-L1"
+primary_layer: "G-L1"
+depth: "method"
+direction: "TB"
+
+nodes:
+  - id: "user"
+    label: "用户"
+    kind: external
+
+  - id: "obs_view"
+    label: "ObsView"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/views/ObsView.vue"
+        symbol: "ObsView"
+        kind: component
+
+  - id: "obs_store"
+    label: "useObsStore"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/obs.ts"
+        symbol: "useObsStore"
+        kind: module
+
+  - id: "load_action"
+    label: "load"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/obs.ts"
+        symbol: "load"
+        kind: method
+
+  - id: "set_status_scenario"
+    label: "setStatusScenario"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/stores/obs.ts"
+        symbol: "setStatusScenario"
+        kind: method
+
+  - id: "load_status_fixture"
+    label: "loadObsStatusFixture"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/obs.ts"
+        symbol: "loadObsStatusFixture"
+        kind: method
+
+  - id: "load_timeline_fixture"
+    label: "loadObsTimelineFixture"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/api/obs.ts"
+        symbol: "loadObsTimelineFixture"
+        kind: method
+
+  - id: "status_fixtures"
+    label: "status fixtures（ready / blocked）"
+    kind: struct
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/fixtures/obs/status_ready.json"
+        symbol: "default"
+        kind: const
+      - path: "src/fixtures/obs/status_blocked.json"
+        symbol: "default"
+        kind: const
+
+  - id: "timeline_fixtures"
+    label: "timeline fixtures（empty / events）"
+    kind: struct
+    layer_hint: "G-L2"
+    implementedBy:
+      - path: "src/fixtures/obs/timeline_empty.json"
+        symbol: "default"
+        kind: const
+      - path: "src/fixtures/obs/timeline_events.json"
+        symbol: "default"
+        kind: const
+
+edges:
+  - from: "user"
+    to: "obs_view"
+    label: "opens /obs"
+
+  - from: "obs_view"
+    to: "obs_store"
+    label: "binds"
+
+  - from: "obs_view"
+    to: "load_action"
+    label: "onMounted（L9–10）· 重新加载（L56）/ 重试（L68）click"
+
+  - from: "obs_view"
+    to: "set_status_scenario"
+    label: "场景切换 el-select（L31/L49）"
+
+  - from: "set_status_scenario"
+    to: "load_action"
+    label: "联动 timelineScenario 后重新加载（L44–49）"
+
+  - from: "load_action"
+    to: "load_status_fixture"
+    label: "Promise.all（L30–33）"
+
+  - from: "load_action"
+    to: "load_timeline_fixture"
+    label: "Promise.all（L30–33）"
+
+  - from: "load_status_fixture"
+    to: "status_fixtures"
+    label: "dynamic import（L58–61 · 本地 JSON · 无后端调用）"
+
+  - from: "load_timeline_fixture"
+    to: "timeline_fixtures"
+    label: "dynamic import（L68–71 · 本地 JSON · 无后端调用）"
