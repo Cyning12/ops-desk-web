@@ -1,10 +1,15 @@
-# symbol → path 倒排（G-L2 · 多域：chat + lg_rag）
-# 源：l1/10_flow_chat.graph.yaml · l1/10_flow_lg_rag.graph.yaml 的 implementedBy
-# 键决策（R1-N6 · 30 内决 2026-08-31）：本波 chat/lg_rag 两域 18 键零撞键（已核），
-#   维持裸符号键；后续域扩展若遇泛名撞键（如 invoke/abort/http），改 path#symbol 复合键。
+# symbol → path 倒排（G-L2 · 多域：chat + lg_rag + overview/issues/pulls/graph/lc_evidence/obs/login）
+# 源：l1/10_flow_*.graph.yaml（9 个）的 implementedBy
+# 键决策（R1-N6 · 30 内决 2026-08-31）：chat/lg_rag 两域 18 键零撞键，维持裸符号键；
+#   后续域扩展若遇泛名撞键（如 invoke/abort/http），改 path#symbol 复合键。
+# 双形态决策（R1-N1 · 2026-08-31 P1b task_web_graph_l1_flow_pages）：
+#   泛名撞键必然触发（load×5 · invoke/abort 撞 lg_rag 既有键 · setPage/setPageSize 互撞），
+#   本波 7 域新条目一律 `path#symbol` 复合键；既有 chat/lg_rag 裸键条目不迁移，两形态并存。
+#   例外（30 内决）：http 符号 9 个 flow 复用同一节点（path/symbol/node_id=http_client 全同），
+#   既有裸键 `http` 单条即可全域命中，不新增复合键重复条目。
 
 version: "2026-08-31"
-graph_ids: ["10_flow_chat", "10_flow_lg_rag"]
+graph_ids: ["10_flow_chat", "10_flow_lg_rag", "10_flow_overview", "10_flow_issues", "10_flow_pulls", "10_flow_graph", "10_flow_lc_evidence", "10_flow_obs", "10_flow_login"]
 layer: "G-L2"
 
 by_symbol:
@@ -82,3 +87,214 @@ by_symbol:
     path: src/api/http.ts
     node_id: http_client
     kind: module
+  # ── overview 域（10_flow_overview · 复合键）──
+  "src/views/OverviewView.vue#OverviewView":
+    path: src/views/OverviewView.vue
+    node_id: overview_view
+    kind: component
+  "src/stores/overview.ts#useOverviewStore":
+    path: src/stores/overview.ts
+    node_id: overview_store
+    kind: module
+  "src/stores/overview.ts#load":
+    path: src/stores/overview.ts
+    node_id: load_action
+    kind: method
+  "src/api/overview.ts#fetchOverview":
+    path: src/api/overview.ts
+    node_id: fetch_overview_api
+    kind: method
+  # ── issues 域（10_flow_issues · 复合键）──
+  "src/views/IssuesView.vue#IssuesView":
+    path: src/views/IssuesView.vue
+    node_id: issues_view
+    kind: component
+  "src/stores/issues.ts#useIssuesStore":
+    path: src/stores/issues.ts
+    node_id: issues_store
+    kind: module
+  "src/stores/issues.ts#load":
+    path: src/stores/issues.ts
+    node_id: load_action
+    kind: method
+  "src/stores/issues.ts#applyFilters":
+    path: src/stores/issues.ts
+    node_id: apply_filters
+    kind: method
+  "src/stores/issues.ts#resetFilters":
+    path: src/stores/issues.ts
+    node_id: reset_filters
+    kind: method
+  "src/stores/issues.ts#setPage":
+    path: src/stores/issues.ts
+    node_id: set_page
+    kind: method
+  "src/stores/issues.ts#setPageSize":
+    path: src/stores/issues.ts
+    node_id: set_page_size
+    kind: method
+  "src/stores/issues.ts#buildIssueParams":
+    path: src/stores/issues.ts
+    node_id: build_issue_params
+    kind: method
+  "src/api/issues.ts#fetchIssues":
+    path: src/api/issues.ts
+    node_id: fetch_issues_api
+    kind: method
+  # ── pulls 域（10_flow_pulls · 复合键）──
+  "src/views/PullsView.vue#PullsView":
+    path: src/views/PullsView.vue
+    node_id: pulls_view
+    kind: component
+  "src/stores/pulls.ts#usePullsStore":
+    path: src/stores/pulls.ts
+    node_id: pulls_store
+    kind: module
+  "src/stores/pulls.ts#load":
+    path: src/stores/pulls.ts
+    node_id: load_action
+    kind: method
+  "src/stores/pulls.ts#setFilter":
+    path: src/stores/pulls.ts
+    node_id: set_filter
+    kind: method
+  "src/stores/pulls.ts#setPage":
+    path: src/stores/pulls.ts
+    node_id: set_page
+    kind: method
+  "src/stores/pulls.ts#setPageSize":
+    path: src/stores/pulls.ts
+    node_id: set_page_size
+    kind: method
+  "src/stores/pulls.ts#retry":
+    path: src/stores/pulls.ts
+    node_id: retry_action
+    kind: method
+  "src/stores/pulls.ts#buildParams":
+    path: src/stores/pulls.ts
+    node_id: build_params
+    kind: method
+  "src/api/pulls.ts#fetchPulls":
+    path: src/api/pulls.ts
+    node_id: fetch_pulls_api
+    kind: method
+  "src/api/pulls.ts#PULL_STATE_OPTIONS":
+    path: src/api/pulls.ts
+    node_id: pull_state_options
+    kind: const
+  "src/api/pulls.ts#PULL_CI_STATUS_OPTIONS":
+    path: src/api/pulls.ts
+    node_id: pull_ci_status_options
+    kind: const
+  # ── graph 域（10_flow_graph · 复合键）──
+  "src/views/GraphView.vue#GraphView":
+    path: src/views/GraphView.vue
+    node_id: graph_view
+    kind: component
+  "src/stores/graph.ts#useGraphStore":
+    path: src/stores/graph.ts
+    node_id: graph_store
+    kind: module
+  "src/stores/graph.ts#load":
+    path: src/stores/graph.ts
+    node_id: load_action
+    kind: method
+  "src/api/graph.ts#fetchGraph":
+    path: src/api/graph.ts
+    node_id: fetch_graph_api
+    kind: method
+  # ── lc_evidence 域（10_flow_lc_evidence · 复合键）──
+  "src/views/LcEvidenceView.vue#LcEvidenceView":
+    path: src/views/LcEvidenceView.vue
+    node_id: lc_evidence_view
+    kind: component
+  "src/stores/lcEvidence.ts#useLcEvidenceStore":
+    path: src/stores/lcEvidence.ts
+    node_id: lc_evidence_store
+    kind: module
+  "src/stores/lcEvidence.ts#invoke":
+    path: src/stores/lcEvidence.ts
+    node_id: invoke_action
+    kind: method
+  "src/stores/lcEvidence.ts#abort":
+    path: src/stores/lcEvidence.ts
+    node_id: abort_action
+    kind: method
+  "src/api/lcEvidence.ts#invokeLcEvidence":
+    path: src/api/lcEvidence.ts
+    node_id: invoke_api
+    kind: method
+  "src/api/lcEvidence.ts#LC_EVIDENCE_INVOKE_PATH":
+    path: src/api/lcEvidence.ts
+    node_id: invoke_path
+    kind: const
+  # ── obs 域（10_flow_obs · 复合键 · fixture 驱动无后端）──
+  "src/views/ObsView.vue#ObsView":
+    path: src/views/ObsView.vue
+    node_id: obs_view
+    kind: component
+  "src/stores/obs.ts#useObsStore":
+    path: src/stores/obs.ts
+    node_id: obs_store
+    kind: module
+  "src/stores/obs.ts#load":
+    path: src/stores/obs.ts
+    node_id: load_action
+    kind: method
+  "src/stores/obs.ts#setStatusScenario":
+    path: src/stores/obs.ts
+    node_id: set_status_scenario
+    kind: method
+  "src/api/obs.ts#loadObsStatusFixture":
+    path: src/api/obs.ts
+    node_id: load_status_fixture
+    kind: method
+  "src/api/obs.ts#loadObsTimelineFixture":
+    path: src/api/obs.ts
+    node_id: load_timeline_fixture
+    kind: method
+  "src/fixtures/obs/status_ready.json#default":
+    path: src/fixtures/obs/status_ready.json
+    node_id: status_fixtures
+    kind: const
+  "src/fixtures/obs/status_blocked.json#default":
+    path: src/fixtures/obs/status_blocked.json
+    node_id: status_fixtures
+    kind: const
+  "src/fixtures/obs/timeline_empty.json#default":
+    path: src/fixtures/obs/timeline_empty.json
+    node_id: timeline_fixtures
+    kind: const
+  "src/fixtures/obs/timeline_events.json#default":
+    path: src/fixtures/obs/timeline_events.json
+    node_id: timeline_fixtures
+    kind: const
+  # ── login 域（10_flow_login · 复合键）──
+  "src/views/LoginView.vue#LoginView":
+    path: src/views/LoginView.vue
+    node_id: login_view
+    kind: component
+  "src/layouts/AppLayout.vue#AppLayout":
+    path: src/layouts/AppLayout.vue
+    node_id: app_layout
+    kind: component
+  "src/stores/auth.ts#useAuthStore":
+    path: src/stores/auth.ts
+    node_id: auth_store
+    kind: module
+  "src/stores/auth.ts#login":
+    path: src/stores/auth.ts
+    node_id: login_action
+    kind: method
+  "src/stores/auth.ts#logout":
+    path: src/stores/auth.ts
+    node_id: logout_action
+    kind: method
+  "src/api/auth.ts#login":
+    path: src/api/auth.ts
+    node_id: login_api
+    kind: method
+  "src/api/auth.ts#logout":
+    path: src/api/auth.ts
+    node_id: logout_api
+    kind: method

@@ -33,10 +33,18 @@
 | HG-GRAPH-MODULES | approved | 00统筹（代签） | 2026-07-24 | styles 模块去除 Tailwind；水墨风用 CSS 变量 |
 | HG-GRAPH-MODULES | approved | 00统筹（代签） | 2026-07-27 | Phase γ：真值迁至 `l1/01_modules.md`；根 stub 保留 |
 | HG-GRAPH-MODULES | approved | web 00（预签 · 维护者授权代签文档闸） | 2026-08-31 | task_web_graph_l1_flow_lg_rag：**不新增一级模块**（flow 属 G-L1）；pages 行补 Obs 页（P0 R1-N3 欠账）+ 关联节加 `10_flow_lg_rag.md` |
+| HG-GRAPH-MODULES | approved | web 00（预签 · 维护者授权代签文档闸） | 2026-08-31 | task_web_graph_l1_flow_pages：**不新增一级模块**；关联节补 7 条 flow 链接（overview/issues/pulls/graph/lc_evidence/obs/login · SPEC P1 清零） |
 
 ## 关联
 
 - 顶层图：[`../l0/00_main.md`](../l0/00_main.md) · 源 [`../l0/00_main.graph.yaml`](../l0/00_main.graph.yaml)
 - Chat flow：[`10_flow_chat.md`](./10_flow_chat.md)
 - LG RAG flow：[`10_flow_lg_rag.md`](./10_flow_lg_rag.md)
+- Overview flow：[`10_flow_overview.md`](./10_flow_overview.md)
+- Issues flow：[`10_flow_issues.md`](./10_flow_issues.md)
+- Pulls flow：[`10_flow_pulls.md`](./10_flow_pulls.md)
+- Graph flow：[`10_flow_graph.md`](./10_flow_graph.md)
+- LC Evidence flow：[`10_flow_lc_evidence.md`](./10_flow_lc_evidence.md)
+- Obs flow：[`10_flow_obs.md`](./10_flow_obs.md)
+- Login flow：[`10_flow_login.md`](./10_flow_login.md)
 - Mermaid 约定：[`../shared/99_mermaid_protocol.md`](../shared/99_mermaid_protocol.md)
