@@ -4,7 +4,10 @@
 # 形态决策（R1-N3 · 30 内决 2026-08-31）：同文件多域分段（不拆分 *_lg_rag 文件对）；
 #   graph_id 单值升级为 graph_ids 列表承接多域；按域分段注释。
 # 2026-08-31 P1b（task_web_graph_l1_flow_pages）：新增 7 域分段；
-#   src/api/http.ts 的 http_client 节点被全部 9 个 flow 复用（node_id 同），单列「共享」段不重复。
+#   src/api/http.ts 的 http_client 节点被 7 个 flow 复用（node_id 同；chat flow 无该节点 ·
+#   obs fixture 驱动无 http 段 · 计数口径同 by_symbol 头注 R1-N1 校正：7 非 9），单列「共享」段不重复。
+# 键形态约定（2026-08-31 P2 · task_web_graph_l2_key_unify）：本表键即 path（天然复合定位，不动）；
+#   by_symbol.yaml 已统一为 `path#symbol` 复合键单形态，两表键形态约定对齐。
 
 version: "2026-08-31"
 graph_ids: ["10_flow_chat", "10_flow_lg_rag", "10_flow_overview", "10_flow_issues", "10_flow_pulls", "10_flow_graph", "10_flow_lc_evidence", "10_flow_obs", "10_flow_login"]

@@ -1,12 +1,11 @@
 # symbol → path 倒排（G-L2 · 多域：chat + lg_rag + overview/issues/pulls/graph/lc_evidence/obs/login）
 # 源：l1/10_flow_*.graph.yaml（9 个）的 implementedBy
-# 键决策（R1-N6 · 30 内决 2026-08-31）：chat/lg_rag 两域 18 键零撞键，维持裸符号键；
-#   后续域扩展若遇泛名撞键（如 invoke/abort/http），改 path#symbol 复合键。
-# 双形态决策（R1-N1 · 2026-08-31 P1b task_web_graph_l1_flow_pages）：
-#   泛名撞键必然触发（load×5 · invoke/abort 撞 lg_rag 既有键 · setPage/setPageSize 互撞），
-#   本波 7 域新条目一律 `path#symbol` 复合键；既有 chat/lg_rag 裸键条目不迁移，两形态并存。
-#   例外（30 内决）：http 符号 9 个 flow 复用同一节点（path/symbol/node_id=http_client 全同），
-#   既有裸键 `http` 单条即可全域命中，不新增复合键重复条目。
+# 键形态决策（2026-08-31 P2 · task_web_graph_l2_key_unify · 统一复合键）：
+#   全部 69 条一律 `path#symbol` 复合键（含 http 例外条 → `src/api/http.ts#http`）。
+#   http 符号 7 个 flow 复用同一节点（path/symbol/node_id=http_client 全同），单条全域命中不重复；
+#   计数口径（R1-N1 校正）：7 非 9 —— chat flow 无 http_client 节点 · obs fixture 驱动无 http 段。
+#   历史留痕（一句）：P1 前 chat/lg_rag 18 裸键（R1-N6）+ P1b 起 7 新域复合键（R1-N1 双形态并存），
+#   本波统一归一为复合键单形态。
 
 version: "2026-08-31"
 graph_ids: ["10_flow_chat", "10_flow_lg_rag", "10_flow_overview", "10_flow_issues", "10_flow_pulls", "10_flow_graph", "10_flow_lc_evidence", "10_flow_obs", "10_flow_login"]
@@ -14,76 +13,76 @@ layer: "G-L2"
 
 by_symbol:
   # ── chat 域（10_flow_chat）──
-  ChatView:
+  "src/views/ChatView.vue#ChatView":
     path: src/views/ChatView.vue
     node_id: chat_view
     kind: component
-  useChatStore:
+  "src/stores/chat.ts#useChatStore":
     path: src/stores/chat.ts
     node_id: chat_store
     kind: module
-  loadLatestSession:
+  "src/stores/chat.ts#loadLatestSession":
     path: src/stores/chat.ts
     node_id: load_session
     kind: method
-  sendMessage:
+  "src/stores/chat.ts#sendMessage":
     path: src/stores/chat.ts
     node_id: send_message
     kind: method
-  fetchLatestSession:
+  "src/api/chat.ts#fetchLatestSession":
     path: src/api/chat.ts
     node_id: fetch_session_api
     kind: method
-  resumeFromCursor:
+  "src/stores/chat.ts#resumeFromCursor":
     path: src/stores/chat.ts
     node_id: resume_from_cursor
     kind: method
-  streamLgRag:
+  "src/composables/useLgRagSse.ts#streamLgRag":
     path: src/composables/useLgRagSse.ts
     node_id: stream_sse
     kind: method
-  replayLgRag:
+  "src/composables/useLgRagSse.ts#replayLgRag":
     path: src/composables/useLgRagSse.ts
     node_id: replay_sse
     kind: method
-  LgRagSseFrameParser:
+  "src/composables/useLgRagSse.ts#LgRagSseFrameParser":
     path: src/composables/useLgRagSse.ts
     node_id: sse_parser
     kind: class
   # ── lg_rag 域（10_flow_lg_rag）──
-  LgRagView:
+  "src/views/LgRagView.vue#LgRagView":
     path: src/views/LgRagView.vue
     node_id: lg_rag_view
     kind: component
-  useLgRagStore:
+  "src/stores/lgRag.ts#useLgRagStore":
     path: src/stores/lgRag.ts
     node_id: lg_rag_store
     kind: module
-  invoke:
+  "src/stores/lgRag.ts#invoke":
     path: src/stores/lgRag.ts
     node_id: invoke_action
     kind: method
-  abort:
+  "src/stores/lgRag.ts#abort":
     path: src/stores/lgRag.ts
     node_id: abort_action
     kind: method
-  useThreadId:
+  "src/stores/lgRag.ts#useThreadId":
     path: src/stores/lgRag.ts
     node_id: use_thread_id
     kind: method
-  elapsedSeconds:
+  "src/stores/lgRag.ts#elapsedSeconds":
     path: src/stores/lgRag.ts
     node_id: elapsed_timer
     kind: state
-  invokeLgRag:
+  "src/api/lgRag.ts#invokeLgRag":
     path: src/api/lgRag.ts
     node_id: invoke_api
     kind: method
-  LG_RAG_INVOKE_PATH:
+  "src/api/lgRag.ts#LG_RAG_INVOKE_PATH":
     path: src/api/lgRag.ts
     node_id: invoke_path
     kind: const
-  http:
+  "src/api/http.ts#http":
     path: src/api/http.ts
     node_id: http_client
     kind: module
