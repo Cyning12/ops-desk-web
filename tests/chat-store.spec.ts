@@ -730,4 +730,150 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       expect(chat.resumeNotice).toBe(false)
     })
   })
+
+  describe('T5 · answer delta 打字机（delta 追加 · final 替换）', () => {
+    /** 构造带 run_id/seq/cursor 的帧（T4 管线参与去重与 active-run 推进） */
+    function seqFrame(seq: number, eventType: string, payload: Record<string, unknown>, agentRole = 'aggregator') {
+      return {
+        event_type: eventType,
+        run_id: 'r-1',
+        seq,
+        cursor: 'r-1:' + seq,
+        agent_role: agentRole,
+        payload,
+      }
+    }
+
+    it('delta 帧按 seq 有序追加（中间态断言）；终帧 content+final 全量替换，拼接==终帧 content（非叠加）', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
+
+      captured.onEvent?.(seqFrame(2, 'answer', { delta: '你' }))
+      expect(chat.messages[1].content).toBe('你')
+      captured.onEvent?.(seqFrame(3, 'answer', { delta: '好' }))
+      expect(chat.messages[1].content).toBe('你好')
+      captured.onEvent?.(seqFrame(4, 'answer', { delta: '，世界' }))
+      expect(chat.messages[1].content).toBe('你好，世界')
+
+      // 终帧：全量替换（严禁 append 到 delta 拼接结果之后 —— §10.4 常见坑）
+      captured.onEvent?.(seqFrame(5, 'answer', { content: '你好，世界', final: true }))
+      expect(chat.messages[1].content).toBe('你好，世界')
+
+      captured.onEvent?.(seqFrame(6, 'done', { latency_ms: 1, model: 'm' }, 'system'))
+      expect(chat.streaming).toBe(false)
+    })
+
+    it('终帧 content 与 delta 拼接不一致：以终帧 content 为准（替换语义兜底，非拼接+content 叠加）', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
+      captured.onEvent?.(seqFrame(2, 'answer', { delta: 'AB' }))
+      captured.onEvent?.(seqFrame(3, 'answer', { delta: 'CD' }))
+      expect(chat.messages[1].content).toBe('ABCD')
+
+      captured.onEvent?.(seqFrame(4, 'answer', { content: 'ABCD（修订终稿）', final: true }))
+      expect(chat.messages[1].content).toBe('ABCD（修订终稿）')
+    })
+
+    it('两键同帧（防御空隙 R1-N1）：content 优先替换，忽略 delta 并记 warn', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
+      captured.onEvent?.(seqFrame(2, 'answer', { delta: '碎' }))
+      captured.onEvent?.(seqFrame(3, 'answer', { content: '终稿', delta: '不该出现' }))
+
+      expect(chat.messages[1].content).toBe('终稿')
+      expect(warn).toHaveBeenCalledOnce()
+      expect(warn.mock.calls[0][0]).toContain('content')
+      warn.mockRestore()
+    })
+
+    it('done / error / abort 后停止追加：迟到 answer 帧（seq 递增、去过重）被忽略', () => {
+      const chat = useChatStore()
+      // done 后迟到 delta
+      chat.sendMessage('第一问')
+      captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
+      captured.onEvent?.(seqFrame(2, 'answer', { delta: '完' }))
+      captured.onEvent?.(seqFrame(3, 'done', { latency_ms: 1, model: 'm' }, 'system'))
+      captured.onEvent?.(seqFrame(4, 'answer', { delta: '迟到' }))
+      expect(chat.messages[1].content).toBe('完')
+
+      // error 后迟到 content 帧
+      chat.sendMessage('第二问')
+      captured.onEvent?.({ ...seqFrame(1, 'run.start', { run_id: 'r-2', thread_id: 't-1' }, 'system'), run_id: 'r-2', cursor: 'r-2:1' })
+      captured.onEvent?.({ ...seqFrame(2, 'answer', { delta: '半' }), run_id: 'r-2', cursor: 'r-2:2' })
+      captured.onEvent?.({ ...seqFrame(3, 'error', { stage: 'supervisor', message: 'boom', retryable: false }, 'system'), run_id: 'r-2', cursor: 'r-2:3' })
+      captured.onEvent?.({ ...seqFrame(4, 'answer', { content: '迟到整段' }), run_id: 'r-2', cursor: 'r-2:4' })
+      expect(chat.messages[3].content).toBe('半')
+
+      // abort 后迟到 delta
+      chat.sendMessage('第三问')
+      captured.onEvent?.({ ...seqFrame(1, 'run.start', { run_id: 'r-3', thread_id: 't-1' }, 'system'), run_id: 'r-3', cursor: 'r-3:1' })
+      captured.onEvent?.({ ...seqFrame(2, 'answer', { delta: '停' }), run_id: 'r-3', cursor: 'r-3:2' })
+      chat.stopStreaming()
+      captured.onEvent?.({ ...seqFrame(3, 'answer', { delta: '迟到' }), run_id: 'r-3', cursor: 'r-3:3' })
+      expect(chat.messages[5].content).toBe('停')
+    })
+
+    it('delta 与 node.progress / subtask.progress 并存：thinking 与 content 各归各位不串台', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
+      captured.onEvent?.(seqFrame(2, 'node.progress', { summary: '意图识别完成' }, 'intent'))
+      captured.onEvent?.(seqFrame(3, 'answer', { delta: '根据' }))
+      captured.onEvent?.(seqFrame(4, 'subtask.progress', { summary: '检索完成' }, 'rag_subtask'))
+      captured.onEvent?.(seqFrame(5, 'answer', { delta: '检索结果' }))
+      captured.onEvent?.(seqFrame(6, 'answer', { content: '根据检索结果', final: true }))
+
+      const assistant = chat.messages[1]
+      expect(assistant.thinking).toEqual([
+        { role: 'intent', content: '意图识别完成' },
+        { role: 'rag_subtask', content: '检索完成' },
+      ])
+      expect(assistant.content).toBe('根据检索结果')
+    })
+
+    it('降级整段（无 delta 帧 · provider 不支持流式）：仅整段 content 帧，T2 行为不变', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
+      captured.onEvent?.(seqFrame(2, 'answer', { content: '整段终答' }))
+      expect(chat.messages[1].content).toBe('整段终答')
+      // 占位帧（basic/router 无 aggregator · 契约保证无 delta 帧同 run 混出）：T2 现行为覆盖为空
+      captured.onEvent?.(seqFrame(3, 'answer', { content: '', note: 'no_aggregator' }))
+      expect(chat.messages[1].content).toBe('')
+      captured.onEvent?.(seqFrame(4, 'done', { latency_ms: 1, model: 'm' }, 'system'))
+      expect(chat.streaming).toBe(false)
+    })
+
+    it('replay 续看含 delta：复用 T4 管线，delta 序列拼接完整，终帧替换收口', () => {
+      const chat = useChatStore()
+      // live：收到两段 delta 后断网（active-run 保留在 seq 3）
+      chat.sendMessage('你好')
+      captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
+      captured.onEvent?.(seqFrame(2, 'answer', { delta: '前半' }))
+      captured.onEvent?.(seqFrame(3, 'answer', { delta: '段一' }))
+      captured.onError?.({ kind: 'network', status: null, message: 'Failed to fetch' })
+      expect(chat.messages[1].content).toBe('前半段一')
+      expect(chat.canResume).toBe(true)
+
+      chat.resumeFromCursor()
+      expect(replayLgRag).toHaveBeenCalledWith({ run_id: 'r-1', after_seq: 3 }, expect.any(Object))
+
+      // replay 补发剩余 delta + 终帧 + done（帧形状同 live）
+      replayCaptured.onEvent?.(seqFrame(4, 'answer', { delta: '段二' }))
+      expect(chat.messages[2].content).toBe('段二') // 新消息承接（T4 R1-N5）
+      replayCaptured.onEvent?.(seqFrame(5, 'answer', { delta: '段三' }))
+      expect(chat.messages[2].content).toBe('段二段三')
+      replayCaptured.onEvent?.(seqFrame(6, 'answer', { content: '前半段一段二段三', final: true }))
+      replayCaptured.onEvent?.(seqFrame(7, 'done', { latency_ms: 1, model: 'm' }, 'system'))
+
+      expect(chat.messages[2].content).toBe('前半段一段二段三') // replay delta 序列完整收口
+      expect(chat.messages[1].content).toBe('前半段一') // 原消息不动（视觉割裂边界 R1-N2：终帧到达即自愈）
+      expect(chat.activeRun).toBeNull()
+      expect(chat.streaming).toBe(false)
+    })
+  })
 })

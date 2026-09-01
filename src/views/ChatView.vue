@@ -139,7 +139,15 @@ function onResume(): void {
                 </div>
               </el-collapse-item>
             </el-collapse>
-            <span v-if="message.content" class="chat-message__text">{{ message.content }}</span>
+            <span
+              v-if="message.content"
+              class="chat-message__text"
+              :class="{
+                'chat-message__text--streaming':
+                  chat.streaming && message.id === chat.messages[chat.messages.length - 1]?.id,
+              }"
+              >{{ message.content }}</span
+            >
             <span v-else-if="chat.streaming" class="chat-message__pending">处理中…</span>
           </template>
           <span v-else class="chat-message__text">{{ message.content }}</span>
@@ -312,6 +320,20 @@ function onResume(): void {
 .chat-message__pending {
   font-size: 13px;
   opacity: 0.6;
+}
+
+/* T5 打字机光标态（R1-N4 内决 · 最小 UI 增量）：streaming 中最新 assistant 气泡尾随闪烁光标 */
+.chat-message__text--streaming::after {
+  content: '▍';
+  margin-left: 1px;
+  opacity: 0.55;
+  animation: chat-cursor-blink 1s steps(1) infinite;
+}
+
+@keyframes chat-cursor-blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 .chat-message__thinking {
