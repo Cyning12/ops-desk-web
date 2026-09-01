@@ -39,7 +39,7 @@
 |---|---|---|---|
 | **HG-TASK-DRAFT** | approved | 22-R1 | 2026-08-31 · web 00 签 · 维护者令「P2收尾后再进P3」+ 提前签收授权沿用 |
 | **HG-GRAPH-MODULES** | approved | **30** | 2026-08-31 · web 00 预签（授权代签文档闸）· 不新增一级模块 · 仅 l2 indexes 键形态 |
-| **HG-AUDIT-R1** | pending | **30** | 20-task-audit R1 pass 后 web 00 即签 · review 落盘 `docs/harness/reviews/task_web_graph_l2_key_unify_audit_R1_20260831.md` |
+| **HG-AUDIT-R1** | approved | **30** | 2026-08-31 · web 00 即签（维护者「提前签收」授权沿用）· R1 审 [reviews/task_web_graph_l2_key_unify_audit_R1_20260831.md](../../harness/reviews/task_web_graph_l2_key_unify_audit_R1_20260831.md) pass-with-notes · 0 阻塞 · 4 非阻塞 note（N1 http 命中数 7 校正 · N4 README 双形态句已收入 · N2 机检命令贴 invoke_30 交 30 执行 · N3 旧帽名沿用） |
 | **HG-JOINT-DEBUG** | n/a | — | 纯图谱波 · 无跨仓联调 |
 
 ---
@@ -66,7 +66,7 @@ P1b 为防泛名撞键，7 个新域 51 条目采用 `path#symbol` 复合键；�
 
 - `docs/_tech_graph/l2/indexes/by_symbol.yaml`（18 裸键 → 复合键 · 头注更新）
 - `docs/_tech_graph/l2/indexes/by_path.yaml`（头注对齐 · 键不动）
-- `docs/_tech_graph/l2/README.md`（键形态约定更新）
+- `docs/_tech_graph/l2/README.md`（键形态约定更新 · R1-N4：L5 双形态句同步改写为复合键单形态）
 - `docs/_tech_graph/l1/01_modules.md`（人签记录追加）
 - compile 产物（脚本再生成）· `docs/coding_wiki/volatile.md` 短注
 
@@ -84,7 +84,7 @@ P1b 为防泛名撞键，7 个新域 51 条目采用 `path#symbol` 复合键；�
 > 完成态（30 交付时逐项勾选）：
 
 - [ ] `by_symbol.yaml` 零裸键（机检：全部键含 `#`）· 条目总数 69 不变 · 值集合迁移前后全等（30 附 diff 证据进 invoke_30）
-- [ ] `http` 例外条已复合键化且 9 flow 命中不重复
+- [ ] `http` 例外条已复合键化（`src/api/http.ts#http`）且命中 flow 数=**7**（R1-N1 校正：chat flow 无 http_client 节点 · obs fixture 驱动无 http 段；非 9）不重复
 - [ ] indexes ↔ 9 flow implementedBy 一一对应复验（机检 exit 0）
 - [ ] 头注/README/`01_modules.md` 人签记录更新
 - [ ] `./scripts/graph-compile.sh` 绿 · `pnpm lint/test/build` 回归绿 · `git diff main --stat -- src/` 为空
@@ -144,6 +144,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l2_
 | 日期 | 说明 |
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者令「P2收尾后再进P3」· P1b CLOSE（#34）· 闸沿用「提前签收」授权 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · 迁移面实证：18 裸键（chat+lg_rag 含 http 例外）+ 51 复合键 |
+| 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 4 note）→ **00** 即签 HG-AUDIT-R1 · R1 预演：迁移后撞键=0 · 75 (path,symbol) 对去重=69 与条目数吻合 · N1 http 命中 7 校正验收口径 · N4 README 双形态句入范围 |
 
 ## 合入策略
 
