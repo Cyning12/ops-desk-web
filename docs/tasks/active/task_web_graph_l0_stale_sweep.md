@@ -39,7 +39,7 @@
 |---|---|---|---|
 | **HG-TASK-DRAFT** | approved | 22-R1 | 2026-08-31 · web 00 签 · 维护者令「提前签收task」授权 |
 | **HG-GRAPH-MODULES** | approved | **30** | 2026-08-31 · web 00 预签（维护者授权代签文档闸）· 不新增一级模块 · 仅 G-L0 l0 文件 + compile 产物 |
-| **HG-AUDIT-R1** | pending | **30** | 20-task-audit R1 pass 后 web 00 即签（维护者「提前签收」授权）· review 落盘 `docs/harness/reviews/task_web_graph_l0_stale_sweep_audit_R1_20260831.md` |
+| **HG-AUDIT-R1** | approved | **30** | 2026-08-31 · web 00 即签（维护者「提前签收」授权）· R1 审 [reviews/task_web_graph_l0_stale_sweep_audit_R1_20260831.md](../../harness/reviews/task_web_graph_l0_stale_sweep_audit_R1_20260831.md) pass-with-notes · 0 阻塞 · 6 非阻塞 note（N4–N6 已随签收入 task · N1–N3 见修订记录勘误） |
 | **HG-JOINT-DEBUG** | n/a | — | 纯图谱波 · 无跨仓联调；以 CI + grep 断言为验收 |
 
 ---
@@ -52,7 +52,7 @@ G-L0 顶层图自 2026-07-27 未跟进：`sse_client → ops_api` 边 label 仍 
 
 | 项 | 钉死 |
 |---|---|
-| 边修正 | `sse_client → ops_api` label 改 `POST /api/ops/lg-rag/stream`；l0 全文不得再出现 `chat/stream` |
+| 边修正 | `sse_client → ops_api` label 改 `POST /api/ops/lg-rag/stream`；l0 全文不得再出现 `chat/stream`。`sse_client` 语义重释为 lg-rag SSE（label 注记 · R1-N6）；l0 `description` 旧表述「SSE Chat 消费」同步改为 lg-rag SSE 主线（R1-N5） |
 | 节点补齐 | 新增页节点：`login_page` · `overview_page` · `issues_page` · `pulls_page` · `graph_page` · `lc_evidence_page` · `lg_rag_page`（id 蛇形 · label 中文页名 · kind=flow）；自 `pages` 节点 `includes` 边接入；`lg_rag_page` 增加 → `api_client`（invoke）调用边；chat_page 的 streams 边保留（sse_client 语义即 lg-rag SSE） |
 | version | `version` 刷新为 `2026-08-31` |
 | compile | `./scripts/graph-compile.sh` 再生成 `l0/00_main.md` + 根 `graph.json` + `shared/graph.json`（双写现状维持 · 收敛属 SPEC P3） |
@@ -87,6 +87,7 @@ G-L0 顶层图自 2026-07-27 未跟进：`sse_client → ops_api` 边 label 仍 
 - [ ] `version` = `2026-08-31`
 - [ ] `./scripts/graph-compile.sh` 绿 · `00_main.md` / 双写 graph.json 再生成（diff 仅本 task 变更面）
 - [ ] `pnpm lint` / `pnpm test` / `pnpm build` 回归绿（src 零变更 · diff 断言 `git diff main --stat -- src/` 为空）
+- [ ] `graph.json` 再生成允许含时间戳 diff 行（R1-N4 · 正常产物噪声 · 不算验收缺口）
 - [ ] `volatile.md` 短注落盘 · `verify` PASS
 
 ---
@@ -144,6 +145,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l0_
 | 日期 | 说明 |
 |---|---|
 | 2026-08-31 | **00** 起草 · SPEC HG-SPEC-SIGNOFF 已签（维护者令）· kit 1.10.0 已最新免升级波 · 维护者令「提前签收task」授权 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 |
+| 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note）→ **00** 即签 HG-AUDIT-R1 · N4 graph.json 时间戳 diff 合规 · N5 l0 description 旧表述入范围 · N6 sse_client 语义注记入范围 · 勘误：N1 闸表 blocks_hats 旧帽名 22-R1（沿用系列口径不改）· N2 SPEC G2 表述过宽（obs_page 已存在 · P0 节点 7 个为 G-L0 层内合法扩面）· N3 modules pages 行未含 Obs（留 P1 补） |
 
 ## 合入策略
 
