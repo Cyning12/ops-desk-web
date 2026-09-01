@@ -1,8 +1,8 @@
 schema_version: "inform_graph.v3"
 graph_id: "00_main"
 title: "ops-desk-web 顶层流程总图"
-description: "Ops Desk Web 前端架构总图：页面路由、Pinia Store、API Client、SSE Chat 消费与后端 API 的关系。"
-version: "2026-07-27"
+description: "Ops Desk Web 前端架构总图：页面路由、Pinia Store、API Client、lg-rag SSE 主线消费与后端 API 的关系。"
+version: "2026-08-31"
 layer: "G-L0"
 primary_layer: "G-L0"
 depth: "framework"
@@ -34,7 +34,7 @@ nodes:
     kind: flow
 
   - id: "sse_client"
-    label: "SSE Client"
+    label: "SSE Client（lg-rag SSE 主线）"
     kind: flow
 
   - id: "pages"
@@ -47,6 +47,34 @@ nodes:
 
   - id: "obs_page"
     label: "过程观测页"
+    kind: flow
+
+  - id: "login_page"
+    label: "登录页"
+    kind: flow
+
+  - id: "overview_page"
+    label: "概览页"
+    kind: flow
+
+  - id: "issues_page"
+    label: "Issue 页"
+    kind: flow
+
+  - id: "pulls_page"
+    label: "PR 页"
+    kind: flow
+
+  - id: "graph_page"
+    label: "图谱页"
+    kind: flow
+
+  - id: "lc_evidence_page"
+    label: "LC 证据页"
+    kind: flow
+
+  - id: "lg_rag_page"
+    label: "LG RAG 页"
     kind: flow
 
   - id: "chat_flow"
@@ -98,6 +126,38 @@ edges:
     to: "obs_page"
     label: "includes"
 
+  - from: "pages"
+    to: "login_page"
+    label: "includes"
+
+  - from: "pages"
+    to: "overview_page"
+    label: "includes"
+
+  - from: "pages"
+    to: "issues_page"
+    label: "includes"
+
+  - from: "pages"
+    to: "pulls_page"
+    label: "includes"
+
+  - from: "pages"
+    to: "graph_page"
+    label: "includes"
+
+  - from: "pages"
+    to: "lc_evidence_page"
+    label: "includes"
+
+  - from: "pages"
+    to: "lg_rag_page"
+    label: "includes"
+
+  - from: "lg_rag_page"
+    to: "api_client"
+    label: "calls（invoke · POST /api/ops/lg-rag/invoke）"
+
   - from: "chat_page"
     to: "sse_client"
     label: "streams"
@@ -108,7 +168,7 @@ edges:
 
   - from: "sse_client"
     to: "ops_api"
-    label: "POST /api/ops/chat/stream"
+    label: "POST /api/ops/lg-rag/stream"
 
   - from: "api_client"
     to: "ops_api"

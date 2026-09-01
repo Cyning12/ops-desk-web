@@ -1,7 +1,7 @@
 {
   "schema_version": "graph_v2",
   "freeze_id": "OPS_DESK_WEB_TECH_GRAPH_FREEZE_20260901_V1",
-  "generated_at": "2026-09-01T04:19:51Z",
+  "generated_at": "2026-09-01T04:50:29Z",
   "graphs": [
     {
       "id": "00_main",
@@ -50,7 +50,7 @@
     {
       "graph_id": "00_main",
       "id": "sse_client",
-      "label": "SSE Client"
+      "label": "SSE Client（lg-rag SSE 主线）"
     },
     {
       "graph_id": "00_main",
@@ -66,6 +66,41 @@
       "graph_id": "00_main",
       "id": "obs_page",
       "label": "过程观测页"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "login_page",
+      "label": "登录页"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "overview_page",
+      "label": "概览页"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "issues_page",
+      "label": "Issue 页"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "pulls_page",
+      "label": "PR 页"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "graph_page",
+      "label": "图谱页"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "lc_evidence_page",
+      "label": "LC 证据页"
+    },
+    {
+      "graph_id": "00_main",
+      "id": "lg_rag_page",
+      "label": "LG RAG 页"
     },
     {
       "graph_id": "00_main",
@@ -231,6 +266,86 @@
     },
     {
       "graph_id": "00_main",
+      "from": "pages",
+      "to": "login_page",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "includes",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "pages",
+      "to": "overview_page",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "includes",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "pages",
+      "to": "issues_page",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "includes",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "pages",
+      "to": "pulls_page",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "includes",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "pages",
+      "to": "graph_page",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "includes",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "pages",
+      "to": "lc_evidence_page",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "includes",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "pages",
+      "to": "lg_rag_page",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "includes",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
+      "from": "lg_rag_page",
+      "to": "api_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "calls（invoke · POST /api/ops/lg-rag/invoke）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "00_main",
       "from": "chat_page",
       "to": "sse_client",
       "mark": "->",
@@ -255,7 +370,7 @@
       "to": "ops_api",
       "mark": "->",
       "type": "depends_on",
-      "label": "POST /api/ops/chat/stream",
+      "label": "POST /api/ops/lg-rag/stream",
       "anchors": [],
       "sync": true
     },
