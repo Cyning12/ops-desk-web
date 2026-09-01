@@ -96,17 +96,17 @@ web 现状（T4 后）：answer 整段覆盖渲染（`assistant.content = payloa
 
 > 完成态（30 交付时逐项勾选；联调项由 HG-JOINT-DEBUG 承载）：
 
-- [ ] answer 帧含 `delta` → 追加渲染；多帧按 seq 有序拼接（Vitest 断言中间态与最终态）
-- [ ] 终帧 `content`+`final:true` → **全量替换**（断言替换后 == 终帧 content · 非 delta 拼接 + content 叠加）
-- [ ] delta 拼接结果 == 终帧 content（mock 帧序端到端断言）
-- [ ] `done` / `error` / abort 后不再追加（断言 done 后迟到帧被忽略）
-- [ ] 无 delta 帧（仅整段 content）→ T2 行为不变（既有测试不破 + 专例）
-- [ ] delta 与 `node.progress`/`subtask.progress` 并存：thinking 块与 answer 各归各位 · 不串台（断言）
-- [ ] replay 续看含 delta 帧序列完整（复用 T4 管线 · Vitest 断言拼接完整）
-- [ ] `useOpsChatSse` 静态守卫绿 · `/lg-rag` invoke 页 **零 diff**
-- [ ] `pnpm lint` / `pnpm test` / `pnpm build` 绿；`./scripts/graph-compile.sh` 绿；`verify` PASS
-- [ ] `10_flow_chat` 备注更新；`volatile.md` 短注落盘
-- [ ] 联调（40 脚本化记录或维护者签）：supervisor 实流 delta 上屏无乱码 · done 后停止追加 · 与 node.progress 并存不串台 · 断连 replay 后 delta 序列完整
+- [x] answer 帧含 `delta` → 追加渲染；多帧按 seq 有序拼接（Vitest 断言中间态与最终态）
+- [x] 终帧 `content`+`final:true` → **全量替换**（断言替换后 == 终帧 content · 非 delta 拼接 + content 叠加）
+- [x] delta 拼接结果 == 终帧 content（mock 帧序端到端断言）
+- [x] `done` / `error` / abort 后不再追加（断言 done 后迟到帧被忽略；`answerTerminal` 终态闸）
+- [x] 无 delta 帧（仅整段 content）→ T2 行为不变（既有测试不破 + 专例 · 占位帧同覆盖）
+- [x] delta 与 `node.progress`/`subtask.progress` 并存：thinking 块与 answer 各归各位 · 不串台（断言）
+- [x] replay 续看含 delta 帧序列完整（复用 T4 管线 · Vitest 断言拼接完整）
+- [x] `useOpsChatSse` 静态守卫绿 · `/lg-rag` invoke 页 **零 diff**
+- [x] `pnpm lint` / `pnpm test` / `pnpm build` 绿；`./scripts/graph-compile.sh` 绿；`verify` PASS
+- [x] `10_flow_chat` 备注更新；`volatile.md` 短注落盘
+- [x] 联调（40 脚本化记录 · 证据见 invoke_40 §联调证据）：supervisor 实流 344 delta 帧 UTF-8 逐帧解码无乱码 · done 后 0 answer 帧 · 与 node.progress 并存 seq 严格单调不串台 · replay 357 帧与 live 逐帧一致（delta 序列完整）。**实测观察**：critic rebinding 产生两轮 delta+终帧（终帧替换自愈）；api 终帧 content 对 delta 拼接做了 lstrip('\n') 前导修剪（替换语义兜底，与 failure_paths 行 3 一致）。HG-JOINT-DEBUG 仍 pending · 待维护者核签
 
 ---
 
@@ -147,7 +147,17 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 
 ### 自检结论
 
-> 30/40 交付时回填：lint / test / build / graph-compile / verify 退出码与结论表（对齐 T4 格式）。
+> 30/40 交付（2026-08-31 · 同上下文执行）：
+
+| 闸 | 命令 | 退出码 | 结果 |
+|---|---|---|---|
+| lint | `pnpm lint` | 0 | ✅ |
+| test | `pnpm test` | 0 | ✅ 23 files / **162** tests passed（T5 新增 7 例全在 chat-store spec；既有 155 例全绿 · chat-stream-deprecation 静态守卫 3 例绿） |
+| build | `pnpm build` | 0 | ✅ vue-tsc + vite build |
+| graph | `./scripts/graph-compile.sh` | 0 | ✅ OK 00_main / 10_flow_chat（`01_modules.md` 零 diff） |
+| verify | `npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_sse_t5.md` | 0 | ✅ VERIFY: PASS |
+
+联调（HG-JOINT-DEBUG 承载 · 40 脚本化留证，详见 `docs/harness/invokes/by-task/web-lg-rag-sse-t5/invoke_20260831_40_web-lg-rag-sse-t5.md`）：本地 api（`../ops-desk-api` master `99ea8c5` · `27cf7af`(#105) 已核为 HEAD 祖先 · 127.0.0.1:8000 在跑）+ curl 实测：supervisor 实流 run `7d686053`（357 帧 · seq 1–357 严格单调 · 344 delta + 2 终帧[critic rebinding 两轮] · 逐轮 delta 拼接 lstrip 后 == 终帧 content · done 后 0 帧）✓；replay `after_seq:0` 357 帧 seq/answer payload 与 live 逐帧一致 · delta 序列完整 · 含 done ✓。HG-JOINT-DEBUG：**pending**（脚本化证据已留 · 待维护者核签，web PR 勿 auto-merge）。
 
 ---
 
@@ -169,6 +179,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者令「T5已完成」放行 · WAVE_READINESS §1 已回填（api #107 · 可开工 web T5）· HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · api T5 #105 MERGED 为背景 |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 5 note）→ **00** 代签 HG-AUDIT-R1 · N1 两键同帧 content 优先钉死 · N5 联调注明 api 版本 · 闸全开可派 30 |
+| 2026-08-31 | **30/40** 交付：chat.ts answer 分支 delta 追加 / content 替换 / 两键同帧 content 优先 + warn / `answerTerminal` 终态闸；ChatView 最小光标态（纯 CSS 类名）；`useLgRagSse.ts`·`01_modules.md`·`LgRagView`·`api/lgRag.ts` 零 diff；chat-store +7 例（162 全绿）；五闸全绿；R1-N2–N4 内决落 invoke_30；40 脚本化联调（api master `99ea8c5`）delta/replay 断言全过，HG-JOINT-DEBUG 留 pending 待维护者核签 |
 
 ## 合入 / 联调策略
 
