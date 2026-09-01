@@ -175,6 +175,10 @@ function summarizeProgress(payload: Record<string, unknown> | undefined): string
  *   刷新/重进有未完成 run → 「上次回答未完成·续看」条；replay 帧复用同一渲染管线、渲染进新建 assistant 消息；
  *   per run_id 记 lastAppliedSeq，seq <= lastAppliedSeq 的帧忽略（answer 不重复 · thinking 不重复）；
  *   replay 404/422 → 清 active-run + 提示不重试；401（live/replay）→ 清 thread_id + 清 active-run + 跳登录
+ * - answer 打字机（T5 · freeze 沿用）：payload 含 delta 键 → 追加；含 content 键 → 全量替换
+ *   （终帧 final:true 同此 · 严禁终帧叠加到 delta 拼接后）；两键同帧 content 优先 + warn（R1-N1）；
+ *   done/error/abort/传输层终断后停止追加（迟到帧忽略）；无 delta 帧自然降级 T2 整段行为；
+ *   replay 含 delta 帧复用同一 processFrame 管线
  * - stopStreaming() abort 中断，可继续重发
  * - 主路径已废弃 chat stream（旧 SSE 封装仅留文件/单测对照，本 store 禁止 import）
  */
@@ -215,6 +219,9 @@ export const useChatStore = defineStore('chat', () => {
   // T4：per run_id 的 seq 去重基线（lastAppliedSeq）；run 切换即重置
   let currentRunId: string | null = null
   let lastAppliedSeq = 0
+  // T5：run 终态（done/error/abort/传输层错误）后停止追加 answer——迟到帧忽略（00 定夺 done 语义）；
+  // sendMessage/resumeFromCursor 开局重置
+  let answerTerminal = false
 
   async function loadLatestSession(): Promise<void> {
     if (sessionLoading.value) return
@@ -321,10 +328,26 @@ export const useChatStore = defineStore('chat', () => {
         assistant.thinking.push({ role: event.agent_role ?? event.event_type, content })
         break
       }
-      case 'answer':
-        // T2 整段 answer（非 delta）；重复帧取最新整段
-        assistant.content = payloadString(event, 'content')
+      case 'answer': {
+        // T5 打字机（api §4.2 T5 冻结补充 / §10.4 · freeze lg-rag-sse-v1 沿用）：
+        // - 含 content 键 → 替换模式（全量覆盖；终帧 final:true 同此，替换语义天然兜底
+        //   终帧与 delta 拼接不一致；严禁把终帧 content append 到拼接结果之后）
+        // - 仅含 delta 键 → 增模式（按 seq 追加到当前 assistant.content）
+        // - 两键同帧（防御空隙 R1-N1 · api 帧表保证不共帧）：content 优先，忽略 delta 并记 warn
+        // - 无 delta 帧（api 降级整段）→ content 替换即 T2 行为，不特判；
+        //   占位帧（content 空串 + note:no_aggregator）同走替换（T2 现行为，契约保证无 delta 同 run 混出）
+        if (answerTerminal) break // done/error/abort 后迟到帧忽略
+        const payload = event.payload ?? {}
+        if ('content' in payload) {
+          if ('delta' in payload) {
+            console.warn('[chat] answer 帧同含 content 与 delta：content 优先替换，忽略 delta（R1-N1 防御）')
+          }
+          assistant.content = payloadString(event, 'content')
+        } else if ('delta' in payload) {
+          assistant.content += payloadString(event, 'delta')
+        }
         break
+      }
       case 'done': {
         const latency = event.payload?.latency_ms
         const model = event.payload?.model
@@ -333,6 +356,7 @@ export const useChatStore = defineStore('chat', () => {
           model: typeof model === 'string' ? model : '',
         }
         streaming.value = false
+        answerTerminal = true // T5：done 后停止追加（迟到 answer 帧忽略）
         clearActiveRun() // T4：run 终态即清除 active-run（含 replay 补发的 done——断连期间服务端跑完的收尾闭环）
         break
       }
@@ -344,6 +368,7 @@ export const useChatStore = defineStore('chat', () => {
           retryable: retryable === true,
         }
         streaming.value = false
+        answerTerminal = true // T5：error 后停止追加
         clearActiveRun() // T4：error 终态同清除（服务端已判失败，续看无意义）
         break
       }
@@ -374,6 +399,7 @@ export const useChatStore = defineStore('chat', () => {
     const assistant = pushMessage('assistant')
 
     streaming.value = true
+    answerTerminal = false // T5：新 run 开局，允许 answer 追加/替换
     // T3：已存 thread_id 则带上续问（同会话同一 id）；无则由 api 生成（run.start 捕获落存）
     const sentThreadId = threadId.value
     controller = streamLgRag(
@@ -382,6 +408,7 @@ export const useChatStore = defineStore('chat', () => {
         onEvent: (event) => processFrame(event, assistant),
         onError: (transportError) => {
           streaming.value = false
+          answerTerminal = true // T5：传输层终断后停止追加（续看 replay 渲染进新消息并自行重置）
           if (transportError.status === 401) {
             // SSE fetch 不经 axios 拦截器：本地清会话 + thread_id + active-run（R1-N3），交给路由守卫/视图跳登录
             clearThreadId()
@@ -412,6 +439,7 @@ export const useChatStore = defineStore('chat', () => {
         onAborted: () => {
           streaming.value = false
           interrupted.value = true
+          answerTerminal = true // T5：abort 终态，停止追加
           clearActiveRun() // T4：abort 属 run 终态（00 定夺）；停止后不可续看（R1-N6 产品语义）
         },
         onDone: () => {
@@ -475,6 +503,7 @@ export const useChatStore = defineStore('chat', () => {
     let sawTerminal = false
 
     streaming.value = true
+    answerTerminal = false // T5：replay 接力重置（渲染目标为新建 assistant 消息）
     controller = replayLgRag(
       { run_id: run.run_id, after_seq: run.last_seq },
       {
@@ -484,6 +513,7 @@ export const useChatStore = defineStore('chat', () => {
         },
         onError: (transportError) => {
           streaming.value = false
+          answerTerminal = true // T5：replay 传输层终断后停止追加（再续看时重置）
           if (transportError.status === 401) {
             // replay 401：清 thread_id + 清 active-run + 清 auth，跳登录（与 live 401 同语义）
             clearThreadId()
@@ -513,6 +543,7 @@ export const useChatStore = defineStore('chat', () => {
         onAborted: () => {
           streaming.value = false
           interrupted.value = true
+          answerTerminal = true // T5：abort 终态（与 live 一致）
           clearActiveRun() // abort 终态（与 live 一致）
         },
         onDone: () => {
