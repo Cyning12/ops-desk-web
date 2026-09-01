@@ -39,7 +39,7 @@
 |---|---|---|---|
 | **HG-TASK-DRAFT** | approved | 22-R1 | 2026-08-31 · web 00 签 · 维护者「提前签收task」授权沿用 |
 | **HG-GRAPH-MODULES** | approved | **30** | 2026-08-31 · web 00 预签（授权代签文档闸）· **不新增一级模块**（flow 属 G-L1 · 页面已覆盖 pages 行）；`01_modules.md` 仅 pages 行补 Obs + 关联节 + 人签记录 |
-| **HG-AUDIT-R1** | pending | **30** | 20-task-audit R1 pass 后 web 00 即签 · review 落盘 `docs/harness/reviews/task_web_graph_l1_flow_lg_rag_audit_R1_20260831.md` |
+| **HG-AUDIT-R1** | approved | **30** | 2026-08-31 · web 00 即签（维护者「提前签收」授权沿用）· R1 审 [reviews/task_web_graph_l1_flow_lg_rag_audit_R1_20260831.md](../../harness/reviews/task_web_graph_l1_flow_lg_rag_audit_R1_20260831.md) pass-with-notes · 0 阻塞 · 6 非阻塞 note（N4 已随签收入范围 · N3 indexes 扩展形态 / N6 by_symbol 泛名键由 30 内决 · N1/N2/N5 见修订记录） |
 | **HG-JOINT-DEBUG** | n/a | — | 纯图谱波 · 无跨仓联调；CI + grep 断言为验收 |
 
 ---
@@ -67,6 +67,7 @@ G-L1 目前仅 `10_flow_chat`；lg-rag invoke 页（T2–T6 主线真值所在�
 - 新建 `docs/_tech_graph/l1/10_flow_lg_rag.graph.yaml`（+ compile 产物 `10_flow_lg_rag.md`）
 - `docs/_tech_graph/l2/indexes/by_path.yaml` · `by_symbol.yaml`（lg_rag 域条目 · 与 flow implementedBy 一一对应）
 - `docs/_tech_graph/l1/01_modules.md`（pages 行补 Obs · 关联节 · 人签记录）
+- `docs/_tech_graph/l2/README.md`（R1-N4：「试点域=chat」表述失真 → 更新为 chat + lg_rag 域 · 补范围/非范围句）
 - compile 产物：graph.json 双写（脚本再生成）
 - `docs/coding_wiki/volatile.md`：本 task 短注
 
@@ -148,6 +149,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l1_
 | 日期 | 说明 |
 |---|---|
 | 2026-08-31 | **00** 起草 · P0 CLOSE（#31）续开 P1a · 维护者「提前签收task」授权沿用 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · l2 lg_rag 域 indexes 同波同步（防脱节） |
+| 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note）→ **00** 即签 HG-AUDIT-R1 · N4 l2 README 失真入范围 · N3/N6 交 30 内决 · 注记：N1 旧帽名沿用系列口径 · N2 SPEC P2 例证已被 chat 试点覆盖（本 task 落 invoke 链新符号 · 合法）· N5 graph.json 时间戳 diff 容忍（P0 同型） |
 
 ## 合入策略
 
