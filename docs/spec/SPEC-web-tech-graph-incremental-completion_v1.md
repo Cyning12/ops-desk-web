@@ -1,6 +1,6 @@
 # SPEC：Web · 技术图谱逐步补全（G-L0 脱节清扫 → G-L1 flow 补全 → G-L2 扩展 → CI 强化）
 
-> **状态**：draft（2026-08-31 · web 00 起草 · **HG-SPEC-SIGNOFF pending** 待维护者签收）  
+> **状态**：active（2026-08-31 · **HG-SPEC-SIGNOFF approved** · 维护者令「签收spec」· §1–§5 冻结生效）  
 > **类型**：文档/图谱基建（无业务代码变更面 · 各阶段独立 task 派生）  
 > **上游真值**：[`docs/_tech_graph/README.md`](../_tech_graph/README.md)（读序）· [`LAYER_README.md`](../_tech_graph/LAYER_README.md)（G-L 分层约定）· [`docs/skills/`](../skills/)（S-L0/S-L1 规程）  
 > **触发**：lg-rag SSE T2–T6 闭环遗留图谱债务（l0 chat stream 边脱节 · R1-N4 l2 indexes 脱节史）+ Phase γ 分层落地后未系统补全
@@ -9,7 +9,7 @@
 
 ## 0. 签收注记（待维护者）
 
-> **HG-SPEC-SIGNOFF**：pending · 维护者签收后 §1–§5 冻结为各阶段 task 起草真值；freeze 点：schema `inform_graph.v3` 不变 · G-L 目录约定不变。
+> **HG-SPEC-SIGNOFF**：**approved**（2026-08-31 · 维护者 cyning 亲签 · 令「签收spec」）· §1–§5 冻结为各阶段 task 起草真值；freeze 点：schema `inform_graph.v3` 不变 · G-L 目录约定不变。
 
 ---
 
@@ -119,3 +119,4 @@ Phase γ 分层已落地（l0/l1/l2/shared + `graph-compile.sh` + CI `tech-graph
 | 日期 | 摘要 |
 |---|---|
 | 2026-08-31 | **00** 初版：§1 实证缺口清单（G1–G6）· 四阶段 P0–P3 · R0–R5 全轮回填 · HG-SPEC-SIGNOFF pending |
+| 2026-08-31 | **维护者签收** HG-SPEC-SIGNOFF（令「签收spec」）→ SPEC active · coding-kit 已最新（1.10.0 · 今日已升级）故直接开 P0 |
