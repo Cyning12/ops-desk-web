@@ -1,6 +1,6 @@
 # Task：Web · lg-rag SSE T5 · Token 打字机（answer delta 追加 · final 替换）
 
-> **状态**：active（2026-08-31 · web 00 起草签收 · 待 30 实现）  
+> **状态**：completed（2026-08-31 CLOSE · PR [#28](https://github.com/Cyning12/ops-desk-web/pull/28) MERGED · HG-JOINT-DEBUG 凭 40 脚本化联调证据过 · 00 统筹归档）  
 > **类型**：传输 / SSE token 流（跨仓联调收尾）  
 > **统筹**：**web 00 Agent** 签收 · 排 30 实现 · **禁止 ops-desk-api Agent 改本仓 Vue/TS**  
 > **上游 Spec**：api [`05_lg_rag_transport_and_session_plan_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) §4.2 · §10.4（T5 已回写实现句）  
@@ -44,7 +44,7 @@
 | **HG-TASK-DRAFT** | approved | 22-R1 | 2026-08-31 · web 00 签 · 维护者令「T5已完成」放行 + 既定授权签收过程文档 |
 | **HG-GRAPH-MODULES** | approved | **30** | 2026-08-31 · web 00 预签（授权代签文档闸）· graph_delta=update 限 `10_flow_chat` 备注 · 不新增一级模块 |
 | **HG-AUDIT-R1** | approved | **30** | 2026-08-31 · web 00 代签（维护者授权）· R1 审 [reviews/task_web_lg_rag_sse_t5_audit_R1_20260831.md](../../harness/reviews/task_web_lg_rag_sse_t5_audit_R1_20260831.md) pass-with-notes · 0 阻塞 · 5 非阻塞 note（N1/N5 已随签收入 task · N2–N4 由 30 内决） |
-| **HG-JOINT-DEBUG** | pending | **merge** | T5 联调：增量拼接无乱码 · done 后停止追加 · 与 node.progress 并存不串台 · replay 含 delta（40 脚本化联调记录 **或** 维护者亲签）· 未过前 web PR **勿 auto-merge** |
+| **HG-JOINT-DEBUG** | approved | **merge** | 2026-08-31 · web 00 凭 [invoke_40](../../harness/invokes/by-task/web-lg-rag-sse-t5/invoke_20260831_40_web-lg-rag-sse-t5.md) 脚本化联调证据签收（闸表双通道之脚本化通道）：api master `99ea8c5` 实流 357 帧（344 delta + 2 终帧）· 拼接==终帧 · done 后 0 帧 · seq 严格单调不串台 · replay 逐帧一致含 done |
 
 ---
 
@@ -157,7 +157,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 | graph | `./scripts/graph-compile.sh` | 0 | ✅ OK 00_main / 10_flow_chat（`01_modules.md` 零 diff） |
 | verify | `npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_sse_t5.md` | 0 | ✅ VERIFY: PASS |
 
-联调（HG-JOINT-DEBUG 承载 · 40 脚本化留证，详见 `docs/harness/invokes/by-task/web-lg-rag-sse-t5/invoke_20260831_40_web-lg-rag-sse-t5.md`）：本地 api（`../ops-desk-api` master `99ea8c5` · `27cf7af`(#105) 已核为 HEAD 祖先 · 127.0.0.1:8000 在跑）+ curl 实测：supervisor 实流 run `7d686053`（357 帧 · seq 1–357 严格单调 · 344 delta + 2 终帧[critic rebinding 两轮] · 逐轮 delta 拼接 lstrip 后 == 终帧 content · done 后 0 帧）✓；replay `after_seq:0` 357 帧 seq/answer payload 与 live 逐帧一致 · delta 序列完整 · 含 done ✓。HG-JOINT-DEBUG：**pending**（脚本化证据已留 · 待维护者核签，web PR 勿 auto-merge）。
+联调（HG-JOINT-DEBUG 承载 · 40 脚本化留证，详见 `docs/harness/invokes/by-task/web-lg-rag-sse-t5/invoke_20260831_40_web-lg-rag-sse-t5.md`）：本地 api（`../ops-desk-api` master `99ea8c5` · `27cf7af`(#105) 已核为 HEAD 祖先 · 127.0.0.1:8000 在跑）+ curl 实测：supervisor 实流 run `7d686053`（357 帧 · seq 1–357 严格单调 · 344 delta + 2 终帧[critic rebinding 两轮] · 逐轮 delta 拼接 lstrip 后 == 终帧 content · done 后 0 帧）✓；replay `after_seq:0` 357 帧 seq/answer payload 与 live 逐帧一致 · delta 序列完整 · 含 done ✓。HG-JOINT-DEBUG：**approved**（2026-08-31 · web 00 凭 40 脚本化证据签收 · 双通道之脚本化通道）。遗留观察（非阻塞 · 详见 invoke_40）：rebinding round-2 delta 瞬态拼接、终帧到达自愈；api 终帧 lstrip 前导差 2 字符、替换语义兜底；打字机观感建议维护者 dev 目测一轮。
 
 ---
 
@@ -179,6 +179,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者令「T5已完成」放行 · WAVE_READINESS §1 已回填（api #107 · 可开工 web T5）· HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · api T5 #105 MERGED 为背景 |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 5 note）→ **00** 代签 HG-AUDIT-R1 · N1 两键同帧 content 优先钉死 · N5 联调注明 api 版本 · 闸全开可派 30 |
+| 2026-08-31 | **00 CLOSE**：HG-JOINT-DEBUG 凭 invoke_40 证据签收 → PR #28 MERGED → 验收 11/11 · KPI 100 · 归档 done/ · checklist §4 勾选 |
 | 2026-08-31 | **30/40** 交付：chat.ts answer 分支 delta 追加 / content 替换 / 两键同帧 content 优先 + warn / `answerTerminal` 终态闸；ChatView 最小光标态（纯 CSS 类名）；`useLgRagSse.ts`·`01_modules.md`·`LgRagView`·`api/lgRag.ts` 零 diff；chat-store +7 例（162 全绿）；五闸全绿；R1-N2–N4 内决落 invoke_30；40 脚本化联调（api master `99ea8c5`）delta/replay 断言全过，HG-JOINT-DEBUG 留 pending 待维护者核签 |
 
 ## 合入 / 联调策略
@@ -186,3 +187,39 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 - web PR：**勿 auto-merge**（close_pr_policy=required）
 - api 已 api-only 先合（#105 MERGED）；web 合入前须 HG-JOINT-DEBUG 过（40 脚本化联调记录或维护者亲签）
 - 联调通过标准：delta 上屏无乱码 · done 后停止追加 · 与 node.progress 并存不串台 · replay 含 delta 序列完整（对齐 api `05` §10.4）
+
+---
+
+### KPI
+
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验沉淀（recommended）
+
+- 分支规则「含 delta 键=增 · 含 content 键=替换」+ `answerTerminal` 终态闸即可覆盖 T2 降级/T5 delta/占位帧/迟到帧，无需为降级特判。
+- critic rebinding 会产生**多轮**「delta 序列 + 终帧」；终帧替换语义使瞬态拼接自愈——客户端勿为中间态加锁。
+- replay 复用同一 processFrame 管线后，T5 在 replay 路径**零新增代码**（帧形状一致的红利）。
+- Wiki: `docs/coding_wiki/volatile.md`（见 wiki_delta_note）。
+
+---
+
+## CLOSE
+
+| 项 | 值 |
+|---|---|
+| 日期 | 2026-08-31 |
+| web PR | [#28](https://github.com/Cyning12/ops-desk-web/pull/28) MERGED |
+| 联调 | HG-JOINT-DEBUG approved · web 00 凭 invoke_40 脚本化证据签收（api master `99ea8c5` · 357 帧实证 A–E 全过） |
+| 交付 | answer delta 打字机（delta 追加 / final 替换 / 两键同帧 content 优先 / answerTerminal 终态闸）· 降级 T2 整段零特判 · replay 含 delta 零新增代码 |
+| 归档 | `docs/tasks/done/task_web_lg_rag_sse_t5.md` |
+| 下一棒 | T6 弃 chat（web 侧 = 删 `useOpsChatSse` 死代码 + 移除 chat stream 常量；api 00 串行轨已起草 T6 · 待维护者下线窗口） |
