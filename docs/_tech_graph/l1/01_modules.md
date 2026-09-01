@@ -34,6 +34,7 @@
 | HG-GRAPH-MODULES | approved | 00统筹（代签） | 2026-07-27 | Phase γ：真值迁至 `l1/01_modules.md`；根 stub 保留 |
 | HG-GRAPH-MODULES | approved | web 00（预签 · 维护者授权代签文档闸） | 2026-08-31 | task_web_graph_l1_flow_lg_rag：**不新增一级模块**（flow 属 G-L1）；pages 行补 Obs 页（P0 R1-N3 欠账）+ 关联节加 `10_flow_lg_rag.md` |
 | HG-GRAPH-MODULES | approved | web 00（预签 · 维护者授权代签文档闸） | 2026-08-31 | task_web_graph_l1_flow_pages：**不新增一级模块**；关联节补 7 条 flow 链接（overview/issues/pulls/graph/lc_evidence/obs/login · SPEC P1 清零） |
+| HG-GRAPH-MODULES | approved | web 00（预签 · 维护者授权代签文档闸） | 2026-08-31 | task_web_graph_l2_key_unify：**不新增一级模块**；仅 l2 by_symbol 18 裸键统一为 `path#symbol` 复合键（值不变 · G-L2 键形态迁移） |
 
 ## 关联
 

@@ -83,12 +83,12 @@ P1b 为防泛名撞键，7 个新域 51 条目采用 `path#symbol` 复合键；�
 
 > 完成态（30 交付时逐项勾选）：
 
-- [ ] `by_symbol.yaml` 零裸键（机检：全部键含 `#`）· 条目总数 69 不变 · 值集合迁移前后全等（30 附 diff 证据进 invoke_30）
-- [ ] `http` 例外条已复合键化（`src/api/http.ts#http`）且命中 flow 数=**7**（R1-N1 校正：chat flow 无 http_client 节点 · obs fixture 驱动无 http 段；非 9）不重复
-- [ ] indexes ↔ 9 flow implementedBy 一一对应复验（机检 exit 0）
-- [ ] 头注/README/`01_modules.md` 人签记录更新
-- [ ] `./scripts/graph-compile.sh` 绿 · `pnpm lint/test/build` 回归绿 · `git diff main --stat -- src/` 为空
-- [ ] `volatile.md` 短注落盘 · `verify` PASS
+- [x] `by_symbol.yaml` 零裸键（机检：全部键含 `#`）· 条目总数 69 不变 · 值集合迁移前后全等（30 附 diff 证据进 invoke_30）
+- [x] `http` 例外条已复合键化（`src/api/http.ts#http`）且命中 flow 数=**7**（R1-N1 校正：chat flow 无 http_client 节点 · obs fixture 驱动无 http 段；非 9）不重复
+- [x] indexes ↔ 9 flow implementedBy 一一对应复验（机检 exit 0）
+- [x] 头注/README/`01_modules.md` 人签记录更新
+- [x] `./scripts/graph-compile.sh` 绿 · `pnpm lint/test/build` 回归绿 · `git diff main --stat -- src/` 为空
+- [x] `volatile.md` 短注落盘 · `verify` PASS
 
 ---
 
@@ -124,7 +124,22 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l2_
 
 ### 自检结论
 
-> 30/40 交付时回填：compile / lint / test / build / verify + 迁移机检退出码与结论表。
+> 30/40 交付回填（2026-08-31 · 30+40 同上下文闭环）：
+
+| 闸 | 命令 | 退出码 | 结论 |
+|---|---|---|---|
+| 迁移机检① 零裸键 | python3 断言（全部键含 `#` · 总数 69） | 0 | PASS（total=69 bare=0） |
+| 迁移机检② 值集合全等 | 迁移前 snapshot `/tmp/premig_values.json` vs 迁移后 | 0 | PASS（pre==post · 值零变更） |
+| 迁移机检③ 撞键=0 | 新旧全集键级重复断言 | 0 | PASS（dup=0；同名 symbol 由 path# 前缀区分） |
+| 迁移机检④ indexes↔flow | 9 flow implementedBy 唯一 (path,symbol) 对 == 索引键集 | 0 | PASS（75 条去重=69 == 69 · 双向差集空） |
+| compile | `./scripts/graph-compile.sh` | 0 | PASS（10 graphs · 112 nodes · 120 edges · check 全 OK） |
+| lint | `pnpm lint` | 0 | PASS |
+| test | `pnpm test` | 0 | PASS（22 files · 153 tests） |
+| build | `pnpm build` | 0 | PASS |
+| verify | `npx dsh-coding-kit verify --target . --task <本task>` | 0 | PASS（开工前 PASS · 收尾复跑 PASS） |
+| src 零变更 | `git diff --stat -- src/` | — | 空（0 行） |
+
+结论：**全绿**。纯键形态迁移 · 值集合全等 · http 计数口径已按 R1-N1 校正（7 非 9）· graph.json 双写再生成（仅时间戳/键序 diff）。
 
 ---
 
@@ -145,6 +160,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l2_
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者令「P2收尾后再进P3」· P1b CLOSE（#34）· 闸沿用「提前签收」授权 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · 迁移面实证：18 裸键（chat+lg_rag 含 http 例外）+ 51 复合键 |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 4 note）→ **00** 即签 HG-AUDIT-R1 · R1 预演：迁移后撞键=0 · 75 (path,symbol) 对去重=69 与条目数吻合 · N1 http 命中 7 校正验收口径 · N4 README 双形态句入范围 |
+| 2026-08-31 | **30+40** 交付：18 裸键 → `path#symbol` 复合键（值零变更 · 机检四断言全 PASS exit 0）· 头注/README/01_modules 人签/volatile 短注更新 · compile/lint/test/build/verify 全绿 · invoke_30 + invoke_40 落盘 |
 
 ## 合入策略
 
