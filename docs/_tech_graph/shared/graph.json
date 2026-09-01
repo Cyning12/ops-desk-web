@@ -1,7 +1,7 @@
 {
   "schema_version": "graph_v2",
   "freeze_id": "OPS_DESK_WEB_TECH_GRAPH_FREEZE_20260901_V1",
-  "generated_at": "2026-09-01T05:29:49Z",
+  "generated_at": "2026-09-01T05:45:37Z",
   "graphs": [
     {
       "id": "00_main",
@@ -13,6 +13,12 @@
       "id": "10_flow_chat",
       "title": "Chat 流式对话流程（前端）",
       "source_yaml_path": "l1/10_flow_chat.graph.yaml",
+      "layer": "G-L1"
+    },
+    {
+      "id": "10_flow_lg_rag",
+      "title": "LG RAG 旁路 invoke 流程（前端）",
+      "source_yaml_path": "l1/10_flow_lg_rag.graph.yaml",
       "layer": "G-L1"
     }
   ],
@@ -181,6 +187,61 @@
       "graph_id": "10_flow_chat",
       "id": "api_chat_flow",
       "label": ">../../../ops-desk-api/docs/_tech_graph/l1/10_flow_chat.md"
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "id": "user",
+      "label": "用户"
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "id": "lg_rag_view",
+      "label": "LgRagView"
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "id": "lg_rag_store",
+      "label": "useLgRagStore"
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "id": "invoke_action",
+      "label": "invoke"
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "id": "abort_action",
+      "label": "abort"
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "id": "use_thread_id",
+      "label": "useThreadId"
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "id": "elapsed_timer",
+      "label": "elapsedSeconds（等待秒计时）"
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "id": "invoke_api",
+      "label": "invokeLgRag"
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "id": "invoke_path",
+      "label": "LG_RAG_INVOKE_PATH"
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "id": "http_client",
+      "label": "http（axios · baseURL=/api）"
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "id": "ops_api",
+      "label": "ops-desk-api"
     }
   ],
   "edges": [
@@ -551,6 +612,126 @@
       "mark": "->",
       "type": "depends_on",
       "label": "后端展开",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "from": "user",
+      "to": "lg_rag_view",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "opens /lg-rag",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "from": "lg_rag_view",
+      "to": "lg_rag_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "binds",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "from": "lg_rag_view",
+      "to": "invoke_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "onSubmit（store.invoke · L70）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "from": "invoke_action",
+      "to": "abort_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "先中止前次在途请求（L47）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "from": "invoke_action",
+      "to": "elapsed_timer",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "启动秒计时（L59–61 · finally 停表）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "from": "invoke_action",
+      "to": "invoke_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "await（signal 透传 · L68）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "from": "invoke_api",
+      "to": "invoke_path",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.post(LG_RAG_INVOKE_PATH, body, {timeout:300s, signal})（L151–154）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "from": "invoke_path",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "相对 baseURL=/api（'/ops/lg-rag/invoke'）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "from": "http_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "POST /api/ops/lg-rag/invoke（非流式）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "from": "lg_rag_view",
+      "to": "abort_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "中止 click（store.abort · L83）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "from": "lg_rag_view",
+      "to": "use_thread_id",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "「用此 thread_id 继续」click（L87）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_lg_rag",
+      "from": "use_thread_id",
+      "to": "lg_rag_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "回填 threadId（result.thread_id → 输入框 · L42–44）",
       "anchors": [],
       "sync": true
     }

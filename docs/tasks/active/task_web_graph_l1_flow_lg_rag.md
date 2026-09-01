@@ -85,13 +85,13 @@ G-L1 目前仅 `10_flow_chat`；lg-rag invoke 页（T2–T6 主线真值所在�
 
 > 完成态（30 交付时逐项勾选）：
 
-- [ ] `10_flow_lg_rag.graph.yaml` 新建：实证链节点/边齐（view → store → api → http → invoke 端点）· 旁注含 refuse=200 · 非流式 · thread_id 回填
-- [ ] 全部 `implementedBy` 符号在 src 真实存在（grep 逐符号断言）
-- [ ] l2 indexes lg_rag 域条目与 flow implementedBy 一一对应（yaml 断言）
-- [ ] `01_modules.md` pages 行含 Obs · 关联节含 `10_flow_lg_rag.md` · 人签记录追加
-- [ ] `./scripts/graph-compile.sh` 绿 · `10_flow_lg_rag.md` 生成 · graph.json 双写再生成
-- [ ] `pnpm lint` / `pnpm test` / `pnpm build` 回归绿 · `git diff main --stat -- src/` 为空
-- [ ] `volatile.md` 短注落盘 · `verify` PASS
+- [x] `10_flow_lg_rag.graph.yaml` 新建：实证链节点/边齐（view → store → api → http → invoke 端点）· 旁注含 refuse=200 · 非流式 · thread_id 回填
+- [x] 全部 `implementedBy` 符号在 src 真实存在（grep 逐符号断言）
+- [x] l2 indexes lg_rag 域条目与 flow implementedBy 一一对应（yaml 断言）
+- [x] `01_modules.md` pages 行含 Obs · 关联节含 `10_flow_lg_rag.md` · 人签记录追加
+- [x] `./scripts/graph-compile.sh` 绿 · `10_flow_lg_rag.md` 生成 · graph.json 双写再生成
+- [x] `pnpm lint` / `pnpm test` / `pnpm build` 回归绿 · `git diff main --stat -- src/` 为空
+- [x] `volatile.md` 短注落盘 · `verify` PASS
 
 ---
 
@@ -130,6 +130,20 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l1_
 
 > 30/40 交付时回填：compile / lint / test / build / verify 退出码与结论表。
 
+**30/40 回填（2026-08-31 · 同上下文闭环）**：
+
+| 闸 | 命令 | 退出码 | 结论 |
+|---|---|---|---|
+| compile | `./scripts/graph-compile.sh` | 0 | `10_flow_lg_rag.md` 生成 · check OK（00_main / 10_flow_chat / 10_flow_lg_rag）· graph.json 双写再生成（3 graphs / 44 nodes / 49 edges · 时间戳 diff 属正常噪声 R1-N5） |
+| lint | `pnpm lint` | 0 | 绿（src 零变更 · 回归性质） |
+| test | `pnpm test` | 0 | 绿（全量通过） |
+| build | `pnpm build` | 0 | 绿（✓ built） |
+| verify | `npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l1_flow_lg_rag.md` | 0 | **VERIFY: PASS** |
+| src 零 diff | `git diff main --stat -- src/` | 0（无输出） | 为空断言成立 |
+| 机检断言 | python3 yaml 解析 + grep 逐符号 | 0 | flow implementedBy 9 条 ↔ by_path/by_symbol lg_rag 域一一对应 · 9 符号 src 全树真实存在 · by_symbol 18 键零撞键 · 01_modules 三断言过 · 旁注五关键字齐 |
+
+**结论：全绿 · 验收 7 条逐项勾选。**
+
 ---
 
 ## 给执行帽（30）必读列表
@@ -150,6 +164,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l1_
 |---|---|
 | 2026-08-31 | **00** 起草 · P0 CLOSE（#31）续开 P1a · 维护者「提前签收task」授权沿用 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · l2 lg_rag 域 indexes 同波同步（防脱节） |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note）→ **00** 即签 HG-AUDIT-R1 · N4 l2 README 失真入范围 · N3/N6 交 30 内决 · 注记：N1 旧帽名沿用系列口径 · N2 SPEC P2 例证已被 chat 试点覆盖（本 task 落 invoke 链新符号 · 合法）· N5 graph.json 时间戳 diff 容忍（P0 同型） |
+| 2026-08-31 | **30/40** 交付：新建 `10_flow_lg_rag.graph.yaml`（9 implementedBy 全 grep 实证）+ compile 产物 · l2 indexes 扩 lg_rag 域（N3 内决：同文件多域分段 + `graph_id`→`graph_ids` 列表 + 头注双域来源；N6 内决：裸符号键维持 · 两域 18 键零撞键已核 · 撞键时改 `path#symbol` 复合键留 P2）· `01_modules.md` pages 行补 Obs + 关联节 + 人签 · l2 README 覆盖域 chat+lg_rag（N4）· volatile 短注 · 验收 7 条全勾 · 五闸退出码全 0（见自检结论表） |
 
 ## 合入策略
 
