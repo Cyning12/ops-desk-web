@@ -43,7 +43,7 @@
 |---|---|---|---|
 | **HG-TASK-DRAFT** | approved | 22-R1 | 2026-08-31 · web 00 签 · 维护者令「T5已完成」放行 + 既定授权签收过程文档 |
 | **HG-GRAPH-MODULES** | approved | **30** | 2026-08-31 · web 00 预签（授权代签文档闸）· graph_delta=update 限 `10_flow_chat` 备注 · 不新增一级模块 |
-| **HG-AUDIT-R1** | pending | **30** | 待 20-task-audit R1 pass 后 web 00 代签 · review 落盘 `docs/harness/reviews/task_web_lg_rag_sse_t5_audit_R1_20260831.md` |
+| **HG-AUDIT-R1** | approved | **30** | 2026-08-31 · web 00 代签（维护者授权）· R1 审 [reviews/task_web_lg_rag_sse_t5_audit_R1_20260831.md](../../harness/reviews/task_web_lg_rag_sse_t5_audit_R1_20260831.md) pass-with-notes · 0 阻塞 · 5 非阻塞 note（N1/N5 已随签收入 task · N2–N4 由 30 内决） |
 | **HG-JOINT-DEBUG** | pending | **merge** | T5 联调：增量拼接无乱码 · done 后停止追加 · 与 node.progress 并存不串台 · replay 含 delta（40 脚本化联调记录 **或** 维护者亲签）· 未过前 web PR **勿 auto-merge** |
 
 ---
@@ -58,7 +58,7 @@ web 现状（T4 后）：answer 整段覆盖渲染（`assistant.content = payloa
 
 | 项 | 钉死 |
 |---|---|
-| 分支规则 | payload 含 `delta` 键 → **增模式**（追加到当前 assistant.content）；含 `content` 键 → **替换模式**（全量覆盖）。**禁止**把终帧 content append 到 delta 拼接结果之后（§10.4 常见坑） |
+| 分支规则 | payload 含 `delta` 键 → **增模式**（追加到当前 assistant.content）；含 `content` 键 → **替换模式**（全量覆盖）。**禁止**把终帧 content append 到 delta 拼接结果之后（§10.4 常见坑）。**两键同帧**（防御空隙 · R1-N1）：`content` 优先（替换为准），忽略 delta 并记 warn |
 | done 语义 | `done` / `error` / abort 后**停止追加**；流结束未再见 answer 帧则保持已拼接文本 |
 | 降级 | 无 delta 帧（provider 不支持流式）→ 仅收整段 content 帧 → UI 自然退化为 T2 行为，**不做**特判 |
 | 占位帧 | `content` 空串 + `note: no_aggregator` 按 T2 现行为（覆盖为空 · 无 final 不做终态标记），不新增 UI 分支 |
@@ -128,7 +128,7 @@ web 现状（T4 后）：answer 整段覆盖渲染（`assistant.content = payloa
 
 | 依赖 | 说明 |
 |---|---|
-| api T5 | PR [#105](https://github.com/Cyning12/ops-desk-api/pull/105) **MERGED**；联调对 api master 或本地 `uvicorn` + web dev proxy（本地 master 已含 #103/#104/#105） |
+| api T5 | PR [#105](https://github.com/Cyning12/ops-desk-api/pull/105) **MERGED**；联调对 api master 或本地 `uvicorn` + web dev proxy（本地 master 已含 #103/#104/#105）；**联调记录须注明 api commit 版本**（R1-N5 · 生产部署状态未核） |
 | web T4 | PR [#26](https://github.com/Cyning12/ops-desk-web/pull/26) MERGED（cursor/replay/seq 去重管线） |
 | 契约 | `lg-rag-sse-v1`；answer 帧：`delta` 追加 / `content`+`final` 替换 / 占位 note=no_aggregator；`done` 后停止追加 |
 | 联调用例 | ① supervisor 实流 delta 逐帧上屏无乱码 ② done 后停止追加 ③ 与 node.progress 并存不串台 ④ 断连 replay 后 delta 序列完整 |
@@ -168,6 +168,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 | 日期 | 说明 |
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者令「T5已完成」放行 · WAVE_READINESS §1 已回填（api #107 · 可开工 web T5）· HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · api T5 #105 MERGED 为背景 |
+| 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 5 note）→ **00** 代签 HG-AUDIT-R1 · N1 两键同帧 content 优先钉死 · N5 联调注明 api 版本 · 闸全开可派 30 |
 
 ## 合入 / 联调策略
 
