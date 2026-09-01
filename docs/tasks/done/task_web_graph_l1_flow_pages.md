@@ -1,6 +1,6 @@
 # Task：Web · 图谱 P1b · G-L1 其余页 flow 补全（7 页 · l2 indexes 同波同步）
 
-> **状态**：active（2026-08-31 · web 00 起草签收 · 待 30 实现）  
+> **状态**：completed（2026-08-31 CLOSE · PR [#34](https://github.com/Cyning12/ops-desk-web/pull/34) MERGED · 纯图谱波 CI 绿收口 · 00 统筹归档）  
 > **类型**：图谱/文档（无业务代码变更）  
 > **统筹**：**web 00 Agent** 签收 · 排 30 实现  
 > **上游 SPEC**：[`SPEC-web-tech-graph-incremental-completion_v1.md`](../../spec/SPEC-web-tech-graph-incremental-completion_v1.md) §3 P1（其余页 flow）+ P2 先行切片（各域 indexes 同波同步）  
@@ -163,7 +163,46 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l1_
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者令「继续P1」· P1a CLOSE（#33）· 闸沿用「提前签收」授权 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · 7 页 00 预实证锚点已核（router/stores/api 全量在案） |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note · 7/7 页锚点全量复核通过）→ **00** 即签 HG-AUDIT-R1 · N1 by_symbol 撞键必然 → 本波直接启用 `path#symbol` 复合键（既有裸键不迁移）· N2 obs 链止 fixture 入 00 定夺 · 勘误 N3：SPEC P1 枚举漏 `10_flow_graph`（G3 意图覆盖 · 本 task 范围已含 graph 页 · SPEC 已签不改正文） |
+| 2026-08-31 | **00 CLOSE**：CI 绿 + 00 抽查（7/7 · 9 flow compile OK · src 零 diff）→ PR #34 MERGED → KPI 100 · 归档 done/ · **SPEC P1 全清** |
 | 2026-08-31 | **30** 实现交付：7 flow yaml 新建（57 implementedBy 全 src 实证 · 00 预实证锚点 7/7 复核无偏差）· l2 indexes 7 域同波（by_symbol 51 复合键 + 18 裸键双形态 · http 共享节点单条 30 内决）· 01_modules 关联节/人签 · l2 README 全模块清单 · volatile 短注 · compile/lint/test/build/verify 全绿 · src 零 diff。**40** 自检通过（结论表见上 · invoke_30/40 落盘 by-task 目录） |
+
+---
+
+### KPI
+
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验沉淀（recommended）
+
+- 多域 by_symbol 扩展：泛名撞键（load/invoke/abort/setPage）必然发生 → 新域直接 `path#symbol` 复合键、既有裸键不迁移 + 头注双形态，比事后迁移省一波。
+- 共享节点（http axios）在 9 flow 同 path/symbol：indexes 单条全域命中、不重复登记（30 内决 · 已录 invoke_30）。
+- 00 预实证锚点表 + 20 全量复核 + 30 逐符号 grep 三证合一，本波 7/7 零偏差。
+- Wiki: `docs/coding_wiki/volatile.md`（见 wiki_delta_note）。
+
+---
+
+## CLOSE
+
+| 项 | 值 |
+|---|---|
+| 日期 | 2026-08-31 |
+| web PR | [#34](https://github.com/Cyning12/ops-desk-web/pull/34) MERGED |
+| 交付 | 7 页 flow（10_flow_overview/issues/pulls/graph/lc_evidence/obs/login）· l2 indexes 7 域 51 复合键 · modules 关联节+人签 · l2 README 全模块清单 |
+| 归档 | `docs/tasks/done/task_web_graph_l1_flow_pages.md` |
+| 图谱面 | compile 全 OK：10 graphs / 112 nodes / 120 edges（9 flow + l0） |
+| 下一棒 | SPEC **P1 全清** → P2 余量判定（各域 indexes 已同波落地 · 或仅剩既有裸键迁移可选）→ P3（双写收敛 + CI 强化）待维护者指示 |
+
+---
 
 ## 合入策略
 

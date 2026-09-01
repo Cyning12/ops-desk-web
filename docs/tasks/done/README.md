@@ -50,6 +50,7 @@
 
 | 关账日 | task | freeze_id / 摘要 |
 |--------|------|------------------|
+| 2026-08-31 | [`task_web_graph_l1_flow_pages.md`](./task_web_graph_l1_flow_pages.md) | 图谱 P1b · 7 页 flow 补全 + l2 7 域复合键 · PR #34 MERGED · **P1 全清** |
 | 2026-08-31 | [`task_web_graph_l1_flow_lg_rag.md`](./task_web_graph_l1_flow_lg_rag.md) | 图谱 P1a · 新建 10_flow_lg_rag + l2 lg_rag 域 indexes · PR #33 MERGED |
 | 2026-08-31 | [`task_web_graph_l0_stale_sweep.md`](./task_web_graph_l0_stale_sweep.md) | 图谱 P0 · l0 脱节清扫（边/节点对齐 lg-rag 主线）· PR #31 MERGED |
 | 2026-08-31 | [`task_web_lg_rag_sse_t6.md`](./task_web_lg_rag_sse_t6.md) | 删 chat SSE 死代码（api 410）· 守卫缺席断言 · PR #29 MERGED · **T2–T6 闭环** |
@@ -91,6 +92,7 @@
 | 2026-08-31 | 归档 `task_web_lg_rag_sse_t6.md`（PR #29 · HG-JOINT-DEBUG 凭 invoke_40 证据签收）· lg-rag SSE T2–T6 全波闭环 |
 | 2026-08-31 | 图谱 SPEC 签收（PR #30）· P0 归档 `task_web_graph_l0_stale_sweep.md`（PR #31） |
 | 2026-08-31 | P1a 归档 `task_web_graph_l1_flow_lg_rag.md`（PR #33 · l2 lg_rag 域同步） |
+| 2026-08-31 | P1b 归档 `task_web_graph_l1_flow_pages.md`（PR #34 · 7 页 flow · P1 全清） |
 
 ## 给维护者
 
