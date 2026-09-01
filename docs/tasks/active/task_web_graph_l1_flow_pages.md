@@ -39,7 +39,7 @@
 |---|---|---|---|
 | **HG-TASK-DRAFT** | approved | 22-R1 | 2026-08-31 · web 00 签 · 维护者令「继续P1」+「提前签收task」授权沿用 |
 | **HG-GRAPH-MODULES** | approved | **30** | 2026-08-31 · web 00 预签（授权代签文档闸）· 不新增一级模块（flow 属 G-L1 · 页面已覆盖 pages 行） |
-| **HG-AUDIT-R1** | pending | **30** | 20-task-audit R1 pass 后 web 00 即签 · review 落盘 `docs/harness/reviews/task_web_graph_l1_flow_pages_audit_R1_20260831.md` |
+| **HG-AUDIT-R1** | approved | **30** | 2026-08-31 · web 00 即签（维护者「提前签收」授权沿用）· R1 审 [reviews/task_web_graph_l1_flow_pages_audit_R1_20260831.md](../../harness/reviews/task_web_graph_l1_flow_pages_audit_R1_20260831.md) pass-with-notes · 0 阻塞 · 6 非阻塞 note（N1 复合键、N2 obs fixture 链已随签收入 00 定夺 · N3 见修订记录勘误 · 余 30 内决） |
 | **HG-JOINT-DEBUG** | n/a | — | 纯图谱波 · 无跨仓联调；CI + grep 断言为验收 |
 
 ---
@@ -53,9 +53,10 @@ P1a 已交付 `10_flow_lg_rag` 并立「flow + 同域 l2 indexes 同波同步」
 | 项 | 钉死 |
 |---|---|
 | 建模原则 | **只画实证链**（30 先读码 grep 再落 · 禁臆造）；每页 view → store → api → http → 端点 → ops_api；页级特有语义写 description 旁注 |
+| obs 特殊性 | obs 页实证链止于 fixture（无 http/ops_api 段 · R1-N2）→ flow 画到 fixture 数据源为止并在 description 旁注「本地 fixture 驱动 · 无后端调用」 |
 | 页→链锚点（00 预实证 · 30 复核） | overview：`OverviewView → useOverviewStore → api/overview.ts`（MedianMetric/TrendPoint 类型在案）· issues：`IssuesView → useIssuesStore → api/issues.ts` · pulls：`PullsView → usePullsStore → api/pulls.ts`（PULL_STATE/CI_STATUS 选项常量）· graph：`GraphView → useGraphStore → api/graph.ts` · lc_evidence：`LcEvidenceView → useLcEvidenceStore → api/lcEvidence.ts` · obs：`ObsView → useObsStore → api/obs.ts`（ObsStatusScenario）· login：`LoginView → useAuthStore → api/auth.ts`（登录/登出 · 路由守卫联动可在旁注） |
 | 格式 | 对齐 `10_flow_chat` / `10_flow_lg_rag`（schema v3 · G-L1 · depth method · implementedBy+layer_hint=G-L2 · version 2026-08-31） |
-| l2 同步 | 每 flow 的全部 implementedBy 符号同波进 `by_path.yaml` / `by_symbol.yaml`（P1a N3 分段形态沿用 · `graph_ids` 列表 · 头注加域）；by_symbol 撞键时升级 `path#symbol` 复合键（P1a N6 预案启用条件） |
+| l2 同步 | 每 flow 的全部 implementedBy 符号同波进 `by_path.yaml` / `by_symbol.yaml`（P1a N3 分段形态沿用 · `graph_ids` 列表 · 头注加域）；**by_symbol 本波直接启用 `path#symbol` 复合键**（R1-N1：撞键必然触发——load×5 · invoke/abort 撞 lg_rag 现有键 · setPage/setPageSize 互撞；新条目一律复合键，既有 chat/lg_rag 裸键条目不迁移、头注注明双形态） |
 | modules/l2 README | `01_modules.md` 关联节补 7 条 flow 链接 + 人签记录；`l2/README.md` 覆盖域更新为全模块清单 |
 | compile | `./scripts/graph-compile.sh` 生成各 .md + graph.json 双写 · 产物不手改 · 时间戳 diff 容忍 |
 | 模块 | 不新增一级模块 |
@@ -149,6 +150,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_graph_l1_
 | 日期 | 说明 |
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者令「继续P1」· P1a CLOSE（#33）· 闸沿用「提前签收」授权 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 · 7 页 00 预实证锚点已核（router/stores/api 全量在案） |
+| 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note · 7/7 页锚点全量复核通过）→ **00** 即签 HG-AUDIT-R1 · N1 by_symbol 撞键必然 → 本波直接启用 `path#symbol` 复合键（既有裸键不迁移）· N2 obs 链止 fixture 入 00 定夺 · 勘误 N3：SPEC P1 枚举漏 `10_flow_graph`（G3 意图覆盖 · 本 task 范围已含 graph 页 · SPEC 已签不改正文） |
 
 ## 合入策略
 
