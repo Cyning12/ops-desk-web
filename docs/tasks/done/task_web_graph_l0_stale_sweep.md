@@ -1,6 +1,6 @@
 # Task：Web · 图谱 P0 · G-L0 脱节清扫（l0 边/节点对齐 T2–T6 后现状）
 
-> **状态**：active（2026-08-31 · web 00 起草签收 · 待 30 实现）  
+> **状态**：completed（2026-08-31 CLOSE · PR [#31](https://github.com/Cyning12/ops-desk-web/pull/31) MERGED · 纯图谱波 CI 绿收口 · 00 统筹归档）  
 > **类型**：图谱/文档（无业务代码变更）  
 > **统筹**：**web 00 Agent** 签收 · 排 30 实现  
 > **上游 SPEC**：[`SPEC-web-tech-graph-incremental-completion_v1.md`](../../spec/SPEC-web-tech-graph-incremental-completion_v1.md) §3 P0（HG-SPEC-SIGNOFF approved · 维护者令「签收spec」）  
@@ -157,7 +157,45 @@ grep/diff 断言：l0 无 `chat/stream`（grep exit 1）· 7 新页节点+includ
 |---|---|
 | 2026-08-31 | **00** 起草 · SPEC HG-SPEC-SIGNOFF 已签（维护者令）· kit 1.10.0 已最新免升级波 · 维护者令「提前签收task」授权 · HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note）→ **00** 即签 HG-AUDIT-R1 · N4 graph.json 时间戳 diff 合规 · N5 l0 description 旧表述入范围 · N6 sse_client 语义注记入范围 · 勘误：N1 闸表 blocks_hats 旧帽名 22-R1（沿用系列口径不改）· N2 SPEC G2 表述过宽（obs_page 已存在 · P0 节点 7 个为 G-L0 层内合法扩面）· N3 modules pages 行未含 Obs（留 P1 补） |
+| 2026-08-31 | **00 CLOSE**：CI 绿 + 00 抽查（8/8 · src 零 diff · l0 无 chat/stream）→ PR #31 MERGED → KPI 100 · 归档 done/ |
 | 2026-08-31 | **30/40** 交付：l0 边 label → lg-rag/stream · sse_client 语义注记 · description 主线改写 · 7 页节点+includes+invoke 边 · version 刷新；compile/lint/test/build/verify 全 exit 0；验收 8 项全勾；volatile 短注落盘；invoke_30/40 留痕；src 零变更（diff 断言空） |
+
+---
+
+### KPI
+
+Task_KPI%: 100
+
+| 维 | 分 |
+|---|---|
+| D1 完成度 | 5 |
+| D2 可验证 | 5 |
+| D3 范围纪律 | 5 |
+| D4 摩擦记录 | 5 |
+| D5 文档对齐 | 5 |
+
+---
+
+### 经验沉淀（recommended）
+
+- 图谱脱节清扫先「唯一出现点」grep 定位（本波 chat/stream 全 l0 仅 L111 一处），断言零误伤面。
+- compile 产物只由脚本再生成（含双写与时间戳噪声行）；手改产物是返工源头。
+- gh pr create 正文含反引号须用 --body-file（30 本波实操踩坑已自愈）。
+- Wiki: `docs/coding_wiki/volatile.md`（见 wiki_delta_note）。
+
+---
+
+## CLOSE
+
+| 项 | 值 |
+|---|---|
+| 日期 | 2026-08-31 |
+| web PR | [#31](https://github.com/Cyning12/ops-desk-web/pull/31) MERGED |
+| 交付 | l0 边 label → lg-rag 主线 · sse_client 重释注记 · description 改写 · 7 页节点+includes+invoke 边 · version 2026-08-31 · compile 再生产物（33 nodes / 37 edges） |
+| 归档 | `docs/tasks/done/task_web_graph_l0_stale_sweep.md` |
+| 下一棒 | SPEC §3 **P1**：`10_flow_lg_rag` flow 新建（+ modules pages 行补 Obs · R1-N3） |
+
+---
 
 ## 合入策略
 
