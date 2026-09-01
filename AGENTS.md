@@ -64,7 +64,7 @@
 | `src/stores/` | Pinia |
 | `src/views/` | 页面 |
 | `src/components/` | 业务组件 |
-| `src/composables/useOpsChatSse.ts` | Chat SSE 封装 |
+| `src/composables/useLgRagSse.ts` | lg-rag SSE 封装（主 Chat 传输主线 · 旧 chat SSE 已随 T6 删除） |
 | `src/api/` | axios 封装 + 后端接口 |
 
 ---

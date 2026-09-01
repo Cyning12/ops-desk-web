@@ -96,13 +96,13 @@ web 自 T2 起主 Chat 走 lg-rag SSE，`useOpsChatSse` 已成死代码（仅文
 
 > 完成态（30 交付时逐项勾选；联调项由 HG-JOINT-DEBUG 承载）：
 
-- [ ] `useOpsChatSse.ts` 与 `tests/chat-sse.spec.ts` 已删除（`glob`/守卫断言文件缺席）
-- [ ] src 全树 grep 无 `/ops/chat/stream` 活引用（守卫断言；注释引导改指 lg-rag 主线）
-- [ ] `fetchLatestSession` / `ChatSession` 保留且行为不变（chat store T3/T4/T5 既有测试全绿）
-- [ ] README 传输主线更新为 lg-rag SSE · chat stream 标弃用（api 410）
-- [ ] `pnpm lint` / `pnpm test` / `pnpm build` 绿；`./scripts/graph-compile.sh` 绿；`verify` PASS
-- [ ] `10_flow_chat` 备注更新；`volatile.md` 短注落盘
-- [ ] 联调（40 脚本化记录或维护者签）：dist bundle grep 无 `/ops/chat/stream` 字符串 · 全站无 chat stream 请求（构建产物级断言）
+- [x] `useOpsChatSse.ts` 与 `tests/chat-sse.spec.ts` 已删除（`git rm` · 守卫断言文件缺席 ✅）
+- [x] src 全树 grep 无 `/ops/chat/stream` 活引用（守卫 R1-N2 全树字面量缺席口径断言 ✅；注释引导已改指 lg-rag 主线/T2 历史注记）
+- [x] `fetchLatestSession` / `ChatSession` 保留且行为不变（`src/api/chat.ts` 仅头注释改写 · chat store T3/T4/T5 既有测试全绿）
+- [x] README 传输主线更新为 lg-rag SSE · chat stream 标弃用（api 410）
+- [x] `pnpm lint` / `pnpm test` / `pnpm build` 绿；`./scripts/graph-compile.sh` 绿；`verify` PASS
+- [x] `10_flow_chat` 备注更新；`volatile.md` 短注落盘
+- [x] 联调（40 脚本化记录）：dist bundle grep 无 `/ops/chat/stream` 字符串（含 `chat/stream` 子串与 `streamOpsChat` 符号零命中）· 全站无 chat stream 请求由「src 全树无字面量 → 代码侧无发起方」承载（见 invoke_40 §联调证据）
 
 ---
 
@@ -140,7 +140,18 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 
 ### 自检结论
 
-> 30/40 交付时回填：lint / test / build / graph-compile / verify 退出码与结论表（对齐 T5 格式）。
+> 30/40 同上下文执行（2026-08-31 · 对齐 T5 格式）：
+
+| 闸 | 命令 | 退出码 | 结果 |
+|---|---|---|---|
+| lint | `pnpm lint` | 0 | ✅ eslint 全仓无告警 |
+| test | `pnpm test` | 0 | ✅ 22 files / **153** tests passed（删 chat-sse.spec 9 例：162→153；守卫改写 3 例绿；chat store T3–T5 既有例全绿 → fetchLatestSession 保留行为不变） |
+| build | `pnpm build` | 0 | ✅ vue-tsc + vite build（chunk 体积结构不变） |
+| graph | `./scripts/graph-compile.sh` | 0 | ✅ OK 00_main / 10_flow_chat（`01_modules.md` 零 diff；graph.json 再生成） |
+| verify | `npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_sse_t6.md` | 0 | ✅ VERIFY: PASS |
+| 联调（40） | `grep -rn '/ops/chat/stream' dist/` | 1（零命中 = 通过） | ✅ dist bundle（含压缩产物）无 chat stream 字符串；`grep -rn 'chat/stream' dist/`、`grep -rn 'streamOpsChat' dist/` 同零命中；`grep -rn '/ops/chat/stream' src/`、`grep -rn 'useOpsChatSse\\|streamOpsChat' src/` 零命中 |
+
+验收勾选口径：机检项 6 条由 Vitest/六闸承载；联调项由 40 脚本化记录承载（`invoke_20260831_40_web-lg-rag-sse-t6.md` §联调证据）→ HG-JOINT-DEBUG 待维护者核签 task 表，未过前 web PR **勿 auto-merge / 勿 merge**。
 
 ---
 
@@ -162,6 +173,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者令「api-T6已完成」放行 · WAVE_READINESS §2 行 1 已勾（api+web T5 CLOSE）· api T6 #108 MERGED（410 Gone）· HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 |
 | 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note）→ **00** 代签 HG-AUDIT-R1 · N1 字面量随删即清 · N2 守卫取全树字面量缺席口径 · N3 AGENTS.md 入口表纳入范围 · 闸全开可派 30 |
+| 2026-08-31 | **30/40** 交付：删 `useOpsChatSse.ts` + `chat-sse.spec.ts`；守卫改写（文件缺席 + src 全树字面量缺席 · N2 口径）；注释历史注记化（api/chat.ts · useLgRagSse.ts · stores/chat.ts）；AGENTS.md L67 改写（N3）；README 主线钉 lg-rag SSE（N6 内决：L25 换 lg-rag 契约指针 · L47 保留并注弃用章节）；`10_flow_chat` 备注 + l2 indexes 顺手对齐 l1 真值（兼清 N4 脱节：本 task 删除致 `useOpsChatSse.ts` 条目新悬空 → 重指 useLgRagSse 符号）；六闸全绿 + dist grep 零命中（联调脚本化留证）· invoke_30/40 落盘 |
 
 ## 合入 / 联调策略
 

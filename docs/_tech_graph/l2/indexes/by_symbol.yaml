@@ -1,7 +1,7 @@
 # chat 域 symbol → path 倒排（G-L2）
 # 源：l1/10_flow_chat.graph.yaml implementedBy
 
-version: "2026-07-27"
+version: "2026-08-31"
 graph_id: "10_flow_chat"
 layer: "G-L2"
 
@@ -26,11 +26,19 @@ by_symbol:
     path: src/api/chat.ts
     node_id: fetch_session_api
     kind: method
-  streamOpsChat:
-    path: src/composables/useOpsChatSse.ts
+  resumeFromCursor:
+    path: src/stores/chat.ts
+    node_id: resume_from_cursor
+    kind: method
+  streamLgRag:
+    path: src/composables/useLgRagSse.ts
     node_id: stream_sse
     kind: method
-  SseFrameParser:
-    path: src/composables/useOpsChatSse.ts
+  replayLgRag:
+    path: src/composables/useLgRagSse.ts
+    node_id: replay_sse
+    kind: method
+  LgRagSseFrameParser:
+    path: src/composables/useLgRagSse.ts
     node_id: sse_parser
     kind: class

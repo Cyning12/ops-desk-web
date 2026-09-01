@@ -9,8 +9,9 @@
  * - fetch 无原生 timeout：AbortController + 计时器实现 client timeout（≥300s，对齐 supervisor 实测 100–250s）
  * - AbortController 中断；HTTP 非 2xx / 网络错误 / 超时走 onError 回调
  *
- * 与 chat SSE（useOpsChatSse）差异：T2 事件为节点 updates + 整段 answer，
- * 不兼容 chat thinking 全集；主 Chat 一律走本封装，禁止 import useOpsChatSse。
+ * 历史注记：T2 前主 Chat 走旧 chat SSE 封装（已随 T6 删除 · api 410 Gone；
+ * 见 docs/tasks/done/task_web_lg_rag_sse_t2.md）。lg-rag 事件为节点 updates + 整段/token answer，
+ * 与旧 chat thinking 全集不兼容；主 Chat 一律走本封装。
  */
 
 /** lg-rag SSE 事件帧（data JSON 解码后 · api §4.2） */

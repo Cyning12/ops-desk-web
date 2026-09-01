@@ -1,13 +1,13 @@
 ---
 graph_id: 10_flow_chat
 version: 2026-08-31
-generated_at: sha256-7033cff01058403a
+generated_at: sha256-7ea7bec1155ffa76
 source: 10_flow_chat.graph.yaml
 ---
 
 # Chat 流式对话流程（前端）
 
-用户在 Chat 页发送消息：ChatView → chat store → useLgRagSse → POST /api/ops/lg-rag/stream（freeze lg-rag-sse-v1 · 2026-08-31 起主 Chat 切 lg-rag SSE，废弃 chat stream 主路径）；会话元数据走 axios fetchLatestSession（T2 保留门控，非 lg-rag SoT）。T3（2026-08-31）thread_id 会话连续性：客户端不自生成；首轮留空 → api 生成 → run.start payload 捕获；localStorage 持久化（key ops.lg-rag.thread-id，不可用则内存态降级）；刷新/重进恢复后端上下文（不回显历史消息，顶部提示条）；401/登出清除；已存 id 遇 404/422 清本地 id + 提示、不自动重发；startNewSession() 开新会话。T4（2026-08-31）断联/replay 续看：每帧捕获可选顶层 cursor（缺失以 run_id+seq 合成）；active-run 持久化（key ops.lg-rag.active-run，终态 done/error/abort 即清除）；断网/超时 mid-stream → 错误条 + 手动「续看」→ replayLgRag POST /api/ops/lg-rag/replay body {run_id, after_seq}（SSE 形状同 live，复用同一 LgRagSseFrameParser 与渲染管线，渲染进新建 assistant 消息）；per run_id 记 lastAppliedSeq，seq<=lastAppliedSeq 帧忽略（answer 不重复 append · thinking 不重复）；replay 404/422 清 active-run + 提示不重试；401（live/replay）清 thread_id + 清 active-run + 跳登录；replay 流再断 lastSeq 已推进可接力；刷新有未完成 run →「上次回答未完成·续看」条（不自动 replay）。T5（2026-08-31）answer delta 打字机：payload 含 delta 键 → 追加到当前 assistant.content；含 content 键 → 全量替换（终帧 final:true 同此 · 严禁终帧叠加到 delta 拼接后）；两键同帧 content 优先 + warn（R1-N1）；done/error/abort/传输层终断后停止追加（迟到帧忽略）；无 delta 帧自然降级 T2 整段行为；占位帧（content 空串 + note:no_aggregator）按 T2 现行为；replay 含 delta 复用同一 processFrame 管线；ChatView streaming 中最新 assistant 气泡光标态（最小 UI 增量）。
+用户在 Chat 页发送消息：ChatView → chat store → useLgRagSse → POST /api/ops/lg-rag/stream（freeze lg-rag-sse-v1 · 2026-08-31 起主 Chat 切 lg-rag SSE，废弃 chat stream 主路径）；会话元数据走 axios fetchLatestSession（T2 保留门控，非 lg-rag SoT）。T3（2026-08-31）thread_id 会话连续性：客户端不自生成；首轮留空 → api 生成 → run.start payload 捕获；localStorage 持久化（key ops.lg-rag.thread-id，不可用则内存态降级）；刷新/重进恢复后端上下文（不回显历史消息，顶部提示条）；401/登出清除；已存 id 遇 404/422 清本地 id + 提示、不自动重发；startNewSession() 开新会话。T4（2026-08-31）断联/replay 续看：每帧捕获可选顶层 cursor（缺失以 run_id+seq 合成）；active-run 持久化（key ops.lg-rag.active-run，终态 done/error/abort 即清除）；断网/超时 mid-stream → 错误条 + 手动「续看」→ replayLgRag POST /api/ops/lg-rag/replay body {run_id, after_seq}（SSE 形状同 live，复用同一 LgRagSseFrameParser 与渲染管线，渲染进新建 assistant 消息）；per run_id 记 lastAppliedSeq，seq<=lastAppliedSeq 帧忽略（answer 不重复 append · thinking 不重复）；replay 404/422 清 active-run + 提示不重试；401（live/replay）清 thread_id + 清 active-run + 跳登录；replay 流再断 lastSeq 已推进可接力；刷新有未完成 run →「上次回答未完成·续看」条（不自动 replay）。T5（2026-08-31）answer delta 打字机：payload 含 delta 键 → 追加到当前 assistant.content；含 content 键 → 全量替换（终帧 final:true 同此 · 严禁终帧叠加到 delta 拼接后）；两键同帧 content 优先 + warn（R1-N1）；done/error/abort/传输层终断后停止追加（迟到帧忽略）；无 delta 帧自然降级 T2 整段行为；占位帧（content 空串 + note:no_aggregator）按 T2 现行为；replay 含 delta 复用同一 processFrame 管线；ChatView streaming 中最新 assistant 气泡光标态（最小 UI 增量）。T6（2026-08-31）chat SSE 死代码已清除：旧 chat SSE 封装与对照单测删除（api chat stream 已 410 Gone），静态守卫升级为「文件缺席 + src 全树无 chat stream 字面量」；保留 fetchLatestSession 会话元数据门控（api 端点未下线）。
 
 ## Mermaid
 
