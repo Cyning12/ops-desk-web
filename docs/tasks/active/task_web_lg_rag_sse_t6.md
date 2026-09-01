@@ -43,7 +43,7 @@
 |---|---|---|---|
 | **HG-TASK-DRAFT** | approved | 22-R1 | 2026-08-31 · web 00 签 · 维护者令「api-T6已完成」放行 + 既定授权签收过程文档 |
 | **HG-GRAPH-MODULES** | approved | **30** | 2026-08-31 · web 00 预签（授权代签文档闸）· graph_delta=update 限 `10_flow_chat` 备注 · 不新增一级模块 |
-| **HG-AUDIT-R1** | pending | **30** | 待 20-task-audit R1 pass 后 web 00 代签 · review 落盘 `docs/harness/reviews/task_web_lg_rag_sse_t6_audit_R1_20260831.md` |
+| **HG-AUDIT-R1** | approved | **30** | 2026-08-31 · web 00 代签（维护者授权）· R1 审 [reviews/task_web_lg_rag_sse_t6_audit_R1_20260831.md](../../harness/reviews/task_web_lg_rag_sse_t6_audit_R1_20260831.md) pass-with-notes · 0 阻塞 · 6 非阻塞 note（N1–N3 已随签收入 task · N4 l2 indexes 脱节入遗留 · N5 §2 行 2 由 00 在 CLOSE 回填 · N6 由 30 内决） |
 | **HG-JOINT-DEBUG** | pending | **merge** | T6 联调：全站无 chat stream 请求（grep + dist bundle 断言 · 40 脚本化记录 **或** 维护者亲签）· 未过前 web PR **勿 auto-merge** |
 
 ---
@@ -60,8 +60,8 @@ web 自 T2 起主 Chat 走 lg-rag SSE，`useOpsChatSse` 已成死代码（仅文
 |---|---|
 | 删除 | `src/composables/useOpsChatSse.ts` · `tests/chat-sse.spec.ts`（其专属对照测试） |
 | 保留 | `src/api/chat.ts` 的 `fetchLatestSession` / `ChatSession`（api `GET /chat/sessions/latest` **未下线**，T3 元数据门控仍依赖）；`/chat/models` 若有引用同样保留 |
-| 常量 | 移除 `/ops/chat/stream` 路径常量（`api/chat.ts` 或 composable 内）；grep 清扫含注释引导 |
-| 静态守卫 | `tests/chat-stream-deprecation.spec.ts` 改写为：① `useOpsChatSse.ts` 文件缺席 ② src 全树无 `/ops/chat/stream` 活引用（注释引导可留但须指向 lg-rag 主线） |
+| 常量 | `/ops/chat/stream` 无命名常量、实为字面量（`useOpsChatSse.ts` L109 fetch · R1-N1）——随删即清；`src/stores/chat.ts` L7-8 等注释引导同步改写 |
+| 静态守卫 | `tests/chat-stream-deprecation.spec.ts` 改写为（R1-N2 口径）：① `useOpsChatSse.ts` 文件缺席 ② src 全树 `/ops/chat/stream` **字面量缺席**（与 dist grep 一致 · 零误伤 · 注释提及亦须改写指向 lg-rag 主线） |
 | 引用清理 | `useLgRagSse.ts` 等注释中对 `useOpsChatSse` 的「对照」提及改为历史注记（指向 done task/PR） |
 | README | 传输主线钉为 lg-rag SSE；chat stream 标为已弃用（api 410） |
 | freeze | web 侧不改契约；freeze `lg-rag-sse-v1` 不动 |
@@ -76,6 +76,7 @@ web 自 T2 起主 Chat 走 lg-rag SSE，`useOpsChatSse` 已成死代码（仅文
 - `src/api/chat.ts`：移除 chat stream 常量（保留 `fetchLatestSession` 等存活端点封装）
 - `tests/chat-stream-deprecation.spec.ts`：守卫改写（文件缺席 + 无活引用）
 - 注释/文档引导清扫：`useLgRagSse.ts` · `src/stores/chat.ts` 等对旧 chat SSE 的对照提及改历史注记
+- `AGENTS.md` 关键入口表（L67 `useOpsChatSse` 行 · R1-N3）：删后悬空须同步移除/改写
 - `README.md`：传输主线 = lg-rag SSE
 - `docs/_tech_graph/l1/10_flow_chat.graph.yaml`（及 .md）备注 + `graph-compile` 绿
 - `docs/coding_wiki/volatile.md`：本 task 短注
@@ -160,6 +161,7 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 | 日期 | 说明 |
 |---|---|
 | 2026-08-31 | **00** 起草 · 维护者令「api-T6已完成」放行 · WAVE_READINESS §2 行 1 已勾（api+web T5 CLOSE）· api T6 #108 MERGED（410 Gone）· HG-TASK-DRAFT / HG-GRAPH-MODULES 签收 |
+| 2026-08-31 | **20** R1 pass-with-notes（0 阻塞 / 6 note）→ **00** 代签 HG-AUDIT-R1 · N1 字面量随删即清 · N2 守卫取全树字面量缺席口径 · N3 AGENTS.md 入口表纳入范围 · 闸全开可派 30 |
 
 ## 合入 / 联调策略
 
