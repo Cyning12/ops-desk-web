@@ -41,8 +41,8 @@
 ### 1.3 跨仓
 
 - [x] cookie 鉴权同域或 proxy 正确  
-- [x] supervisor 长问（>60s）未误杀（timeout ≥300s）  
-- [x] `/lg-rag` invoke 页仍可用（非流式）  
+- [x] supervisor 长问（>60s）未误杀（**历史**：timeout ≥300s 墙钟；**现行 §10.6**：client **idle 120s**，有字节/keepalive 即重置，非整轮墙钟）  
+- [x] `/lg-rag` invoke 页仍可用（非流式；invoke 仍为 axios 墙钟 300s，与 SSE idle **正交**）  
 
 ### 1.4 签核
 
@@ -86,6 +86,15 @@
 
 ---
 
+## 5.1 Idle / keepalive + 子任务分区（§10.6 · 2026-09-07）
+
+- [ ] api：长节点静默期 EventStream 可见 `: keepalive`（不落盘）  
+- [ ] web：client **idle 120s**（有字节重置），非整轮墙钟 300s  
+- [ ] Chat：「编排进度」与「子任务过程」分区可见  
+- [ ] 总时长 >5min 且间隔有帧/keepalive → **不** timeout  
+
+---
+
 ## 6. 发版步骤（T2 通过后）
 
 1. Merge **api** PR → 部署 api  
@@ -104,3 +113,4 @@
 | 2026-08-31 | §3 T4 两项勾（invoke_40 证据）· §4 注明 T5 阻塞—待 api 契约（web-00 判定） |
 | 2026-08-31 | §3 末项勾（§1 回填 · api #107）· §4 T5 两项勾（invoke_40 证据 · web #28 MERGED） |
 | 2026-08-31 | §5 T6 三项勾（api #108 · web #29 · dist/src 零命中）· **T2–T6 全段闭环** |
+| 2026-09-07 | §1.3 超时条改 idle 语义；增 §5.1 idle/keepalive + 子任务分区（api 05 §10.6） |

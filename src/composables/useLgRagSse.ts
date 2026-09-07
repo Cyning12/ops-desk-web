@@ -1,12 +1,13 @@
 /**
- * lg-rag SSE 消费封装（freeze lg-rag-sse-v1 · 契约：api 05_lg_rag_transport_and_session_plan_v0 §4.2）。
+ * lg-rag SSE 消费封装（freeze lg-rag-sse-v1 · 契约：api 05_lg_rag_transport_and_session_plan_v0 §4.2 / §10.6）。
  *
  * 原生 fetch + ReadableStream（不依赖 fetch-event-source）：
  * - POST /api/ops/lg-rag/stream，body {query, mode, thread_id?}
  * - cookie 鉴权：credentials: 'include'
  * - SSE 帧以 `\n\n` 分割，取 `data:` 行 JSON 解析（event_type 以 data JSON 为准，不依赖 `event:` 行）
  * - 跨 chunk 半帧缓冲拼接；坏 JSON 行跳过不崩溃
- * - fetch 无原生 timeout：AbortController + 计时器实现 client timeout（≥300s，对齐 supervisor 实测 100–250s）
+ * - fetch 无原生 timeout：AbortController + **可重置 idle 计时器**（§10.6：默认 120s 无字节则中止；
+ *   任意 reader.read() 有数据即重置，含 SSE comment keepalive；**非**整轮墙钟上限）
  * - AbortController 中断；HTTP 非 2xx / 网络错误 / 超时走 onError 回调
  *
  * 历史注记：T2 前主 Chat 走旧 chat SSE 封装（已随 T6 删除 · api 410 Gone；
@@ -104,8 +105,11 @@ export const LG_RAG_STREAM_PATH = '/api/ops/lg-rag/stream'
 /** T4 replay 请求路径（api §10.3：重放 seq > after_seq 的已存帧，SSE 形状同 live） */
 export const LG_RAG_REPLAY_PATH = '/api/ops/lg-rag/replay'
 
-/** client 超时（对齐 lgRag invoke 页 supervisor 实测 100–250s · SPEC §0 ≥300000ms） */
-export const LG_RAG_STREAM_TIMEOUT_MS = 300_000
+/** client idle 超时（§10.6：无字节 120s；有数据重置；非整轮墙钟） */
+export const LG_RAG_STREAM_IDLE_TIMEOUT_MS = 120_000
+
+/** @deprecated 使用 LG_RAG_STREAM_IDLE_TIMEOUT_MS（语义已改为 idle） */
+export const LG_RAG_STREAM_TIMEOUT_MS = LG_RAG_STREAM_IDLE_TIMEOUT_MS
 
 export type LgRagStreamMode = 'router' | 'basic' | 'supervisor'
 
@@ -149,19 +153,35 @@ export function replayLgRag(
   return postLgRagSse(LG_RAG_REPLAY_PATH, { run_id: input.run_id, after_seq: input.after_seq }, callbacks)
 }
 
-/** live / replay 共用的 SSE POST 管线（fetch + client 超时 + 帧解析 + 错误分类；live 行为与 T2/T3 完全一致） */
+/** live / replay 共用的 SSE POST 管线（fetch + idle 超时 + 帧解析 + 错误分类；live 行为与 T2/T3 完全一致） */
 function postLgRagSse(
   path: string,
   body: Record<string, unknown>,
   callbacks: LgRagSseCallbacks,
 ): LgRagSseController {
   const abortController = new AbortController()
-  /** 区分用户主动 abort 与 client 超时中止 */
+  /** 区分用户主动 abort 与 idle 超时中止 */
   let timedOut = false
-  const timeoutTimer = setTimeout(() => {
-    timedOut = true
-    abortController.abort()
-  }, LG_RAG_STREAM_TIMEOUT_MS)
+  let idleTimer: ReturnType<typeof setTimeout> | null = null
+
+  const clearIdleTimer = () => {
+    if (idleTimer !== null) {
+      clearTimeout(idleTimer)
+      idleTimer = null
+    }
+  }
+
+  const resetIdleTimer = () => {
+    clearIdleTimer()
+    idleTimer = setTimeout(() => {
+      timedOut = true
+      abortController.abort()
+    }, LG_RAG_STREAM_IDLE_TIMEOUT_MS)
+  }
+
+  const idleTimeoutMessage = `超过 ${LG_RAG_STREAM_IDLE_TIMEOUT_MS / 1000}s 无响应，请稍后重试或点「续看」`
+
+  resetIdleTimer()
 
   const done = (async () => {
     let response: Response
@@ -182,7 +202,7 @@ function postLgRagSse(
           callbacks.onError?.({
             kind: 'timeout',
             status: null,
-            message: `响应超时（>${LG_RAG_STREAM_TIMEOUT_MS / 1000}s），请稍后重试`,
+            message: idleTimeoutMessage,
           })
         } else {
           callbacks.onAborted?.()
@@ -196,6 +216,9 @@ function postLgRagSse(
       })
       return
     }
+
+    // 收到 HTTP 响应头也算有活动（长排队后首包）
+    resetIdleTimer()
 
     if (!response.ok) {
       let message = `请求失败（HTTP ${response.status}）`
@@ -222,6 +245,8 @@ function postLgRagSse(
       for (;;) {
         const { value, done: streamDone } = await reader.read()
         if (streamDone) break
+        // §10.6：任意字节（含 `: keepalive` comment）重置 idle
+        if (value && value.byteLength > 0) resetIdleTimer()
         parser.push(decoder.decode(value, { stream: true }))
       }
       // 冲刷 decoder 尾部多字节字符
@@ -233,7 +258,7 @@ function postLgRagSse(
           callbacks.onError?.({
             kind: 'timeout',
             status: null,
-            message: `响应超时（>${LG_RAG_STREAM_TIMEOUT_MS / 1000}s），请稍后重试`,
+            message: idleTimeoutMessage,
           })
         } else {
           callbacks.onAborted?.()
@@ -250,7 +275,7 @@ function postLgRagSse(
     }
   })()
 
-  void done.finally(() => clearTimeout(timeoutTimer))
+  void done.finally(() => clearIdleTimer())
 
   return {
     abort: () => abortController.abort(),

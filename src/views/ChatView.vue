@@ -35,7 +35,12 @@ watch(
 watch(
   () => {
     const last = chat.messages[chat.messages.length - 1]
-    return chat.messages.length + (last ? last.content.length + last.thinking.length : 0)
+    return (
+      chat.messages.length +
+      (last
+        ? last.content.length + last.thinking.length + last.subtasks.length
+        : 0)
+    )
   },
   async () => {
     await nextTick()
@@ -127,11 +132,24 @@ function onResume(): void {
       >
         <div class="chat-message__bubble">
           <template v-if="message.role === 'assistant'">
-            <el-collapse v-if="message.thinking.length" class="chat-message__thinking">
-              <el-collapse-item title="节点进度" name="thinking">
+            <el-collapse
+              v-if="message.thinking.length || message.subtasks.length"
+              class="chat-message__thinking"
+            >
+              <el-collapse-item v-if="message.thinking.length" title="编排进度" name="thinking">
                 <div
                   v-for="(block, index) in message.thinking"
-                  :key="index"
+                  :key="`t-${index}`"
+                  class="chat-message__thinking-block"
+                >
+                  <span class="chat-message__thinking-role">{{ block.role }}</span>
+                  <span class="chat-message__thinking-text">{{ block.content }}</span>
+                </div>
+              </el-collapse-item>
+              <el-collapse-item v-if="message.subtasks.length" title="子任务过程" name="subtasks">
+                <div
+                  v-for="(block, index) in message.subtasks"
+                  :key="`s-${index}`"
                   class="chat-message__thinking-block"
                 >
                   <span class="chat-message__thinking-role">{{ block.role }}</span>
@@ -147,6 +165,11 @@ function onResume(): void {
                   chat.streaming && message.id === chat.messages[chat.messages.length - 1]?.id,
               }"
               >{{ message.content }}</span
+            >
+            <span
+              v-else-if="chat.streaming && (message.thinking.length || message.subtasks.length)"
+              class="chat-message__pending"
+              >子任务执行中…</span
             >
             <span v-else-if="chat.streaming" class="chat-message__pending">处理中…</span>
           </template>
