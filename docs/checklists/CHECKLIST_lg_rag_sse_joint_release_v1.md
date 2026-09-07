@@ -92,6 +92,7 @@
 - [ ] web：client **idle 120s**（有字节重置），非整轮墙钟 300s  
 - [ ] Chat：「编排进度」与「子任务过程」分区可见  
 - [ ] 总时长 >5min 且间隔有帧/keepalive → **不** timeout  
+- [ ] **§10.7 旁注**：`subtask.progress` `status=running` 起步帧立即上屏；同 id `done` 合并单行（web `task/web-lg-rag-sse-subtask-live`）  
 
 ---
 
@@ -114,3 +115,4 @@
 | 2026-08-31 | §3 末项勾（§1 回填 · api #107）· §4 T5 两项勾（invoke_40 证据 · web #28 MERGED） |
 | 2026-08-31 | §5 T6 三项勾（api #108 · web #29 · dist/src 零命中）· **T2–T6 全段闭环** |
 | 2026-09-07 | §1.3 超时条改 idle 语义；增 §5.1 idle/keepalive + 子任务分区（api 05 §10.6） |
+| 2026-09-07 | §5.1 增 §10.7 running 起步帧联调旁注（web-lg-rag-sse-subtask-live） |

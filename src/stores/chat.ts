@@ -92,6 +92,10 @@ function clearStoredActiveRun(): void {
 export interface ChatThinkingBlock {
   role: string
   content: string
+  /** subtask.progress 合并键（payload.subtask_id / id · §10.7） */
+  id?: string
+  /** running | done 等（§10.7 起步/完成帧） */
+  status?: string
 }
 
 export interface ChatMessage {
@@ -159,6 +163,32 @@ function summarizeProgress(payload: Record<string, unknown> | undefined): string
   }
   if (parts.length) return parts.join(' · ')
   return Object.keys(payload).slice(0, 5).join(', ')
+}
+
+/** §10.7：从 payload 取合并键（subtask_id 优先，其次 id） */
+function extractSubtaskBlockId(payload: Record<string, unknown> | undefined): string | undefined {
+  if (!payload) return undefined
+  const raw = payload.subtask_id ?? payload.id
+  if (typeof raw === 'string' && raw) return raw
+  if (typeof raw === 'number' && Number.isFinite(raw)) return String(raw)
+  return undefined
+}
+
+/** §10.7 running 起步帧：可读文案（勿落成裸键名列表） */
+function formatRunningSubtaskContent(
+  payload: Record<string, unknown> | undefined,
+  role: string,
+  id: string | undefined,
+): string {
+  if (payload) {
+    for (const key of PROGRESS_DIRECT_KEYS) {
+      const value = payload[key]
+      if (typeof value === 'string' && value) return `执行中 · ${value}`
+    }
+  }
+  const kind =
+    (payload && typeof payload.type === 'string' && payload.type) || role || 'subtask'
+  return id ? `执行中 · ${kind} · ${id}` : `执行中 · ${kind}`
 }
 
 /**
@@ -338,10 +368,28 @@ export const useChatStore = defineStore('chat', () => {
         break
       }
       case 'subtask.progress': {
-        // 子任务过程单独入列（§10.6 UI 分区）
-        const content = summarizeProgress(event.payload)
+        // 子任务过程单独入列（§10.6 UI 分区 · §10.7 running→done 同 id 合并）
+        const payload = event.payload
+        const status = typeof payload?.status === 'string' ? payload.status : undefined
+        const id = extractSubtaskBlockId(payload)
+        const role = event.agent_role ?? event.event_type
+        const content =
+          status === 'running'
+            ? formatRunningSubtaskContent(payload, role, id)
+            : summarizeProgress(payload)
         if (!content) break
-        assistant.subtasks.push({ role: event.agent_role ?? event.event_type, content })
+        const block: ChatThinkingBlock = { role, content }
+        if (id) block.id = id
+        if (status) block.status = status
+        // 同 subtask_id/id：更新/替换已有行（避免 running+done 双行）；无 id 的旧完成帧仍 append
+        if (id) {
+          const idx = assistant.subtasks.findIndex((b) => b.id === id)
+          if (idx >= 0) {
+            assistant.subtasks[idx] = block
+            break
+          }
+        }
+        assistant.subtasks.push(block)
         break
       }
       case 'answer': {
