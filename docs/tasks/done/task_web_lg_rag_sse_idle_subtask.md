@@ -1,9 +1,9 @@
 # Task：Web · lg-rag SSE idle 超时 + 子任务过程分区
 
-> **状态**：active（2026-09-07 · 维护者令 Implement plan）  
+> **状态**：completed（2026-09-07 CLOSE · PR [#36](https://github.com/Cyning12/ops-desk-web/pull/36) MERGED）  
 > **类型**：传输 / Chat UI  
 > **上游**：api [`05_lg_rag_transport_and_session_plan_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) **§10.6**  
-> **前置**：api task `lg-rag-sse-idle-keepalive`（keepalive）；T5/T5.1 已合  
+> **前置**：api task `lg-rag-sse-idle-keepalive`（keepalive · [#123](https://github.com/Cyning12/ops-desk-api/pull/123)）；T5/T5.1 已合  
 > **分支**：`task/web-lg-rag-sse-idle-subtask`  
 > **帽子**：00 / 10 / 20 / 30+40  
 > **无关**：invoke 页 axios 墙钟 · Nginx · 新 event_type
@@ -17,6 +17,7 @@
 | **task_slug** | `web-lg-rag-sse-idle-subtask` |
 | **git_branch** | `task/web-lg-rag-sse-idle-subtask` |
 | **implement_repo** | `ops-desk-web` |
+| **related_pr** | `#36` |
 | **test_strategy** | `required` |
 | **freeze_id** | `lg-rag-sse-v1`（不新 freeze） |
 | **close_pr_policy** | `required` |
@@ -52,3 +53,11 @@
 | 日期 | 说明 |
 |---|---|
 | 2026-09-07 | 00 起草并实现（随 Implement plan） |
+| 2026-09-07 | **CLOSE**：PR [#36](https://github.com/Cyning12/ops-desk-web/pull/36) MERGED · 归档 done/ |
+
+## 关账（CLOSE）
+
+| 项 | 值 |
+|---|---|
+| PR | [#36](https://github.com/Cyning12/ops-desk-web/pull/36) MERGED |
+| 下一棒 | `web-lg-rag-sse-subtask-live`（subtask running 起步帧 UI） |
