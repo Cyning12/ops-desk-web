@@ -87,7 +87,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
     expect(chat.messages[1]).toMatchObject({ role: 'assistant', content: '' })
   })
 
-  it('事件流：node/subtask progress 入进度块，answer 整段填入，done 收尾', () => {
+  it('事件流：node→编排进度，subtask→子任务过程，answer 整段填入，done 收尾', () => {
     const chat = useChatStore()
     chat.sendMessage('你好')
 
@@ -97,11 +97,9 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
     captured.onEvent?.({ event_type: 'answer', agent_role: 'aggregator', payload: { content: '整段终答' } })
 
     const assistant = chat.messages[1]
-    // 进度事件各成一块（不做 chat thinking 式增量聚合）
-    expect(assistant.thinking).toEqual([
-      { role: 'intent', content: '意图识别完成' },
-      { role: 'rag_subtask', content: '检索完成' },
-    ])
+    // 进度事件各成一块；subtask 单独分区
+    expect(assistant.thinking).toEqual([{ role: 'intent', content: '意图识别完成' }])
+    expect(assistant.subtasks).toEqual([{ role: 'rag_subtask', content: '检索完成' }])
     expect(assistant.content).toBe('整段终答')
     expect(chat.streaming).toBe(true)
 
@@ -134,15 +132,17 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
     captured.onEvent?.({ event_type: 'node.progress', agent_role: 'critic', payload: { foo: 1 } })
     captured.onEvent?.({ event_type: 'node.progress', agent_role: 'x', payload: {} })
 
-    const blocks = chat.messages[1].thinking
-    expect(blocks[0].role).toBe('supervisor')
-    expect(blocks[0].content).toContain('route: rag')
-    expect(blocks[0].content).toContain('subtasks:')
-    expect(blocks[1].role).toBe('rag_subtask')
-    expect(blocks[1].content).toContain('subtask_result:')
-    expect(blocks[1].content).toContain('answer_preview: 根据检索…')
-    expect(blocks[2]).toEqual({ role: 'critic', content: 'foo' })
-    expect(blocks).toHaveLength(3) // 空 payload 帧被丢弃
+    const thinking = chat.messages[1].thinking
+    const subtasks = chat.messages[1].subtasks
+    expect(thinking[0].role).toBe('supervisor')
+    expect(thinking[0].content).toContain('route: rag')
+    expect(thinking[0].content).toContain('subtasks:')
+    expect(thinking[1]).toEqual({ role: 'critic', content: 'foo' })
+    expect(thinking).toHaveLength(2) // 空 payload 帧被丢弃；subtask 不进 thinking
+    expect(subtasks[0].role).toBe('rag_subtask')
+    expect(subtasks[0].content).toContain('subtask_result:')
+    expect(subtasks[0].content).toContain('answer_preview: 根据检索…')
+    expect(subtasks).toHaveLength(1)
   })
 
   it('answer 整段语义：重复 answer 帧取最新（非增量拼接）', () => {
@@ -179,14 +179,18 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
     expect(chat.error).toEqual({ stage: 'network', message: 'Failed to fetch', retryable: true })
   })
 
-  it('client 超时：stage=timeout 且 retryable', () => {
+  it('client idle 超时：stage=timeout 且 retryable', () => {
     const chat = useChatStore()
     chat.sendMessage('你好')
 
-    captured.onError?.({ kind: 'timeout', status: null, message: '响应超时（>300s），请稍后重试' })
+    captured.onError?.({ kind: 'timeout', status: null, message: '超过 120s 无响应，请稍后重试或点「续看」' })
 
     expect(chat.streaming).toBe(false)
-    expect(chat.error).toEqual({ stage: 'timeout', message: '响应超时（>300s），请稍后重试', retryable: true })
+    expect(chat.error).toEqual({
+      stage: 'timeout',
+      message: '超过 120s 无响应，请稍后重试或点「续看」',
+      retryable: true,
+    })
   })
 
   it('传输层 401：清空 auth 会话并给出 auth 错误', () => {
@@ -817,7 +821,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       expect(chat.messages[5].content).toBe('停')
     })
 
-    it('delta 与 node.progress / subtask.progress 并存：thinking 与 content 各归各位不串台', () => {
+    it('delta 与 node.progress / subtask.progress 并存：thinking / subtasks / content 各归各位不串台', () => {
       const chat = useChatStore()
       chat.sendMessage('你好')
       captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
@@ -828,10 +832,8 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       captured.onEvent?.(seqFrame(6, 'answer', { content: '根据检索结果', final: true }))
 
       const assistant = chat.messages[1]
-      expect(assistant.thinking).toEqual([
-        { role: 'intent', content: '意图识别完成' },
-        { role: 'rag_subtask', content: '检索完成' },
-      ])
+      expect(assistant.thinking).toEqual([{ role: 'intent', content: '意图识别完成' }])
+      expect(assistant.subtasks).toEqual([{ role: 'rag_subtask', content: '检索完成' }])
       expect(assistant.content).toBe('根据检索结果')
     })
 

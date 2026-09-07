@@ -99,8 +99,10 @@ export interface ChatMessage {
   role: 'user' | 'assistant'
   /** 纯文本（markdown 不渲染，保留换行） */
   content: string
-  /** assistant 消息的 thinking 块序列 */
+  /** 编排节点进度（node.progress） */
   thinking: ChatThinkingBlock[]
+  /** 子任务过程（subtask.progress · rag_subtask / info_extract / tool_exec） */
+  subtasks: ChatThinkingBlock[]
 }
 
 /** SSE error 事件 / 传输层错误的统一展示结构 */
@@ -163,7 +165,8 @@ function summarizeProgress(payload: Record<string, unknown> | undefined): string
  * Chat 会话状态（T3 · freeze lg-rag-sse-v1）：
  * - 进入页面 loadLatestSession() 获取/创建 session（元数据端点，仅 T2 门控，非 lg-rag SoT）
  * - sendMessage() 追加 user/assistant 消息并启动 lg-rag SSE 流（POST /api/ops/lg-rag/stream）；
- *   node.progress/subtask.progress 进进度块、answer 整段填入 content、done/error 收尾
+ *   node.progress → thinking（编排进度）；subtask.progress → subtasks（子任务过程）；
+ *   answer 整段/delta 填入 content、done/error 收尾
  * - thread_id 会话连续性（T3）：客户端不自生成；首轮留空 → api 生成 → run.start payload 捕获；
  *   localStorage 持久化（key=ops.lg-rag.thread-id，不可用则内存态降级）；
  *   刷新/重进恢复（仅后端上下文，不回显历史消息，顶部提示条）；
@@ -239,7 +242,13 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   function pushMessage(role: ChatMessage['role']): ChatMessage {
-    const message: ChatMessage = { id: `m-${++messageSeq}`, role, content: '', thinking: [] }
+    const message: ChatMessage = {
+      id: `m-${++messageSeq}`,
+      role,
+      content: '',
+      thinking: [],
+      subtasks: [],
+    }
     messages.value.push(message)
     return message
   }
@@ -321,12 +330,18 @@ export const useChatStore = defineStore('chat', () => {
         }
         break
       }
-      case 'node.progress':
-      case 'subtask.progress': {
-        // 节点完成摘要（非全文 dump · api §4.2）；payload 键形以 api _summarize_payload 为准
+      case 'node.progress': {
+        // 编排节点完成摘要（非全文 dump · api §4.2）
         const content = summarizeProgress(event.payload)
         if (!content) break
         assistant.thinking.push({ role: event.agent_role ?? event.event_type, content })
+        break
+      }
+      case 'subtask.progress': {
+        // 子任务过程单独入列（§10.6 UI 分区）
+        const content = summarizeProgress(event.payload)
+        if (!content) break
+        assistant.subtasks.push({ role: event.agent_role ?? event.event_type, content })
         break
       }
       case 'answer': {

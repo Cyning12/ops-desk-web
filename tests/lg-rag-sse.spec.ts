@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   LG_RAG_REPLAY_PATH,
   LG_RAG_STREAM_PATH,
+  LG_RAG_STREAM_IDLE_TIMEOUT_MS,
   LG_RAG_STREAM_TIMEOUT_MS,
   LgRagSseFrameParser,
   replayLgRag,
@@ -265,7 +266,7 @@ describe('streamLgRag', () => {
     expect(onDone).not.toHaveBeenCalled()
   })
 
-  it('client 超时（≥300s）：自动中止并 onError kind=timeout（supervisor 长问保护）', async () => {
+  it('client idle 超时（120s 无字节）：自动中止并 onError kind=timeout', async () => {
     vi.useFakeTimers()
     const fetchMock = vi.fn((_url: string, init: RequestInit) => {
       const response = {
@@ -295,12 +296,71 @@ describe('streamLgRag', () => {
     const onAborted = vi.fn()
     const controller = streamLgRag({ query: 'x' }, { onError, onAborted })
 
-    await vi.advanceTimersByTimeAsync(LG_RAG_STREAM_TIMEOUT_MS)
+    await vi.advanceTimersByTimeAsync(LG_RAG_STREAM_IDLE_TIMEOUT_MS)
     await controller.done
 
     expect(onError).toHaveBeenCalledTimes(1)
     expect(onError.mock.calls[0][0]).toMatchObject({ kind: 'timeout', status: null })
+    expect(String(onError.mock.calls[0][0].message)).toContain('无响应')
     expect(onAborted).not.toHaveBeenCalled()
+    vi.useRealTimers()
+  })
+
+  it('idle 语义：有字节后重置；未满 idle 不超时；旧 TIMEOUT 常量别名 120s', async () => {
+    expect(LG_RAG_STREAM_TIMEOUT_MS).toBe(LG_RAG_STREAM_IDLE_TIMEOUT_MS)
+    expect(LG_RAG_STREAM_IDLE_TIMEOUT_MS).toBe(120_000)
+
+    vi.useFakeTimers()
+    const chunks: Array<{ value?: Uint8Array; done: boolean } | 'hang'> = [
+      { value: new TextEncoder().encode(': keepalive\n\n'), done: false },
+      'hang',
+    ]
+    let idx = 0
+    const fetchMock = vi.fn((_url: string, init: RequestInit) => {
+      const response = {
+        ok: true,
+        status: 200,
+        body: {
+          getReader: () => ({
+            read: () =>
+              new Promise<{ value?: Uint8Array; done: boolean }>((resolve, reject) => {
+                const abortError = () =>
+                  reject(new DOMException('The operation was aborted.', 'AbortError'))
+                if (init.signal?.aborted) {
+                  abortError()
+                  return
+                }
+                init.signal?.addEventListener('abort', abortError)
+                const next = chunks[idx++]
+                if (next === 'hang') return
+                resolve(next ?? { done: true })
+              }),
+            releaseLock: () => {},
+          }),
+        },
+      } as unknown as Response
+      return Promise.resolve(response)
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const onError = vi.fn()
+    const controller = streamLgRag({ query: 'x' }, { onError })
+
+    // 冲刷到首包 keepalive + resetIdle
+    await vi.advanceTimersByTimeAsync(0)
+    await Promise.resolve()
+    await Promise.resolve()
+
+    // 距上次活动不足 idle → 不超时
+    await vi.advanceTimersByTimeAsync(LG_RAG_STREAM_IDLE_TIMEOUT_MS - 5_000)
+    expect(onError).not.toHaveBeenCalled()
+
+    // 再满 idle → 超时
+    await vi.advanceTimersByTimeAsync(5_000)
+    await controller.done
+    expect(onError).toHaveBeenCalledTimes(1)
+    expect(onError.mock.calls[0][0]).toMatchObject({ kind: 'timeout' })
+    vi.useRealTimers()
   })
 })
 
