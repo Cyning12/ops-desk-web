@@ -149,10 +149,18 @@ function onResume(): void {
               <el-collapse-item v-if="message.subtasks.length" title="子任务过程" name="subtasks">
                 <div
                   v-for="(block, index) in message.subtasks"
-                  :key="`s-${index}`"
+                  :key="block.id ?? `s-${index}`"
                   class="chat-message__thinking-block"
+                  :class="{
+                    'chat-message__thinking-block--running': block.status === 'running',
+                  }"
                 >
                   <span class="chat-message__thinking-role">{{ block.role }}</span>
+                  <span
+                    v-if="block.status === 'running'"
+                    class="chat-message__thinking-status"
+                    >执行中</span
+                  >
                   <span class="chat-message__thinking-text">{{ block.content }}</span>
                 </div>
               </el-collapse-item>
@@ -372,10 +380,20 @@ function onResume(): void {
   margin-bottom: 6px;
 }
 
+.chat-message__thinking-block--running {
+  opacity: 1;
+}
+
 .chat-message__thinking-role {
   font-family: monospace;
   margin-right: 6px;
   opacity: 0.7;
+}
+
+.chat-message__thinking-status {
+  margin-right: 6px;
+  font-size: 11px;
+  opacity: 0.85;
 }
 
 .chat-message__thinking-text {

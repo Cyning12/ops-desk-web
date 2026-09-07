@@ -145,6 +145,107 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
     expect(subtasks).toHaveLength(1)
   })
 
+  it('§10.7：subtask.progress running→done 同 id 合并为单行，不双行堆叠', () => {
+    const chat = useChatStore()
+    chat.sendMessage('你好')
+
+    captured.onEvent?.({
+      event_type: 'subtask.progress',
+      agent_role: 'rag_subtask',
+      payload: { status: 'running', subtask_id: 'st-1', type: 'rag' },
+    })
+    expect(chat.messages[1].subtasks).toHaveLength(1)
+    expect(chat.messages[1].subtasks[0]).toMatchObject({
+      role: 'rag_subtask',
+      id: 'st-1',
+      status: 'running',
+    })
+    expect(chat.messages[1].subtasks[0].content).toContain('执行中')
+    expect(chat.messages[1].subtasks[0].content).toContain('rag')
+    expect(chat.messages[1].subtasks[0].content).toContain('st-1')
+
+    captured.onEvent?.({
+      event_type: 'subtask.progress',
+      agent_role: 'rag_subtask',
+      payload: { status: 'done', subtask_id: 'st-1', summary: '检索完成' },
+    })
+    expect(chat.messages[1].subtasks).toHaveLength(1)
+    expect(chat.messages[1].subtasks[0]).toEqual({
+      role: 'rag_subtask',
+      content: '检索完成',
+      id: 'st-1',
+      status: 'done',
+    })
+  })
+
+  it('§10.7：完成摘要仅含 id（无 status）时仍替换同 id 的 running 行', () => {
+    const chat = useChatStore()
+    chat.sendMessage('你好')
+
+    captured.onEvent?.({
+      event_type: 'subtask.progress',
+      agent_role: 'rag_subtask',
+      payload: { status: 'running', id: 'x9', type: 'rag' },
+    })
+    captured.onEvent?.({
+      event_type: 'subtask.progress',
+      agent_role: 'rag_subtask',
+      payload: { id: 'x9', summary: '完成摘要' },
+    })
+    expect(chat.messages[1].subtasks).toHaveLength(1)
+    expect(chat.messages[1].subtasks[0]).toMatchObject({
+      id: 'x9',
+      content: '完成摘要',
+    })
+    expect(chat.messages[1].subtasks[0].status).toBeUndefined()
+  })
+
+  it('§10.7：无 status 的旧完成帧仍 append；与 node.progress 不串台', () => {
+    const chat = useChatStore()
+    chat.sendMessage('你好')
+
+    captured.onEvent?.({
+      event_type: 'node.progress',
+      agent_role: 'intent',
+      payload: { summary: '意图识别完成' },
+    })
+    captured.onEvent?.({
+      event_type: 'subtask.progress',
+      agent_role: 'rag_subtask',
+      payload: { summary: '旧完成一' },
+    })
+    captured.onEvent?.({
+      event_type: 'subtask.progress',
+      agent_role: 'rag_subtask',
+      payload: { summary: '旧完成二' },
+    })
+    captured.onEvent?.({
+      event_type: 'node.progress',
+      agent_role: 'critic',
+      payload: { summary: '批评完成' },
+    })
+
+    const assistant = chat.messages[1]
+    expect(assistant.thinking).toEqual([
+      { role: 'intent', content: '意图识别完成' },
+      { role: 'critic', content: '批评完成' },
+    ])
+    expect(assistant.subtasks).toEqual([
+      { role: 'rag_subtask', content: '旧完成一' },
+      { role: 'rag_subtask', content: '旧完成二' },
+    ])
+    // running 帧进 subtasks，不得污染 thinking
+    captured.onEvent?.({
+      event_type: 'subtask.progress',
+      agent_role: 'info_extract',
+      payload: { status: 'running', subtask_id: 'e1', type: 'extract' },
+    })
+    expect(assistant.thinking).toHaveLength(2)
+    expect(assistant.subtasks).toHaveLength(3)
+    expect(assistant.subtasks[2].status).toBe('running')
+    expect(assistant.subtasks[2].id).toBe('e1')
+  })
+
   it('answer 整段语义：重复 answer 帧取最新（非增量拼接）', () => {
     const chat = useChatStore()
     chat.sendMessage('你好')
