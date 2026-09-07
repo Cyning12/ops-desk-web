@@ -50,6 +50,7 @@
 
 | 关账日 | task | freeze_id / 摘要 |
 |--------|------|------------------|
+| 2026-09-07 | [`task_web_lg_rag_sse_idle_subtask.md`](./task_web_lg_rag_sse_idle_subtask.md) | `lg-rag-sse-v1` · idle 120s + 子任务过程分区 · PR #36 MERGED |
 | 2026-08-31 | [`task_web_graph_l2_key_unify.md`](./task_web_graph_l2_key_unify.md) | 图谱 P2 收尾 · by_symbol 复合键统一（69 条目）· PR #35 MERGED · **P2 全清** |
 | 2026-08-31 | [`task_web_graph_l1_flow_pages.md`](./task_web_graph_l1_flow_pages.md) | 图谱 P1b · 7 页 flow 补全 + l2 7 域复合键 · PR #34 MERGED · **P1 全清** |
 | 2026-08-31 | [`task_web_graph_l1_flow_lg_rag.md`](./task_web_graph_l1_flow_lg_rag.md) | 图谱 P1a · 新建 10_flow_lg_rag + l2 lg_rag 域 indexes · PR #33 MERGED |
