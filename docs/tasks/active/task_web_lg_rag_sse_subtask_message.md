@@ -113,15 +113,15 @@ api 将为 `subtask.progress` 的 `running` / `step` / `done` 帧增加可选 **
 
 ## 验收标准
 
-- [ ] mock：`status=running` + 非空 `message` → 子任务过程区 content **等于**该 `message`（或文档钉死的极轻前缀规则，且测锁定）  
-- [ ] mock：`status=step` + 非空 `message` → 即时上屏该文案；同 `subtask_id` 后续 step **替换**不堆行  
-- [ ] mock：无 `message` 的 step/running → 本地兜底仍非空、不回归 progressive-reveal / #38  
-- [ ] mock：`status=done` + `subtask_result` 含长 `output` + 另有短 `message` → 渐显文本来自 **output**，终态 ≠ 仅短 message  
-- [ ] mock：`status=done` + 无可用 `output` + 非空 `message` → 展示该 `message`  
-- [ ] 与 `node.progress` / answer reveal **不串台**  
-- [ ] `pnpm lint` → `pnpm test` → `pnpm build` 绿；`./scripts/graph-compile.sh` 绿  
-- [ ] `npx --yes dsh-coding-kit task lint-wiki-delta --target .` 绿  
-- [ ] `10_flow_chat` 备注 + `volatile.md` 短注落盘  
+- [x] mock：`status=running` + 非空 `message` → 子任务过程区 content **等于**该 `message`（或文档钉死的极轻前缀规则，且测锁定）  
+- [x] mock：`status=step` + 非空 `message` → 即时上屏该文案；同 `subtask_id` 后续 step **替换**不堆行  
+- [x] mock：无 `message` 的 step/running → 本地兜底仍非空、不回归 progressive-reveal / #38  
+- [x] mock：`status=done` + `subtask_result` 含长 `output` + 另有短 `message` → 渐显文本来自 **output**，终态 ≠ 仅短 message  
+- [x] mock：`status=done` + 无可用 `output` + 非空 `message` → 展示该 `message`  
+- [x] 与 `node.progress` / answer reveal **不串台**  
+- [x] `pnpm lint` → `pnpm test` → `pnpm build` 绿；`./scripts/graph-compile.sh` 绿  
+- [x] `npx --yes dsh-coding-kit task lint-wiki-delta --target .` 绿  
+- [x] `10_flow_chat` 备注 + `volatile.md` 短注落盘  
 
 ---
 
@@ -168,7 +168,13 @@ api 将为 `subtask.progress` 的 `running` / `step` / `done` 帧增加可选 **
 
 ### 自检结论（执行者）
 
-（30/40 回填 · draft 阶段空）
+2026-09-08 · 30+40 交付（详见 [30 invoke](../../harness/invokes/by-task/web-lg-rag-sse-subtask-message/invoke_20260908_30_web-lg-rag-sse-subtask-message.md) / [40 invoke](../../harness/invokes/by-task/web-lg-rag-sse-subtask-message/invoke_20260908_40_web-lg-rag-sse-subtask-message.md)）：
+
+- **实现**：`src/stores/chat.ts` 新增纯函数 `extractPayloadMessage`（空串视为缺省）；running 非空 message **原样零前缀**（R1-N3 去掉「执行中 ·」叠句）；step 原样即时上屏、同 `subtask_id` 合并键替换不堆行；done 有 `output` 仍 progressive-reveal 渐显（message 不覆盖），无 `output` 时 message **显式优先**于 summary/content（R1-N1/N2）再降级 `extractSubtaskDoneText`；`node.progress` 的 `summarizeProgress` 零改动。
+- **测试**：`tests/chat-store.spec.ts` 新增 describe 12 用例（含 N1/N2 区分性断言 ×3 · N3 零前缀 · N4 不回归 lock-in 命名/注释标注）；全套 22 files / 177 tests 绿。
+- **质量门**（真跑 exit）：verify 0 · lint 0 · test 0 · build 0 · graph-compile 0 · lint-wiki-delta 0。
+- **验收**：9/9 勾选（逐条对照见 40 invoke）。
+- **残余**：api `message` 合入前仅靠合成帧验收，实流联调后置；「无 status 旧完成帧」路径未动（00 定夺仅钉三态）。
 
 ### KPI（00）
 
@@ -187,3 +193,4 @@ api 将为 `subtask.progress` 的 `running` / `step` / `done` 帧增加可选 **
 | 2026-09-08 | **10-task**：据 api `lg-rag-sse-subtask-message` 生成 web 下游草稿 · 闸 pending |
 | 2026-09-08 | **00**：维护者令统筹并授权签收后续文档；代签 HG-TASK-DRAFT / HG-GRAPH-MODULES；前置 progressive-reveal CLOSE（#40）；HG-AUDIT-R1 待 20 R1 落盘后代签 |
 | 2026-09-08 | **20 R1** pass-with-notes（0 阻塞 · N1–N5）→ N1/N2/N3 收入定夺表（message 显式优先 · running 零前缀钉死）· N5 死链修 · **00 代签 HG-AUDIT-R1** |
+| 2026-09-08 | **30+40**：extractPayloadMessage + 三态 message 显式优先（running 零前缀 · done/output 边界）· Vitest +12（177 全绿）· graph/wiki 落盘 · 验收 9/9 · 六门 exit 全 0 |

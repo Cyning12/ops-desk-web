@@ -1192,4 +1192,199 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       expect(chat.messages[2].content).toBe(long)
     })
   })
+
+  // task web-lg-rag-sse-subtask-message：subtask.progress 三态优先消费 payload.message
+  //（R1-N1/N2 message 显式优先于 summary/content · R1-N3 running 零前缀 · N4 无 message 不回归 lock-in）
+  describe('subtask.progress · payload.message 优先消费（§10.7 message）', () => {
+    function msgFrame(seq: number, payload: Record<string, unknown>, agentRole = 'rag_subtask') {
+      return {
+        event_type: 'subtask.progress',
+        run_id: 'r-1',
+        seq,
+        cursor: 'r-1:' + seq,
+        agent_role: agentRole,
+        payload,
+      }
+    }
+
+    beforeEach(() => {
+      vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('running + 非空 message → 原样零前缀（R1-N3 lock-in：不含「执行中 ·」叠句）', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(msgFrame(1, { status: 'running', subtask_id: 'st-1', message: '开始检索子任务：Kimi Code' }))
+      const block = chat.messages[1].subtasks[0]
+      expect(block.status).toBe('running')
+      expect(block.content).toBe('开始检索子任务：Kimi Code')
+      expect(block.content).not.toContain('执行中')
+    })
+
+    it('running：message 与 summary 同帧时 message 胜出（R1-N1/N2 区分性断言）', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(msgFrame(1, {
+        status: 'running',
+        subtask_id: 'st-1',
+        message: '开始检索子任务：foo',
+        summary: '不该出现的 summary',
+        content: '不该出现的 content',
+      }))
+      expect(chat.messages[1].subtasks[0].content).toBe('开始检索子任务：foo')
+    })
+
+    it('running 无 message（N4 不回归 lock-in）：本地兜底仍带「执行中 ·」前缀', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(msgFrame(1, { status: 'running', subtask_id: 'st-1', type: 'rag' }))
+      const block = chat.messages[1].subtasks[0]
+      expect(block.content).toContain('执行中 · rag · st-1')
+    })
+
+    it('running 空串 message 视为缺省：走本地兜底', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(msgFrame(1, { status: 'running', subtask_id: 'st-1', type: 'rag', message: '' }))
+      const block = chat.messages[1].subtasks[0]
+      expect(block.content).toContain('执行中')
+    })
+
+    it('step + 非空 message → 原样即时上屏；同 subtask_id 后续帧替换不堆行（沿用 #38 合并键）', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(msgFrame(1, { status: 'step', subtask_id: 'st-1', message: '开始检索…' }))
+      expect(chat.messages[1].subtasks).toHaveLength(1)
+      expect(chat.messages[1].subtasks[0].content).toBe('开始检索…')
+      expect(chat.messages[1].subtasks[0].status).toBe('step')
+
+      captured.onEvent?.(msgFrame(2, { status: 'step', subtask_id: 'st-1', message: '检索完成，命中 3 条' }))
+      expect(chat.messages[1].subtasks).toHaveLength(1)
+      expect(chat.messages[1].subtasks[0].content).toBe('检索完成，命中 3 条')
+    })
+
+    it('step：message 与 summary 同帧时 message 胜出（R1-N1/N2 区分性断言）', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(msgFrame(1, {
+        status: 'step',
+        subtask_id: 'st-1',
+        message: '评估检索结果…',
+        summary: '不该出现的 summary',
+      }))
+      expect(chat.messages[1].subtasks[0].content).toBe('评估检索结果…')
+    })
+
+    it('step 无 message（N4 不回归 lock-in）：本地 step 拼装兜底仍可读', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(msgFrame(1, { status: 'step', subtask_id: 'st-1', step: 'retrieve', action: 'start' }))
+      expect(chat.messages[1].subtasks[0].content).toBe('retrieve · start')
+    })
+
+    it('done + 长 output + 短 message → 仍渐显 output；终态 == output ≠ message（message 不得覆盖/截断/替代）', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      const output = '这是一段较长的子任务输出结果，必须走打字机渐显，短 message 不得替代。'
+      captured.onEvent?.(msgFrame(1, {
+        status: 'done',
+        subtask_id: 'st-1',
+        message: '子任务完成',
+        subtask_result: JSON.stringify({ id: 'st-1', output, hits: 3 }),
+      }))
+      const block = chat.messages[1].subtasks[0]
+      expect(block.status).toBe('done')
+      expect(block.revealing).toBe(true)
+      expect(block.content).toBe('')
+
+      vi.advanceTimersByTime(120_000)
+      expect(block.content).toBe(output)
+      expect(block.content).not.toBe('子任务完成')
+      expect(block.revealing).toBe(false)
+    })
+
+    it('done + 无 output + 非空 message → 即时展示 message 为完成摘要（非 reveal）', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(msgFrame(1, {
+        status: 'done',
+        subtask_id: 'st-1',
+        message: '检索完成，命中 3 条',
+        subtask_result: '{"id":"st-1","hits":3}',
+      }))
+      const block = chat.messages[1].subtasks[0]
+      expect(block.status).toBe('done')
+      expect(block.content).toBe('检索完成，命中 3 条')
+      expect(block.revealing).toBeUndefined()
+      // 后续 tick 不得改写（非打字机路径）
+      vi.advanceTimersByTime(120_000)
+      expect(block.content).toBe('检索完成，命中 3 条')
+    })
+
+    it('done 无 output：message 与 summary 同帧时 message 胜出（R1-N1/N2 区分性断言）', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(msgFrame(1, {
+        status: 'done',
+        subtask_id: 'st-1',
+        message: '子任务完成：检索到 3 条',
+        summary: '不该出现的 summary',
+        content: '不该出现的 content',
+      }))
+      expect(chat.messages[1].subtasks[0].content).toBe('子任务完成：检索到 3 条')
+    })
+
+    it('done 无 output 无 message（N4 不回归 lock-in）：降级 extractSubtaskDoneText，禁 JSON dump', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(msgFrame(1, {
+        status: 'done',
+        subtask_id: 'st-1',
+        type: 'rag',
+        subtask_result: '{"id":"st-1","hits":1}',
+      }))
+      const block = chat.messages[1].subtasks[0]
+      expect(block.content).toContain('已完成')
+      expect(block.content).toContain('rag')
+      expect(block.content).not.toMatch(/^s*{/)
+    })
+
+    it('message 帧与 answer / node.progress 不串台：各归各位', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.({
+        event_type: 'node.progress',
+        run_id: 'r-1',
+        seq: 1,
+        cursor: 'r-1:1',
+        agent_role: 'intent',
+        payload: { message: '意图识别 message', summary: '意图识别 summary' },
+      })
+      captured.onEvent?.(msgFrame(2, { status: 'step', subtask_id: 'st-1', message: '开始检索…' }))
+      captured.onEvent?.(msgFrame(3, { status: 'done', subtask_id: 'st-1', message: '检索完成，命中 3 条' }))
+      captured.onEvent?.({
+        event_type: 'answer',
+        run_id: 'r-1',
+        seq: 4,
+        cursor: 'r-1:4',
+        agent_role: 'aggregator',
+        payload: { delta: '答' },
+      })
+
+      const assistant = chat.messages[1]
+      // node.progress 走 summarizeProgress（summary 优先于 message · 本 task 不改其顺序）
+      expect(assistant.thinking).toEqual([{ role: 'intent', content: '意图识别 summary' }])
+      // subtask 路径 message 显式优先、同 id 合并为单行
+      expect(assistant.subtasks).toHaveLength(1)
+      expect(assistant.subtasks[0].content).toBe('检索完成，命中 3 条')
+      // answer delta 入 reveal 队列未出队，不被 message 污染
+      expect(assistant.content).toBe('')
+      vi.advanceTimersByTime(120_000)
+      expect(assistant.content).toBe('答')
+    })
+  })
 })
