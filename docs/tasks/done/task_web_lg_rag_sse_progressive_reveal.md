@@ -1,6 +1,6 @@
 # Task：Web · Chat 渐进揭示（subtask 输出打字机 + answer 突发帧匀速）
 
-> **状态**：active（2026-09-08 · 维护者签收草稿 · 00 统筹 · **授权后续文档签收**）  
+> **状态**：completed（2026-09-08 CLOSE · PR [#39](https://github.com/Cyning12/ops-desk-web/pull/39) MERGED · 归档 done）  
 > **类型**：Chat UI / SSE 消费体验  
 > **上游**：api `05` §4.2 / §10.4 / §10.6 / §10.7 · 实流样本（run `281b9960…` · 含 `status=step` + `subtask_result` + answer delta 突发）  
 > **前置**：[`task_web_lg_rag_sse_subtask_live`](../done/task_web_lg_rag_sse_subtask_live.md) CLOSE（#38）· T5 answer delta（#28）· idle 分区（#36）  
@@ -34,7 +34,7 @@
 | **experience_capture** | `recommended` |
 | **kpi_aggregator** | `CLOSE` |
 | **close_pr_policy** | `required` |
-| **related_pr** | （待开 · 勿 auto-merge） |
+| **related_pr** | `#39` |
 
 ### 人工闸
 
@@ -241,13 +241,15 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 
 ### KPI（00）
 
-（`kpi_aggregator: CLOSE` · 关账回溯填写）
+Task_KPI%: 100 · D1 范围钉死（客户端 reveal 队列 · 零新 event_type/freeze）· D2 闸齐（HG-TASK-DRAFT / HG-AUDIT-R1 / HG-GRAPH-MODULES 00 代签落盘 · R1 pass-with-notes N1–N5 全收入）· D3 过程档齐（invoke 00/10/30/40/50 + R1 审查文）· D4 图谱 `10_flow_chat` 备注随 #39 · D5 关账补登 2026-09-08（Hub + 修订记录）
 
 ---
 
 ### 经验总结
 
-（关账时按 `experience_capture: recommended` 回填）
+1. **SoT 双缓冲是客户端渐显的正确落点**：网络态 `received` 与展示态分离后，「同 tick 突发」「done 大包」「终帧刷齐」三类问题共用一条 reveal 队列管线收敛，测试只需断言 `shownLen ≤ received.length`。
+2. **速率常量锁死 + fake timers**：`REVEAL_CHARS_PER_SECOND=60` / replay ×4 写成可导入常量，Vitest 才能稳定断言「不瞬满且单调增」。
+3. **终帧语义优先级**：T5 `content+final` 替换语义必须压过 reveal 队列（取消未出完队列），否则终稿会被渐显队列拖尾污染。
 
 ---
 
@@ -259,3 +261,16 @@ npx dsh-coding-kit verify --target . --task docs/tasks/active/task_web_lg_rag_ss
 | 2026-09-08 | 维护者签收草稿 · 00 统筹 · 授权后续文档签收 · HG-TASK-DRAFT=approved |
 | 2026-09-08 | 10 审订措辞 · 20 R1 pass-with-notes · **00 代签 HG-AUDIT-R1** · N1–N5 收入定夺 |
 | 2026-09-08 | 10-task：收紧验收/failure_paths（SoT 分离 · 禁止发明未达文本 · 入队空则停前缀）；确认 `invoke_retention_profile=default` / `required_invoke_hats=10,30,40`；定夺表未改 |
+| 2026-09-08 | **00 CLOSE**：PR [#39](https://github.com/Cyning12/ops-desk-web/pull/39) MERGED；验收 10/10 全绿；`task close --yes` PASS 归档 done/ · Hub 补登 |
+
+---
+
+## 关账（CLOSE）
+
+| 项 | 值 |
+|---|---|
+| PR | [#39](https://github.com/Cyning12/ops-desk-web/pull/39) MERGED（2026-09-08） |
+| 验收 | 10/10 全绿（见自检结论 · 165 tests） |
+| 归档 | `docs/tasks/done/task_web_lg_rag_sse_progressive_reveal.md` |
+| Hub | 2026-09-08 补登 |
+| 下一棒 | `web-lg-rag-sse-subtask-message`（消费 api `subtask.progress.message`） |

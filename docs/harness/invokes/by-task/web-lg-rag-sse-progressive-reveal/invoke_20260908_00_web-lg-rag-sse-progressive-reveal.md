@@ -35,3 +35,15 @@
 | N1–N5 | 收入 task 00 定夺表 |
 | 下一棒 | **30** · Prompt：`PROMPT_00_to_30.md` |
 | 00 亲自 30 | 仍 **未授权** |
+
+---
+
+## 续记 · 2026-09-08（CLOSE）
+
+| 项 | 结果 |
+|---|---|
+| PR | [#39](https://github.com/Cyning12/ops-desk-web/pull/39) MERGED |
+| 50 | pass（invoke_20260908_50 留档） |
+| task close | `--yes` PASS → 归档 `done/` |
+| Hub | `done/README.md` web 表 + 修订记录补登 |
+| 下一棒 | `web-lg-rag-sse-subtask-message`（消费 api `message`） |
