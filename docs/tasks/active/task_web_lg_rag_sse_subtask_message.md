@@ -3,7 +3,7 @@
 > **状态**：active（2026-09-08 · 维护者授权 00 统筹 · 00 代签闸）  
 > **类型**：Chat UI / SSE 消费  
 > **上游**：api [`05_lg_rag_transport_and_session_plan_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) **§10.7**（拟增补可选 `message`）· api task [`lg-rag-sse-subtask-message`](../../../ops-desk-api/docs/tasks/active/task_lg_rag_sse_subtask_message.md)  
-> **前置**：[`task_web_lg_rag_sse_progressive_reveal`](./task_web_lg_rag_sse_progressive_reveal.md)（step 即时 / done→output 渐显）· api `lg-rag-sse-subtask-message` **合入或可 mock 带 `message` 的帧**  
+> **前置**：[`task_web_lg_rag_sse_progressive_reveal`](../done/task_web_lg_rag_sse_progressive_reveal.md)（step 即时 / done→output 渐显 · CLOSE #39）· api `lg-rag-sse-subtask-message` **合入或可 mock 带 `message` 的帧**  
 > **分支**：`task/web-lg-rag-sse-subtask-message`（实现时切出；本草稿可先落盘）  
 > **帽子**：10 起草 → 人签闸 → 20（可选）→ 30+40  
 > **授权**：维护者令「身为 00 统筹 api 和 web 的任务 task_lg_rag_sse_subtask_message · 授权签收后续文档，直至完成并 PR」（含闸表 / 过程 invoke·reviews 代签；**不含**未明示的 00 亲自 30 改码）  
@@ -42,7 +42,7 @@
 | human_gate_id | status | blocks_hats | 说明 |
 |---|---|---|---|
 | HG-TASK-DRAFT | approved | 22-R1 | 2026-09-08 · **00 代签 · 维护者授权签收后续文档** |
-| HG-AUDIT-R1 | **pending** | 30 | 待 HG-TASK-DRAFT 通过后签发；**未签不得 30 改码** |
+| HG-AUDIT-R1 | **approved** | 30 | 2026-09-08 · **00 代签 · 维护者授权签收后续文档** · R1 [pass-with-notes](../../harness/reviews/task_web_lg_rag_sse_subtask_message_audit_R1_20260908.md) · N1–N5 收入定夺（N3 running 零前缀钉死 · N1/N2 message 显式优先 · N5 死链已修） |
 | HG-GRAPH-MODULES | approved | — | 不新增一级模块 · **00 代签**（仅 `10_flow_chat` 备注） |
 
 ---
@@ -68,11 +68,12 @@ api 将为 `subtask.progress` 的 `running` / `step` / `done` 帧增加可选 **
 |---|---|
 | **slug** | `web-lg-rag-sse-subtask-message` |
 | **字段** | 消费 `payload.message`：可选 `string`；空串视为缺省（与 api「禁止空串冒充有内容」对齐） |
-| **running** | 非空 `message` → **原样**写入子任务过程行（即时）；**禁止**再强制包一层「执行中 ·」若会与成句重复；无 `message` → 现有 `formatRunningSubtaskContent` 兜底 |
+| **running** | 非空 `message` → **原样**写入子任务过程行（即时 · **零前缀**，R1-N3 钉死：不再包「执行中 ·」）；无 `message` → 现有 `formatRunningSubtaskContent` 兜底 |
 | **step** | 非空 `message` → **原样**即时上屏（无打字机）；同 `subtask_id` 合并键沿用 #38 / progressive-reveal；无 `message` → 现有 `formatStepSubtaskContent` 兜底 |
 | **done + 有 output** | **仍**解析 `subtask_result.output` → progressive-reveal 渐显；短 `message` **不得**覆盖 / 截断 / 替代长 `output` |
-| **done + 无 output** | 优先非空 `message` 作完成摘要；再降级现有 `extractSubtaskDoneText` 可读摘要；**禁止** JSON dump |
+| **done + 无 output** | 非空 `message` **显式优先**作完成摘要（R1-N1：现码虽经 DIRECT_KEYS 兜底，本波钉死优先级顺序并测锁定「message 与 summary/content 同帧时 message 胜出」）；再降级现有 `extractSubtaskDoneText` 可读摘要；**禁止** JSON dump |
 | **本地词典** | 降级为 **fallback only**；本波不要求删光拼装逻辑，但验收测须证明有 `message` 时不走「仅键名拼装」路径 |
+| **直出优先级** | subtask.progress 三态：非空 `message` **显式优先**于 `summary`/`content`（R1-N1/N2：现码 `PROGRESS_DIRECT_KEYS` 顺序 summary→content→message，须对 subtask 路径提 `message` 为首键或特判；**不得**影响 `node.progress` 的 `summarizeProgress` 行为） |
 | **兼容** | 旧 api / 无 `message` 帧：行为与 progressive-reveal CLOSE 后一致，不回归 |
 | **freeze** | `lg-rag-sse-v1`；零新 `event_type` |
 | **模块** | 不新增一级模块；`01_modules.md` 零 diff |
@@ -128,7 +129,7 @@ api 将为 `subtask.progress` 的 `running` / `step` / `done` 帧增加可选 **
 
 1. `AGENTS.md` · 本 task 00 定夺表  
 2. api task [`lg-rag-sse-subtask-message`](../../../ops-desk-api/docs/tasks/active/task_lg_rag_sse_subtask_message.md) · 05 §10.7（`message` 落盘后）  
-3. [`task_web_lg_rag_sse_progressive_reveal`](./task_web_lg_rag_sse_progressive_reveal.md)（done→output · step 即时）  
+3. [`task_web_lg_rag_sse_progressive_reveal`](../done/task_web_lg_rag_sse_progressive_reveal.md)（done→output · step 即时）  
 4. [`task_web_lg_rag_sse_subtask_live`](../done/task_web_lg_rag_sse_subtask_live.md)（同 id 合并）  
 5. `src/stores/chat.ts`（`formatRunningSubtaskContent` / `formatStepSubtaskContent` / `extractSubtaskDoneText` / `processFrame`）· `tests/chat-store.spec.ts`  
 
@@ -185,3 +186,4 @@ api 将为 `subtask.progress` 的 `running` / `step` / `done` 帧增加可选 **
 |---|---|
 | 2026-09-08 | **10-task**：据 api `lg-rag-sse-subtask-message` 生成 web 下游草稿 · 闸 pending |
 | 2026-09-08 | **00**：维护者令统筹并授权签收后续文档；代签 HG-TASK-DRAFT / HG-GRAPH-MODULES；前置 progressive-reveal CLOSE（#40）；HG-AUDIT-R1 待 20 R1 落盘后代签 |
+| 2026-09-08 | **20 R1** pass-with-notes（0 阻塞 · N1–N5）→ N1/N2/N3 收入定夺表（message 显式优先 · running 零前缀钉死）· N5 死链修 · **00 代签 HG-AUDIT-R1** |
