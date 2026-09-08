@@ -1,5 +1,5 @@
 import { createPinia, setActivePinia } from 'pinia'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ApiError } from '../src/api/http'
 import type { LgRagSseCallbacks } from '../src/composables/useLgRagSse'
@@ -21,6 +21,12 @@ import {
   LG_RAG_THREAD_ID_STORAGE_KEY,
   useChatStore,
 } from '../src/stores/chat'
+import {
+  REVEAL_CHARS_PER_SECOND,
+  REVEAL_CHARS_PER_TICK,
+  REVEAL_REPLAY_SPEED_MULTIPLIER,
+  REVEAL_TICK_MS,
+} from '../src/composables/useRevealQueue'
 
 const fakeSession = {
   id: 's-1',
@@ -849,16 +855,32 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       }
     }
 
+    /** progressive-reveal：推进足够 tick 刷齐已收缓冲（兼容 T5 同步断言） */
+    function flushReveal() {
+      vi.advanceTimersByTime(120_000)
+    }
+
+    beforeEach(() => {
+      vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
     it('delta 帧按 seq 有序追加（中间态断言）；终帧 content+final 全量替换，拼接==终帧 content（非叠加）', () => {
       const chat = useChatStore()
       chat.sendMessage('你好')
       captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
 
       captured.onEvent?.(seqFrame(2, 'answer', { delta: '你' }))
+      flushReveal()
       expect(chat.messages[1].content).toBe('你')
       captured.onEvent?.(seqFrame(3, 'answer', { delta: '好' }))
+      flushReveal()
       expect(chat.messages[1].content).toBe('你好')
       captured.onEvent?.(seqFrame(4, 'answer', { delta: '，世界' }))
+      flushReveal()
       expect(chat.messages[1].content).toBe('你好，世界')
 
       // 终帧：全量替换（严禁 append 到 delta 拼接结果之后 —— §10.4 常见坑）
@@ -875,6 +897,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
       captured.onEvent?.(seqFrame(2, 'answer', { delta: 'AB' }))
       captured.onEvent?.(seqFrame(3, 'answer', { delta: 'CD' }))
+      flushReveal()
       expect(chat.messages[1].content).toBe('ABCD')
 
       captured.onEvent?.(seqFrame(4, 'answer', { content: 'ABCD（修订终稿）', final: true }))
@@ -887,6 +910,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       chat.sendMessage('你好')
       captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
       captured.onEvent?.(seqFrame(2, 'answer', { delta: '碎' }))
+      flushReveal()
       captured.onEvent?.(seqFrame(3, 'answer', { content: '终稿', delta: '不该出现' }))
 
       expect(chat.messages[1].content).toBe('终稿')
@@ -902,6 +926,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
       captured.onEvent?.(seqFrame(2, 'answer', { delta: '完' }))
       captured.onEvent?.(seqFrame(3, 'done', { latency_ms: 1, model: 'm' }, 'system'))
+      expect(chat.messages[1].content).toBe('完') // done 刷齐已收
       captured.onEvent?.(seqFrame(4, 'answer', { delta: '迟到' }))
       expect(chat.messages[1].content).toBe('完')
 
@@ -910,6 +935,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       captured.onEvent?.({ ...seqFrame(1, 'run.start', { run_id: 'r-2', thread_id: 't-1' }, 'system'), run_id: 'r-2', cursor: 'r-2:1' })
       captured.onEvent?.({ ...seqFrame(2, 'answer', { delta: '半' }), run_id: 'r-2', cursor: 'r-2:2' })
       captured.onEvent?.({ ...seqFrame(3, 'error', { stage: 'supervisor', message: 'boom', retryable: false }, 'system'), run_id: 'r-2', cursor: 'r-2:3' })
+      expect(chat.messages[3].content).toBe('半') // error 刷齐
       captured.onEvent?.({ ...seqFrame(4, 'answer', { content: '迟到整段' }), run_id: 'r-2', cursor: 'r-2:4' })
       expect(chat.messages[3].content).toBe('半')
 
@@ -918,6 +944,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       captured.onEvent?.({ ...seqFrame(1, 'run.start', { run_id: 'r-3', thread_id: 't-1' }, 'system'), run_id: 'r-3', cursor: 'r-3:1' })
       captured.onEvent?.({ ...seqFrame(2, 'answer', { delta: '停' }), run_id: 'r-3', cursor: 'r-3:2' })
       chat.stopStreaming()
+      expect(chat.messages[5].content).toBe('停') // abort 刷齐
       captured.onEvent?.({ ...seqFrame(3, 'answer', { delta: '迟到' }), run_id: 'r-3', cursor: 'r-3:3' })
       expect(chat.messages[5].content).toBe('停')
     })
@@ -959,7 +986,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       captured.onEvent?.(seqFrame(2, 'answer', { delta: '前半' }))
       captured.onEvent?.(seqFrame(3, 'answer', { delta: '段一' }))
       captured.onError?.({ kind: 'network', status: null, message: 'Failed to fetch' })
-      expect(chat.messages[1].content).toBe('前半段一')
+      expect(chat.messages[1].content).toBe('前半段一') // 传输错误刷齐
       expect(chat.canResume).toBe(true)
 
       chat.resumeFromCursor()
@@ -967,8 +994,10 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
 
       // replay 补发剩余 delta + 终帧 + done（帧形状同 live）
       replayCaptured.onEvent?.(seqFrame(4, 'answer', { delta: '段二' }))
+      flushReveal()
       expect(chat.messages[2].content).toBe('段二') // 新消息承接（T4 R1-N5）
       replayCaptured.onEvent?.(seqFrame(5, 'answer', { delta: '段三' }))
+      flushReveal()
       expect(chat.messages[2].content).toBe('段二段三')
       replayCaptured.onEvent?.(seqFrame(6, 'answer', { content: '前半段一段二段三', final: true }))
       replayCaptured.onEvent?.(seqFrame(7, 'done', { latency_ms: 1, model: 'm' }, 'system'))
@@ -977,6 +1006,190 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       expect(chat.messages[1].content).toBe('前半段一') // 原消息不动（视觉割裂边界 R1-N2：终帧到达即自愈）
       expect(chat.activeRun).toBeNull()
       expect(chat.streaming).toBe(false)
+    })
+  })
+
+  describe('progressive-reveal · 客户端 reveal 队列', () => {
+    function seqFrame(seq: number, eventType: string, payload: Record<string, unknown>, agentRole = 'aggregator') {
+      return {
+        event_type: eventType,
+        run_id: 'r-1',
+        seq,
+        cursor: 'r-1:' + seq,
+        agent_role: agentRole,
+        payload,
+      }
+    }
+
+    beforeEach(() => {
+      vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('速率常量锁死：60 字/秒 · 每 tick 3 字（R1-N1）', () => {
+      expect(REVEAL_CHARS_PER_SECOND).toBe(60)
+      expect(REVEAL_TICK_MS).toBe(50)
+      expect(REVEAL_CHARS_PER_TICK).toBe(3)
+      expect(REVEAL_REPLAY_SPEED_MULTIPLIER).toBeGreaterThanOrEqual(4)
+    })
+
+    it('同 tick ≥5 条 answer delta：展示不瞬满，随后单调增至全文', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
+
+      const chunks = ['甲', '乙丙', '丁', '戊己庚', '辛壬']
+      const full = chunks.join('')
+      chunks.forEach((delta, i) => {
+        captured.onEvent?.(seqFrame(2 + i, 'answer', { delta }))
+      })
+
+      // 同 tick 入队后尚未出队 → 不瞬满
+      expect(chat.messages[1].content.length).toBe(0)
+      expect(chat.messages[1].content.length).toBeLessThan(full.length)
+
+      const lengths: number[] = [0]
+      for (let i = 0; i < 40; i++) {
+        vi.advanceTimersByTime(REVEAL_TICK_MS)
+        const len = chat.messages[1].content.length
+        lengths.push(len)
+        if (len >= full.length) break
+      }
+
+      // 单调非降
+      for (let i = 1; i < lengths.length; i++) {
+        expect(lengths[i]).toBeGreaterThanOrEqual(lengths[i - 1])
+      }
+      // 曾出现严格中间态
+      expect(lengths.some((n) => n > 0 && n < full.length)).toBe(true)
+      expect(chat.messages[1].content).toBe(full)
+      // SoT：展示前缀 ≤ 已收（此处相等）
+      expect(chat.messages[1].content.length).toBe(full.length)
+    })
+
+    it('subtask done 解析 output 渐显；终态 == output（禁 JSON dump）', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      const output = '这是一段较长的子任务输出结果，应当打字机渐显而不是整包 JSON。'
+      const resultJson = JSON.stringify({ id: 'st-1', output, hits: 3 })
+
+      captured.onEvent?.({
+        event_type: 'subtask.progress',
+        agent_role: 'rag_subtask',
+        payload: {
+          status: 'done',
+          subtask_id: 'st-1',
+          subtask_result: resultJson,
+        },
+      })
+
+      const block = chat.messages[1].subtasks[0]
+      expect(block.status).toBe('done')
+      expect(block.content.length).toBe(0)
+      expect(block.content).not.toContain('hits')
+      expect(block.content).not.toContain('{')
+
+      vi.advanceTimersByTime(REVEAL_TICK_MS)
+      expect(block.content.length).toBeGreaterThan(0)
+      expect(block.content.length).toBeLessThan(output.length)
+      expect(block.revealing).toBe(true)
+
+      vi.advanceTimersByTime(120_000)
+      expect(block.content).toBe(output)
+      expect(block.revealing).toBe(false)
+    })
+
+    it('subtask_result 无 output：降级可读摘要，不 dump JSON', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.({
+        event_type: 'subtask.progress',
+        agent_role: 'rag_subtask',
+        payload: {
+          status: 'done',
+          subtask_id: 'st-2',
+          type: 'rag',
+          subtask_result: '{"id":"st-2","hits":1}',
+        },
+      })
+      const block = chat.messages[1].subtasks[0]
+      expect(block.content).toContain('已完成')
+      expect(block.content).toContain('rag')
+      expect(block.content).not.toContain('hits')
+      expect(block.content).not.toMatch(/^\s*\{/)
+    })
+
+    it('status=step 即时可读、同 id 合并、与 answer 不串台', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
+      captured.onEvent?.(
+        seqFrame(2, 'subtask.progress', { status: 'running', subtask_id: 'st-1', type: 'rag' }, 'rag_subtask'),
+      )
+      captured.onEvent?.(
+        seqFrame(3, 'subtask.progress', { status: 'step', subtask_id: 'st-1', step: 'retrieve', action: 'start' }, 'rag_subtask'),
+      )
+      expect(chat.messages[1].subtasks).toHaveLength(1)
+      expect(chat.messages[1].subtasks[0].content).toBe('retrieve · start')
+      expect(chat.messages[1].subtasks[0].status).toBe('step')
+
+      captured.onEvent?.(
+        seqFrame(4, 'subtask.progress', { status: 'step', subtask_id: 'st-1', step: 'grade', kept: 2 }, 'rag_subtask'),
+      )
+      expect(chat.messages[1].subtasks).toHaveLength(1)
+      expect(chat.messages[1].subtasks[0].content).toBe('grade · kept=2')
+
+      captured.onEvent?.(seqFrame(5, 'answer', { delta: '答' }))
+      expect(chat.messages[1].content).toBe('') // answer 未出队
+      expect(chat.messages[1].subtasks[0].content).toBe('grade · kept=2') // step 不串台
+      expect(chat.messages[1].thinking).toHaveLength(0)
+    })
+
+    it('终帧 content+final 立即 == 终稿并清空队列', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
+      captured.onEvent?.(seqFrame(2, 'answer', { delta: 'ABCDEFGHIJ' }))
+      expect(chat.messages[1].content.length).toBe(0)
+      captured.onEvent?.(seqFrame(3, 'answer', { content: '终稿全文', final: true }))
+      expect(chat.messages[1].content).toBe('终稿全文')
+      // 后续 tick 不得再追加旧缓冲
+      vi.advanceTimersByTime(REVEAL_TICK_MS * 10)
+      expect(chat.messages[1].content).toBe('终稿全文')
+    })
+
+    it('abort 刷齐已收缓冲且无残留定时器追加', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
+      captured.onEvent?.(seqFrame(2, 'answer', { delta: '一二三四五六七八九十' }))
+      expect(chat.messages[1].content.length).toBe(0)
+      chat.stopStreaming()
+      expect(chat.messages[1].content).toBe('一二三四五六七八九十')
+      const frozen = chat.messages[1].content
+      vi.advanceTimersByTime(120_000)
+      expect(chat.messages[1].content).toBe(frozen)
+    })
+
+    it('replay 默认 ≥4× live 加速出队', () => {
+      const chat = useChatStore()
+      chat.sendMessage('你好')
+      captured.onEvent?.(seqFrame(1, 'run.start', { run_id: 'r-1', thread_id: 't-1' }, 'system'))
+      // 造一段未完成 run 后断网
+      captured.onEvent?.(seqFrame(2, 'answer', { delta: 'x' }))
+      captured.onError?.({ kind: 'network', status: null, message: 'Failed to fetch' })
+
+      chat.resumeFromCursor()
+      const long = '字'.repeat(24) // live：3 字/tick → 8 ticks；4× → 12 字/tick → 2 ticks
+      replayCaptured.onEvent?.(seqFrame(3, 'answer', { delta: long }))
+
+      vi.advanceTimersByTime(REVEAL_TICK_MS) // 1 tick @ 4× → 12 字
+      expect(chat.messages[2].content.length).toBe(12)
+      vi.advanceTimersByTime(REVEAL_TICK_MS) // 2 ticks → 24 字满
+      expect(chat.messages[2].content).toBe(long)
     })
   })
 })

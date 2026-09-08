@@ -161,7 +161,13 @@ function onResume(): void {
                     class="chat-message__thinking-status"
                     >执行中</span
                   >
-                  <span class="chat-message__thinking-text">{{ block.content }}</span>
+                  <span
+                    class="chat-message__thinking-text"
+                    :class="{
+                      'chat-message__thinking-text--revealing': block.revealing,
+                    }"
+                    >{{ block.content }}</span
+                  >
                 </div>
               </el-collapse-item>
             </el-collapse>
@@ -399,6 +405,14 @@ function onResume(): void {
 .chat-message__thinking-text {
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+/* progressive-reveal：子任务 output 渐显光标（沿用 T5 思路） */
+.chat-message__thinking-text--revealing::after {
+  content: '▍';
+  margin-left: 1px;
+  opacity: 0.55;
+  animation: chat-cursor-blink 1s steps(1) infinite;
 }
 
 .chat-page__hint {
