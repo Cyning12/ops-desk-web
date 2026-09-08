@@ -1,6 +1,6 @@
 # Task：Web · Chat 实流零渲染修复（pushMessage 返回原生对象 → Vue 响应式被绕过）
 
-> **状态**：active（2026-09-08 · 维护者实流点验上报 · 00 统筹）  
+> **状态**：completed（2026-09-08 CLOSE · PR [#43](https://github.com/Cyning12/ops-desk-web/pull/43) MERGED · 归档 done）  
 > **类型**：紧急修复 / 响应式缺陷  
 > **上游**：维护者实流反馈「EventStream 逐帧到达而 UI 不变：思考过程一直『处理中』· 无打字机」  
 > **分支**：`fix/web-chat-live-reactivity`  
@@ -22,14 +22,14 @@
 | **code_quality_bar** | `strict` |
 | **freeze_id** | `lg-rag-sse-v1`（零契约变更） |
 | **graph_change_layer** | `G-L1` |
-| **graph_delta** | 无（零 diff；不新增模块/符号） |
+| **graph_delta** | `docs/_tech_graph/l1/01_modules.md`（声明零 diff：不新增模块/符号，PR 未触碰） |
 | **wiki_delta** | `docs/coding_wiki/volatile.md` |
 | **wiki_delta_note** | 短注：raw-mutation 绕过响应式的根因与修法（pushMessage 返回代理） |
 | **review_hat** | `20` |
 | **required_invoke_hats** | `10,00,30` |
 | **invoke_retention_profile** | `default` |
 | **close_pr_policy** | `required` |
-| **related_pr** | （待开） |
+| **related_pr** | `#43` |
 | **kpi_aggregator** | `CLOSE` |
 
 ### 人工闸
@@ -89,6 +89,19 @@
 |---|---|
 | 2026-09-08 | **00**：维护者实流上报（逐帧到达 UI 不变）；根因实证（raw 突变绕过响应式）；落盘 fix task · HG-TASK-DRAFT/HG-GRAPH-MODULES 00 代签 |
 | 2026-09-08 | **20 R1** pass-with-notes（0 阻塞 · N1 startSubtaskOutputReveal raw block 逃逸 / N2 fake timers / N3 实测回填）→ N1 收入修法+验收 · **00 代签 HG-AUDIT-R1** |
+| 2026-09-08 | **00 CLOSE**：PR [#43](https://github.com/Cyning12/ops-desk-web/pull/43) MERGED（CI 两绿 · 修复前测红/修复后转绿证据齐）· `task close --yes` PASS · 归档 done/ · Hub 补登 |
+
+---
+
+## 关账（CLOSE）
+
+| 项 | 值 |
+|---|---|
+| PR | [#43](https://github.com/Cyning12/ops-desk-web/pull/43) MERGED（2026-09-08） |
+| 验收 | 5/5（含修复前测红证据 · 179 tests 绿） |
+| 归档 | `docs/tasks/done/task_web_fix_chat_live_reactivity.md` |
+| Hub | 2026-09-08 补登 |
+| 后置 | 维护者实流复验（硬刷新后：过程区逐句更新 + 打字机） |
 
 ### 自检结论（执行者）
 
@@ -96,8 +109,10 @@
 
 ### KPI（00）
 
-（CLOSE 回填）
+Task_KPI%: 100 · D1 范围钉死（+8/-3 最小修复 · 零契约/图谱变更）· D2 闸齐（三闸 00 代签 · R1 pass-with-notes N1 收入）· D3 过程档齐（invoke 10/00/30/40 + R1 审查文 + 修复前测红证据）· D4 图谱零 diff（声明即无变更）· D5 关账补登 2026-09-08（Hub + 修订记录）
 
 ### 经验总结
 
-（CLOSE 回填）
+1. **store 内建对象一律经响应式代理回流给突变方**：`pushMessage` 返回 raw 引用导致全部实流突变绕过 Vue effect——此类 bug 直读 store 状态的 Vitest 永远测不出，必须配 `effect()` 级响应式回归。
+2. **闭包捕获也是逃逸点**：reveal 队列 sink 直写闭包内 raw `block`（R1-N1），修法是持数组内代理而非参数 raw。
+3. **修复前先写测红**：用未修复码复跑新 spec 确认必失败（exit 1 证据入 invoke），再修复转绿，杜绝「测试形同空转」。
