@@ -24,3 +24,15 @@
 ## notes
 
 授权句写入 task 文首「授权」行，供后续 20/30 核对。
+
+---
+
+## 续记 · 2026-09-08（R1 后 → CLOSE）
+
+| 项 | 结果 |
+|---|---|
+| 20 R1 | pass-with-notes · `reviews/task_web_lg_rag_sse_subtask_message_audit_R1_20260908.md`（N1–N5 收入定夺） |
+| HG-AUDIT-R1 | **approved**（00 代签） |
+| 30+40 | 前台子代理实现 · PR [#41](https://github.com/Cyning12/ops-desk-web/pull/41) MERGED · CI 两绿 · 自检 9/9（177 tests） |
+| task close | `--yes` PASS → 归档 `done/` · Hub 补登 |
+| 上游 | api [#130](https://github.com/Cyning12/ops-desk-api/pull/130) MERGED · 实流联调点验后置 |

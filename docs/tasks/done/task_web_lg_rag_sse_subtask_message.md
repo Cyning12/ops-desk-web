@@ -1,6 +1,6 @@
 # Task：Web · lg-rag SSE · 消费 `subtask.progress.message` 上屏
 
-> **状态**：active（2026-09-08 · 维护者授权 00 统筹 · 00 代签闸）  
+> **状态**：completed（2026-09-08 CLOSE · PR [#41](https://github.com/Cyning12/ops-desk-web/pull/41) MERGED · 归档 done）  
 > **类型**：Chat UI / SSE 消费  
 > **上游**：api [`05_lg_rag_transport_and_session_plan_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) **§10.7**（拟增补可选 `message`）· api task [`lg-rag-sse-subtask-message`](../../../ops-desk-api/docs/tasks/active/task_lg_rag_sse_subtask_message.md)  
 > **前置**：[`task_web_lg_rag_sse_progressive_reveal`](../done/task_web_lg_rag_sse_progressive_reveal.md)（step 即时 / done→output 渐显 · CLOSE #39）· api `lg-rag-sse-subtask-message` **合入或可 mock 带 `message` 的帧**  
@@ -35,7 +35,7 @@
 | **experience_capture** | `recommended` |
 | **kpi_aggregator** | `CLOSE` |
 | **close_pr_policy** | `required` |
-| **related_pr** | （待开） |
+| **related_pr** | `#41` |
 
 ### 人工闸
 
@@ -178,11 +178,13 @@ api 将为 `subtask.progress` 的 `running` / `step` / `done` 帧增加可选 **
 
 ### KPI（00）
 
-（CLOSE 回填）
+Task_KPI%: 100 · D1 范围钉死（仅消费可选 message · 零新 event_type/freeze · 零新一级模块）· D2 闸齐（HG-TASK-DRAFT / HG-AUDIT-R1 / HG-GRAPH-MODULES 00 代签 · R1 pass-with-notes N1–N5 收入）· D3 过程档齐（invoke 10/00/30/40 + R1 审查文）· D4 图谱 `10_flow_chat` 备注随 #41 · D5 关账补登 2026-09-08（Hub + 修订记录）
 
 ### 经验总结
 
-（CLOSE 回填 · 若 `experience_capture=recommended`）
+1. **R1 源码核对拦住了一条空转验收**：`PROGRESS_DIRECT_KEYS` 顺序使 message 在同帧竞争时本不上屏（N2），「done 忽略 message」痛点部分已被兜底覆盖（N1）——审查先行让 30 的增量精确落在「显式优先 + 测锁定」。
+2. **lock-in 用例要命名标注**：step / done+output 两条验收现码已符合，用例注明 lock-in 意图，避免后人误判为冗余（N4）。
+3. **api-first + mock 对齐 §10.7 可行**：web 在 api 契约落盘后即可用合成帧完成验收，实流联调后置不阻塞合入。
 
 ---
 
@@ -194,3 +196,16 @@ api 将为 `subtask.progress` 的 `running` / `step` / `done` 帧增加可选 **
 | 2026-09-08 | **00**：维护者令统筹并授权签收后续文档；代签 HG-TASK-DRAFT / HG-GRAPH-MODULES；前置 progressive-reveal CLOSE（#40）；HG-AUDIT-R1 待 20 R1 落盘后代签 |
 | 2026-09-08 | **20 R1** pass-with-notes（0 阻塞 · N1–N5）→ N1/N2/N3 收入定夺表（message 显式优先 · running 零前缀钉死）· N5 死链修 · **00 代签 HG-AUDIT-R1** |
 | 2026-09-08 | **30+40**：extractPayloadMessage + 三态 message 显式优先（running 零前缀 · done/output 边界）· Vitest +12（177 全绿）· graph/wiki 落盘 · 验收 9/9 · 六门 exit 全 0 |
+| 2026-09-08 | **00 CLOSE**：PR [#41](https://github.com/Cyning12/ops-desk-web/pull/41) MERGED（CI 两绿）· `task close --yes` PASS · 归档 done/ · Hub 补登 |
+
+---
+
+## 关账（CLOSE）
+
+| 项 | 值 |
+|---|---|
+| PR | [#41](https://github.com/Cyning12/ops-desk-web/pull/41) MERGED（2026-09-08） |
+| 验收 | 9/9 勾（40 自检回填 · 177 tests 绿） |
+| 归档 | `docs/tasks/done/task_web_lg_rag_sse_subtask_message.md` |
+| Hub | 2026-09-08 补登 |
+| 上游 | api [#130](https://github.com/Cyning12/ops-desk-api/pull/130) MERGED · 联调项：实流过程区可见中文短句（后置点验） |
