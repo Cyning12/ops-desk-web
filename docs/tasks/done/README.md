@@ -50,6 +50,7 @@
 
 | 关账日 | task | freeze_id / 摘要 |
 |--------|------|------------------|
+| 2026-09-08 | [`task_web_fix_chat_live_reactivity.md`](./task_web_fix_chat_live_reactivity.md) | 修复：pushMessage 返回响应式代理（raw 突变绕过 Vue effect 致实流零渲染） · PR #43 MERGED |
 | 2026-09-08 | [`task_web_lg_rag_sse_subtask_message.md`](./task_web_lg_rag_sse_subtask_message.md) | `lg-rag-sse-v1` · 消费 api `subtask.progress.message` 上屏（显式优先 · running 零前缀） · PR #41 MERGED |
 | 2026-09-08 | [`task_web_lg_rag_sse_progressive_reveal.md`](./task_web_lg_rag_sse_progressive_reveal.md) | `lg-rag-sse-v1` · 客户端 reveal 队列（subtask output 打字机 + answer 突发匀速） · PR #39 MERGED |
 | 2026-09-07 | [`task_web_lg_rag_sse_idle_subtask.md`](./task_web_lg_rag_sse_idle_subtask.md) | `lg-rag-sse-v1` · idle 120s + 子任务过程分区 · PR #36 MERGED |
@@ -100,6 +101,7 @@
 | 2026-08-31 | P2 归档 `task_web_graph_l2_key_unify.md`（PR #35 · by_symbol 复合键统一） |
 | 2026-09-08 | 归档 `task_web_lg_rag_sse_progressive_reveal.md`（PR #39 · 00 代签 · 维护者授权后续文档签收） |
 | 2026-09-08 | 归档 `task_web_lg_rag_sse_subtask_message.md`（PR #41 · 00 代签 · 同授权波次） |
+| 2026-09-08 | 归档 `task_web_fix_chat_live_reactivity.md`（PR #43 · 实流缺陷修复 · 修复前测红证据） |
 
 ## 给维护者
 
