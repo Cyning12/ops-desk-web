@@ -77,11 +77,11 @@
 
 ## 验收标准
 
-- [ ] 新增响应式回归测：`effect` 监听 `store.messages` 末条 thinking/subtasks/content，喂 mock subtask.progress（running+step+done）与 answer delta 帧后 **effect 重跑且读到新值**（修复前必失败）
-- [ ] R1-N1 回归：done 帧带 `subtask_result.output` → fake timers 推进中 `effect` 能观测到 subtask block content 逐 tick 增长（修复前必失败）
-- [ ] 既有 `pnpm test` 177 全绿不回归；`pnpm lint` / `pnpm build` 绿
-- [ ] `npx --yes dsh-coding-kit task lint-wiki-delta --target .` 绿
-- [ ] volatile.md 短注落盘
+- [x] 新增响应式回归测：`effect` 监听 `store.messages` 末条 thinking/subtasks/content，喂 mock subtask.progress（running+step+done）与 answer delta 帧后 **effect 重跑且读到新值**（修复前必失败）—— 修复前实测 `expected 1 to be >= 4`（零重跑），修复后 2/2 绿
+- [x] R1-N1 回归：done 帧带 `subtask_result.output` → fake timers 推进中 `effect` 能观测到 subtask block content 逐 tick 增长（修复前必失败）—— 修复前实测 lengths 恒 `[0]`，修复后单调增至终态 == output
+- [x] 既有 `pnpm test` 177 全绿不回归（179=177+2 · exit 0）；`pnpm lint` / `pnpm build` 绿（exit 0）
+- [x] `npx --yes dsh-coding-kit task lint-wiki-delta --target .` 绿（exit 0 · missing 0 · issues 0）
+- [x] volatile.md 短注落盘（末尾小节「chat 实流响应式」：根因 + 修法 + 真值指针）
 
 ## 修订记录
 
@@ -92,7 +92,7 @@
 
 ### 自检结论（执行者）
 
-（30/40 回填）
+30+40（2026-09-08 · fix/web-chat-live-reactivity）：两处最小修复落盘——① `pushMessage` 返回 `messages.value[messages.value.length - 1]` 响应式代理；② R1-N1 done 分支 reveal 改持 `assistant.subtasks[idx]` 代理 block。新增 `tests/chat-live-reactivity.spec.ts` effect 级回归 2 用例：**修复前测红实录**（git stash src 复跑 exit 1 · 2 failed，断言 `expected 1 to be >= 4` / `expected 1 to be > 2` 与根因预测逐字一致），修复后转绿；`pnpm test` 179=177+2 全绿、lint/build/lint-wiki-delta/verify 全 exit 0。验收 5/5。过程真值：`docs/harness/invokes/by-task/web-fix-chat-live-reactivity/invoke_20260908_30_*.md` / `invoke_20260908_40_*.md`。残余风险：实流浏览器点验后置；未来绕过 pushMessage 的写路径需防同类逃逸（volatile 已留教训）。
 
 ### KPI（00）
 
