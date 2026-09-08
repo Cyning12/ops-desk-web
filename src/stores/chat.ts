@@ -6,6 +6,10 @@ import type { ChatSession } from '../api/chat'
 import type { ApiError } from '../api/http'
 import { replayLgRag, streamLgRag } from '../composables/useLgRagSse'
 import type { LgRagSseController, LgRagSseEvent } from '../composables/useLgRagSse'
+import {
+  REVEAL_REPLAY_SPEED_MULTIPLIER,
+  RevealQueue,
+} from '../composables/useRevealQueue'
 import { useAuthStore } from './auth'
 
 /**
@@ -94,8 +98,10 @@ export interface ChatThinkingBlock {
   content: string
   /** subtask.progress 合并键（payload.subtask_id / id · §10.7） */
   id?: string
-  /** running | done 等（§10.7 起步/完成帧） */
+  /** running | step | done 等（§10.7 起步/里程碑/完成帧） */
   status?: string
+  /** subtask output 打字机进行中（progressive-reveal 光标态） */
+  revealing?: boolean
 }
 
 export interface ChatMessage {
@@ -191,6 +197,79 @@ function formatRunningSubtaskContent(
   return id ? `执行中 · ${kind} · ${id}` : `执行中 · ${kind}`
 }
 
+/** status=step：即时可读行（如 retrieve · start）；不做打字机 */
+function formatStepSubtaskContent(payload: Record<string, unknown> | undefined): string {
+  if (!payload) return 'step'
+  for (const key of PROGRESS_DIRECT_KEYS) {
+    const value = payload[key]
+    if (typeof value === 'string' && value) return value
+  }
+  const step =
+    (typeof payload.step === 'string' && payload.step) ||
+    (typeof payload.node === 'string' && payload.node) ||
+    (typeof payload.phase === 'string' && payload.phase) ||
+    (typeof payload.name === 'string' && payload.name) ||
+    'step'
+  const action =
+    (typeof payload.action === 'string' && payload.action) ||
+    (typeof payload.event === 'string' && payload.event) ||
+    ''
+  const detailParts: string[] = []
+  for (const key of ['kept', 'hits', 'retry', 'retry_count'] as const) {
+    const value = payload[key]
+    if (typeof value === 'number' || typeof value === 'boolean') {
+      detailParts.push(`${key}=${value}`)
+    } else if (typeof value === 'string' && value && value.length <= 40) {
+      detailParts.push(`${key}=${value}`)
+    }
+  }
+  if (action && detailParts.length) return `${step} · ${action} · ${detailParts.join(',')}`
+  if (action) return `${step} · ${action}`
+  if (detailParts.length) return `${step} · ${detailParts.join(',')}`
+  return step
+}
+
+/**
+ * status=done：解析 subtask_result（字符串 JSON）取 output；
+ * 失败则降级可读摘要（禁 JSON dump / 80 字截断当终稿）。
+ */
+function extractSubtaskDoneText(payload: Record<string, unknown> | undefined): {
+  text: string
+  fromOutput: boolean
+} {
+  const raw = payload?.subtask_result
+  if (typeof raw === 'string' && raw) {
+    try {
+      const parsed: unknown = JSON.parse(raw)
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        const output = (parsed as Record<string, unknown>).output
+        if (typeof output === 'string' && output) {
+          return { text: output, fromOutput: true }
+        }
+      }
+    } catch {
+      // 非 JSON → 降级
+    }
+  } else if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+    const output = (raw as Record<string, unknown>).output
+    if (typeof output === 'string' && output) {
+      return { text: output, fromOutput: true }
+    }
+  }
+
+  if (payload) {
+    for (const key of PROGRESS_DIRECT_KEYS) {
+      const value = payload[key]
+      if (typeof value === 'string' && value) return { text: value, fromOutput: false }
+    }
+  }
+  const kind =
+    (payload && typeof payload.type === 'string' && payload.type) || 'subtask'
+  const id = extractSubtaskBlockId(payload)
+  const text = id ? `已完成 · ${kind} · ${id}` : `已完成 · ${kind}`
+  return { text, fromOutput: false }
+}
+
 /**
  * Chat 会话状态（T3 · freeze lg-rag-sse-v1）：
  * - 进入页面 loadLatestSession() 获取/创建 session（元数据端点，仅 T2 门控，非 lg-rag SoT）
@@ -212,6 +291,9 @@ function formatRunningSubtaskContent(
  *   （终帧 final:true 同此 · 严禁终帧叠加到 delta 拼接后）；两键同帧 content 优先 + warn（R1-N1）；
  *   done/error/abort/传输层终断后停止追加（迟到帧忽略）；无 delta 帧自然降级 T2 整段行为；
  *   replay 含 delta 帧复用同一 processFrame 管线
+ * - 客户端 reveal 队列（progressive-reveal）：delta 先入网络缓冲，UI 按 REVEAL_CHARS_PER_SECOND 匀速出队到
+ *   content（同 tick 多帧不瞬满）；content/final 取消队列并以终稿替换；done/error/abort 刷齐已收；
+ *   subtask step 即时可读；done 解析 subtask_result.output 打字机；replay 默认 ≥4× 加速
  * - stopStreaming() abort 中断，可继续重发
  * - 主路径传输 = lg-rag SSE；旧 chat stream 已弃用（api 410 Gone · web 封装随 T6 删除；
  *   切流史见 docs/tasks/done/task_web_lg_rag_sse_t2.md）
@@ -256,6 +338,72 @@ export const useChatStore = defineStore('chat', () => {
   // T5：run 终态（done/error/abort/传输层错误）后停止追加 answer——迟到帧忽略（00 定夺 done 语义）；
   // sendMessage/resumeFromCursor 开局重置
   let answerTerminal = false
+
+  // progressive-reveal：answer / subtask-output 双缓冲队列（展示前缀 ≤ 已收）
+  let answerReveal: RevealQueue | null = null
+  const subtaskReveals = new Map<string, RevealQueue>()
+  let revealSpeedMultiplier = 1
+
+  function resetRevealQueues(): void {
+    answerReveal?.stop()
+    answerReveal = null
+    for (const queue of subtaskReveals.values()) queue.stop()
+    subtaskReveals.clear()
+  }
+
+  /** 终止路径：停定时器并刷齐已收缓冲 */
+  function flushRevealQueues(): void {
+    answerReveal?.flush()
+    for (const queue of subtaskReveals.values()) queue.flush()
+    subtaskReveals.clear()
+  }
+
+  function ensureAnswerReveal(assistant: ChatMessage): RevealQueue {
+    if (!answerReveal) {
+      answerReveal = new RevealQueue((text) => {
+        assistant.content = text
+      })
+      answerReveal.setSpeedMultiplier(revealSpeedMultiplier)
+    }
+    return answerReveal
+  }
+
+  function cancelSubtaskReveal(key: string): void {
+    const queue = subtaskReveals.get(key)
+    if (!queue) return
+    queue.stop()
+    subtaskReveals.delete(key)
+  }
+
+  function upsertSubtaskBlock(assistant: ChatMessage, block: ChatThinkingBlock): number {
+    if (block.id) {
+      const idx = assistant.subtasks.findIndex((b) => b.id === block.id)
+      if (idx >= 0) {
+        assistant.subtasks[idx] = block
+        return idx
+      }
+    }
+    assistant.subtasks.push(block)
+    return assistant.subtasks.length - 1
+  }
+
+  function startSubtaskOutputReveal(
+    assistant: ChatMessage,
+    block: ChatThinkingBlock,
+    fullText: string,
+  ): void {
+    const key = block.id ?? `anon:${assistant.subtasks.indexOf(block)}`
+    cancelSubtaskReveal(key)
+    block.content = ''
+    block.revealing = true
+    const queue = new RevealQueue((text) => {
+      block.content = text
+      block.revealing = text.length < fullText.length
+    })
+    queue.setSpeedMultiplier(revealSpeedMultiplier)
+    subtaskReveals.set(key, queue)
+    queue.enqueue(fullText)
+  }
 
   async function loadLatestSession(): Promise<void> {
     if (sessionLoading.value) return
@@ -368,47 +516,77 @@ export const useChatStore = defineStore('chat', () => {
         break
       }
       case 'subtask.progress': {
-        // 子任务过程单独入列（§10.6 UI 分区 · §10.7 running→done 同 id 合并）
+        // 子任务过程单独入列（§10.6 UI 分区 · §10.7 running→step→done 同 id 合并）
         const payload = event.payload
         const status = typeof payload?.status === 'string' ? payload.status : undefined
         const id = extractSubtaskBlockId(payload)
         const role = event.agent_role ?? event.event_type
-        const content =
-          status === 'running'
-            ? formatRunningSubtaskContent(payload, role, id)
-            : summarizeProgress(payload)
+
+        if (status === 'running') {
+          if (id) cancelSubtaskReveal(id)
+          const content = formatRunningSubtaskContent(payload, role, id)
+          if (!content) break
+          const block: ChatThinkingBlock = { role, content }
+          if (id) block.id = id
+          block.status = status
+          upsertSubtaskBlock(assistant, block)
+          break
+        }
+
+        if (status === 'step') {
+          if (id) cancelSubtaskReveal(id)
+          const content = formatStepSubtaskContent(payload)
+          if (!content) break
+          const block: ChatThinkingBlock = { role, content }
+          if (id) block.id = id
+          block.status = status
+          upsertSubtaskBlock(assistant, block)
+          break
+        }
+
+        if (status === 'done') {
+          const { text, fromOutput } = extractSubtaskDoneText(payload)
+          if (!text) break
+          const block: ChatThinkingBlock = {
+            role,
+            content: fromOutput ? '' : text,
+            status: 'done',
+          }
+          if (id) block.id = id
+          if (fromOutput) block.revealing = true
+          upsertSubtaskBlock(assistant, block)
+          if (fromOutput) {
+            startSubtaskOutputReveal(assistant, block, text)
+          } else if (id) {
+            cancelSubtaskReveal(id)
+          }
+          break
+        }
+
+        // 无 status / 旧完成帧：即时摘要（非 done output 渐显路径）
+        if (id) cancelSubtaskReveal(id)
+        const content = summarizeProgress(payload)
         if (!content) break
         const block: ChatThinkingBlock = { role, content }
         if (id) block.id = id
         if (status) block.status = status
-        // 同 subtask_id/id：更新/替换已有行（避免 running+done 双行）；无 id 的旧完成帧仍 append
-        if (id) {
-          const idx = assistant.subtasks.findIndex((b) => b.id === id)
-          if (idx >= 0) {
-            assistant.subtasks[idx] = block
-            break
-          }
-        }
-        assistant.subtasks.push(block)
+        upsertSubtaskBlock(assistant, block)
         break
       }
       case 'answer': {
-        // T5 打字机（api §4.2 T5 冻结补充 / §10.4 · freeze lg-rag-sse-v1 沿用）：
-        // - 含 content 键 → 替换模式（全量覆盖；终帧 final:true 同此，替换语义天然兜底
-        //   终帧与 delta 拼接不一致；严禁把终帧 content append 到拼接结果之后）
-        // - 仅含 delta 键 → 增模式（按 seq 追加到当前 assistant.content）
-        // - 两键同帧（防御空隙 R1-N1 · api 帧表保证不共帧）：content 优先，忽略 delta 并记 warn
-        // - 无 delta 帧（api 降级整段）→ content 替换即 T2 行为，不特判；
-        //   占位帧（content 空串 + note:no_aggregator）同走替换（T2 现行为，契约保证无 delta 同 run 混出）
+        // T5 + progressive-reveal：
+        // - content 键 → 取消队列并以终稿替换（终帧 final:true 同此）
+        // - 仅 delta → 入网络缓冲队，匀速出队到 assistant.content（同 tick 不瞬满）
+        // - 两键同帧：content 优先 + warn（R1-N1）
         if (answerTerminal) break // done/error/abort 后迟到帧忽略
         const payload = event.payload ?? {}
         if ('content' in payload) {
           if ('delta' in payload) {
             console.warn('[chat] answer 帧同含 content 与 delta：content 优先替换，忽略 delta（R1-N1 防御）')
           }
-          assistant.content = payloadString(event, 'content')
+          ensureAnswerReveal(assistant).replace(payloadString(event, 'content'))
         } else if ('delta' in payload) {
-          assistant.content += payloadString(event, 'delta')
+          ensureAnswerReveal(assistant).enqueue(payloadString(event, 'delta'))
         }
         break
       }
@@ -420,6 +598,7 @@ export const useChatStore = defineStore('chat', () => {
           model: typeof model === 'string' ? model : '',
         }
         streaming.value = false
+        flushRevealQueues() // R1-N2：刷齐已收
         answerTerminal = true // T5：done 后停止追加（迟到 answer 帧忽略）
         clearActiveRun() // T4：run 终态即清除 active-run（含 replay 补发的 done——断连期间服务端跑完的收尾闭环）
         break
@@ -432,6 +611,7 @@ export const useChatStore = defineStore('chat', () => {
           retryable: retryable === true,
         }
         streaming.value = false
+        flushRevealQueues() // R1-N2
         answerTerminal = true // T5：error 后停止追加
         clearActiveRun() // T4：error 终态同清除（服务端已判失败，续看无意义）
         break
@@ -464,6 +644,8 @@ export const useChatStore = defineStore('chat', () => {
 
     streaming.value = true
     answerTerminal = false // T5：新 run 开局，允许 answer 追加/替换
+    resetRevealQueues()
+    revealSpeedMultiplier = 1 // live 速率
     // T3：已存 thread_id 则带上续问（同会话同一 id）；无则由 api 生成（run.start 捕获落存）
     const sentThreadId = threadId.value
     controller = streamLgRag(
@@ -472,6 +654,7 @@ export const useChatStore = defineStore('chat', () => {
         onEvent: (event) => processFrame(event, assistant),
         onError: (transportError) => {
           streaming.value = false
+          flushRevealQueues() // R1-N2：传输层终断刷齐已收
           answerTerminal = true // T5：传输层终断后停止追加（续看 replay 渲染进新消息并自行重置）
           if (transportError.status === 401) {
             // SSE fetch 不经 axios 拦截器：本地清会话 + thread_id + active-run（R1-N3），交给路由守卫/视图跳登录
@@ -503,6 +686,7 @@ export const useChatStore = defineStore('chat', () => {
         onAborted: () => {
           streaming.value = false
           interrupted.value = true
+          flushRevealQueues() // R1-N2
           answerTerminal = true // T5：abort 终态，停止追加
           clearActiveRun() // T4：abort 属 run 终态（00 定夺）；停止后不可续看（R1-N6 产品语义）
         },
@@ -528,6 +712,7 @@ export const useChatStore = defineStore('chat', () => {
   /** 新会话：清 thread_id + 清消息 + 清提示 + 清 active-run；下轮发送 body 不带 thread_id（api 生成新 id） */
   function startNewSession(): void {
     stopStreaming() // streaming 中先 abort（R1-N4）
+    resetRevealQueues()
     clearThreadId()
     clearActiveRun() // T4：显式放弃旧上下文，未完成 run 一并丢弃（30 内决，对齐「新会话」语义）
     messages.value = []
@@ -568,6 +753,8 @@ export const useChatStore = defineStore('chat', () => {
 
     streaming.value = true
     answerTerminal = false // T5：replay 接力重置（渲染目标为新建 assistant 消息）
+    resetRevealQueues()
+    revealSpeedMultiplier = REVEAL_REPLAY_SPEED_MULTIPLIER // R1-N3：replay ≥4× live
     controller = replayLgRag(
       { run_id: run.run_id, after_seq: run.last_seq },
       {
@@ -577,6 +764,7 @@ export const useChatStore = defineStore('chat', () => {
         },
         onError: (transportError) => {
           streaming.value = false
+          flushRevealQueues()
           answerTerminal = true // T5：replay 传输层终断后停止追加（再续看时重置）
           if (transportError.status === 401) {
             // replay 401：清 thread_id + 清 active-run + 清 auth，跳登录（与 live 401 同语义）
@@ -607,6 +795,7 @@ export const useChatStore = defineStore('chat', () => {
         onAborted: () => {
           streaming.value = false
           interrupted.value = true
+          flushRevealQueues()
           answerTerminal = true // T5：abort 终态（与 live 一致）
           clearActiveRun() // abort 终态（与 live 一致）
         },

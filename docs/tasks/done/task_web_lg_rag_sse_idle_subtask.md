@@ -20,6 +20,8 @@
 | **related_pr** | `#36` |
 | **test_strategy** | `required` |
 | **freeze_id** | `lg-rag-sse-v1`（不新 freeze） |
+| **wiki_delta** | `n/a` |
+| **wiki_delta_note** | 历史 CLOSE（#36）· 存量补字段 |
 | **close_pr_policy** | `required` |
 
 ### 人工闸
