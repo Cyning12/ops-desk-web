@@ -33,3 +33,7 @@
 
 - 可复用条目 → 晋升 [[context]] / [[stable]]（仍只写指针，不双份正文）
 - 本表清空，避免下一 task 读到 stale volatile
+
+## chat 实流响应式（web-fix-chat-live-reactivity · 2026-09-08）
+
+- **根因**：`pushMessage` 把新建 raw `ChatMessage` push 进 ref 数组后**返回 raw 引用**，sendMessage/replay 全程突变 raw（thinking.push / subtasks upsert / reveal sink 写 content）——raw 突变不经 Vue proxy set 陷阱 → 不触发任何 effect → 模板永不重算（实流零渲染/无打字机）。**修法**：`pushMessage` 返回 `messages.value[messages.value.length - 1]`（响应式代理）；R1-N1 残余逃逸点 `startSubtaskOutputReveal` 闭包改持 `upsertSubtaskBlock` 替换后数组中的代理 block（`assistant.subtasks[idx]`）。教训：**store 内建对象一律经代理回流给突变方**；直读 store 状态的断言测不出响应式绕过，须用 `effect()` 级回归。真值：`docs/tasks/active/task_web_fix_chat_live_reactivity.md`。

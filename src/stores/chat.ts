@@ -451,7 +451,10 @@ export const useChatStore = defineStore('chat', () => {
       subtasks: [],
     }
     messages.value.push(message)
-    return message
+    // 必须返回经响应式数组取回的代理而非 raw 引用：之后 processFrame/reveal 对
+    // assistant.* 的突变若落在 raw 对象上，不经过 Vue proxy set 陷阱 → 不触发任何
+    // effect → 实流零渲染/无打字机（web-fix-chat-live-reactivity）
+    return messages.value[messages.value.length - 1]
   }
 
   /** 清 active-run（ref + localStorage + 刷新续看条）；run 终态/401/手动停止/新会话调用 */
@@ -577,9 +580,11 @@ export const useChatStore = defineStore('chat', () => {
           }
           if (id) block.id = id
           if (fromOutput) block.revealing = true
-          upsertSubtaskBlock(assistant, block)
+          const idx = upsertSubtaskBlock(assistant, block)
           if (fromOutput) {
-            startSubtaskOutputReveal(assistant, block, text)
+            // R1-N1：upsert 为整体替换，reveal 闭包必须持有替换后数组中的代理 block，
+            // 否则 tick 直写 raw block.content 同样绕过响应式
+            startSubtaskOutputReveal(assistant, assistant.subtasks[idx], text)
           } else if (id) {
             cancelSubtaskReveal(id)
           }
