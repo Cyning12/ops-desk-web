@@ -19,6 +19,10 @@
 - **`web-lg-rag-sse-t5`**（2026-08-31 · 30/40 交付）：answer 帧分支规则——payload 含 `delta` 键 → 追加到 assistant.content；含 `content` 键 → 全量替换（终帧 `final:true` 同此，严禁叠加到 delta 拼接后；两键同帧 content 优先 + warn）；done/error/abort 后停止追加。真值：`docs/tasks/done/task_web_lg_rag_sse_t5.md`（00 定夺表）+ api `05_lg_rag_transport_and_session_plan_v0.md` §4.2/§10.4。
 - **`web-lg-rag-sse-t4`**（2026-08-31 · 30/40 交付）：断联/replay 续看——每帧捕获可选顶层 `cursor`（缺失以 run_id+seq 合成），active-run 落 `localStorage`（key `ops.lg-rag.active-run`，终态 done/error/abort 即清除）；断网/刷新后手动「续看」→ `POST /api/ops/lg-rag/replay` body `{run_id, after_seq}`（帧形状同 live，复用同一解析/渲染管线，渲染进新建 assistant 消息）；per run_id 记 `lastAppliedSeq`，`seq<=lastAppliedSeq` 帧整体忽略（answer 不重复 append · thinking 不重复）；replay 404/422 清 active-run 不重试，401（live/replay）清 thread_id+active-run 跳登录。真值：`docs/tasks/done/task_web_lg_rag_sse_t4.md`（00 定夺表）+ api `05_lg_rag_transport_and_session_plan_v0.md` §4.2/§10.3。
 
+## subtask.message（web-lg-rag-sse-subtask-message · 2026-09-08）
+
+- **`web-lg-rag-sse-subtask-message`**（2026-09-08 · 30/40 交付）：subtask.progress 三态优先消费可选 payload.message（api subtask_message.py 确定性模板 · ≤200 字）——running 非空 message **原样零前缀**（不再套「执行中 ·」叠句 · R1-N3）；step 原样即时上屏、同 subtask_id 替换不堆行；done 有 subtask_result.output 仍打字机渐显 output（message 不得覆盖/截断/替代），无 output 时 message **显式优先**作完成摘要（先于 summary/content · R1-N1/N2）再降级 extractSubtaskDoneText；空串视为缺省走本地兜底；node.progress 的 summarizeProgress 直出顺序（summary→content→message）**不变**。真值：docs/tasks/active/task_web_lg_rag_sse_subtask_message.md（00 定夺表）· 入口 src/stores/chat.ts extractPayloadMessage。
+
 ## 执行帽速链
 
 - Active tasks：`../tasks/active/`

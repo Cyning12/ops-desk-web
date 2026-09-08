@@ -171,6 +171,17 @@ function summarizeProgress(payload: Record<string, unknown> | undefined): string
   return Object.keys(payload).slice(0, 5).join(', ')
 }
 
+/**
+ * §10.7 可选 payload.message（api subtask_message.py 确定性模板）：
+ * 非空字符串才视为有效（空串按缺省处理，与 api「禁止空串冒充有内容」对齐）。
+ * subtask.progress 三态对 message **显式优先**于 summary/content（R1-N1/N2）；
+ * 本函数不影响 node.progress 的 summarizeProgress 直出顺序。
+ */
+function extractPayloadMessage(payload: Record<string, unknown> | undefined): string {
+  const value = payload?.message
+  return typeof value === 'string' && value ? value : ''
+}
+
 /** §10.7：从 payload 取合并键（subtask_id 优先，其次 id） */
 function extractSubtaskBlockId(payload: Record<string, unknown> | undefined): string | undefined {
   if (!payload) return undefined
@@ -180,12 +191,15 @@ function extractSubtaskBlockId(payload: Record<string, unknown> | undefined): st
   return undefined
 }
 
-/** §10.7 running 起步帧：可读文案（勿落成裸键名列表） */
+/** §10.7 running 起步帧：可读文案（勿落成裸键名列表）；
+ * 非空 message 原样零前缀（R1-N3：不再包「执行中 ·」叠句）；无 message 走本地兜底 */
 function formatRunningSubtaskContent(
   payload: Record<string, unknown> | undefined,
   role: string,
   id: string | undefined,
 ): string {
+  const message = extractPayloadMessage(payload)
+  if (message) return message
   if (payload) {
     for (const key of PROGRESS_DIRECT_KEYS) {
       const value = payload[key]
@@ -197,9 +211,12 @@ function formatRunningSubtaskContent(
   return id ? `执行中 · ${kind} · ${id}` : `执行中 · ${kind}`
 }
 
-/** status=step：即时可读行（如 retrieve · start）；不做打字机 */
+/** status=step：即时可读行（如 retrieve · start）；不做打字机；
+ * 非空 message 原样即时上屏（R1-N1：显式优先于 summary/content 与本地 step 拼装） */
 function formatStepSubtaskContent(payload: Record<string, unknown> | undefined): string {
   if (!payload) return 'step'
+  const message = extractPayloadMessage(payload)
+  if (message) return message
   for (const key of PROGRESS_DIRECT_KEYS) {
     const value = payload[key]
     if (typeof value === 'string' && value) return value
@@ -232,6 +249,8 @@ function formatStepSubtaskContent(payload: Record<string, unknown> | undefined):
 /**
  * status=done：解析 subtask_result（字符串 JSON）取 output；
  * 失败则降级可读摘要（禁 JSON dump / 80 字截断当终稿）。
+ * 无 output 时：非空 message **显式优先**作完成摘要（R1-N1/N2），
+ * 再降级 summary/content；有 output 时 message 不得覆盖/截断/替代（走 reveal）。
  */
 function extractSubtaskDoneText(payload: Record<string, unknown> | undefined): {
   text: string
@@ -256,6 +275,10 @@ function extractSubtaskDoneText(payload: Record<string, unknown> | undefined): {
       return { text: output, fromOutput: true }
     }
   }
+
+  // §10.7：无 output 时非空 message 显式优先（R1-N1/N2：先于 summary/content）
+  const message = extractPayloadMessage(payload)
+  if (message) return { text: message, fromOutput: false }
 
   if (payload) {
     for (const key of PROGRESS_DIRECT_KEYS) {
