@@ -1,12 +1,13 @@
 # Task：spec-wave 升级 2.4.2（web · dsh-coding-kit 1.10.0 → SpecWave）
 
-> **状态**：`in_progress`  
+> **状态**：`done`  
 > **类型**：基础设施 / harness 过程轨升级（包改名 + 跨多版闸强化）  
 > **前置**：manifest / package 钉 `dsh-coding-kit@1.10.0`（`.cyning-harness/manifest.json`）；目标 **`spec-wave@2.4.2`**（对齐 ops-desk-api 当前态）  
 > **分支**：`task/web-specwave-2-4-2`（base：`main`）  
 > **执行模式**：Open Folder = **ops-desk-web**；过程轨；不改 Vue / SSE 业务逻辑  
 > **授权**：维护者确认计划「Implement the plan」（2026-09-18）· Wave A 目标钉 2.4.2  
-> **00 复签**：2026-09-18「授权签收所有过程文档，先升级到2.4.2，开始统筹派工」· Wave B（3.0.0）本波 deferred
+> **00 复签**：2026-09-18「授权签收所有过程文档，先升级到2.4.2，开始统筹派工」· Wave B（3.0.0）本波 deferred  
+> **related_pr**：[#45](https://github.com/Cyning12/ops-desk-web/pull/45) MERGED 2026-09-18
 
 ---
 
@@ -31,6 +32,7 @@
 | **invoke_retention_profile** | `minimal` |
 | **required_invoke_hats** | `30` |
 | **close_pr_policy** | `required` |
+| **related_pr** | `#45` |
 | **review_hat** | `20` |
 
 ### 人工闸
@@ -134,7 +136,7 @@
 
 ---
 
-## 自检结论
+### 自检结论
 
 | 命令 | 退出码 | 备注 |
 |------|--------|------|
@@ -143,7 +145,8 @@
 | `verify --task` | 0 | PASS |
 | `./scripts/graph-compile.sh` | 0 | KIT_CLI=@2.4.2 |
 | `pnpm lint/test/build` | 0 | 179 tests |
+| PR #45 | MERGED | 2026-09-18T01:50:11Z |
 
 ### KPI
 
-Task_KPI%: 100（Wave A 过程轨完成；关账待 PR）
+Task_KPI%: 100（Wave A 过程轨完成 · PR #45 MERGED）
