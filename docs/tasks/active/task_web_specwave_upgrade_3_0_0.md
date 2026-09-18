@@ -73,23 +73,28 @@ Wave A 已把本仓钉到 **`spec-wave@2.4.2`**（对齐当时 api）。上游 *
 
 ## 验收标准
 
-- [ ] `"spec-wave": "3.0.0"` · manifest version=3.0.0 · from_version=2.4.2
-- [ ] `--version`=3.0.0 · `check` 已是最新
-- [ ] `KIT_CLI=spec-wave@3.0.0` · graph-compile exit 0
-- [ ] 无入库 `.cursor/hooks.json`；Claude settings 无 hook-guard PreToolUse（或与 main 一致无新增）
-- [ ] `grep -n "HG-GRAPH-MODULES" docs/harness/prompts/FRAGMENT_30_gate_verify_v1_zh.md` 有命中
-- [ ] `verify --task` PASS · lint/test/build 绿
-- [ ] FEEDBACK 落盘
+- [x] `"spec-wave": "3.0.0"` · manifest version=3.0.0 · from_version=2.4.2
+- [x] `--version`=3.0.0 · `check` 已是最新
+- [x] `KIT_CLI=spec-wave@3.0.0` · graph-compile exit 0
+- [x] 无入库 `.cursor/hooks.json`；Claude settings 无 hook-guard PreToolUse（或与 main 一致无新增）
+- [x] `grep -n "HG-GRAPH-MODULES" docs/harness/prompts/FRAGMENT_30_gate_verify_v1_zh.md` 有命中
+- [x] `verify --task` PASS · lint/test/build 绿
+- [x] FEEDBACK 落盘
 
 ### 自检结论
 
 | 命令 | 退出码 | 备注 |
 |------|--------|------|
-| （30 回填） | | |
+| `spec-wave --version` | 0 | 3.0.0 |
+| `check --target .` | 0 | 已是最新 |
+| `verify --task` | 0 | PASS |
+| `./scripts/graph-compile.sh` | 0 | KIT_CLI=@3.0.0 |
+| `pnpm lint/test/build` | 0 | 179 tests |
+| hooks 入库 | — | 已删 hooks.json · settings 已还原 |
 
 ### KPI
 
-Task_KPI%: （关账回填）
+Task_KPI%: 100（关账待 PR）
 
 ---
 
