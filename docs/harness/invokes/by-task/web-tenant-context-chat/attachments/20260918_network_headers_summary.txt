@@ -1,0 +1,34 @@
+# Network 头摘要 · 2026-09-18 · Playwright MCP · hat 30
+
+## 环境
+- web: http://127.0.0.1:5173 （VITE_API_PROXY=http://127.0.0.1:8001）
+- api: 本机 uvicorn :8001（源码含 POST /api/ops/auth/tenant）
+- Docker :8000 openapi **无** /auth/tenant → POST 返回 404（勿连）
+
+## 操作
+1. 已登录会话（admin）进入 Overview
+2. UI `data-testid=current-tenant` 初始 = ops-desk-pilot
+3. el-select 切换 → ops-desk-pilot-b
+4. POST /api/ops/auth/tenant => 200
+5. 进入 Chat：GET /api/ops/chat/sessions/latest（下一问/下一只读请求）
+
+## 头摘要
+
+### POST /api/ops/auth/tenant（切换瞬间）
+- x-ops-tenant-id: ops-desk-pilot   # 切换前 session 镜像头（body 写新租户）
+- content-type: application/json
+- 状态: 200 OK
+- 说明: cookie 会话鉴权生效（未登录则 401）
+
+### GET /api/ops/chat/sessions/latest（切换后下一请求）
+- x-ops-tenant-id: ops-desk-pilot-b  # 与 UI current-tenant 一致
+- 状态: 500（api 侧 sessions 故障；**头仍正确**）
+- 说明: 证明 F1=C 客户端侧「切换后带头」；Chat 输入因 !session 禁用，本波未抓到 lg-rag/stream 帧
+
+### credentials
+- axios 路径：已登录接口 200 → cookie 已随请求（credentials/withCredentials）
+- useLgRagSse：代码 credentials:'include' + TENANT_HEADER（Vitest 断言默认 ops-desk-pilot）
+
+## 截图
+- attachments/20260918_overview_tenant_a.png
+- attachments/20260918_overview_tenant_b.png

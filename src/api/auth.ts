@@ -1,12 +1,5 @@
 import { http } from './http'
-
-/**
- * Auth 接口封装（契约：ops-desk-api docs/ios/api-auth-chat.md）。
- * 响应直取，无 { ok, data } 包装外壳：
- * - login  → { ok: true, user }
- * - me     → { user }
- * - logout → { ok: true }
- */
+import { TENANT_A, setStoredTenant } from '../tenant'
 
 export interface AuthUser {
   id: string
@@ -14,22 +7,35 @@ export interface AuthUser {
   role: string
 }
 
-/** 用户名 + 邀请密钥登录；成功时后端通过 Set-Cookie 写入 HttpOnly ops_session */
+export interface MeResult {
+  user: AuthUser
+  tenantId: string
+}
+
 export async function login(username: string, inviteToken: string): Promise<AuthUser> {
   const { data } = await http.post<{ ok: boolean; user: AuthUser }>('/ops/auth/login', {
     username,
     invite_token: inviteToken,
   })
+  setStoredTenant(TENANT_A)
   return data.user
 }
 
-/** 获取当前登录用户；未登录时后端返回 401 */
-export async function fetchMe(): Promise<AuthUser> {
-  const { data } = await http.get<{ user: AuthUser }>('/ops/auth/me')
-  return data.user
+export async function fetchMe(): Promise<MeResult> {
+  const { data } = await http.get<{ user: AuthUser; tenant_id?: string }>('/ops/auth/me')
+  const tenantId = data.tenant_id || TENANT_A
+  setStoredTenant(tenantId)
+  return { user: data.user, tenantId }
 }
 
-/** 登出：服务端删除 session 并清 cookie */
+export async function switchTenant(tenantId: string): Promise<string> {
+  const { data } = await http.post<{ ok: boolean; tenant_id: string }>('/ops/auth/tenant', {
+    tenant_id: tenantId,
+  })
+  setStoredTenant(data.tenant_id)
+  return data.tenant_id
+}
+
 export async function logout(): Promise<void> {
   await http.post('/ops/auth/logout')
 }

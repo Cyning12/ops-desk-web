@@ -96,6 +96,33 @@
 
 ---
 
+## 5.2 租户切换（阶段 T · web-tenant-context-chat · 2026-09-18）
+
+> 契约：workspace `api-v1-tenant-readonly-context-draft.md` · F1=C / F2 `X-Ops-Tenant-Id` / F5 A=`ops-desk-pilot` B=`ops-desk-pilot-b` / F6 切换 UI。
+
+### 5.2.1 web（本仓可勾）
+
+- [x] 顶栏常驻可见当前租户（`data-testid=current-tenant`）  
+- [x] A/B 切换 UI（`el-select` · `ops-desk-pilot` ↔ `ops-desk-pilot-b`）  
+- [x] 切换调用 `POST /ops/auth/tenant`（session 真源 · F1=C）  
+- [x] axios / lg-rag `fetch` 请求挂 `X-Ops-Tenant-Id`（= 本地 session 镜像）  
+- [x] `credentials:'include'` 保留（lg-rag SSE）  
+- [x] Vitest：auth-store / router-guard MeResult 对齐；lg-rag 默认头 `ops-desk-pilot`  
+- [x] `pnpm lint` / `pnpm test` / `pnpm build` 绿  
+
+### 5.2.2 联调（依赖 api T 已部署 `POST /ops/auth/tenant`）
+
+- [x] 登录成功后 UI 显示当前租户（2026-09-18 · Playwright · admin + `data-testid=current-tenant`）  
+- [x] 切换 A↔B 后下一问 Network：`X-Ops-Tenant-Id` 与 UI 一致（2026-09-18 retry：sessions/latest A/B **200**；lg-rag/stream A/B **200** 且头与 UI 一致）  
+- [ ] 头与 session 不一致 → api 403，UI 明确错误（不静默重试死循环）  
+- [x] A/B 各至少一问 Chat（2026-09-18 retry · Playwright · 证据见 `invoke_20260918_30_retry_*`）  
+
+### 5.2.3 签核
+
+- [ ] **维护者签：租户切换联调通过**（待 Playwright / 人工）  
+
+---
+
 ## 6. 发版步骤（T2 通过后）
 
 1. Merge **api** PR → 部署 api  
@@ -116,3 +143,5 @@
 | 2026-08-31 | §5 T6 三项勾（api #108 · web #29 · dist/src 零命中）· **T2–T6 全段闭环** |
 | 2026-09-07 | §1.3 超时条改 idle 语义；增 §5.1 idle/keepalive + 子任务分区（api 05 §10.6） |
 | 2026-09-07 | §5.1 增 §10.7 running 起步帧联调旁注（web-lg-rag-sse-subtask-live） |
+| 2026-09-18 | §5.2 租户切换节（web 骨架可勾 · 联调待 Playwright） |
+| 2026-09-18 | §5.2.2 retry：sessions 不再 500；A/B 各一问 stream PASS |

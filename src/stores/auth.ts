@@ -1,9 +1,10 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
-import { fetchMe, login as apiLogin, logout as apiLogout } from '../api/auth'
+import { fetchMe, login as apiLogin, logout as apiLogout, switchTenant as apiSwitchTenant } from '../api/auth'
 import type { AuthUser } from '../api/auth'
 import type { ApiError } from '../api/http'
+import { getStoredTenant, setStoredTenant, TENANT_STORAGE_KEY } from '../tenant'
 
 /**
  * 会话状态（HttpOnly cookie 会话，前端不接触 token）。
@@ -14,6 +15,7 @@ import type { ApiError } from '../api/http'
  */
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<AuthUser | null>(null)
+  const tenantId = ref(getStoredTenant())
   /** 首次会话探测是否已有确定结果（200 或 401） */
   const ready = ref(false)
   let inflight: Promise<AuthUser | null> | null = null
@@ -24,7 +26,9 @@ export const useAuthStore = defineStore('auth', () => {
     if (ready.value) return user.value
     inflight ??= (async () => {
       try {
-        user.value = await fetchMe()
+        const me = await fetchMe()
+        user.value = me.user
+        tenantId.value = me.tenantId
         ready.value = true
       } catch (error) {
         const apiError = error as ApiError
@@ -42,7 +46,12 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function login(username: string, inviteToken: string): Promise<void> {
     user.value = await apiLogin(username, inviteToken)
+    tenantId.value = getStoredTenant()
     ready.value = true
+  }
+
+  async function switchTenant(next: string): Promise<void> {
+    tenantId.value = await apiSwitchTenant(next)
   }
 
   async function logout(): Promise<void> {
@@ -58,6 +67,7 @@ export const useAuthStore = defineStore('auth', () => {
   /** 清空本地会话状态（供 401 拦截器 / logout 使用） */
   function clearSession(): void {
     user.value = null
+    tenantId.value = getStoredTenant()
     ready.value = true
     // T3（R1-N1）：登出/401 同步清 lg-rag thread_id 本地持久化，避免同浏览器换账号串号。
     // 键名与 stores/chat.ts LG_RAG_THREAD_ID_STORAGE_KEY 保持一致（避免 auth→chat 循环 import，此处直写）
@@ -65,10 +75,13 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       window.localStorage.removeItem('ops.lg-rag.thread-id')
       window.localStorage.removeItem('ops.lg-rag.active-run')
+      window.localStorage.removeItem(TENANT_STORAGE_KEY)
     } catch {
       // localStorage 不可用：静默降级
     }
+    setStoredTenant('ops-desk-pilot')
+    tenantId.value = 'ops-desk-pilot'
   }
 
-  return { user, ready, isLoggedIn, ensureMe, login, logout, clearSession }
+  return { user, tenantId, ready, isLoggedIn, ensureMe, login, logout, clearSession, switchTenant }
 })

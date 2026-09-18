@@ -15,6 +15,8 @@
  * 与旧 chat thinking 全集不兼容；主 Chat 一律走本封装。
  */
 
+import { getStoredTenant, TENANT_HEADER } from '../tenant'
+
 /** lg-rag SSE 事件帧（data JSON 解码后 · api §4.2） */
 export interface LgRagSseEvent {
   run_id?: string
@@ -99,7 +101,6 @@ export class LgRagSseFrameParser {
   }
 }
 
-/** 实际请求路径（dev 经 Vite proxy /api → 127.0.0.1:8000） */
 export const LG_RAG_STREAM_PATH = '/api/ops/lg-rag/stream'
 
 /** T4 replay 请求路径（api §10.3：重放 seq > after_seq 的已存帧，SSE 形状同 live） */
@@ -191,6 +192,7 @@ function postLgRagSse(
         headers: {
           'Content-Type': 'application/json',
           Accept: 'text/event-stream',
+          [TENANT_HEADER]: getStoredTenant(),
         },
         credentials: 'include',
         body: JSON.stringify(body),
