@@ -50,6 +50,7 @@
 
 | 关账日 | task | freeze_id / 摘要 |
 |--------|------|------------------|
+| 2026-09-18 | [`task_web_specwave_upgrade_3_0_0.md`](./task_web_specwave_upgrade_3_0_0.md) | `spec-wave@2.4.2` → `3.0.0`（Wave B · hooks 不入库）· PR #47 MERGED |
 | 2026-09-18 | [`task_web_specwave_upgrade_2_4_2.md`](./task_web_specwave_upgrade_2_4_2.md) | `dsh-coding-kit@1.10.0` → `spec-wave@2.4.2`（Wave A）· PR #45 MERGED |
 | 2026-09-08 | [`task_web_fix_chat_live_reactivity.md`](./task_web_fix_chat_live_reactivity.md) | 修复：pushMessage 返回响应式代理（raw 突变绕过 Vue effect 致实流零渲染） · PR #43 MERGED |
 | 2026-09-08 | [`task_web_lg_rag_sse_subtask_message.md`](./task_web_lg_rag_sse_subtask_message.md) | `lg-rag-sse-v1` · 消费 api `subtask.progress.message` 上屏（显式优先 · running 零前缀） · PR #41 MERGED |

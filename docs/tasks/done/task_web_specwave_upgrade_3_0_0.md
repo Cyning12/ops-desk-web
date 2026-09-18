@@ -1,11 +1,12 @@
 # Task：spec-wave 升级 3.0.0（web · 2.4.2 → 3.0.0）
 
-> **状态**：`in_progress`  
+> **状态**：`done`  
 > **类型**：基础设施 / harness 过程轨 major  
 > **前置**：Wave A done（`spec-wave@2.4.2` · PR #45/#46 CLOSE）  
 > **分支**：`task/web-specwave-3-0-0`（base：`main`）  
 > **执行模式**：Open Folder = **ops-desk-web**；过程轨；不改 Vue / SSE  
-> **00 授权**：2026-09-18「继续统筹 3.0.0 的升级」
+> **00 授权**：2026-09-18「继续统筹 3.0.0 的升级」  
+> **related_pr**：[#47](https://github.com/Cyning12/ops-desk-web/pull/47) MERGED 2026-09-18
 
 ---
 
@@ -29,6 +30,7 @@
 | **invoke_retention_profile** | `minimal` |
 | **required_invoke_hats** | `30` |
 | **close_pr_policy** | `required` |
+| **related_pr** | `#47` |
 | **review_hat** | `20` |
 
 ### 人工闸
@@ -91,10 +93,11 @@ Wave A 已把本仓钉到 **`spec-wave@2.4.2`**（对齐当时 api）。上游 *
 | `./scripts/graph-compile.sh` | 0 | KIT_CLI=@3.0.0 |
 | `pnpm lint/test/build` | 0 | 179 tests |
 | hooks 入库 | — | 已删 hooks.json · settings 已还原 |
+| PR #47 | MERGED | 2026-09-18T02:01:46Z |
 
 ### KPI
 
-Task_KPI%: 100（关账待 PR）
+Task_KPI%: 100（PR #47 MERGED）
 
 ---
 
