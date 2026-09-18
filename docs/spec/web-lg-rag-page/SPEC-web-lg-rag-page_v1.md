@@ -3,7 +3,7 @@
 > **状态**：`signed`（**HG-SPEC-SIGNOFF=approved** · 00 代签 2026-08-21）  
 > **track**：`frontend` / `rag-debug`  
 > **上游**：`ops-desk-api` task `lg-rag-http`（`docs/tasks/active/task_lg_rag_http.md` · active · 实施并行中）· 契约 freeze `lg-rag-http-v1`  
-> **先例**：`docs/spec/SPEC-web-lc-evidence-page_v1.md`（signed）· `task_web_lc_evidence_page`（completed）  
+> **先例**：`docs/spec/web-lc-evidence-page/SPEC-web-lc-evidence-page_v1.md`（signed）· `task_web_lc_evidence_page`（completed）  
 > **下游**：人签本 SPEC → 00 起 web task（草稿已随附 `docs/tasks/active/task_web_lg_rag_page.md`）→ 20 审 → 30  
 > **Open Folder（实现）**：`ops-desk-web/`（页面）；配套 API 在 `ops-desk-api/`  
 > **Bounded Context**：本页**单独调用** lg_rag 旁路 HTTP，**不**替换现网 Chat（LangGraph SSE）；**不**改 Chat 默认路径。
