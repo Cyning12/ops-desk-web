@@ -52,8 +52,8 @@ importers:
         specifier: ^3.6.2
         version: 3.9.6
       spec-wave:
-        specifier: 2.4.2
-        version: 2.4.2
+        specifier: 3.0.0
+        version: 3.0.0
       typescript:
         specifier: ~5.8.3
         version: 5.8.3
@@ -1561,8 +1561,8 @@ packages:
     resolution: {integrity: sha512-1POYv7uv2gXoyGFpBCmpDVSNV74IfsWlDW216UPjbWufNf+bSU6GdbDsxdcxtfwb4xlI3yxzOTKClUosxARYrQ==}
     engines: {node: '>=0.10.0'}
 
-  spec-wave@2.4.2:
-    resolution: {integrity: sha512-ixNvPPQZoX3fiP1tbyldPkenoxfc1Wg2XAm4FOaoCB01y1TSYzry3atvjrNkAQtTEDF2F57UygMUkVV8dKcFxw==}
+  spec-wave@3.0.0:
+    resolution: {integrity: sha512-WXHAkLCBeVXhiMjxqTjhhnVNMYTd8FZbU5uIEsp46tzUYUMReglCgOPnWVR7rDw8O5ik/lyZpJusmAGDwyCQBQ==}
     engines: {node: ^22.19.0 || >=24.0.0}
     hasBin: true
     peerDependencies:
@@ -3302,7 +3302,7 @@ snapshots:
 
   speakingurl@14.0.1: {}
 
-  spec-wave@2.4.2:
+  spec-wave@3.0.0:
     dependencies:
       js-yaml: 4.3.0
 

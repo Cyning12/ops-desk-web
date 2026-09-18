@@ -78,3 +78,4 @@
 | 2026-08-31 | **dsh-coding-kit 1.10.0**：补跑 upgrade（manifest 自 1.6.1）；KIT_CLI / package 三钉一致；钉版 1.10.0 |
 
 | 2026-09-18 | **spec-wave 2.4.2**：自 dsh-coding-kit 1.10.0 改名升级；KIT_CLI / package / manifest 三钉 2.4.2；落盘根 `.coding-kit/` |
+| 2026-09-18 | **spec-wave 3.0.0**：自 2.4.2 major；KIT_CLI/package/manifest 三钉；hooks 不入库 |

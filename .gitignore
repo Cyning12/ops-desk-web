@@ -42,3 +42,6 @@ coverage
 .coding-kit/backups/
 .coding-kit/local.json
 .dsh/skills/
+
+# SpecWave audit event trail (local)
+docs/harness/audit/
