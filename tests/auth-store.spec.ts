@@ -7,12 +7,14 @@ vi.mock('../src/api/auth', () => ({
   login: vi.fn(),
   fetchMe: vi.fn(),
   logout: vi.fn(),
+  switchTenant: vi.fn(),
 }))
 
 import { fetchMe, login as apiLogin, logout as apiLogout } from '../src/api/auth'
 import { useAuthStore } from '../src/stores/auth'
 
 const fakeUser = { id: 'u-1', username: 'admin', role: 'maintainer' }
+const fakeMe = { user: fakeUser, tenantId: 'ops-desk-pilot' }
 
 function unauthorized(message = 'Invalid or expired session'): ApiError {
   return { status: 401, message, raw: null }
@@ -25,7 +27,7 @@ describe('stores/auth', () => {
   })
 
   it('ensureMe 成功：拉取 /me 并缓存，重复调用不再请求', async () => {
-    vi.mocked(fetchMe).mockResolvedValue(fakeUser)
+    vi.mocked(fetchMe).mockResolvedValue(fakeMe)
     const auth = useAuthStore()
 
     expect(await auth.ensureMe()).toEqual(fakeUser)
@@ -51,18 +53,19 @@ describe('stores/auth', () => {
   it('ensureMe 网络错误：user=null，但不缓存，下次重试', async () => {
     vi.mocked(fetchMe)
       .mockRejectedValueOnce({ status: null, message: 'Network Error', raw: null } as ApiError)
-      .mockResolvedValueOnce(fakeUser)
+      .mockResolvedValueOnce(fakeMe)
     const auth = useAuthStore()
 
     await expect(auth.ensureMe()).resolves.toBeNull()
     expect(auth.ready).toBe(false)
 
     await expect(auth.ensureMe()).resolves.toEqual(fakeUser)
+    expect(auth.tenantId).toBe('ops-desk-pilot')
     expect(fetchMe).toHaveBeenCalledTimes(2)
   })
 
   it('ensureMe 并发调用共享同一请求', async () => {
-    let resolveFetch!: (u: typeof fakeUser) => void
+    let resolveFetch!: (me: typeof fakeMe) => void
     vi.mocked(fetchMe).mockImplementation(
       () =>
         new Promise((resolve) => {
@@ -73,9 +76,10 @@ describe('stores/auth', () => {
 
     const p1 = auth.ensureMe()
     const p2 = auth.ensureMe()
-    resolveFetch(fakeUser)
+    resolveFetch(fakeMe)
     await expect(p1).resolves.toEqual(fakeUser)
     await expect(p2).resolves.toEqual(fakeUser)
+    expect(auth.tenantId).toBe('ops-desk-pilot')
     expect(fetchMe).toHaveBeenCalledTimes(1)
   })
 

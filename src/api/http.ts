@@ -1,6 +1,8 @@
 import axios from 'axios'
 import type { AxiosInstance, AxiosResponse } from 'axios'
 
+import { getStoredTenant, TENANT_HEADER } from '../tenant'
+
 /**
  * 统一 API 客户端。
  *
@@ -46,6 +48,11 @@ export const http: AxiosInstance = axios.create({
   baseURL: '/api',
   withCredentials: true,
   timeout: 30_000,
+})
+
+http.interceptors.request.use((config) => {
+  config.headers.set(TENANT_HEADER, getStoredTenant())
+  return config
 })
 
 /**

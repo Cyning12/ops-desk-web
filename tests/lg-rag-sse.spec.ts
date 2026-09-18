@@ -159,6 +159,7 @@ describe('streamLgRag', () => {
     expect(init.method).toBe('POST')
     expect(init.credentials).toBe('include')
     expect((init.headers as Record<string, string>).Accept).toBe('text/event-stream')
+    expect((init.headers as Record<string, string>)['X-Ops-Tenant-Id']).toBe('ops-desk-pilot')
     // T2：默认 supervisor · thread_id 留空不出现
     expect(JSON.parse(init.body as string)).toEqual({
       query: '最近有什么高优 issue？',

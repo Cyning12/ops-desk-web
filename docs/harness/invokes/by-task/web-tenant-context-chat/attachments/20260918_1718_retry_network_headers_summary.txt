@@ -1,0 +1,79 @@
+# Network 头摘要 · web-tenant-context-chat · 30 retry · 2026-09-18 ~17:12–17:18
+
+## 环境
+
+- web：`VITE_API_PROXY=http://127.0.0.1:8001` · `http://127.0.0.1:5173`（既有 vite 进程，未重启）
+- api：本机 uvicorn `127.0.0.1:8001`（含 `/api/ops/auth/tenant`）
+- Docker `:8000` 仍 LISTEN · **未连**（缺 tenant 会假失败）
+- 工具：Playwright MCP（user-playwright）· 登录态沿用既有会话 cookie（admin）
+
+## 步骤结果
+
+1. Overview / Chat 顶栏 `data-testid=current-tenant` 可见
+2. 切 B→A→B：`POST /api/ops/auth/tenant` → **200**
+3. Chat 下 `GET /api/ops/chat/sessions/latest`
+   - A：`x-ops-tenant-id: ops-desk-pilot` → **200**
+   - B：`x-ops-tenant-id: ops-desk-pilot-b` → **200**（上次 500 已消失）
+4. Chat 发问
+   - A：`POST /api/ops/lg-rag/stream` → **200** · `x-ops-tenant-id: ops-desk-pilot` · `accept: text/event-stream`
+   - B：`POST /api/ops/lg-rag/stream` → **200** · `x-ops-tenant-id: ops-desk-pilot-b` · `accept: text/event-stream`
+5. UI 答出内容（A/B 各一问均有助手回复）
+
+## 头摘录（Playwright network_request）
+
+### POST /api/ops/auth/tenant（B→A 切换前镜像）
+
+- x-ops-tenant-id: ops-desk-pilot-b
+- content-type: application/json
+- → 200 · body 写 ops-desk-pilot
+
+### POST /api/ops/auth/tenant（A→B）
+
+- x-ops-tenant-id: ops-desk-pilot
+- → 200 · body 写 ops-desk-pilot-b
+
+### GET /api/ops/chat/sessions/latest（A）
+
+- x-ops-tenant-id: ops-desk-pilot
+- → 200
+
+### GET /api/ops/chat/sessions/latest（B · reload 后）
+
+- x-ops-tenant-id: ops-desk-pilot-b
+- → 200
+
+### POST /api/ops/lg-rag/stream（A）
+
+- x-ops-tenant-id: ops-desk-pilot
+- accept: text/event-stream
+- content-type: application/json
+- → 200
+
+### POST /api/ops/lg-rag/stream（B）
+
+- x-ops-tenant-id: ops-desk-pilot-b
+- accept: text/event-stream
+- content-type: application/json
+- → 200
+
+## credentials
+
+- 已登录接口持续 200（tenant / sessions / stream）→ cookie 随代理请求
+- axios：`withCredentials`；`useLgRagSse`：`credentials:'include'`（代码真值；本波未改 SSE）
+- 注：浏览器 Network API 常省略 Cookie 头明文；以鉴权成功 + 代码路径为准
+
+## curl 前置探活（同 cookie · 非 UI）
+
+- sessions_A: 200
+- tenant→B: 200
+- sessions_B: 200
+
+## 截图
+
+- `20260918_1716_retry_chat_tenant_a.png`
+- `20260918_1716_retry_chat_tenant_b.png`
+- `20260918_1717_retry_chat_stream_b.png`
+
+## 备注（非 BLOCKED）
+
+- A/B `sessions/latest` 返回同一 session id（数据面隔离是否按租户分会话属 api；本波 web 竖切不因 500 阻塞）

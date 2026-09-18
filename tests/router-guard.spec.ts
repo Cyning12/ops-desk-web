@@ -7,12 +7,14 @@ vi.mock('../src/api/auth', () => ({
   login: vi.fn(),
   fetchMe: vi.fn(),
   logout: vi.fn(),
+  switchTenant: vi.fn(),
 }))
 
 import { fetchMe } from '../src/api/auth'
 import router from '../src/router'
 
 const fakeUser = { id: 'u-1', username: 'admin', role: 'maintainer' }
+const fakeMe = { user: fakeUser, tenantId: 'ops-desk-pilot' }
 
 describe('router 认证守卫', () => {
   beforeEach(() => {
@@ -34,14 +36,14 @@ describe('router 认证守卫', () => {
   })
 
   it('已登录访问受保护路由 → 正常放行', async () => {
-    vi.mocked(fetchMe).mockResolvedValue(fakeUser)
+    vi.mocked(fetchMe).mockResolvedValue(fakeMe)
 
     await router.push('/issues')
     expect(router.currentRoute.value.path).toBe('/issues')
   })
 
   it('已登录访问 /login → 重定向 /overview', async () => {
-    vi.mocked(fetchMe).mockResolvedValue(fakeUser)
+    vi.mocked(fetchMe).mockResolvedValue(fakeMe)
 
     await router.push('/login')
     expect(router.currentRoute.value.path).toBe('/overview')
@@ -59,7 +61,7 @@ describe('router 认证守卫', () => {
   })
 
   it('首次导航等待 ensureMe 完成后才放行（/me 慢响应不提前渲染）', async () => {
-    let resolveFetch!: (u: typeof fakeUser) => void
+    let resolveFetch!: (u: typeof fakeMe) => void
     vi.mocked(fetchMe).mockImplementation(
       () =>
         new Promise((resolve) => {
@@ -78,7 +80,7 @@ describe('router 认证守卫', () => {
     })
     expect(settled).toBe(false)
 
-    resolveFetch(fakeUser)
+    resolveFetch(fakeMe)
     await navigation
     expect(router.currentRoute.value.path).toBe('/overview')
   })

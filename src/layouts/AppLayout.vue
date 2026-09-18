@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 
 import { useAuthStore } from '../stores/auth'
+import type { ApiError } from '../api/http'
+import { PILOT_TENANTS } from '../tenant'
 
 const route = useRoute()
 const router = useRouter()
@@ -12,6 +15,19 @@ const activePath = computed(() => route.path)
 async function onLogout(): Promise<void> {
   await auth.logout()
   await router.push('/login')
+}
+
+async function onTenantChange(value: string): Promise<void> {
+  try {
+    await auth.switchTenant(value)
+  } catch (error) {
+    const apiError = error as ApiError
+    const message =
+      apiError.status === null
+        ? '租户切换失败：服务不可达'
+        : apiError.message || `租户切换失败（HTTP ${apiError.status ?? '?'}）`
+    ElMessage.error(message)
+  }
 }
 </script>
 
@@ -34,6 +50,16 @@ async function onLogout(): Promise<void> {
       <el-header class="app-layout__header" height="56px">
         <span class="app-layout__title">{{ route.meta.title ?? 'Ops Desk' }}</span>
         <div class="app-layout__user">
+          <span class="app-layout__tenant-label" data-testid="current-tenant">{{ auth.tenantId }}</span>
+          <el-select
+            :model-value="auth.tenantId"
+            size="small"
+            class="app-layout__tenant"
+            data-testid="tenant-switch"
+            @change="onTenantChange"
+          >
+            <el-option v-for="id in PILOT_TENANTS" :key="id" :label="id" :value="id" />
+          </el-select>
           <span class="app-layout__username">{{ auth.user?.username ?? '' }}</span>
           <el-button size="small" @click="onLogout">登出</el-button>
         </div>
@@ -95,6 +121,15 @@ async function onLogout(): Promise<void> {
 
 .app-layout__username {
   font-size: 13px;
+  color: var(--ops-text-secondary);
+}
+
+.app-layout__tenant {
+  width: 200px;
+}
+
+.app-layout__tenant-label {
+  font-size: 12px;
   color: var(--ops-text-secondary);
 }
 
