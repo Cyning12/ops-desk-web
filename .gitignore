@@ -37,3 +37,8 @@ coverage
 
 # agent worktrees
 .claude/worktrees/
+
+# SpecWave / coding-kit local state
+.coding-kit/backups/
+.coding-kit/local.json
+.dsh/skills/

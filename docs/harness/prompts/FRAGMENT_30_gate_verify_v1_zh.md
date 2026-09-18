@@ -14,9 +14,9 @@
 | HG-AUDIT-R1 | {读表} | {若有} | {Y/N} | Y | … |
 | HG-GRAPH-MODULES | {l1/01_modules或—} | — | — | … | … |
 
-reviews：task_*_audit_R1_*.md 存在且 R1 通过？ {是/否}（**v2.5+**：`verify` 对 R<n> 审查文**存在性**机械强制 · 缺失即 `VERIFY: BLOCKED · missing R<n> review`；结论通过与否仍由维护者签 `HG-AUDIT-R1` 覆盖）
+reviews：task_*_audit_R1_*.md 存在且 R1 通过？ {是/否}（**v2.5+**：`verify` 对 R<n> 审查文**存在性**机械强制 · 缺失即 `VERIFY: BLOCKED · missing R<n> review` · `--allow-no-review` 豁免留痕——**本包已接线**（src/cli.ts cmdVerify · findReview 与 status 同口径 · PRD_DEF-003 阶段二 T4 · test/cli-verify-review.test.ts 钉死）；结论通过与否仍由维护者签 `HG-AUDIT-R1` 覆盖）
 
-pre-30 invoke：`required ∩ {10,20,00}` 文件是否齐全？ {是/否}（**v2.14+**：`verify --task` **硬闸** · 缺失即 `VERIFY: BLOCKED · missing pre-30 invoke hats` · `may_start_30=false`；缺 40 **不挡** 30；`minimal` 无 preRequired 不挡；`--allow-invoke-gap` 豁免留痕）
+pre-30 invoke：`required ∩ {10,20,00}` 文件是否齐全？ {是/否}（**v2.14+**：`verify --task` **硬闸** · 缺失即 `VERIFY: BLOCKED · missing pre-30 invoke hats` · `may_start_30=false`——**本包已接线**（src/cli.ts cmdVerify · checkPre30InvokeHats 与 task close 帽集合检查同口径 · PRD_DEF-003 阶段二 T5 · test/cli-verify-invoke-hats.test.ts 钉死 · `--allow-invoke-gap` 豁免留痕）；缺 40 **不挡** 30；`minimal` 无 preRequired 不挡）
 
 **用户口头「开工 / 开干」≠ 闸** — 不得据此跳过 10 invoke 或 verify。
 
@@ -24,7 +24,7 @@ pre-30 invoke：`required ∩ {10,20,00}` 文件是否齐全？ {是/否}（**v2
 
 结论：{STOP · 签闸指引 | 可进入读码/改码}
 
-机械辅助（30 改码前必须）：`npx dsh-coding-kit verify --target <meta> --task docs/tasks/active/task_*.md [--json] [--agent-hint] [--workspace-root <Projects>]`
+机械辅助（30 改码前必须）：`npx spec-wave verify --target <meta> --task docs/tasks/active/task_*.md [--json] [--agent-hint] [--workspace-root <Projects>]`
 ```
 
 ## Agent 纪律

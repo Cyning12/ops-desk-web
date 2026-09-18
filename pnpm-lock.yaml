@@ -39,9 +39,6 @@ importers:
       '@vue/test-utils':
         specifier: ^2.4.6
         version: 2.4.11(@vue/compiler-dom@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40(typescript@5.8.3))
-      dsh-coding-kit:
-        specifier: 1.10.0
-        version: 1.10.0
       eslint:
         specifier: ^9.32.0
         version: 9.39.5
@@ -54,6 +51,9 @@ importers:
       prettier:
         specifier: ^3.6.2
         version: 3.9.6
+      spec-wave:
+        specifier: 2.4.2
+        version: 2.4.2
       typescript:
         specifier: ~5.8.3
         version: 5.8.3
@@ -919,19 +919,6 @@ packages:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
 
-  dsh-coding-kit@1.10.0:
-    resolution: {integrity: sha512-MrZPW1rnvNrS5i6XVXPhdNIVv0H4q2BpC81vMAJBTTXHl9hkRQMJA/pM84V6KQvkiWmpeXXB2hD7kqzBgPKImg==}
-    engines: {node: ^22.19.0 || >=24.0.0}
-    hasBin: true
-    peerDependencies:
-      '@deepseek-ai/cordis': ^4.0.1
-      '@deepseek-ai/dsh-tools': '>=0.0.1-rc.1 <0.2.0'
-    peerDependenciesMeta:
-      '@deepseek-ai/cordis':
-        optional: true
-      '@deepseek-ai/dsh-tools':
-        optional: true
-
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
     engines: {node: '>= 0.4'}
@@ -1573,6 +1560,19 @@ packages:
   speakingurl@14.0.1:
     resolution: {integrity: sha512-1POYv7uv2gXoyGFpBCmpDVSNV74IfsWlDW216UPjbWufNf+bSU6GdbDsxdcxtfwb4xlI3yxzOTKClUosxARYrQ==}
     engines: {node: '>=0.10.0'}
+
+  spec-wave@2.4.2:
+    resolution: {integrity: sha512-ixNvPPQZoX3fiP1tbyldPkenoxfc1Wg2XAm4FOaoCB01y1TSYzry3atvjrNkAQtTEDF2F57UygMUkVV8dKcFxw==}
+    engines: {node: ^22.19.0 || >=24.0.0}
+    hasBin: true
+    peerDependencies:
+      '@deepseek-ai/cordis': ^4.0.1
+      '@deepseek-ai/dsh-tools': '>=0.0.1-rc.1 <0.2.0'
+    peerDependenciesMeta:
+      '@deepseek-ai/cordis':
+        optional: true
+      '@deepseek-ai/dsh-tools':
+        optional: true
 
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
@@ -2632,10 +2632,6 @@ snapshots:
 
   delayed-stream@1.0.0: {}
 
-  dsh-coding-kit@1.10.0:
-    dependencies:
-      js-yaml: 4.3.0
-
   dunder-proto@1.0.1:
     dependencies:
       call-bind-apply-helpers: 1.0.2
@@ -3305,6 +3301,10 @@ snapshots:
   source-map-js@1.2.1: {}
 
   speakingurl@14.0.1: {}
+
+  spec-wave@2.4.2:
+    dependencies:
+      js-yaml: 4.3.0
 
   stackback@0.0.2: {}
 

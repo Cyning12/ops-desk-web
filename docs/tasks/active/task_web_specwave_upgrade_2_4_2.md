@@ -109,18 +109,18 @@
 
 ## 验收标准
 
-- [ ] `package.json` `"spec-wave": "2.4.2"`；lock 对齐；无 `dsh-coding-kit` 依赖
-- [ ] `.coding-kit/manifest.json` `version`=2.4.2 · `from_version`=1.10.0
-- [ ] `pnpm exec spec-wave --version` = 2.4.2
-- [ ] `pnpm exec spec-wave check --target .` exit 0 ·「已是最新」
-- [ ] `refresh-ide-blocks` 后 `cyning-harness-local` 块内容零非预期变化
-- [ ] `grep -rn "npx dsh-coding-kit" AGENTS.md CLAUDE.md .cursor/rules/ docs/runbooks/ docs/coding_wiki/ docs/harness/templates/ docs/harness/prompts/` 零命中
-- [ ] `grep -n "HG-GRAPH-MODULES" docs/harness/prompts/30-execute-code.md` 有命中
-- [ ] `grep -n 'KIT_CLI=.*spec-wave@2.4.2' scripts/graph-compile.sh` 命中；`./scripts/graph-compile.sh` exit 0
-- [ ] 根级裸 `docs/spec/SPEC-web-*.md` 已迁夹；`pnpm exec spec-wave check` 无根级裸 SPEC WARN（或 FEEDBACK 说明残留）
-- [ ] `pnpm lint` / `pnpm test` / `pnpm build` exit 0
-- [ ] `pnpm exec spec-wave verify --target . --task docs/tasks/active/task_web_specwave_upgrade_2_4_2.md` PASS
-- [ ] FEEDBACK 落盘
+- [x] `package.json` `"spec-wave": "2.4.2"`；lock 对齐；无 `dsh-coding-kit` 依赖
+- [x] `.coding-kit/manifest.json` `version`=2.4.2 · `from_version`=1.10.0
+- [x] `pnpm exec spec-wave --version` = 2.4.2
+- [x] `pnpm exec spec-wave check --target .` exit 0 ·「已是最新」
+- [x] `refresh-ide-blocks` 后 `cyning-harness-local` 块内容零非预期变化（本波手改命令字面；local 块保留）
+- [x] `grep -rn "npx dsh-coding-kit" AGENTS.md CLAUDE.md .cursor/rules/ docs/runbooks/ docs/coding_wiki/ docs/harness/templates/ docs/harness/prompts/` 零命中
+- [x] `grep -n "HG-GRAPH-MODULES" docs/harness/prompts/30-execute-code.md` 有命中
+- [x] `grep -n 'KIT_CLI=.*spec-wave@2.4.2' scripts/graph-compile.sh` 命中；`./scripts/graph-compile.sh` exit 0
+- [x] 根级裸 `docs/spec/SPEC-web-*.md` 已迁夹；`pnpm exec spec-wave check` 无根级裸 SPEC WARN
+- [x] `pnpm lint` / `pnpm test` / `pnpm build` exit 0（179 tests）
+- [x] `pnpm exec spec-wave verify --target . --task docs/tasks/active/task_web_specwave_upgrade_2_4_2.md` PASS
+- [x] FEEDBACK 落盘 `docs/spec/doc-health/feedback/2026-09-18_2.4.2_web_upgrade.md`
 
 ---
 
@@ -137,8 +137,12 @@
 
 | 命令 | 退出码 | 备注 |
 |------|--------|------|
-| （30 回填） | | |
+| `spec-wave --version` | 0 | 2.4.2 |
+| `check --target .` | 0 | 已是最新 |
+| `verify --task` | 0 | PASS |
+| `./scripts/graph-compile.sh` | 0 | KIT_CLI=@2.4.2 |
+| `pnpm lint/test/build` | 0 | 179 tests |
 
 ### KPI
 
-Task_KPI%: （关账回填）
+Task_KPI%: 100（Wave A 过程轨完成；关账待 PR）
