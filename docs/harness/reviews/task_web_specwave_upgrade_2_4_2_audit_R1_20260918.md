@@ -60,3 +60,10 @@
 | HG-TASK-DRAFT | approved（维护者 Implement 授权） |
 | HG-AUDIT-R1 | approved（本 R1 PASS） |
 | HG-GRAPH-MODULES | approved（过程轨 · 不改模块边界） |
+
+---
+
+## 00 签收（2026-09-18）
+
+维护者本窗口述：「授权签收所有过程文档，先升级到2.4.2，开始统筹派工」。  
+**本审查文与关联 task / 30 invoke / FEEDBACK 一并签收有效**；Wave B（3.0.0）不在本波范围。

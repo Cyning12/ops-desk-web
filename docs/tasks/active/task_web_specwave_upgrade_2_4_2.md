@@ -5,7 +5,8 @@
 > **前置**：manifest / package 钉 `dsh-coding-kit@1.10.0`（`.cyning-harness/manifest.json`）；目标 **`spec-wave@2.4.2`**（对齐 ops-desk-api 当前态）  
 > **分支**：`task/web-specwave-2-4-2`（base：`main`）  
 > **执行模式**：Open Folder = **ops-desk-web**；过程轨；不改 Vue / SSE 业务逻辑  
-> **授权**：维护者确认计划「Implement the plan」（2026-09-18）· Wave A 目标钉 2.4.2
+> **授权**：维护者确认计划「Implement the plan」（2026-09-18）· Wave A 目标钉 2.4.2  
+> **00 复签**：2026-09-18「授权签收所有过程文档，先升级到2.4.2，开始统筹派工」· Wave B（3.0.0）本波 deferred
 
 ---
 
@@ -36,9 +37,9 @@
 
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
-| HG-GRAPH-MODULES | approved | 30 | 00 代签：仅过程轨版本钉与命令字面；不改业务模块边界 |
-| HG-TASK-DRAFT | approved | 20-R1, 30 | 2026-09-18 维护者确认计划 Implement · 00 本窗代签 |
-| HG-AUDIT-R1 | approved | 30 | R1 PASS（见 reviews）· 2026-09-18 维护者 Implement 授权 · 00 本窗代签 |
+| HG-GRAPH-MODULES | approved | 30 | 00 代签+复签：仅过程轨版本钉与命令字面；不改业务模块边界 |
+| HG-TASK-DRAFT | approved | 20-R1, 30 | 2026-09-18 维护者 Implement · **00 复签**「先升级到2.4.2」 |
+| HG-AUDIT-R1 | approved | 30 | R1 PASS · 2026-09-18 **00 复签**过程文档全部签收 |
 
 ---
 
