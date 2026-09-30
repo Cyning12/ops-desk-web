@@ -79,3 +79,4 @@
 
 | 2026-09-18 | **spec-wave 2.4.2**：自 dsh-coding-kit 1.10.0 改名升级；KIT_CLI / package / manifest 三钉 2.4.2；落盘根 `.coding-kit/` |
 | 2026-09-18 | **spec-wave 3.0.0**：自 2.4.2 major；KIT_CLI/package/manifest 三钉；hooks 不入库 |
+| 2026-09-30 | **spec-wave 3.0.2**：自 3.0.0 patch；KIT_CLI/package/manifest/host-tools 四钉；`pins check --consumer` 首跑；hooks 仍不入库 |
