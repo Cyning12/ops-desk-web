@@ -1,11 +1,11 @@
 {
-  "version": "3.0.0",
+  "version": "3.0.2",
   "preset": "harness-only",
   "ide": [
     "cursor",
     "claude",
     "agents"
   ],
-  "from_version": "2.4.2",
-  "upgraded_at": "2026-09-18T01:57:08Z"
+  "from_version": "3.0.0",
+  "upgraded_at": "2026-09-30T09:20:25Z"
 }
