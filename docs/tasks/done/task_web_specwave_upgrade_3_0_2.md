@@ -86,7 +86,7 @@ Wave B 已把本仓钉到 **`spec-wave@3.0.0`**。上游 **`spec-wave@3.0.2`**�
 - [x] FEEDBACK 落盘
 - [x] `verify --task` PASS
 - [x] invoke 落盘 `docs/harness/invokes/by-task/web-specwave-upgrade-3-0-2/`
-- [ ] `related_pr` `#50` · CI 全绿后 merge · CLOSE 归档
+- [x] `related_pr` `#50` · CI 全绿后 merge · CLOSE 归档
 
 ### 自检结论
 
