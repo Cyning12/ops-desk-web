@@ -2,6 +2,8 @@
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import HitlApprovalCard from '../components/chat/HitlApprovalCard.vue'
+import ChatHistoryPanel from '../components/chat-history/ChatHistoryPanel.vue'
 import { useAuthStore } from '../stores/auth'
 import { useChatStore } from '../stores/chat'
 
@@ -12,6 +14,8 @@ const router = useRouter()
 
 const draft = ref('')
 const listEl = ref<HTMLElement | null>(null)
+// F1（裁定 F-B）：历史侧栏内嵌 Chat 页 · 可折叠 · 默认收起（单列 860px 布局最小增量）
+const historyOpen = ref(false)
 
 onMounted(() => {
   void chat.loadLatestSession()
@@ -66,24 +70,47 @@ function onNewSession(): void {
 function onResume(): void {
   chat.resumeFromCursor()
 }
+
+// F1：点击历史条目 → B1 history 加载渲染 + waiting_approval thread 续看挂起（store 内闭环）
+function onSelectHistory(threadId: string): void {
+  void chat.openHistoryThread(threadId)
+}
+
+function onToggleHistory(): void {
+  historyOpen.value = !historyOpen.value
+}
 </script>
 
 <template>
   <div class="chat-page">
-    <header class="chat-page__header">
-      <h1 class="chat-page__title">Chat</h1>
-      <p v-if="chat.session" class="chat-page__session">
-        {{ chat.session.title || 'New Chat' }}
-        <span class="chat-page__session-id">#{{ chat.session.id }}</span>
-      </p>
-      <p v-else-if="chat.sessionLoading" class="chat-page__session">加载会话中…</p>
-      <span v-if="chat.threadId" class="chat-page__thread-id" :title="chat.threadId">
-        thread {{ chat.threadId.slice(0, 8) }}
-      </span>
-      <el-button class="chat-page__new-session" size="small" plain @click="onNewSession">
-        新会话
-      </el-button>
-    </header>
+    <aside v-if="historyOpen" class="chat-page__sidebar">
+      <ChatHistoryPanel @select="onSelectHistory" />
+    </aside>
+
+    <div class="chat-page__main">
+      <header class="chat-page__header">
+        <el-button
+          class="chat-page__history-toggle"
+          size="small"
+          text
+          data-test="history-toggle"
+          @click="onToggleHistory"
+        >
+          {{ historyOpen ? '收起历史' : '历史' }}
+        </el-button>
+        <h1 class="chat-page__title">Chat</h1>
+        <p v-if="chat.session" class="chat-page__session">
+          {{ chat.session.title || 'New Chat' }}
+          <span class="chat-page__session-id">#{{ chat.session.id }}</span>
+        </p>
+        <p v-else-if="chat.sessionLoading" class="chat-page__session">加载会话中…</p>
+        <span v-if="chat.threadId" class="chat-page__thread-id" :title="chat.threadId">
+          thread {{ chat.threadId.slice(0, 8) }}
+        </span>
+        <el-button class="chat-page__new-session" size="small" plain @click="onNewSession">
+          新会话
+        </el-button>
+      </header>
 
     <el-alert
       v-if="chat.restoredNotice"
@@ -117,6 +144,16 @@ function onResume(): void {
       :title="`获取会话失败：${chat.sessionError}`"
       :closable="false"
       show-icon
+    />
+
+    <el-alert
+      v-if="chat.historyError"
+      class="chat-page__alert"
+      type="warning"
+      show-icon
+      :title="chat.historyError"
+      data-test="history-error"
+      @close="chat.historyError = null"
     />
 
     <div ref="listEl" class="chat-page__messages">
@@ -186,6 +223,10 @@ function onResume(): void {
               >子任务执行中…</span
             >
             <span v-else-if="chat.streaming" class="chat-message__pending">处理中…</span>
+            <p v-if="message.truncated" class="chat-message__truncated" data-test="answer-truncated">
+              内容过长已截断
+            </p>
+            <HitlApprovalCard v-if="message.hitl" :message="message" />
           </template>
           <span v-else class="chat-message__text">{{ message.content }}</span>
         </div>
@@ -212,6 +253,9 @@ function onResume(): void {
       </div>
     </el-alert>
     <p v-if="chat.resumeHint" class="chat-page__hint">{{ chat.resumeHint }}</p>
+    <p v-if="chat.hitlPendingError" class="chat-page__hint" data-test="hitl-pending-error">
+      {{ chat.hitlPendingError }}
+    </p>
     <p v-if="!chat.error && chat.interrupted" class="chat-page__hint">已中断，可修改后重新发送。</p>
     <p v-if="!chat.error && !chat.interrupted && chat.lastDone" class="chat-page__hint">
       完成 · 耗时 {{ chat.lastDone.latency_ms }}ms<template v-if="chat.lastDone.model">
@@ -248,20 +292,38 @@ function onResume(): void {
         发送
       </el-button>
     </footer>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .chat-page {
   display: flex;
+  flex-direction: row;
+  height: 100%;
+  background: var(--ops-bg);
+  color: var(--ops-text);
+}
+
+/* F1（裁定 F-B）：内嵌历史侧栏（可折叠 · 不新开路由） */
+.chat-page__sidebar {
+  flex: none;
+  width: 240px;
+  padding: 16px 12px;
+  border-right: 1px solid rgba(44, 44, 44, 0.1);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.chat-page__main {
+  display: flex;
   flex-direction: column;
+  flex: 1;
   height: 100%;
   max-width: 860px;
   margin: 0 auto;
   padding: 16px 24px;
   box-sizing: border-box;
-  background: var(--ops-bg);
-  color: var(--ops-text);
 }
 
 .chat-page__header {
@@ -357,6 +419,14 @@ function onResume(): void {
 .chat-message__pending {
   font-size: 13px;
   opacity: 0.6;
+}
+
+/* F1 · 历史 answer 截断标记（上游 answer_truncated · AC6） */
+.chat-message__truncated {
+  margin: 6px 0 0;
+  font-size: 12px;
+  opacity: 0.55;
+  font-style: italic;
 }
 
 /* T5 打字机光标态（R1-N4 内决 · 最小 UI 增量）：streaming 中最新 assistant 气泡尾随闪烁光标 */
