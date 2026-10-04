@@ -1,7 +1,7 @@
 # SPEC：Web · 会话历史 + 中断续看 + HITL 审批面（web-chat-history-hitl-ux）（v0）
 
 > **层级**：前端专项 SPEC（承上游 signed SPEC §2 F1/F2 概要 · 维护者裁定 Q4「前端 agent 专项落盘」）  
-> **状态**：`draft`（HG-SPEC-SIGNOFF=**pending** · 本帽不代签 · 等维护者）  
+> **状态**：`signed`（HG-SPEC-SIGNOFF=**approved** · 2026-10-04 · **00 代录** · 维护者令原话：「签收，后续文档授权00签收，若spec内容未完成继续进行新task，把此spec完整完成」· 20-spec-audit R1 **pass** 零阻塞 · nit 2 条移交 task 阶段）  
 > **上游（只读 · 唯一契约真值 · 禁改 api 仓）**：`ops-desk-api/docs/spec/chat-history-hitl-ux/SPEC-chat-history-hitl-ux_v0.md`（signed 2026-09-30 · §2 B1/B2 端点契约 · §2 F1/F2 前端概要=本 SPEC 范围依据 · §3 非范围 · §5 failure_paths · §6 前端验收「以前端专项 SPEC 为准」）  
 > **上游勘误**：`ops-desk-api/docs/spec/chat-history-hitl-ux/ERRATA-chat-history-hitl-ux_v0_20260930.md`（`run.start` payload 增可选 `query` 键 · 非新事件 · 裁定 A1）  
 > **上游审查**：`ops-desk-api/docs/harness/reviews/spec_chat_history_hitl_ux_audit_R1_20260930.md`（PASS-WITH-NITS · 零阻塞）  
@@ -29,7 +29,7 @@
 
 | human_gate_id | status | 说明 |
 |---|---|---|
-| **HG-SPEC-SIGNOFF** | **pending** | 待维护者签收（本帽禁止代签）；签收路径建议：20-spec-audit 书面审 → 维护者签录 → 00 起草 web task |
+| **HG-SPEC-SIGNOFF** | **approved**（2026-10-04 · 00 代录） | 维护者令原话：「签收，后续文档授权00签收，若spec内容未完成继续进行新task，把此spec完整完成」；R1 审查文 `docs/harness/reviews/spec_web_chat_history_hitl_ux_audit_R1_20261004.md`（pass · 零阻塞 · nit N1/N2 移交 task 阶段）；后续过程文档闸（HG-TASK-DRAFT / HG-AUDIT-R1）维护者授权 00 签收；00 可起草 web task |
 
 ---
 
@@ -266,3 +266,4 @@ AC1–AC15 全部可 Vitest 机断：client mock 字段族断言 · store 分支
 | 日期 | 版本 | 内容 |
 |---|---|---|
 | 2026-10-04 | v0 | 10-spec 初稿：承上游 signed SPEC §2 F1/F2 + Q4 裁定专项落盘；契约冻结面照抄；本仓缺口实证锚点（`hitl.waiting` 落 default · `done` 不看 status · clearActiveRun 清场）；裁定 F-A/F-B/F-C；FP-F1~FP-F12；AC1–AC15；R0–R5 回填；HG-SPEC-SIGNOFF=pending 待人签 |
+| 2026-10-04 | v0 | 20-spec-audit R1 **pass**（零阻塞 · nit N1/N2 移交 task 阶段）· **00 代录 HG-SPEC-SIGNOFF=approved**（维护者令原话：「签收，后续文档授权00签收，若spec内容未完成继续进行新task，把此spec完整完成」）· 下一棒：00 起草 web task（F1/F2） |
