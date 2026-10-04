@@ -104,6 +104,7 @@
 | 2026-09-08 | 归档 `task_web_lg_rag_sse_subtask_message.md`（PR #41 · 00 代签 · 同授权波次） |
 | 2026-09-08 | 归档 `task_web_fix_chat_live_reactivity.md`（PR #43 · 实流缺陷修复 · 修复前测红证据） |
 | 2026-09-30 | 归档 `task_web_specwave_upgrade_3_0_2.md`（PR #50 · spec-wave 3.0.0→3.0.2 · 00 代签 · 维护者授权后续过程文档签收） |
+| 2026-10-04 | 归档 `task_web_chat_history_hitl_ux.md`（PR #52 · F1 历史+续看 / F2 HITL 审批面 · 修 waiting_approval 假完成 bug · 00 代签 · 同授权波次） |
 
 ## 给维护者
 
