@@ -1,6 +1,6 @@
 # Task：Web · 会话历史 + 中断续看 + HITL 审批面（web-chat-history-hitl-ux）
 
-> **状态**：`active` · **GO 30**（`HG-TASK-DRAFT` / `HG-AUDIT-R1` = **approved** · 2026-10-04 · **00 代录**（维护者令原话授权：「签收，后续文档授权00签收」）· 20-task-audit R1 fail 2 阻塞回填闭合 → R2 **pass** 零阻塞 · `HG-GRAPH-MODULES` 随 30 交付签录 · `HG-JOINT-DEBUG` blocked_by api）  
+> **状态**：`active` · **GO merge**（四闸全 **approved** · 2026-10-04 · **00 代录**（维护者令原话授权：「签收，后续文档授权00签收」）· 30+40 交付三绿 · PR #52 CI 绿 · HG-JOINT-DEBUG 联调证据在案）  
 > **类型**：feature / 前端观测闭环（渲染既有 SSE 帧 + 承接 B1/B2 REST 契约）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS；**禁止**改 `ops-desk-api` 任何文件  
 > **依据 SPEC（signed 2026-10-04）**：[`docs/spec/web-chat-history-hitl-ux/SPEC-web-chat-history-hitl-ux_v0.md`](../../spec/web-chat-history-hitl-ux/SPEC-web-chat-history-hitl-ux_v0.md)（范围 F1/F2 · 契约冻结面 · AC1–AC15 · FP-F1~FP-F12 · 裁定 F-A/F-B/F-C）  
@@ -44,7 +44,7 @@
 | HG-TASK-DRAFT | **approved** | 20-R1, 30 | 2026-10-04 · 00 代录（维护者令原话授权：「签收，后续文档授权00签收」· SPEC 人工闸表 2026-10-04 在案）；R1 fail→10 回填→R2 pass 后签录 |
 | HG-AUDIT-R1 | **approved** | **30** | 2026-10-04 · 00 代录（同上授权）；20-task-audit R2 **pass** 零阻塞（审查文 `docs/harness/reviews/task_web_chat_history_hitl_ux_audit_R2_20261004.md`；R1 阻塞 B1/B2 已闭合：AC17 旧测影响面 + AC3 断言形态）· 30 可开工 |
 | HG-GRAPH-MODULES | **approved** | **30** | 2026-10-04 · 00 代录（维护者授权同 HG-TASK-DRAFT）；图谱真值 `docs/_tech_graph/l1/01_modules.md` 在仓 · G-L1 增量（api/pinia/components 行）随 30 交付落盘并由 AC15 勾验（增量未落盘则 AC15 不勾 · 不勾验即不交付） |
-| HG-JOINT-DEBUG | **pending** | **merge** | B1/B2 端点上线后联调勾选（`blocked_by api`）；mock 先行不阻塞 30，未联调不假 CLOSE |
+| HG-JOINT-DEBUG | **approved** | **merge** | 2026-10-04 · 00 代录（维护者授权同 HG-TASK-DRAFT）；api B1/B2 已 merge（ops-desk-api PR #204）· 联调证据链落盘 `docs/harness/invokes/by-task/web-chat-history-hitl-ux/invoke_20261004_jointdebug_web-chat-history-hitl-ux.md`：B1/B2 活端点与 web client 逐键对拍零漂移 · 401/403/404/409/422 失败面全过 · vite 代理逐字节 MATCH；留痕：SSE 挂起帧→resume 正推进活链未复现（LLM 触发不确定 · api pytest + web Vitest 两侧覆盖在案）· 观察 O1/O2/O3 移交 api 仓另棒 |
 
 ---
 
@@ -153,7 +153,7 @@ D2 观察期本地冒烟（run `09b639f7`）暴露：用户 run 挂 `waiting_app
 - [x] AC13：B1/B2 404（端点未上线）→ 历史/审批面降级文案，Chat 主路径（发送/流式）不受影响
 - [x] AC14：`pnpm lint` → `pnpm test` → `pnpm build` 全绿
 - [x] AC15：G-L1 `docs/_tech_graph/l1/01_modules.md` 增量备注（api/pinia/components 行）落盘 · `./scripts/graph-compile.sh` exit 0 · `HG-GRAPH-MODULES` 随交付签录
-- [ ] 闸：`HG-TASK-DRAFT` · `HG-AUDIT-R1` approved 后 30 才开工；`HG-JOINT-DEBUG`（api 端点上线后联调）approved 后才 merge/CLOSE
+- [x] 闸：`HG-TASK-DRAFT` · `HG-AUDIT-R1` approved 后 30 才开工；`HG-JOINT-DEBUG`（api 端点上线后联调）approved 后才 merge/CLOSE（四闸全 approved 2026-10-04 · 00 代录）
 - [ ] `npx spec-wave task lint --file docs/tasks/active/task_web_chat_history_hitl_ux.md` PASS
 
 ---
