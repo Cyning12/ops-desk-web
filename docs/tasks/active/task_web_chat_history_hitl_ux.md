@@ -130,29 +130,29 @@ D2 观察期本地冒烟（run `09b639f7`）暴露：用户 run 挂 `waiting_app
 
 **F1 · 历史侧栏与续看**
 
-- [ ] AC1：mock `GET /api/ops/chat/threads`（契约字段族）→ 侧栏渲染列表；`latest_run_status='waiting_approval'` 条目渲染可识别徽标（断言 DOM 徽标 class/文案存在，其余状态不渲染该徽标）
-- [ ] AC2：点击条目 → 调 `GET .../{thread_id}/history` → 消息流按 run 序渲染：query→user 气泡 · answer→assistant 气泡 · subtasks→子任务过程列 · `terminal_status='waiting_approval'` 的 run 渲染待审批形态（**非**完成态）
-- [ ] AC3（**N2 回填 · 断言形态钉死 · 20-task-audit R1 B2 已修形态**）：进入含 `waiting_approval` run 的 thread → 续看走既有 `resumeFromCursor`/`replayLgRag`（`{run_id, after_seq}`）路径（mock 断言调用）；**无**新增续看端点/机制——grep/计数断言：`grep -rln "replayLgRag" src/ | wc -l` 仍为 `2`（仅 `useLgRagSse.ts` 定义 + `chat.ts` 消费）· `grep -rn "import.*replayLgRag" src/ | wc -l` = `1`（仅 `chat.ts` 单点 import · replay 封装仍唯一 `useLgRagSse.ts` · 无第二封装/第二消费点）；**基线注记**：`src/stores/chat.ts:764` 既有 T4 文档注释含 `lg-rag/replay` 字面（实现期不增删 · 10-task 真读确认），属既有基线、不计入封装清点——故不采用 `grep "lg-rag/replay"` 字面计数形态（现状即为 1 · 会假红）
-- [ ] AC4：threads 空数组 → 空态文案；history 空 → 空态文案；`title` 为空串 → 降级标题（run_id 前缀+时间）渲染不崩
-- [ ] AC5：`cursor` 分页两页 mock → 「加载更多」拼接不重不漏（断言 thread_id 序列并集、无重复）
-- [ ] AC6：`answer_truncated=true` 的 run → 渲染截断标记
+- [x] AC1：mock `GET /api/ops/chat/threads`（契约字段族）→ 侧栏渲染列表；`latest_run_status='waiting_approval'` 条目渲染可识别徽标（断言 DOM 徽标 class/文案存在，其余状态不渲染该徽标）
+- [x] AC2：点击条目 → 调 `GET .../{thread_id}/history` → 消息流按 run 序渲染：query→user 气泡 · answer→assistant 气泡 · subtasks→子任务过程列 · `terminal_status='waiting_approval'` 的 run 渲染待审批形态（**非**完成态）
+- [x] AC3（**N2 回填 · 断言形态钉死 · 20-task-audit R1 B2 已修形态**）：进入含 `waiting_approval` run 的 thread → 续看走既有 `resumeFromCursor`/`replayLgRag`（`{run_id, after_seq}`）路径（mock 断言调用）；**无**新增续看端点/机制——grep/计数断言：`grep -rln "replayLgRag" src/ | wc -l` 仍为 `2`（仅 `useLgRagSse.ts` 定义 + `chat.ts` 消费）· `grep -rn "import.*replayLgRag" src/ | wc -l` = `1`（仅 `chat.ts` 单点 import · replay 封装仍唯一 `useLgRagSse.ts` · 无第二封装/第二消费点）；**基线注记**：`src/stores/chat.ts:764` 既有 T4 文档注释含 `lg-rag/replay` 字面（实现期不增删 · 10-task 真读确认），属既有基线、不计入封装清点——故不采用 `grep "lg-rag/replay"` 字面计数形态（现状即为 1 · 会假红）
+- [x] AC4：threads 空数组 → 空态文案；history 空 → 空态文案；`title` 为空串 → 降级标题（run_id 前缀+时间）渲染不崩
+- [x] AC5：`cursor` 分页两页 mock → 「加载更多」拼接不重不漏（断言 thread_id 序列并集、无重复）
+- [x] AC6：`answer_truncated=true` 的 run → 渲染截断标记
 
 **F2 · HITL 审批形态**
 
-- [ ] AC7：store 注入 `hitl.waiting` 帧（payload `{reason, requests:[{id,...}]}`）→ 渲染审批卡片：reason 文本 + 申请 id + 批准/驳回双按钮（现状 default 忽略 → 改后断言卡片存在；store 态断言审批请求入列）
-- [ ] AC8：点「批准」→ `POST .../decide` body `{decision:'approved'}` → 成功后 `POST .../resume`（断言调用顺序 decide 先于 resume · 两次调用）；点「驳回」→ `{decision:'rejected'}` → resume；动作中按钮 loading 且禁重复点击
-- [ ] AC9：decide 409 → 卡片转「已被处理」态且**不**弹错误条；decide 404 → 中性提示「申请不存在或已处理」；401 → 走全局跳登录处理器；403 → 审批动作隐藏/降级提示
-- [ ] AC10：**`done` 按 status 分支（修 bug 钉死）**：`done{status:'waiting_approval'}` → `streaming=false` 且 `activeRun` **保留**（不调 `clearActiveRun`）且待审批视觉在；`done{status:'completed'}` / `{status:'failed'}` / 无 status 旧帧 → `activeRun` 清除、维持现行完成/失败呈现（store 单测逐一分支断言）
-- [ ] AC11（**N2 回填 · 断言形态钉死**）：SSE 契约零动——diff 空断言：`git diff $(git merge-base main HEAD)...HEAD -- src/composables/useLgRagSse.ts` 输出为空；grep 断言：`grep -n "hitl" src/composables/useLgRagSse.ts` 无命中（事件分支仅落 store 层 · 前端只消费既有 `hitl.waiting`/`done{status}` 帧）
-- [ ] AC16（**N1 回填 · `fetchHitlPending()` 消费点钉死**）：① decide/resume 动作链完成后调 `fetchHitlPending()` 刷新审批态（FP-F2）；② 进入含 `waiting_approval` run 的 thread 时一次性拉取核对（**不轮询** · 403/404 不炸屏 · 降级呈现——与 FP-F4 同口径）；Vitest 断言两消费点调用；grep 断言 hitl 面无 `setInterval` 新增（非范围：轮询定时器 / 全局面板）
-- [ ] AC17（**20-task-audit R1 B1 回填 · 旧测 grep 影响面清点**）：F2-4 改 `done` 终态语义属行为变更，验收显式清点既有 done 帧断言面（`tests/chat-store.spec.ts` · 10-task 真读枚举 10 处）：`:112-119`（live done → `streaming=false` · `lastDone` · `error=null`）· `:386`（done 后续问 `threadId` 幂等沿用）· `:440-449`（done 后 `startNewSession` 清场）· `:589-593`（live done → `activeRun` 与 localStorage 清除）· `:647-654`（replay done → `activeRun` 清除 · `streaming=false` · `resumeHint=null`）· `:803-806`（replay done → `activeRun` 清除）· `:890-891`（终帧替换后 done → `streaming=false`）· `:928-931`（done 后迟到 answer 帧忽略）· `:977-978`（降级整段后 done → `streaming=false`）· `:1003-1008`（replay done → `activeRun` 清除 · `streaming=false`）——**上述注入 done 帧均无 `payload.status`**，与 AC10「无 status 旧帧 → 维持现行（clearActiveRun）」相容 · subset 安全；断言：**现有 done 相关用例零改动全绿**（注入帧无 status 走现行分支）；若 30 确需改任一旧测，须逐条在 30 invoke 留痕理由（供 40/20 回归对拍）
+- [x] AC7：store 注入 `hitl.waiting` 帧（payload `{reason, requests:[{id,...}]}`）→ 渲染审批卡片：reason 文本 + 申请 id + 批准/驳回双按钮（现状 default 忽略 → 改后断言卡片存在；store 态断言审批请求入列）
+- [x] AC8：点「批准」→ `POST .../decide` body `{decision:'approved'}` → 成功后 `POST .../resume`（断言调用顺序 decide 先于 resume · 两次调用）；点「驳回」→ `{decision:'rejected'}` → resume；动作中按钮 loading 且禁重复点击
+- [x] AC9：decide 409 → 卡片转「已被处理」态且**不**弹错误条；decide 404 → 中性提示「申请不存在或已处理」；401 → 走全局跳登录处理器；403 → 审批动作隐藏/降级提示
+- [x] AC10：**`done` 按 status 分支（修 bug 钉死）**：`done{status:'waiting_approval'}` → `streaming=false` 且 `activeRun` **保留**（不调 `clearActiveRun`）且待审批视觉在；`done{status:'completed'}` / `{status:'failed'}` / 无 status 旧帧 → `activeRun` 清除、维持现行完成/失败呈现（store 单测逐一分支断言）
+- [x] AC11（**N2 回填 · 断言形态钉死**）：SSE 契约零动——diff 空断言：`git diff $(git merge-base main HEAD)...HEAD -- src/composables/useLgRagSse.ts` 输出为空；grep 断言：`grep -n "hitl" src/composables/useLgRagSse.ts` 无命中（事件分支仅落 store 层 · 前端只消费既有 `hitl.waiting`/`done{status}` 帧）
+- [x] AC16（**N1 回填 · `fetchHitlPending()` 消费点钉死**）：① decide/resume 动作链完成后调 `fetchHitlPending()` 刷新审批态（FP-F2）；② 进入含 `waiting_approval` run 的 thread 时一次性拉取核对（**不轮询** · 403/404 不炸屏 · 降级呈现——与 FP-F4 同口径）；Vitest 断言两消费点调用；grep 断言 hitl 面无 `setInterval` 新增（非范围：轮询定时器 / 全局面板）
+- [x] AC17（**20-task-audit R1 B1 回填 · 旧测 grep 影响面清点**）：F2-4 改 `done` 终态语义属行为变更，验收显式清点既有 done 帧断言面（`tests/chat-store.spec.ts` · 10-task 真读枚举 10 处）：`:112-119`（live done → `streaming=false` · `lastDone` · `error=null`）· `:386`（done 后续问 `threadId` 幂等沿用）· `:440-449`（done 后 `startNewSession` 清场）· `:589-593`（live done → `activeRun` 与 localStorage 清除）· `:647-654`（replay done → `activeRun` 清除 · `streaming=false` · `resumeHint=null`）· `:803-806`（replay done → `activeRun` 清除）· `:890-891`（终帧替换后 done → `streaming=false`）· `:928-931`（done 后迟到 answer 帧忽略）· `:977-978`（降级整段后 done → `streaming=false`）· `:1003-1008`（replay done → `activeRun` 清除 · `streaming=false`）——**上述注入 done 帧均无 `payload.status`**，与 AC10「无 status 旧帧 → 维持现行（clearActiveRun）」相容 · subset 安全；断言：**现有 done 相关用例零改动全绿**（注入帧无 status 走现行分支）；若 30 确需改任一旧测，须逐条在 30 invoke 留痕理由（供 40/20 回归对拍）
 
 **通用 / 图谱 / 质量门**
 
-- [ ] AC12：mock 字段族与上游 B1/B2 task 逐键对齐（类型定义对照 SPEC §2 表 · 不自造字段；未知额外键容忍不依赖）
-- [ ] AC13：B1/B2 404（端点未上线）→ 历史/审批面降级文案，Chat 主路径（发送/流式）不受影响
-- [ ] AC14：`pnpm lint` → `pnpm test` → `pnpm build` 全绿
-- [ ] AC15：G-L1 `docs/_tech_graph/l1/01_modules.md` 增量备注（api/pinia/components 行）落盘 · `./scripts/graph-compile.sh` exit 0 · `HG-GRAPH-MODULES` 随交付签录
+- [x] AC12：mock 字段族与上游 B1/B2 task 逐键对齐（类型定义对照 SPEC §2 表 · 不自造字段；未知额外键容忍不依赖）
+- [x] AC13：B1/B2 404（端点未上线）→ 历史/审批面降级文案，Chat 主路径（发送/流式）不受影响
+- [x] AC14：`pnpm lint` → `pnpm test` → `pnpm build` 全绿
+- [x] AC15：G-L1 `docs/_tech_graph/l1/01_modules.md` 增量备注（api/pinia/components 行）落盘 · `./scripts/graph-compile.sh` exit 0 · `HG-GRAPH-MODULES` 随交付签录
 - [ ] 闸：`HG-TASK-DRAFT` · `HG-AUDIT-R1` approved 后 30 才开工；`HG-JOINT-DEBUG`（api 端点上线后联调）approved 后才 merge/CLOSE
 - [ ] `npx spec-wave task lint --file docs/tasks/active/task_web_chat_history_hitl_ux.md` PASS
 
@@ -241,6 +241,21 @@ AC1–AC15 照 SPEC 映射 + AC16（N1）+ AC17（R1-B1 旧测 grep 影响面清
 |---|---|
 | `npx spec-wave task lint --file docs/tasks/active/task_web_chat_history_hitl_ux.md` | **PASS**（2026-10-04 本帽实跑） |
 | 结论 | **10 拆解完成 · F1+F2 单 task · N1/N2 已回填 · NO-GO 30（闸 pending 走流程）** |
+
+### 自检结论（执行者 · 30/40 · 2026-10-04）
+
+| 检查 | 结果 |
+|---|---|
+| GATE_VERIFY（`npx spec-wave verify --target . --task <本 task>`） | **PASS**（HG-TASK-DRAFT/HG-AUDIT-R1/HG-GRAPH-MODULES 均 approved · 开工前实跑） |
+| `pnpm lint` | **绿**（exit 0 · 实跑） |
+| `pnpm test` | **绿**（28 文件 · **225** 用例全过 · 新增 46 条 · 旧测零改动 · AC17） |
+| `pnpm build` | **绿**（vue-tsc --noEmit + vite build · 实跑） |
+| AC3 grep 断言 | `grep -rln "replayLgRag" src/` = **2** · `grep -rn "import.*replayLgRag" src/` = **1**（实跑） |
+| AC11 diff/grep 断言 | `git diff $(git merge-base main HEAD)...HEAD -- src/composables/useLgRagSse.ts` = **空** · `grep -n "hitl" src/composables/useLgRagSse.ts` = **无命中**（实跑） |
+| AC16 grep 断言 | hitl 面（api/hitl.ts · api/chatHistory.ts · stores/chat.ts · components/）**无 `setInterval` 新增**（实跑） |
+| `./scripts/graph-compile.sh` | **exit 0**（01_modules.md api/pinia/components 行增量 + 10_flow_chat.graph.yaml 补注 · AC15） |
+| 验收勾选 | AC1–AC17 全勾（机断证据见 invoke `docs/harness/invokes/by-task/web-chat-history-hitl-ux/invoke_20261004_30_web-chat-history-hitl-ux.md`）；闸行 HG-JOINT-DEBUG 半句未勾（blocked_by api · mock 先行不假 CLOSE） |
+| 结论 | **30 实现完成 · F1/F2 交付 · 三绿 · 40 自检同上下文闭环通过** |
 
 ---
 

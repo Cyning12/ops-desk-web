@@ -9,6 +9,7 @@
 
 ## 本波 active
 
+- **`web-chat-history-hitl-ux`**（2026-10-04 · 30 实现）：**`waiting_approval` ≠ 完成态**——`done` 按 `payload.status` 分支：waiting_approval 不清场（保留 active-run 续看游标 · 不记 lastDone 防「假完成」）；审批动作链 **decide → resume 两步**（契约钉 decide 不自动 resume · 前端链式两调用）；历史 run 视图映射既有 ChatMessage（裁定 F-C）· 续看复用 replayLgRag 不新造。真值：`docs/spec/web-chat-history-hitl-ux/SPEC-web-chat-history-hitl-ux_v0.md` §2/§6/§7 + `docs/tasks/active/task_web_chat_history_hitl_ux.md`。
 - **`web-lg-rag-sse-progressive-reveal`**（2026-09-08 · 30 实现中）：客户端 reveal 队列（`useRevealQueue`）——速率 **60 字/秒**（tick 50ms · 3 字/tick）；answer delta 入网络缓冲匀速出队；`content`/`final` 取消并以终稿替换；`done`/`error`/abort **刷齐已收**；subtask `step` 即时可读、`done` 解析 `subtask_result.output` 打字机；replay 默认 **4×** 加速。真值：`docs/tasks/active/task_web_lg_rag_sse_progressive_reveal.md`（00 定夺表）· 前置 T5/#28 · subtask-live/#38。
 - （以下为已交付指针，关账后可裁）
 - **`web-graph-l2-key-unify`**（2026-08-31 · 30/40 交付）：l2 by_symbol 键形态统一——18 裸键（chat+lg_rag 域 · 含 http 例外条）全部改 `path#symbol` 复合键，**值（path/node_id/kind）一律不变**，条目 69=18+51 不变；机检四断言：零裸键 · 值集合全等 · 撞键=0 · indexes↔9 flow implementedBy 唯一 (path,symbol) 对相等（75 条去重=69）；http 计数校正 7 非 9（chat flow 无 http_client · obs 无 http 段 · R1-N1）。真值：`docs/tasks/done/task_web_graph_l2_key_unify.md`（00 定夺表）+ `docs/spec/web-tech-graph-incremental-completion/SPEC-web-tech-graph-incremental-completion_v1.md` §3 P2。
