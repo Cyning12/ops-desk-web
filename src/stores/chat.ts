@@ -3,6 +3,10 @@ import { defineStore } from 'pinia'
 
 import { fetchLatestSession } from '../api/chat'
 import type { ChatSession } from '../api/chat'
+import { fetchThreadHistory } from '../api/chatHistory'
+import type { ChatHistoryRun } from '../api/chatHistory'
+import { decideHitlRequest, fetchHitlPending, resumeHitlRequest } from '../api/hitl'
+import type { HitlDecision, HitlPendingItem } from '../api/hitl'
 import type { ApiError } from '../api/http'
 import { replayLgRag, streamLgRag } from '../composables/useLgRagSse'
 import type { LgRagSseController, LgRagSseEvent } from '../composables/useLgRagSse'
@@ -45,8 +49,10 @@ function clearStoredThreadId(): void {
 
 /**
  * T4 · active-run 本地持久化键（00 定夺：续看 SoT = run_id + seq/cursor，run 级与 thread 正交）。
- * 值形 {run_id, last_seq, thread_id, updated_at}；run 终态（done/error/abort）即清除；
- * localStorage 不可用退化内存态（刷新即失，静默降级）。stores/auth.ts clearSession 直写同键清除。
+ * 值形 {run_id, last_seq, thread_id, updated_at}；run 终态清除：done 按 payload.status 分支
+ * （waiting_approval **保留**供审批后续看接力 · F2-4/FP-F1）· completed/failed/无 status 与
+ * error/abort 即清除；localStorage 不可用退化内存态（刷新即失，静默降级）。
+ * stores/auth.ts clearSession 直写同键清除。
  */
 export const LG_RAG_ACTIVE_RUN_STORAGE_KEY = 'ops.lg-rag.active-run'
 
@@ -104,6 +110,42 @@ export interface ChatThinkingBlock {
   revealing?: boolean
 }
 
+/**
+ * F2 · hitl.waiting 帧提取的审批申请（契约：payload.requests[] 原样透传 · 申请 id 在条目内；
+ * 未知额外键容忍不依赖 · SPEC §2 / 上游 collect_hitl_requests）
+ */
+export interface ChatHitlRequest {
+  id: string
+  [key: string]: unknown
+}
+
+/**
+ * F2 · 消息流内联审批卡片状态机（裁定 F-A）：
+ * - waiting：待审批（双按钮可动作）
+ * - acting：decide→resume 两步链进行中（loading · 禁重复点击）
+ * - decided：decide+resume 成功（FP-F7：卡片保持「已批准/已驳回 · 点击续看推进」可再触发）
+ * - resolved：409 已被处理 / 404 不存在（中性 · 不可再动作）
+ * - forbidden：403 非 maintainer（动作隐藏/降级 · FP-F4）
+ * - unavailable：hitl.waiting 帧缺 requests / 空 requests[]（FP-F11：仅 reason 展示 · 不崩 · 不当完成态）
+ */
+export type ChatHitlCardStatus =
+  | 'waiting'
+  | 'acting'
+  | 'decided'
+  | 'resolved'
+  | 'forbidden'
+  | 'unavailable'
+
+export interface ChatHitlState {
+  reason: string
+  requests: ChatHitlRequest[]
+  status: ChatHitlCardStatus
+  /** decide 成功后的决策（approved/rejected）；未决策为 null */
+  decision: HitlDecision | null
+  /** 卡片状态文案（已被处理 / 无审批权限 / 审批详情不可用 / 已批准·续看推进 等） */
+  note: string | null
+}
+
 export interface ChatMessage {
   id: string
   role: 'user' | 'assistant'
@@ -113,6 +155,10 @@ export interface ChatMessage {
   thinking: ChatThinkingBlock[]
   /** 子任务过程（subtask.progress · rag_subtask / info_extract / tool_exec） */
   subtasks: ChatThinkingBlock[]
+  /** F2 · 待审批卡片态（hitl.waiting 帧 / 历史 terminal_status=waiting_approval 映射）；null = 无审批 */
+  hitl: ChatHitlState | null
+  /** F1 · 历史 answer 超 32000 字符截断标记（上游 answer_truncated · AC6） */
+  truncated?: boolean
 }
 
 /** SSE error 事件 / 传输层错误的统一展示结构 */
@@ -189,6 +235,32 @@ function extractSubtaskBlockId(payload: Record<string, unknown> | undefined): st
   if (typeof raw === 'string' && raw) return raw
   if (typeof raw === 'number' && Number.isFinite(raw)) return String(raw)
   return undefined
+}
+
+/** F2 · hitl.waiting payload.requests / 历史 run.hitl → 审批申请列表（仅收 dict 条目 · id 缺失置空串） */
+function extractHitlRequests(raw: unknown): ChatHitlRequest[] {
+  if (!Array.isArray(raw)) return []
+  const out: ChatHitlRequest[] = []
+  for (const item of raw) {
+    if (item && typeof item === 'object' && !Array.isArray(item)) {
+      const record = item as Record<string, unknown>
+      const id = record.id
+      out.push({ ...record, id: typeof id === 'string' && id ? id : '' })
+    }
+  }
+  return out
+}
+
+/** F2 / FP-F11：requests 含可动作申请（id 非空）→ waiting；否则降级 unavailable（仅 reason · 不崩 · 不当完成态） */
+function buildHitlState(reason: string, requests: ChatHitlRequest[]): ChatHitlState {
+  const actionable = requests.some((request) => request.id)
+  return {
+    reason,
+    requests,
+    status: actionable ? 'waiting' : 'unavailable',
+    decision: null,
+    note: actionable ? null : '审批详情不可用',
+  }
 }
 
 /** §10.7 running 起步帧：可读文案（勿落成裸键名列表）；
@@ -305,7 +377,9 @@ function extractSubtaskDoneText(payload: Record<string, unknown> | undefined): {
  *   401/登出清除；已存 id 遇 404/422 → 清本地 id + 提示，不自动重发；
  *   startNewSession() 开新会话（清 id + 清消息 + 清提示）
  * - 断联/replay 续看（T4 · freeze lg-rag-sse-v1 沿用）：每帧捕获可选顶层 cursor（缺失以 run_id+seq 合成），
- *   active-run 持久化（key=ops.lg-rag.active-run）；run 终态（done/error/abort）即清除；
+ *   active-run 持久化（key=ops.lg-rag.active-run）；run 终态清除：done 按 payload.status 分支
+ *   （waiting_approval **保留** active-run 供审批后续看接力 · F2-4/FP-F1）· completed/failed/无 status
+ *   与 error/abort 即清除；
  *   断网/超时 mid-stream → 错误条 + 「续看」（手动触发 replay，不自动重试）；
  *   刷新/重进有未完成 run → 「上次回答未完成·续看」条；replay 帧复用同一渲染管线、渲染进新建 assistant 消息；
  *   per run_id 记 lastAppliedSeq，seq <= lastAppliedSeq 的帧忽略（answer 不重复 · thinking 不重复）；
@@ -318,6 +392,11 @@ function extractSubtaskDoneText(payload: Record<string, unknown> | undefined): {
  *   content（同 tick 多帧不瞬满）；content/final 取消队列并以终稿替换；done/error/abort 刷齐已收；
  *   subtask step 即时可读；done 解析 subtask_result.output 打字机；replay 默认 ≥4× 加速
  * - stopStreaming() abort 中断，可继续重发
+ * - F1/F2（web-chat-history-hitl-ux · freeze lg-rag-sse-v1 只消费既有帧）：
+ *   hitl.waiting 帧 → 消息流内联审批卡片（reason + 申请 id + 批准/驳回 → B2 decide → resume 两步链）；
+ *   done 按 payload.status 分支（waiting_approval ≠ 完成态：不清场 · 保持待审批视觉 · 保留续看游标）；
+ *   openHistoryThread(threadId) → B1 history 映射既有 ChatMessage 结构（F-C）渲染 + waiting_approval
+ *   thread 以 active-run 语义挂起、续看复用 resumeFromCursor/replayLgRag（不新造机制 · F1-4）
  * - 主路径传输 = lg-rag SSE；旧 chat stream 已弃用（api 410 Gone · web 封装随 T6 删除；
  *   切流史见 docs/tasks/done/task_web_lg_rag_sse_t2.md）
  */
@@ -336,7 +415,7 @@ export const useChatStore = defineStore('chat', () => {
 
   // T4：刷新/重进恢复未完成 run 的续看游标（run 级 SoT，与 thread_id 正交）
   const initialActiveRun = readStoredActiveRun()
-  /** 未完成 run 的续看游标；run 终态（done/error/abort）即清除；null = 无可续看 */
+  /** 未完成 run 的续看游标；done 按 status 分支（waiting_approval 保留）· error/abort 清除；null = 无可续看 */
   const activeRun = ref<LgRagActiveRun | null>(initialActiveRun)
   /** 刷新/重进发现有未完成 run 时展示「上次回答未完成·续看」条（手动触发，不自动 replay） */
   const resumeNotice = ref<boolean>(initialActiveRun !== null)
@@ -349,6 +428,14 @@ export const useChatStore = defineStore('chat', () => {
   const interrupted = ref(false)
   const error = ref<ChatErrorState | null>(null)
   const lastDone = ref<ChatDoneInfo | null>(null)
+
+  // F1 · 历史加载态（B1 history · FP-F8/F10 降级文案 · 不阻塞 Chat 主路径）
+  const historyLoading = ref(false)
+  const historyError = ref<string | null>(null)
+  // F2 · B2 pending 核对快照（AC16 两消费点：动作后刷新 + 进入 waiting_approval thread 一次性核对 · 不轮询 · 非全局面板）
+  const hitlPending = ref<HitlPendingItem[]>([])
+  /** pending 核对降級文案（403 无审批权限 / 404·501·网络错 审批服务暂不可用 · FP-F4/F8） */
+  const hitlPendingError = ref<string | null>(null)
 
   /** 可点「续看」：有未完成 run 且当前无流在进行 */
   const canResume = computed(() => activeRun.value !== null && !streaming.value)
@@ -449,6 +536,7 @@ export const useChatStore = defineStore('chat', () => {
       content: '',
       thinking: [],
       subtasks: [],
+      hitl: null,
     }
     messages.value.push(message)
     // 必须返回经响应式数组取回的代理而非 raw 引用：之后 processFrame/reveal 对
@@ -618,17 +706,34 @@ export const useChatStore = defineStore('chat', () => {
         }
         break
       }
+      case 'hitl.waiting': {
+        // F2-1（裁定 F-A）：审批等待帧 → store 审批态 → 消息流内联审批卡片；
+        // replay/历史视图复用同一渲染管线天然重现。SSE 零新事件 · 传输/解析层零改动
+        // （帧经 useLgRagSse 按 event_type 透传，仅 store 层新增消费分支）
+        const payload = event.payload ?? {}
+        const reason = typeof payload.reason === 'string' ? payload.reason : ''
+        assistant.hitl = buildHitlState(reason, extractHitlRequests(payload.requests))
+        break
+      }
       case 'done': {
+        streaming.value = false
+        flushRevealQueues() // R1-N2：刷齐已收
+        answerTerminal = true // T5：done 后停止追加（迟到 answer 帧忽略）
+        // F2-4（FP-F1 修现状 bug · SPEC 建议②）：done 按 payload.status 分支——
+        // waiting_approval ≠ 完成态：**不调 clearActiveRun()**（续看游标保留 · 审批后接力）、
+        // **不记 lastDone**（不呈现「完成 · 耗时」假完成），待审批视觉由 hitl 卡片持续承担；
+        // completed/failed/无 status（旧帧）→ 维持现行清除语义
+        // （含 replay 补发的 done——断连期间服务端跑完的收尾闭环）
+        if (payloadString(event, 'status') === 'waiting_approval') {
+          break
+        }
         const latency = event.payload?.latency_ms
         const model = event.payload?.model
         lastDone.value = {
           latency_ms: typeof latency === 'number' ? latency : 0,
           model: typeof model === 'string' ? model : '',
         }
-        streaming.value = false
-        flushRevealQueues() // R1-N2：刷齐已收
-        answerTerminal = true // T5：done 后停止追加（迟到 answer 帧忽略）
-        clearActiveRun() // T4：run 终态即清除 active-run（含 replay 补发的 done——断连期间服务端跑完的收尾闭环）
+        clearActiveRun()
         break
       }
       case 'error': {
@@ -842,6 +947,196 @@ export const useChatStore = defineStore('chat', () => {
     )
   }
 
+  /**
+   * F2 / AC16 · B2 pending 一次性核对刷新（两消费点：① decide/resume 动作链后 ② 进入
+   * waiting_approval thread 时）。**不轮询**、非全局面板；403/404/501/网络错降级呈现不炸屏
+   * （FP-F4/F8）；401 由 http.ts 拦截器全局跳登录。
+   */
+  async function refreshHitlPending(): Promise<void> {
+    try {
+      const resp = await fetchHitlPending()
+      hitlPending.value = resp.items
+      hitlPendingError.value = null
+    } catch (err) {
+      const apiError = err as ApiError
+      if (apiError.status === 403) {
+        hitlPendingError.value = '无审批权限'
+      } else if (apiError.status !== 401) {
+        hitlPendingError.value = '审批服务暂不可用'
+      }
+    }
+  }
+
+  /**
+   * F2-3 · 审批动作链（契约两步钉死 · 不合并单端点）：
+   * 批准/驳回 → POST decide {decision} → 成功 → POST resume（链式两调用 · decide 先于 resume）。
+   * 动作中卡片 acting（loading · 禁重复点击）；成功后 FP-F7 卡片保持「已批准/已驳回 · 点击续看推进」。
+   * 分态（FP-F2/F4/F10）：409 → 已被处理（不弹错误条 · 刷新审批态）；404 → 中性「申请不存在或已处理」；
+   * 403 → 动作隐藏/降级「无审批权限」（不炸屏）；401 → http 拦截器全局跳登录；其他 → 回 waiting 可重试。
+   */
+  async function decideHitl(
+    assistant: ChatMessage,
+    requestId: string,
+    decision: HitlDecision,
+  ): Promise<void> {
+    const hitl = assistant.hitl
+    if (!hitl || !requestId) return
+    if (hitl.status !== 'waiting') return // acting/decided/resolved/forbidden/unavailable 不可重复触发
+    hitl.status = 'acting'
+    hitl.note = null
+    try {
+      await decideHitlRequest(requestId, decision)
+      await resumeHitlRequest(requestId)
+    } catch (err) {
+      const apiError = err as ApiError
+      if (apiError.status === 409) {
+        // FP-F2：重复 decide / 申请已决 → 卡片转「已被处理」态 · 不弹错误条 · 刷新审批态
+        hitl.status = 'resolved'
+        hitl.note = '该申请已被处理'
+        void refreshHitlPending()
+        return
+      }
+      if (apiError.status === 404) {
+        // FP-F10：中性文案，不区分越权与不存在（归属不泄露）
+        hitl.status = 'resolved'
+        hitl.note = '申请不存在或已处理'
+        return
+      }
+      if (apiError.status === 403) {
+        // FP-F4：非 maintainer → 动作隐藏/降级呈现 · 不以 403 炸错误屏
+        hitl.status = 'forbidden'
+        hitl.note = '无审批权限'
+        return
+      }
+      if (apiError.status === 401) {
+        // 401 由 http.ts 拦截器全局跳登录；卡片回待审批态（登录后可重试）
+        hitl.status = 'waiting'
+        return
+      }
+      // 网络/其他错误：卡片回 waiting 可重试（不弹全局错误条 · 审批动作局部呈现）
+      hitl.status = 'waiting'
+      hitl.note = apiError.message || '审批操作失败，请重试'
+      return
+    }
+    hitl.status = 'decided'
+    hitl.decision = decision
+    hitl.note = decision === 'approved' ? '已批准 · 点击续看推进' : '已驳回 · 点击续看推进'
+    void refreshHitlPending() // AC16①：动作链完成后刷新审批态
+  }
+
+  /** F1-3（裁定 F-C）：B1 history run 消息视图 → 既有 ChatMessage 结构（query→user · answer→assistant ·
+   * subtasks→子任务过程 · terminal_status/hitl→run 末态/审批卡片）；与 live 帧管线同构 */
+  function mapHistoryRunsToMessages(runs: ChatHistoryRun[]): ChatMessage[] {
+    const mapped: ChatMessage[] = []
+    for (const run of runs) {
+      const query = typeof run.query === 'string' ? run.query.trim() : ''
+      // FP-F6：老 run 缺 query → run_id 前缀+时间兜底（承服务端 FP-4 再兜底 · 不崩）
+      const runIdShort = typeof run.run_id === 'string' ? run.run_id.slice(0, 8) : ''
+      const startedAt = typeof run.started_at === 'string' ? run.started_at : ''
+      const fallbackTitle = `run ${runIdShort} · ${startedAt}`.trim()
+      mapped.push({
+        id: `h-${++messageSeq}`,
+        role: 'user',
+        content: query || fallbackTitle,
+        thinking: [],
+        subtasks: [],
+        hitl: null,
+      })
+      const subtasks: ChatThinkingBlock[] = Array.isArray(run.subtasks)
+        ? run.subtasks.map((item) => {
+            const role =
+              typeof item.agent_role === 'string' && item.agent_role ? item.agent_role : 'subtask'
+            const message = typeof item.message === 'string' ? item.message : ''
+            const step = typeof item.step === 'string' ? item.step : ''
+            const status = typeof item.status === 'string' ? item.status : ''
+            const block: ChatThinkingBlock = {
+              role,
+              content: message || step || status || 'subtask',
+            }
+            if (status) block.status = status
+            return block
+          })
+        : []
+      const assistant: ChatMessage = {
+        id: `h-${++messageSeq}`,
+        role: 'assistant',
+        content: typeof run.answer === 'string' ? run.answer : '',
+        thinking: [],
+        subtasks,
+        hitl: null,
+        truncated: run.answer_truncated === true,
+      }
+      // terminal_status=waiting_approval → 待审批形态（**非**完成态 · FP-F1 同口径）；
+      // 历史 hitl 为 requests 列表（上游 collect_hitl_requests 透传），reason 取首条申请自带 reason
+      if (run.terminal_status === 'waiting_approval') {
+        const requests = extractHitlRequests(run.hitl)
+        const firstReason = requests.find((request) => typeof request.reason === 'string')
+        assistant.hitl = buildHitlState(
+          typeof firstReason?.reason === 'string' ? firstReason.reason : '',
+          requests,
+        )
+      }
+      mapped.push(assistant)
+    }
+    return mapped
+  }
+
+  /**
+   * F1-3/F1-4 · 点击历史 thread：B1 history → 映射进既有消息流渲染；
+   * 最新 run 挂 waiting_approval → 以 active-run 语义挂起展示（last_seq 契约未提供 → 0 从头 replay），
+   * 手动「续看」走既有 resumeFromCursor/replayLgRag（**不新造续看机制/端点**），
+   * 并一次性 fetchHitlPending 核对（AC16② · 不轮询 · 403/404 降级不炸屏）。
+   * 失败：404 → 中性「会话不存在或已过期」（FP-F10）；其余 → 「历史服务暂不可用」（FP-F8 · 不阻塞 Chat 主路径）。
+   */
+  async function openHistoryThread(tid: string): Promise<void> {
+    if (!tid || historyLoading.value) return
+    historyLoading.value = true
+    historyError.value = null
+    try {
+      const page = await fetchThreadHistory(tid)
+      stopStreaming() // 切换 thread 前中断在途流（abort 终态语义沿用）
+      resetRevealQueues()
+      const runs = Array.isArray(page.runs) ? page.runs : []
+      messages.value = mapHistoryRunsToMessages(runs)
+      // 切入该 thread：续问带 thread_id（T3 语义沿用 · run.start 捕获点不受影响）
+      threadId.value = tid
+      writeStoredThreadId(tid)
+      restoredNotice.value = false
+      error.value = null
+      lastDone.value = null
+      interrupted.value = false
+      resumeHint.value = null
+      const latest = runs[runs.length - 1]
+      if (
+        latest &&
+        latest.terminal_status === 'waiting_approval' &&
+        typeof latest.run_id === 'string' &&
+        latest.run_id
+      ) {
+        activeRun.value = {
+          run_id: latest.run_id,
+          last_seq: 0,
+          thread_id: tid,
+          updated_at: new Date().toISOString(),
+        }
+        writeStoredActiveRun(activeRun.value)
+        void refreshHitlPending() // AC16②：进入即一次性核对（不轮询）
+      } else {
+        clearActiveRun()
+      }
+    } catch (err) {
+      const apiError = err as ApiError
+      if (apiError.status === 404) {
+        historyError.value = '会话不存在或已过期'
+      } else if (apiError.status !== 401) {
+        // 401 由 http.ts 拦截器全局跳登录；404/501/网络错 → FP-F8 降级不阻塞主路径
+        historyError.value = '历史服务暂不可用'
+      }
+    } finally {
+      historyLoading.value = false
+    }
+  }
+
   return {
     session,
     sessionLoading,
@@ -857,6 +1152,10 @@ export const useChatStore = defineStore('chat', () => {
     interrupted,
     error,
     lastDone,
+    historyLoading,
+    historyError,
+    hitlPending,
+    hitlPendingError,
     loadLatestSession,
     sendMessage,
     stopStreaming,
@@ -864,5 +1163,8 @@ export const useChatStore = defineStore('chat', () => {
     dismissRestoredNotice,
     dismissResumeNotice,
     resumeFromCursor,
+    refreshHitlPending,
+    decideHitl,
+    openHistoryThread,
   }
 })
