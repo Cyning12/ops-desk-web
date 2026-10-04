@@ -1,6 +1,6 @@
 # Task：Web · 会话历史 + 中断续看 + HITL 审批面（web-chat-history-hitl-ux）
 
-> **状态**：`active` · **GO merge**（四闸全 **approved** · 2026-10-04 · **00 代录**（维护者令原话授权：「签收，后续文档授权00签收」）· 30+40 交付三绿 · PR #52 CI 绿 · HG-JOINT-DEBUG 联调证据在案）  
+> **状态**：`done`（PR #52 MERGED c000fdf · CI 双绿 · 四闸全 approved · 2026-10-04 00 代录 CLOSE · 维护者授权「后续文档授权00签收」在案）  
 > **类型**：feature / 前端观测闭环（渲染既有 SSE 帧 + 承接 B1/B2 REST 契约）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS；**禁止**改 `ops-desk-api` 任何文件  
 > **依据 SPEC（signed 2026-10-04）**：[`docs/spec/web-chat-history-hitl-ux/SPEC-web-chat-history-hitl-ux_v0.md`](../../spec/web-chat-history-hitl-ux/SPEC-web-chat-history-hitl-ux_v0.md)（范围 F1/F2 · 契约冻结面 · AC1–AC15 · FP-F1~FP-F12 · 裁定 F-A/F-B/F-C）  
