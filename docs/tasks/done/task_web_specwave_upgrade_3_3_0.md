@@ -1,6 +1,6 @@
 # Task：spec-wave 升级 3.3.0（web · 3.0.2 → 3.3.0）+ tech_graph 格式固定
 
-> **状态**：`in_progress`  
+> **状态**：`done`  
 > **类型**：基础设施 / harness 过程轨 minor（含图谱 schema 迁移）  
 > **前置**：3.0.2 wave done（`spec-wave@3.0.2` · PR #50 CLOSE）  
 > **分支**：`task/web-specwave-3-3-0`（base：`main`）  
@@ -28,6 +28,7 @@
 | **kpi_aggregator** | `CLOSE` |
 | **invoke_retention_profile** | `minimal` |
 | **required_invoke_hats** | `30` |
+| **related_pr** | `#55` |
 | **close_pr_policy** | `required` |
 | **review_hat** | `20` |
 
@@ -107,7 +108,7 @@
 
 ### KPI
 
-Task_KPI%: 100（关账待 PR）
+Task_KPI%: 100（PR #55 MERGED 2026-10-11 · CI 绿后 merge · 关账）
 
 ---
 

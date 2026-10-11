@@ -52,6 +52,7 @@
 |--------|------|------------------|
 | 2026-09-18 | [`task_web_specwave_upgrade_2_4_2.md`](./task_web_specwave_upgrade_2_4_2.md) | `dsh-coding-kit@1.10.0` → `spec-wave@2.4.2`（Wave A）· PR #45 MERGED |
 | 2026-09-18 | [`task_web_specwave_upgrade_3_0_0.md`](./task_web_specwave_upgrade_3_0_0.md) | `spec-wave@2.4.2` → `3.0.0`（Wave B major）· PR #47 MERGED · 2026-10-11 滞后关账 |
+| 2026-10-11 | [`task_web_specwave_upgrade_3_3_0.md`](./task_web_specwave_upgrade_3_3_0.md) | `spec-wave@3.0.2` → `3.3.0` · tech_graph IB 对象形固定 · 图谱四闸绿 · PR #55 MERGED |
 | 2026-09-08 | [`task_web_fix_chat_live_reactivity.md`](./task_web_fix_chat_live_reactivity.md) | 修复：pushMessage 返回响应式代理（raw 突变绕过 Vue effect 致实流零渲染） · PR #43 MERGED |
 | 2026-09-08 | [`task_web_lg_rag_sse_subtask_message.md`](./task_web_lg_rag_sse_subtask_message.md) | `lg-rag-sse-v1` · 消费 api `subtask.progress.message` 上屏（显式优先 · running 零前缀） · PR #41 MERGED |
 | 2026-09-08 | [`task_web_lg_rag_sse_progressive_reveal.md`](./task_web_lg_rag_sse_progressive_reveal.md) | `lg-rag-sse-v1` · 客户端 reveal 队列（subtask output 打字机 + answer 突发匀速） · PR #39 MERGED |
@@ -107,6 +108,7 @@
 | 2026-09-30 | 归档 `task_web_specwave_upgrade_3_0_2.md`（PR #50 · spec-wave 3.0.0→3.0.2 · 00 代签 · 维护者授权后续过程文档签收） |
 | 2026-10-04 | 归档 `task_web_chat_history_hitl_ux.md`（PR #52 · F1 历史+续看 / F2 HITL 审批面 · 修 waiting_approval 假完成 bug · 00 代签 · 同授权波次） |
 | 2026-10-11 | 归档 `task_web_specwave_upgrade_3_0_0.md`（PR #47 · spec-wave 2.4.2→3.0.0 Wave B · 滞后关账 · 随 3.3.0 wave 补归档 · 00「一并处理掉」） |
+| 2026-10-11 | 归档 `task_web_specwave_upgrade_3_3_0.md`（PR #55 · spec-wave 3.0.2→3.3.0 · tech_graph 格式固定 · HG-AUDIT-R1 00 签收） |
 
 ## 给维护者
 
