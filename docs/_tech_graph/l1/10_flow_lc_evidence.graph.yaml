@@ -18,63 +18,56 @@ nodes:
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/views/LcEvidenceView.vue"
-        symbol: "LcEvidenceView"
-        kind: component
+      path: "src/views/LcEvidenceView.vue"
+      symbol: "LcEvidenceView"
 
   - id: "lc_evidence_store"
     label: "useLcEvidenceStore"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/lcEvidence.ts"
-        symbol: "useLcEvidenceStore"
-        kind: module
+      path: "src/stores/lcEvidence.ts"
+      symbol: "useLcEvidenceStore"
 
   - id: "invoke_action"
     label: "invoke"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/lcEvidence.ts"
-        symbol: "invoke"
-        kind: method
+      path: "src/stores/lcEvidence.ts"
+      symbol: "invoke"
 
   - id: "abort_action"
     label: "abort"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/lcEvidence.ts"
-        symbol: "abort"
-        kind: method
+      path: "src/stores/lcEvidence.ts"
+      symbol: "abort"
 
   - id: "invoke_api"
     label: "invokeLcEvidence"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/lcEvidence.ts"
-        symbol: "invokeLcEvidence"
-        kind: method
+      path: "src/api/lcEvidence.ts"
+      symbol: "invokeLcEvidence"
 
   - id: "invoke_path"
     label: "LC_EVIDENCE_INVOKE_PATH"
     kind: struct
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/lcEvidence.ts"
-        symbol: "LC_EVIDENCE_INVOKE_PATH"
-        kind: const
+      path: "src/api/lcEvidence.ts"
+      symbol: "LC_EVIDENCE_INVOKE_PATH"
 
   - id: "http_client"
     label: "http（axios · baseURL=/api）"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/http.ts"
-        symbol: "http"
-        kind: module
+      path: "src/api/http.ts"
+      symbol: "http"
 
   - id: "ops_api"
     label: "ops-desk-api"

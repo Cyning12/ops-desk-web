@@ -18,81 +18,72 @@ nodes:
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/views/ChatView.vue"
-        symbol: "ChatView"
-        kind: component
+      path: "src/views/ChatView.vue"
+      symbol: "ChatView"
 
   - id: "chat_store"
     label: "useChatStore"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/chat.ts"
-        symbol: "useChatStore"
-        kind: module
+      path: "src/stores/chat.ts"
+      symbol: "useChatStore"
 
   - id: "load_session"
     label: "loadLatestSession"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/chat.ts"
-        symbol: "loadLatestSession"
-        kind: method
+      path: "src/stores/chat.ts"
+      symbol: "loadLatestSession"
 
   - id: "send_message"
     label: "sendMessage"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/chat.ts"
-        symbol: "sendMessage"
-        kind: method
+      path: "src/stores/chat.ts"
+      symbol: "sendMessage"
 
   - id: "fetch_session_api"
     label: "fetchLatestSession"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/chat.ts"
-        symbol: "fetchLatestSession"
-        kind: method
+      path: "src/api/chat.ts"
+      symbol: "fetchLatestSession"
 
   - id: "stream_sse"
     label: "streamLgRag"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/composables/useLgRagSse.ts"
-        symbol: "streamLgRag"
-        kind: method
+      path: "src/composables/useLgRagSse.ts"
+      symbol: "streamLgRag"
 
   - id: "replay_sse"
     label: "replayLgRag"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/composables/useLgRagSse.ts"
-        symbol: "replayLgRag"
-        kind: method
+      path: "src/composables/useLgRagSse.ts"
+      symbol: "replayLgRag"
 
   - id: "resume_from_cursor"
     label: "resumeFromCursor"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/chat.ts"
-        symbol: "resumeFromCursor"
-        kind: method
+      path: "src/stores/chat.ts"
+      symbol: "resumeFromCursor"
 
   - id: "sse_parser"
     label: "LgRagSseFrameParser"
     kind: struct
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/composables/useLgRagSse.ts"
-        symbol: "LgRagSseFrameParser"
-        kind: class
+      path: "src/composables/useLgRagSse.ts"
+      symbol: "LgRagSseFrameParser"
 
   - id: "ops_api"
     label: "ops-desk-api"

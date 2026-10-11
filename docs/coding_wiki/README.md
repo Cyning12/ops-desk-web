@@ -31,5 +31,5 @@
 
 ## 验证
 
-    npx spec-wave@3.0.2 wiki export --json --target .
+    npx spec-wave@3.3.0 wiki export --json --target .
     # 期望：nodes≥4 且 edges>0 · warnings=0

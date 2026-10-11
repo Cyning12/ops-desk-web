@@ -18,81 +18,72 @@ nodes:
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/views/LgRagView.vue"
-        symbol: "LgRagView"
-        kind: component
+      path: "src/views/LgRagView.vue"
+      symbol: "LgRagView"
 
   - id: "lg_rag_store"
     label: "useLgRagStore"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/lgRag.ts"
-        symbol: "useLgRagStore"
-        kind: module
+      path: "src/stores/lgRag.ts"
+      symbol: "useLgRagStore"
 
   - id: "invoke_action"
     label: "invoke"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/lgRag.ts"
-        symbol: "invoke"
-        kind: method
+      path: "src/stores/lgRag.ts"
+      symbol: "invoke"
 
   - id: "abort_action"
     label: "abort"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/lgRag.ts"
-        symbol: "abort"
-        kind: method
+      path: "src/stores/lgRag.ts"
+      symbol: "abort"
 
   - id: "use_thread_id"
     label: "useThreadId"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/lgRag.ts"
-        symbol: "useThreadId"
-        kind: method
+      path: "src/stores/lgRag.ts"
+      symbol: "useThreadId"
 
   - id: "elapsed_timer"
     label: "elapsedSeconds（等待秒计时）"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/lgRag.ts"
-        symbol: "elapsedSeconds"
-        kind: state
+      path: "src/stores/lgRag.ts"
+      symbol: "elapsedSeconds"
 
   - id: "invoke_api"
     label: "invokeLgRag"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/lgRag.ts"
-        symbol: "invokeLgRag"
-        kind: method
+      path: "src/api/lgRag.ts"
+      symbol: "invokeLgRag"
 
   - id: "invoke_path"
     label: "LG_RAG_INVOKE_PATH"
     kind: struct
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/lgRag.ts"
-        symbol: "LG_RAG_INVOKE_PATH"
-        kind: const
+      path: "src/api/lgRag.ts"
+      symbol: "LG_RAG_INVOKE_PATH"
 
   - id: "http_client"
     label: "http（axios · baseURL=/api）"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/http.ts"
-        symbol: "http"
-        kind: module
+      path: "src/api/http.ts"
+      symbol: "http"
 
   - id: "ops_api"
     label: "ops-desk-api"
@@ -141,8 +132,4 @@ edges:
 
   - from: "lg_rag_view"
     to: "use_thread_id"
-    label: "「用此 thread_id 继续」click（L87）"
-
-  - from: "use_thread_id"
-    to: "lg_rag_store"
-    label: "回填 threadId（result.thread_id → 输入框 · L42–44）"
+    label: "「用此 thread_id 继续」click（L87）· 回填 result.thread_id → 输入框（store L42–44 内部态写 · 非调用边）"

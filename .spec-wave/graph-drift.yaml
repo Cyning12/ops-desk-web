@@ -1,0 +1,4 @@
+# spec-wave 3.1+ graph drift 闸配置（可选白名单 · 缺省=全量检查）
+# 模块表真值：Phase γ 已迁至 l1/01_modules.md（根 01_struct.md 为过渡 stub · C2）
+version: 1
+struct_rel: l1/01_modules.md

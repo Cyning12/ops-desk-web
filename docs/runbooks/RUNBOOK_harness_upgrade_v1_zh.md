@@ -42,8 +42,8 @@
 
 - [ ] `npx spec-wave check` → 「已是最新」
 - [ ] `npx spec-wave verify --target . --task <本 upgrade task>` → PASS（**2.11.0+** R\<n\> 审查文；**2.17.0+** pre-30 invoke / graph_delta WARN；**2.18.0+** wiki_delta WARN，`--strict-wiki-delta` 可 BLOCK）
-- [ ] `npx spec-wave@1.10.0 task lint-wiki-delta --target . --scope all` → missing=0 · exit 0
-- [ ] （若已启用 WikiTrack）`npx spec-wave@1.10.0 wiki export --json --target .` → nodes≥4 · edges>0
+- [ ] `npx spec-wave@3.3.0 task lint-wiki-delta --target . --scope all` → missing=0 · exit 0
+- [ ] （若已启用 WikiTrack）`npx spec-wave@3.3.0 wiki export --json --target .` → nodes≥4 · edges>0
 - [ ] （≥2.22）先完成 overlay 契约（profile `graph_modules_path` + AGENTS local）并 **commit**，再 upgrade；二次 upgrade 后 overlay 相关 diff 宜空
 - [ ] `npx spec-wave task close --help` 正常输出（闭环豁免旗见 USER_GUIDE §6.0：含 `--allow-wiki-gap`；勿当默认绿路径）；关账用 `--file`，**勿**加 `--target .`
 - [ ] 业务三件套回归：`pnpm lint` / `pnpm test` / `pnpm build` exit 0
@@ -80,3 +80,4 @@
 | 2026-09-18 | **spec-wave 2.4.2**：自 dsh-coding-kit 1.10.0 改名升级；KIT_CLI / package / manifest 三钉 2.4.2；落盘根 `.coding-kit/` |
 | 2026-09-18 | **spec-wave 3.0.0**：自 2.4.2 major；KIT_CLI/package/manifest 三钉；hooks 不入库 |
 | 2026-09-30 | **spec-wave 3.0.2**：自 3.0.0 patch；KIT_CLI/package/manifest/host-tools 四钉；`pins check --consumer` 首跑；hooks 仍不入库 |
+| 2026-10-11 | **spec-wave 3.3.0**：自 3.0.2 minor（图谱保真闸链）；KIT_CLI/package/manifest 三钉 3.3.0；**tech_graph 格式固定**：`nodes[].implementedBy` 数组形 → 对象形 `{path, symbol?}`（3.2 W1 schema）；新增 `.spec-wave/graph-drift.yaml`（`struct_rel: l1/01_modules.md`）；`graph yaml check` / `graph drift` / `graph ib check` / `graph ast check` 四闸全绿；hooks 仍不入库 |

@@ -18,72 +18,64 @@ nodes:
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/views/LoginView.vue"
-        symbol: "LoginView"
-        kind: component
+      path: "src/views/LoginView.vue"
+      symbol: "LoginView"
 
   - id: "app_layout"
     label: "AppLayout"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/layouts/AppLayout.vue"
-        symbol: "AppLayout"
-        kind: component
+      path: "src/layouts/AppLayout.vue"
+      symbol: "AppLayout"
 
   - id: "auth_store"
     label: "useAuthStore"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/auth.ts"
-        symbol: "useAuthStore"
-        kind: module
+      path: "src/stores/auth.ts"
+      symbol: "useAuthStore"
 
   - id: "login_action"
     label: "login"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/auth.ts"
-        symbol: "login"
-        kind: method
+      path: "src/stores/auth.ts"
+      symbol: "login"
 
   - id: "logout_action"
     label: "logout"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/auth.ts"
-        symbol: "logout"
-        kind: method
+      path: "src/stores/auth.ts"
+      symbol: "logout"
 
   - id: "login_api"
     label: "api login"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/auth.ts"
-        symbol: "login"
-        kind: method
+      path: "src/api/auth.ts"
+      symbol: "login"
 
   - id: "logout_api"
     label: "api logout"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/auth.ts"
-        symbol: "logout"
-        kind: method
+      path: "src/api/auth.ts"
+      symbol: "logout"
 
   - id: "http_client"
     label: "http（axios · baseURL=/api）"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/http.ts"
-        symbol: "http"
-        kind: module
+      path: "src/api/http.ts"
+      symbol: "http"
 
   - id: "ops_api"
     label: "ops-desk-api"

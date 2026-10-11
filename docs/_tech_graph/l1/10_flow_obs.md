@@ -1,7 +1,7 @@
 ---
 graph_id: 10_flow_obs
 version: 2026-08-31
-generated_at: sha256-0f441c6c1783cf7f
+generated_at: sha256-daf9e3ec8b1af1de
 source: 10_flow_obs.graph.yaml
 ---
 
