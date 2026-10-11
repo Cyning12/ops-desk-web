@@ -33,7 +33,7 @@ vi.mock('../src/composables/useLgRagSse', () => ({
 
 import { fetchLatestSession } from '../src/api/chat'
 import { fetchThreadHistory } from '../src/api/chatHistory'
-import { fetchHitlPending } from '../src/api/hitl'
+import { decideHitlRequest, fetchHitlPending, resumeHitlRequest } from '../src/api/hitl'
 import { replayLgRag, streamLgRag } from '../src/composables/useLgRagSse'
 import { useChatStore } from '../src/stores/chat'
 import ChatView from '../src/views/ChatView.vue'
@@ -106,6 +106,107 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
     expect(reject.text()).toContain('驳回')
     // 待审批徽标
     expect(card.find('.hitl-card__badge').text()).toContain('待审批')
+  })
+
+  it('T-W2 AC：waiting 卡片渲染 resume_mode 三选（默认 inherit）；默认批准 → decide 精确 2 参（不送键）', async () => {
+    vi.mocked(decideHitlRequest).mockResolvedValue({
+      ok: true,
+      request: { id: 'req-42', status: 'approved' },
+      resume: { required: true, method: 'POST', endpoint: '/api/ops/hitl/requests/req-42/resume' },
+    })
+    vi.mocked(resumeHitlRequest).mockResolvedValue({
+      ok: true,
+      request: {},
+      resume: {},
+      replay: {
+        run_id: 'r-1',
+        cursor: 'r-1:9',
+        events_persisted: 3,
+        events_failed: 0,
+        persisted: true,
+        re_interrupted: false,
+      },
+      ts: 1,
+    })
+    const wrapper = mountView()
+    await flushPromises()
+    const chat = useChatStore()
+
+    chat.sendMessage('部署生产服务')
+    captured.onEvent?.({
+      event_type: 'hitl.waiting',
+      run_id: 'r-1',
+      seq: 2,
+      payload: { reason: '需审批', requests: [{ id: 'req-42' }] },
+    })
+    // done{waiting_approval} 后 streaming=false → 卡片控件解锁
+    captured.onEvent?.({
+      event_type: 'done',
+      run_id: 'r-1',
+      seq: 3,
+      payload: { status: 'waiting_approval' },
+    })
+    await flushPromises()
+
+    const group = wrapper.find('[data-test="hitl-resume-mode"]')
+    expect(group.exists()).toBe(true)
+    expect(group.findAll('.el-radio-button')).toHaveLength(3)
+    expect(group.text()).toContain('续跑默认')
+    expect(group.text()).toContain('批准即续跑')
+    expect(group.text()).toContain('手动续跑')
+
+    await wrapper.find('.hitl-card__approve').trigger('click')
+    await flushPromises()
+
+    // 默认 inherit = 不送 resume_mode 键（精确 2 参 · 与 tests/chat-store-hitl.spec.ts AC8 同钉）
+    expect(decideHitlRequest).toHaveBeenCalledWith('req-42', 'approved')
+    expect(vi.mocked(decideHitlRequest).mock.calls[0]).toHaveLength(2)
+    expect(resumeHitlRequest).toHaveBeenCalledWith('req-42')
+  })
+
+  it('T-W2 AC：选「批准即续跑」→ decide 携 resume_mode=immediate；响应 auto_triggered → 不再链 resume', async () => {
+    vi.mocked(decideHitlRequest).mockResolvedValue({
+      ok: true,
+      request: { id: 'req-42', status: 'approved' },
+      resume: {
+        required: false,
+        auto_triggered: true,
+        method: 'POST',
+        endpoint: '/api/ops/hitl/requests/req-42/resume',
+      },
+    })
+    const wrapper = mountView()
+    await flushPromises()
+    const chat = useChatStore()
+
+    chat.sendMessage('部署生产服务')
+    captured.onEvent?.({
+      event_type: 'hitl.waiting',
+      run_id: 'r-1',
+      seq: 2,
+      payload: { reason: '需审批', requests: [{ id: 'req-42' }] },
+    })
+    // done{waiting_approval} 后 streaming=false → 卡片控件解锁
+    captured.onEvent?.({
+      event_type: 'done',
+      run_id: 'r-1',
+      seq: 3,
+      payload: { status: 'waiting_approval' },
+    })
+    await flushPromises()
+
+    const radios = wrapper.findAll('[data-test="hitl-resume-mode"] .el-radio-button')
+    expect(radios).toHaveLength(3)
+    // EP el-radio-button：v-model 绑在内部原生 input 的 change 上（jsdom label 点击不转发）→ 直驱 input
+    await radios[1].find('input').setValue(true) // immediate「批准即续跑」
+    await flushPromises()
+
+    await wrapper.find('.hitl-card__approve').trigger('click')
+    await flushPromises()
+
+    expect(decideHitlRequest).toHaveBeenCalledWith('req-42', 'approved', 'immediate')
+    expect(resumeHitlRequest).not.toHaveBeenCalled()
+    expect(chat.messages[1].hitl?.status).toBe('decided')
   })
 
   it('AC7：FP-F11 降级卡片（缺 requests → 仅 reason + 审批详情不可用 · 无双按钮）', async () => {

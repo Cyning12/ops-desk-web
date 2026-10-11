@@ -25,7 +25,7 @@ export interface LgRagSseEvent {
   agent_role?: string
   /** T4：可选顶层续看游标 "{run_id}:{seq}"（与 run_id/seq 并列；缺失时消费方以 run_id+seq 合成） */
   cursor?: string
-  /** run.start · node.progress · subtask.progress · answer · done · error */
+  /** run.start · node.progress · subtask.progress · answer · hitl.waiting · done · error（7 型 · hitl.waiting 经 store 层 case 消费 · T-W2 补登） */
   event_type: string
   payload?: Record<string, unknown>
 }
@@ -40,7 +40,7 @@ export interface LgRagSseTransportError {
 }
 
 export interface LgRagSseCallbacks {
-  /** 每个合法事件帧回调一次（含 run.start/node.progress/subtask.progress/answer/done/error） */
+  /** 每个合法事件帧回调一次（含 run.start/node.progress/subtask.progress/answer/hitl.waiting/done/error） */
   onEvent?: (event: LgRagSseEvent) => void
   /** HTTP 非 2xx（如 401/422）、网络错误或 client 超时 */
   onError?: (error: LgRagSseTransportError) => void

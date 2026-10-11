@@ -6,7 +6,7 @@ import type { ChatSession } from '../api/chat'
 import { fetchThreadHistory } from '../api/chatHistory'
 import type { ChatHistoryRun } from '../api/chatHistory'
 import { decideHitlRequest, fetchHitlPending, resumeHitlRequest } from '../api/hitl'
-import type { HitlDecision, HitlPendingItem } from '../api/hitl'
+import type { HitlDecision, HitlPendingItem, HitlResumeMode } from '../api/hitl'
 import type { ApiError } from '../api/http'
 import { replayLgRag, streamLgRag } from '../composables/useLgRagSse'
 import type { LgRagSseController, LgRagSseEvent } from '../composables/useLgRagSse'
@@ -969,7 +969,8 @@ export const useChatStore = defineStore('chat', () => {
 
   /**
    * F2-3 · 审批动作链（契约两步钉死 · 不合并单端点）：
-   * 批准/驳回 → POST decide {decision} → 成功 → POST resume（链式两调用 · decide 先于 resume）。
+   * 批准/驳回 → POST decide {decision}（T-W2 可选 resume_mode · 默认 inherit 不送）→ 成功 → POST resume（链式两调用 · decide 先于 resume）。
+   * 例外（响应驱动 · 非请求臆断）：decide 响应 resume.required=false（immediate 后端已自动续跑）→ 跳过第二步 resume（S3 实证再链必 409）。
    * 动作中卡片 acting（loading · 禁重复点击）；成功后 FP-F7 卡片保持「已批准/已驳回 · 点击续看推进」。
    * 分态（FP-F2/F4/F10）：409 → 已被处理（不弹错误条 · 刷新审批态）；404 → 中性「申请不存在或已处理」；
    * 403 → 动作隐藏/降级「无审批权限」（不炸屏）；401 → http 拦截器全局跳登录；其他 → 回 waiting 可重试。
@@ -978,6 +979,7 @@ export const useChatStore = defineStore('chat', () => {
     assistant: ChatMessage,
     requestId: string,
     decision: HitlDecision,
+    resumeMode: HitlResumeMode = 'inherit',
   ): Promise<void> {
     const hitl = assistant.hitl
     if (!hitl || !requestId) return
@@ -985,8 +987,18 @@ export const useChatStore = defineStore('chat', () => {
     hitl.status = 'acting'
     hitl.note = null
     try {
-      await decideHitlRequest(requestId, decision)
-      await resumeHitlRequest(requestId)
+      // T-W2：resume_mode 可选键——默认 inherit **不送**（保持 {decision} 载荷字面 · 两步钉死不破）；
+      // 仅 immediate/manual 透传第三参（非法值由后端白名单 400 → 走下方通用错误分支展示，不本地臆造第四值）
+      const decideResp =
+        resumeMode === 'inherit'
+          ? await decideHitlRequest(requestId, decision)
+          : await decideHitlRequest(requestId, decision, resumeMode)
+      // T-W2 S3 实证：immediate 时后端 decide 即进程内自动续跑（响应 resume.required=false · auto_triggered=true），
+      // 前端再链第二步 resume 必撞 409「没有挂起的 interrupt」误呈「已被处理」——按响应 required 决定是否续链；
+      // inherit/manual 响应 required=true → 维持 decide → resume 两步钉死不变
+      if (decideResp.resume?.required !== false) {
+        await resumeHitlRequest(requestId)
+      }
     } catch (err) {
       const apiError = err as ApiError
       if (apiError.status === 409) {
