@@ -70,6 +70,14 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/LgRagView.vue'),
         meta: { title: 'LG RAG' },
       },
+      {
+        // F5 Capability 目录页（task_web_capability_catalog）：全登录用户可见可见集；
+        // maintainer 故障详情在页内按 /auth/me role 显隐（普通用户零探测面）
+        path: 'capability',
+        name: 'capability',
+        component: () => import('../views/CapabilityCatalogView.vue'),
+        meta: { title: 'Capability' },
+      },
     ],
   },
 ]
