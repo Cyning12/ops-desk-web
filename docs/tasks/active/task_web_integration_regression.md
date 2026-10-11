@@ -1,6 +1,6 @@
 # Task：Web · 联调 T-W1 · 回归批（F1/F4/F6/F7）
 
-> **状态**：`active` · **draft** · **NO-GO 30**（`HG-AUDIT-R1` pending）  
+> **状态**：`active` · **GO 30**（`HG-AUDIT-R1` approved · 2026-10-11 · 维护者授权 00 代录 m00230）  
 > **类型**：regression / 联调回归验证（后端功能面已接通 · 本批以验证为主）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS  
 > **上游**：`docs/spec/web-integration/SPEC-web-integration_v0.md`（signed · Q1-Q4 已裁 2026-10-11 维护者 m00026）§4 F1/F4/F6/F7 · §9 拆 task 规划  
@@ -37,7 +37,7 @@
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
 | HG-TASK-DRAFT | **approved** | 20-R1, 30 | 2026-10-11 维护者令联调链执行 · 00 代录 |
-| HG-AUDIT-R1 | **pending** | **30** | 待 20-task-audit R1 审查 + 维护者人签；**pending 期间 30 拒开工** |
+| HG-AUDIT-R1 | **approved** | **30** | 2026-10-11 · 维护者授权 00 代录（m00230「授权00签收后续文档」）；20-task-audit R1 **PASS-WITH-NIT** 零内容阻塞（审查文 `docs/harness/reviews/task_web-integration_audit_R1_20261011.md` · 58bf8de）· NIT-1/NIT-3 已随签回填 · NIT-2 留 web#57 合并后自然消解 · 30 可开工 |
 | HG-GRAPH-MODULES | **approved** | **30** | 2026-10-11 · 00 代录 · 理由：回归批无新页面/路由/模块变更，`docs/_tech_graph/l1/01_modules.md` 零改动预期 |
 
 ---
@@ -75,6 +75,7 @@ SPEC §4 已核真：F1 认证会话 / F4 会话历史 / F6 仪表盘 / F7 lc-ev
 - [x] **W4 · S7 同步调用回归**：lc-evidence invoke / lg-rag invoke 成功态 + 失败态渲染
 - [x] **W5 · role 驱动菜单核对**：maintainer 面入口按 `/auth/me` role 隐藏；普通用户菜单零探测面（核对为主，暴露缺口另立 task）
 - [x] **W6 · 契约对拍**：响应体 snake_case 原始体照登（禁前端臆改驼峰）；`/chat/threads` 系 envelope（{items,count} 外形）例外照登；字段级真值以 `/openapi.json` + 端点实际行为为准
+  - NIT-3 回填：`/chat/stream` 410 Gone 钉——核 `tests/chat-stream-deprecation.spec.ts`（在 225 闸内）保持绿
 - [x] **W7 · 联调环境钉死**：见「联调环境与坑位」节，坑位全部写进 invoke 留档
 
 ### 非范围
@@ -118,14 +119,15 @@ SPEC §4 已核真：F1 认证会话 / F4 会话历史 / F6 仪表盘 / F7 lc-ev
 
 ## 验收标准
 
-- [ ] `HG-AUDIT-R1` approved（20-task-audit R1 + 维护者人签）
+- [x] `HG-AUDIT-R1` approved（20-task-audit R1 **PASS-WITH-NIT** 零阻塞 · 2026-10-11 维护者授权 00 代录 m00230）
 - [ ] S1 冷启动登录 → me → 刷新存续 → logout → 401 跳登录：全步通过，证据落 invoke
 - [ ] S4 多轮后刷新 → 历史完整回放 → 切 thread 正确
 - [ ] S6 四端点渲染 + 筛选交互通过
 - [ ] S7 同步调用成功 / 失败态渲染通过
 - [ ] role 驱动菜单核对结论落档（maintainer 入口显隐正确 · 普通用户零探测面）
 - [ ] 契约对拍结论落档（snake_case 照登 · threads envelope 例外照登）
-- [ ] `pnpm lint` / `pnpm test`（225 条全绿）/ `pnpm build` 绿
+- [ ] `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm lint` / `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm test`（225 条全绿）/ `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm build` 绿
+  - NIT-1 注：仓 `packageManager` 钉 `pnpm@10.32.1`，PATH 前置的 pnpm 11 会拒跑——本批 verify 命令一律用钉死路径 `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm`（维护者本机 v24.15.0 pnpm 10）
 - [ ] `npx spec-wave task lint --file docs/tasks/active/task_web_integration_regression.md` PASS
 
 ---
@@ -197,7 +199,7 @@ S1/S4/S6/S7 直接取自 SPEC §4 行；D1 倾向 A（vite proxy 已就绪 · �
 | 检查 | 结果 |
 |------|------|
 | `npx spec-wave task lint --file docs/tasks/active/task_web_integration_regression.md` | **PASS**（2026-10-11 起草稿实跑） |
-| 结论 | **10 草稿已落 · HG-AUDIT-R1 pending · NO-GO 30** |
+| 结论 | **HG-AUDIT-R1 approved（2026-10-11 · 维护者授权 00 代录 m00230 · R1 PASS-WITH-NIT）· GO 30** |
 
 ---
 
@@ -206,3 +208,4 @@ S1/S4/S6/S7 直接取自 SPEC §4 行；D1 倾向 A（vite proxy 已就绪 · �
 | 日期 | 说明 |
 |------|------|
 | 2026-10-11 | 10 起草（00 代录 · 维护者令联调链执行）· SPEC §9 T-W1 行落地 |
+| 2026-10-11 | HG-AUDIT-R1 签认代录（00 · 维护者授权 m00230 · R1 PASS-WITH-NIT 审查文 58bf8de）· NIT-1/NIT-3 回填 |

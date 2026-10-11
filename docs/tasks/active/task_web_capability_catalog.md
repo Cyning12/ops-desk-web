@@ -1,6 +1,6 @@
 # Task：Web · 联调 T-W3 · Capability 目录页（F5）
 
-> **状态**：`active` · **draft** · **NO-GO 30**（`HG-AUDIT-R1` + `HG-GRAPH-MODULES` 双 pending）  
+> **状态**：`active` · **GO 30**（`HG-AUDIT-R1` + `HG-GRAPH-MODULES` 双 approved · 2026-10-11 · 维护者授权 00 代录 m00230）  
 > **类型**：feature / 新页面（既有后端功能面首次接通）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS  
 > **上游**：`docs/spec/web-integration/SPEC-web-integration_v0.md`（signed · Q1-Q4 已裁 2026-10-11 维护者 m00026）§4 F5 · §9 拆 task 规划 · A 面 `../ops-desk-api/docs/spec/tool-catalog-page/SPEC-tool-catalog-page_v0.md`  
@@ -37,8 +37,8 @@
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
 | HG-TASK-DRAFT | **approved** | 20-R1, 30 | 2026-10-11 维护者令联调链执行 · 00 代录 |
-| HG-AUDIT-R1 | **pending** | **30** | 待 20-task-audit R1 审查 + 维护者人签；**pending 期间 30 拒开工** |
-| HG-GRAPH-MODULES | **pending** | **30** | **新页面/路由必须列闸**：30 前须先更新 `docs/_tech_graph/l1/01_modules.md`（新增 capability 模块行）+ flow graph + `./scripts/graph-compile.sh` 绿，并维护者签认；pending 期间 30 拒改码（D4-a） |
+| HG-AUDIT-R1 | **approved** | **30** | 2026-10-11 · 维护者授权 00 代录（m00230「授权00签收后续文档」）；20-task-audit R1 **PASS-WITH-NIT** 零内容阻塞（审查文 `docs/harness/reviews/task_web-integration_audit_R1_20261011.md` · 58bf8de）· NIT-1/NIT-5 已随签回填 · NIT-2 留 web#57 合并后自然消解 |
+| HG-GRAPH-MODULES | **approved** | **30** | approved · 2026-10-11 · **图谱先行已落**（本 commit · G-L1：`01_modules.md` 增 `capability` 模块行 + 新增 `10_flow_capability.graph.yaml` · `./scripts/graph-compile.sh` 编译+check 全绿）· 维护者授权 00 代录（m00230）· 30 可开工 |
 
 ---
 
@@ -123,6 +123,7 @@ SPEC §4 F5 行：Capability 目录为 web 仓**唯一未接通**的功能面（
 | web 既有实现/理解 与契约冲突（FP-1） | 以端点实际行为为准回填修订；禁前端迁就；冲突落 invoke 回报 00 |
 | SSE 代理缓冲（FP-3） | 本页非 SSE 面；照登防联调环境误配（环境节统一钉死） |
 | 与 specwave-3.1.0 并行链撞文件（FP-4） | 隔离面钉死：specwave 触 harness 配置 + graph 面；**本批触 `src/router` / `src/views` / `src/api` / `docs/_tech_graph/l1`**——graph-l1 与 specwave graph 面**同域**，拆分时按模块行/flow 文件粒度钉隔离，撞车即停并报 00 |
+| 与 T-W2 并行链撞文件（FP-4 扩展 · NIT-5 回填） | T-W2↔T-W3 文件面互斥钉死：T-W2 触 `src/composables/useLgRagSse.ts` / `src/stores/chat*` / decide 卡片 UI（`HitlApprovalCard.vue` 等）；本批（T-W3）触 `src/router` / `src/views`（capability 页）/ `src/api`（capability）/ `docs/_tech_graph/l1`；两面互不重叠，撞面即停并报 00 |
 | 普通用户探测到 maintainer 面（菜单/路由/请求任一泄漏） | S5 不通过 → 阻塞 merge |
 | 后端九键投影多吐 `adapter`/`args_schema` | FP-1：以端点实际行为为准；若与 B1 契约不符 → 报回 api 另立 task，前端不静默吞字段也不臆删渲染 |
 | maintainer 故障详情键缺失（summary 无 manifest_errors） | 渲染空态 + invoke 记录；与 B2 契约不符 → 报回 api |
@@ -132,12 +133,13 @@ SPEC §4 F5 行：Capability 目录为 web 仓**唯一未接通**的功能面（
 
 ## 验收标准
 
-- [ ] `HG-AUDIT-R1` approved（20-task-audit R1 + 维护者人签）
-- [ ] `HG-GRAPH-MODULES` approved（`01_modules.md` 已增 capability 模块行 · flow graph 已建 · `./scripts/graph-compile.sh` 绿 · 维护者签认）
+- [x] `HG-AUDIT-R1` approved（20-task-audit R1 **PASS-WITH-NIT** 零阻塞 · 2026-10-11 维护者授权 00 代录 m00230）
+- [x] `HG-GRAPH-MODULES` approved（`01_modules.md` 已增 capability 模块行 · `10_flow_capability.graph.yaml` 已建 · `./scripts/graph-compile.sh` 绿 · 2026-10-11 维护者授权 00 代录 m00230）
 - [ ] 新路由 + 页面上线：`GET /capability/mine` 可见集九键投影表（排除 `adapter`/`args_schema` · {items,count} 照登）
 - [ ] S5：普通用户只见可见集（零探测面 · 菜单/路由/请求三级核对）；maintainer 见 `manifest_errors`/`manifest_error_details`；空集 / 故障态渲染通过
 - [ ] role 显隐由 `/auth/me` role 驱动（非前端硬编码账号）
-- [ ] `pnpm lint` / `pnpm test`（全量绿 · 含新增用例）/ `pnpm build` 绿
+- [ ] `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm lint` / `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm test`（全量绿 · 含新增用例）/ `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm build` 绿
+  - NIT-1 注：仓 `packageManager` 钉 `pnpm@10.32.1`，PATH 前置的 pnpm 11 会拒跑——本批 verify 命令一律用钉死路径 `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm`（维护者本机 v24.15.0 pnpm 10）
 - [ ] `npx spec-wave task lint --file docs/tasks/active/task_web_capability_catalog.md` PASS
 
 ---
@@ -211,7 +213,7 @@ F5 是 SPEC §4 唯一 ❌ 未接通面：web 无路由/页面，后端 B1/B2 �
 | 检查 | 结果 |
 |------|------|
 | `npx spec-wave task lint --file docs/tasks/active/task_web_capability_catalog.md` | **PASS**（2026-10-11 起草稿实跑） |
-| 结论 | **10 草稿已落 · HG-AUDIT-R1 + HG-GRAPH-MODULES 双 pending · NO-GO 30** |
+| 结论 | **HG-AUDIT-R1 + HG-GRAPH-MODULES 双 approved（2026-10-11 · 维护者授权 00 代录 m00230 · R1 PASS-WITH-NIT · 图谱先行已落 compile 绿）· GO 30** |
 
 ---
 
@@ -220,3 +222,5 @@ F5 是 SPEC §4 唯一 ❌ 未接通面：web 无路由/页面，后端 B1/B2 �
 | 日期 | 说明 |
 |------|------|
 | 2026-10-11 | 10 起草（00 代录 · 维护者令联调链执行）· SPEC §9 T-W3 行落地 · B1/B2 依赖解除（Q2 m00026） |
+| 2026-10-11 | HG-AUDIT-R1 签认代录（00 · 维护者授权 m00230 · R1 PASS-WITH-NIT 审查文 58bf8de）· NIT-1/NIT-5 回填 |
+| 2026-10-11 | HG-GRAPH-MODULES 签认代录（00 · 维护者授权 m00230）：图谱先行落盘——`01_modules.md` capability 模块行 + `10_flow_capability.graph.yaml` · graph-compile 绿 |
