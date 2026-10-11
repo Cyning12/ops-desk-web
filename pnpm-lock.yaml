@@ -52,8 +52,8 @@ importers:
         specifier: ^3.6.2
         version: 3.9.6
       spec-wave:
-        specifier: 3.0.2
-        version: 3.0.2
+        specifier: 3.3.0
+        version: 3.3.0(typescript@5.8.3)
       typescript:
         specifier: ~5.8.3
         version: 5.8.3
@@ -1561,17 +1561,20 @@ packages:
     resolution: {integrity: sha512-1POYv7uv2gXoyGFpBCmpDVSNV74IfsWlDW216UPjbWufNf+bSU6GdbDsxdcxtfwb4xlI3yxzOTKClUosxARYrQ==}
     engines: {node: '>=0.10.0'}
 
-  spec-wave@3.0.2:
-    resolution: {integrity: sha512-45ZRUFx+H9XWDh7CH4BnGRM5PmWnOnT/fG3c8WQJ6jekJD50mkNwVGv8eJSK3p2WsIeh9q92qJ/ajtsUjkBx6w==}
+  spec-wave@3.3.0:
+    resolution: {integrity: sha512-zVFuB/g6+7eDYdt528xszPS8xw3gjEnctT0An8cysEZxiH3AVMViJn/YFk0IYagVek877fQLRxC6PnAAeKYrKQ==}
     engines: {node: ^22.19.0 || >=24.0.0}
     hasBin: true
     peerDependencies:
       '@deepseek-ai/cordis': ^4.0.1
       '@deepseek-ai/dsh-tools': '>=0.0.1-rc.1 <0.2.0'
+      typescript: ^5.0.0
     peerDependenciesMeta:
       '@deepseek-ai/cordis':
         optional: true
       '@deepseek-ai/dsh-tools':
+        optional: true
+      typescript:
         optional: true
 
   stackback@0.0.2:
@@ -3302,9 +3305,11 @@ snapshots:
 
   speakingurl@14.0.1: {}
 
-  spec-wave@3.0.2:
+  spec-wave@3.3.0(typescript@5.8.3):
     dependencies:
       js-yaml: 4.3.0
+    optionalDependencies:
+      typescript: 5.8.3
 
   stackback@0.0.2: {}
 

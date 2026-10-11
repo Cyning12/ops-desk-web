@@ -12,8 +12,8 @@ GRAPH_JSON="${GRAPH_DIR}/shared/graph.json"
 
 cd "${ROOT_DIR}"
 
-# D-PIN：CI tech-graph 未 pnpm install；默认 npx 钉 @3.0.2（可 KIT_CLI 覆盖）
-KIT_CLI="${KIT_CLI:-spec-wave@3.0.2}"
+# D-PIN：CI tech-graph 未 pnpm install；默认 npx 钉 @3.3.0（可 KIT_CLI 覆盖）
+KIT_CLI="${KIT_CLI:-spec-wave@3.3.0}"
 
 # coding-kit CLI --all 仅扫一层；对含 *.graph.yaml 的子目录逐个 compile/check（C4/B1）
 GRAPH_INPUT_DIRS=()

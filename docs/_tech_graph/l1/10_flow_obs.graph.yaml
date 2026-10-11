@@ -18,78 +18,66 @@ nodes:
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/views/ObsView.vue"
-        symbol: "ObsView"
-        kind: component
+      path: "src/views/ObsView.vue"
+      symbol: "ObsView"
 
   - id: "obs_store"
     label: "useObsStore"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/obs.ts"
-        symbol: "useObsStore"
-        kind: module
+      path: "src/stores/obs.ts"
+      symbol: "useObsStore"
 
   - id: "load_action"
     label: "load"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/obs.ts"
-        symbol: "load"
-        kind: method
+      path: "src/stores/obs.ts"
+      symbol: "load"
 
   - id: "set_status_scenario"
     label: "setStatusScenario"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/obs.ts"
-        symbol: "setStatusScenario"
-        kind: method
+      path: "src/stores/obs.ts"
+      symbol: "setStatusScenario"
 
   - id: "load_status_fixture"
     label: "loadObsStatusFixture"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/obs.ts"
-        symbol: "loadObsStatusFixture"
-        kind: method
+      path: "src/api/obs.ts"
+      symbol: "loadObsStatusFixture"
 
   - id: "load_timeline_fixture"
     label: "loadObsTimelineFixture"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/obs.ts"
-        symbol: "loadObsTimelineFixture"
-        kind: method
+      path: "src/api/obs.ts"
+      symbol: "loadObsTimelineFixture"
 
   - id: "status_fixtures"
     label: "status fixtures（ready / blocked）"
     kind: struct
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/fixtures/obs/status_ready.json"
-        symbol: "default"
-        kind: const
-      - path: "src/fixtures/obs/status_blocked.json"
-        symbol: "default"
-        kind: const
+      path: "src/fixtures/obs/status_ready.json"
+      symbol: "default"
+      # 另有实现: path="src/fixtures/obs/status_blocked.json" symbol="default"（3.3.0 schema 每节点单一 implementedBy）
 
   - id: "timeline_fixtures"
     label: "timeline fixtures（empty / events）"
     kind: struct
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/fixtures/obs/timeline_empty.json"
-        symbol: "default"
-        kind: const
-      - path: "src/fixtures/obs/timeline_events.json"
-        symbol: "default"
-        kind: const
+      path: "src/fixtures/obs/timeline_empty.json"
+      symbol: "default"
+      # 另有实现: path="src/fixtures/obs/timeline_events.json" symbol="default"（3.3.0 schema 每节点单一 implementedBy）
 
 edges:
   - from: "user"

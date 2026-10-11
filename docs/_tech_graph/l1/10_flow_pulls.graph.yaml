@@ -18,108 +18,96 @@ nodes:
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/views/PullsView.vue"
-        symbol: "PullsView"
-        kind: component
+      path: "src/views/PullsView.vue"
+      symbol: "PullsView"
 
   - id: "pulls_store"
     label: "usePullsStore"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/pulls.ts"
-        symbol: "usePullsStore"
-        kind: module
+      path: "src/stores/pulls.ts"
+      symbol: "usePullsStore"
 
   - id: "load_action"
     label: "load"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/pulls.ts"
-        symbol: "load"
-        kind: method
+      path: "src/stores/pulls.ts"
+      symbol: "load"
 
   - id: "set_filter"
     label: "setFilter"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/pulls.ts"
-        symbol: "setFilter"
-        kind: method
+      path: "src/stores/pulls.ts"
+      symbol: "setFilter"
 
   - id: "set_page"
     label: "setPage"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/pulls.ts"
-        symbol: "setPage"
-        kind: method
+      path: "src/stores/pulls.ts"
+      symbol: "setPage"
 
   - id: "set_page_size"
     label: "setPageSize"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/pulls.ts"
-        symbol: "setPageSize"
-        kind: method
+      path: "src/stores/pulls.ts"
+      symbol: "setPageSize"
 
   - id: "retry_action"
     label: "retry"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/pulls.ts"
-        symbol: "retry"
-        kind: method
+      path: "src/stores/pulls.ts"
+      symbol: "retry"
 
   - id: "build_params"
     label: "buildParams"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/pulls.ts"
-        symbol: "buildParams"
-        kind: method
+      path: "src/stores/pulls.ts"
+      symbol: "buildParams"
 
   - id: "pull_state_options"
     label: "PULL_STATE_OPTIONS"
     kind: struct
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/pulls.ts"
-        symbol: "PULL_STATE_OPTIONS"
-        kind: const
+      path: "src/api/pulls.ts"
+      symbol: "PULL_STATE_OPTIONS"
 
   - id: "pull_ci_status_options"
     label: "PULL_CI_STATUS_OPTIONS"
     kind: struct
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/pulls.ts"
-        symbol: "PULL_CI_STATUS_OPTIONS"
-        kind: const
+      path: "src/api/pulls.ts"
+      symbol: "PULL_CI_STATUS_OPTIONS"
 
   - id: "fetch_pulls_api"
     label: "fetchPulls"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/pulls.ts"
-        symbol: "fetchPulls"
-        kind: method
+      path: "src/api/pulls.ts"
+      symbol: "fetchPulls"
 
   - id: "http_client"
     label: "http（axios · baseURL=/api）"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/http.ts"
-        symbol: "http"
-        kind: module
+      path: "src/api/http.ts"
+      symbol: "http"
 
   - id: "ops_api"
     label: "ops-desk-api"

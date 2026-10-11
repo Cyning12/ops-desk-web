@@ -1,6 +1,6 @@
 # Task：spec-wave 升级 3.0.0（web · 2.4.2 → 3.0.0）
 
-> **状态**：`in_progress`  
+> **状态**：`done`  
 > **类型**：基础设施 / harness 过程轨 major  
 > **前置**：Wave A done（`spec-wave@2.4.2` · PR #45/#46 CLOSE）  
 > **分支**：`task/web-specwave-3-0-0`（base：`main`）  
@@ -28,6 +28,7 @@
 | **kpi_aggregator** | `CLOSE` |
 | **invoke_retention_profile** | `minimal` |
 | **required_invoke_hats** | `30` |
+| **related_pr** | `#47` |
 | **close_pr_policy** | `required` |
 | **review_hat** | `20` |
 
@@ -94,7 +95,7 @@ Wave A 已把本仓钉到 **`spec-wave@2.4.2`**（对齐当时 api）。上游 *
 
 ### KPI
 
-Task_KPI%: 100（关账待 PR）
+Task_KPI%: 100（PR #47 MERGED 2026-09-18 · 滞后关账：2026-10-11 随 3.3.0 wave 补归档 · 00「一并处理掉」）
 
 ---
 

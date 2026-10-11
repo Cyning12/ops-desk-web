@@ -18,45 +18,40 @@ nodes:
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/views/GraphView.vue"
-        symbol: "GraphView"
-        kind: component
+      path: "src/views/GraphView.vue"
+      symbol: "GraphView"
 
   - id: "graph_store"
     label: "useGraphStore"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/graph.ts"
-        symbol: "useGraphStore"
-        kind: module
+      path: "src/stores/graph.ts"
+      symbol: "useGraphStore"
 
   - id: "load_action"
     label: "load"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/graph.ts"
-        symbol: "load"
-        kind: method
+      path: "src/stores/graph.ts"
+      symbol: "load"
 
   - id: "fetch_graph_api"
     label: "fetchGraph"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/graph.ts"
-        symbol: "fetchGraph"
-        kind: method
+      path: "src/api/graph.ts"
+      symbol: "fetchGraph"
 
   - id: "http_client"
     label: "http（axios · baseURL=/api）"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/http.ts"
-        symbol: "http"
-        kind: module
+      path: "src/api/http.ts"
+      symbol: "http"
 
   - id: "ops_api"
     label: "ops-desk-api"

@@ -18,90 +18,80 @@ nodes:
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/views/IssuesView.vue"
-        symbol: "IssuesView"
-        kind: component
+      path: "src/views/IssuesView.vue"
+      symbol: "IssuesView"
 
   - id: "issues_store"
     label: "useIssuesStore"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/issues.ts"
-        symbol: "useIssuesStore"
-        kind: module
+      path: "src/stores/issues.ts"
+      symbol: "useIssuesStore"
 
   - id: "load_action"
     label: "load"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/issues.ts"
-        symbol: "load"
-        kind: method
+      path: "src/stores/issues.ts"
+      symbol: "load"
 
   - id: "apply_filters"
     label: "applyFilters"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/issues.ts"
-        symbol: "applyFilters"
-        kind: method
+      path: "src/stores/issues.ts"
+      symbol: "applyFilters"
 
   - id: "reset_filters"
     label: "resetFilters"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/issues.ts"
-        symbol: "resetFilters"
-        kind: method
+      path: "src/stores/issues.ts"
+      symbol: "resetFilters"
 
   - id: "set_page"
     label: "setPage"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/issues.ts"
-        symbol: "setPage"
-        kind: method
+      path: "src/stores/issues.ts"
+      symbol: "setPage"
 
   - id: "set_page_size"
     label: "setPageSize"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/issues.ts"
-        symbol: "setPageSize"
-        kind: method
+      path: "src/stores/issues.ts"
+      symbol: "setPageSize"
 
   - id: "build_issue_params"
     label: "buildIssueParams"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/issues.ts"
-        symbol: "buildIssueParams"
-        kind: method
+      path: "src/stores/issues.ts"
+      symbol: "buildIssueParams"
 
   - id: "fetch_issues_api"
     label: "fetchIssues"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/issues.ts"
-        symbol: "fetchIssues"
-        kind: method
+      path: "src/api/issues.ts"
+      symbol: "fetchIssues"
 
   - id: "http_client"
     label: "http（axios · baseURL=/api）"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/http.ts"
-        symbol: "http"
-        kind: module
+      path: "src/api/http.ts"
+      symbol: "http"
 
   - id: "ops_api"
     label: "ops-desk-api"

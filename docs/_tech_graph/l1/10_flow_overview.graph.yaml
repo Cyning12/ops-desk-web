@@ -18,45 +18,40 @@ nodes:
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/views/OverviewView.vue"
-        symbol: "OverviewView"
-        kind: component
+      path: "src/views/OverviewView.vue"
+      symbol: "OverviewView"
 
   - id: "overview_store"
     label: "useOverviewStore"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/overview.ts"
-        symbol: "useOverviewStore"
-        kind: module
+      path: "src/stores/overview.ts"
+      symbol: "useOverviewStore"
 
   - id: "load_action"
     label: "load"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/stores/overview.ts"
-        symbol: "load"
-        kind: method
+      path: "src/stores/overview.ts"
+      symbol: "load"
 
   - id: "fetch_overview_api"
     label: "fetchOverview"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/overview.ts"
-        symbol: "fetchOverview"
-        kind: method
+      path: "src/api/overview.ts"
+      symbol: "fetchOverview"
 
   - id: "http_client"
     label: "http（axios · baseURL=/api）"
     kind: flow
     layer_hint: "G-L2"
     implementedBy:
-      - path: "src/api/http.ts"
-        symbol: "http"
-        kind: module
+      path: "src/api/http.ts"
+      symbol: "http"
 
   - id: "ops_api"
     label: "ops-desk-api"

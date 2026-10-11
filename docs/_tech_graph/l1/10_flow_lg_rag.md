@@ -1,7 +1,7 @@
 ---
 graph_id: 10_flow_lg_rag
 version: 2026-08-31
-generated_at: sha256-b0a98cee07ec9bc8
+generated_at: sha256-4a55f0e87bca28d6
 source: 10_flow_lg_rag.graph.yaml
 ---
 
@@ -35,8 +35,7 @@ flowchart TB
     invoke_path -->|"相对 baseURL=/api（'/ops/lg-rag/invoke'）"| http_client
     http_client -->|"POST /api/ops/lg-rag/invoke（非流式）"| ops_api
     lg_rag_view -->|"中止 click（store.abort · L83）"| abort_action
-    lg_rag_view -->|"「用此 thread_id 继续」click（L87）"| use_thread_id
-    use_thread_id -->|"回填 threadId（result.thread_id → 输入框 · L42–44）"| lg_rag_store
+    lg_rag_view -->|"「用此 thread_id 继续」click（L87）· 回填 result.thread_id → 输入框（store L42–44 内部态写 · 非调用边）"| use_thread_id
 
     classDef phase fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     classDef doc fill:#fff8e1,stroke:#ff6f00,stroke-width:1px
@@ -78,5 +77,4 @@ flowchart TB
 | invoke_path | http_client | -> | depends_on | 相对 baseURL=/api（'/ops/lg-rag/invoke'） |  |
 | http_client | ops_api | -> | depends_on | POST /api/ops/lg-rag/invoke（非流式） |  |
 | lg_rag_view | abort_action | -> | depends_on | 中止 click（store.abort · L83） |  |
-| lg_rag_view | use_thread_id | -> | depends_on | 「用此 thread_id 继续」click（L87） |  |
-| use_thread_id | lg_rag_store | -> | depends_on | 回填 threadId（result.thread_id → 输入框 · L42–44） |  |
+| lg_rag_view | use_thread_id | -> | depends_on | 「用此 thread_id 继续」click（L87）· 回填 result.thread_id → 输入框（store L42–44 内部态写 · 非调用边） |  |
