@@ -1,13 +1,19 @@
 {
   "schema_version": "graph_v2",
   "freeze_id": "OPS_DESK_WEB_TECH_GRAPH_FREEZE_20261011_V1",
-  "generated_at": "2026-10-11T06:44:49Z",
+  "generated_at": "2026-10-11T08:26:11Z",
   "graphs": [
     {
       "id": "00_main",
       "title": "ops-desk-web 顶层流程总图",
       "source_yaml_path": "l0/00_main.graph.yaml",
       "layer": "G-L0"
+    },
+    {
+      "id": "10_flow_capability",
+      "title": "Capability 目录页加载流程（前端 · T-W3 图谱先行 · 30 未开工 · 文件名为规划命名以 task_web_capability_catalog 为准）",
+      "source_yaml_path": "l1/10_flow_capability.graph.yaml",
+      "layer": "G-L1"
     },
     {
       "id": "10_flow_chat",
@@ -169,6 +175,51 @@
       "graph_id": "00_main",
       "id": "api_doc",
       "label": ">../../../ops-desk-api/docs/_tech_graph/l0/00_main.md"
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "id": "user",
+      "label": "用户"
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "id": "router_guard",
+      "label": "router（/capability · ensureMe 守卫）"
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "id": "capability_view",
+      "label": "CapabilityCatalogView"
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "id": "capability_store",
+      "label": "useCapabilityStore"
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "id": "load_action",
+      "label": "load"
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "id": "fetch_mine_api",
+      "label": "fetchCapabilityMine"
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "id": "fetch_catalog_api",
+      "label": "fetchAdminCapabilityCatalog"
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "id": "http_client",
+      "label": "http（axios · baseURL=/api）"
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "id": "ops_api",
+      "label": "ops-desk-api"
     },
     {
       "graph_id": "10_flow_chat",
@@ -844,6 +895,96 @@
       "mark": "->",
       "type": "depends_on",
       "label": "模块边界",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "from": "user",
+      "to": "router_guard",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "opens /capability",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "from": "router_guard",
+      "to": "capability_view",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "ensureMe 守卫复用（401 跳登录）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "from": "capability_view",
+      "to": "capability_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "binds",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "from": "capability_view",
+      "to": "load_action",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "onMounted",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "from": "load_action",
+      "to": "fetch_mine_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "await（空集 items=[] 渲染空态）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "from": "fetch_mine_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.get('/capability/mine')（九键投影 · {items,count}）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "from": "load_action",
+      "to": "fetch_catalog_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "role=maintainer 才调（/auth/me role 驱动 · 普通用户零探测面不请求）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "from": "fetch_catalog_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.get('/admin/capability/catalog')（只取 summary manifest_errors/manifest_error_details）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_capability",
+      "from": "http_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "GET /api/capability/mine · GET /api/admin/capability/catalog",
       "anchors": [],
       "sync": true
     },

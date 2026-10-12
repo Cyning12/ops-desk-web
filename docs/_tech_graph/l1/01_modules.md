@@ -16,6 +16,7 @@
 | `components` | 通用组件 | `src/components/**` | → — | Element Plus 封装、水墨风 UI 组件；2026-10-04 新增 `chat-history/ChatHistoryPanel.vue`（F1 历史侧栏 · 裁定 F-B）与 `chat/HitlApprovalCard.vue`（F2 消息流内联审批卡片 · 裁定 F-A）（task_web_chat_history_hitl_ux） |
 | `api` | API 客户端 | `src/api/**` | → — | 封装 fetch、SSE 消费、错误处理；2026-10-04 新增 `chatHistory.ts`（B1 threads/history 只读契约）与 `hitl.ts`（B2 pending/decide/resume · decide→resume 两步链）（task_web_chat_history_hitl_ux） |
 | `pinia` | 状态管理 | `src/stores/**` | → `api` | Pinia store；2026-10-04 chat store 扩展：`hitl.waiting` 分支（审批卡片态）/ `done` 按 `payload.status` 分支（waiting_approval ≠ 完成态 · 保留 active-run）/ `openHistoryThread` 历史加载映射既有 ChatMessage（F-C）/ `decideHitl` 两步动作链 + `refreshHitlPending` 两消费点（不轮询）（task_web_chat_history_hitl_ux） |
+| `capability` | Capability 目录页（F5 · T-W3 图谱先行 · 30 未开工 · 文件名为规划命名以 task 为准） | `src/api/capability.ts`, `src/stores/capability.ts`, `src/views/CapabilityCatalogView.vue`, `src/router/index.ts`（`/capability` 路由） | → `api`, `pinia`, `router` | 可见集 `GET /capability/mine` 九键白名单投影（排除 `adapter`/`args_schema` · {items,count} 照登）；maintainer 面 `GET /admin/capability/catalog` summary `manifest_errors`/`manifest_error_details`，按 `/auth/me` role 驱动显隐 · 普通用户零探测面（task_web_capability_catalog） |
 | `styles` | 样式与主题 | `src/styles/**` | → — | 水墨风主题（CSS 变量）；Epic W1 拍板不引 Tailwind |
 
 ## 跨模块契约
@@ -36,6 +37,7 @@
 | HG-GRAPH-MODULES | approved | web 00（预签 · 维护者授权代签文档闸） | 2026-08-31 | task_web_graph_l1_flow_pages：**不新增一级模块**；关联节补 7 条 flow 链接（overview/issues/pulls/graph/lc_evidence/obs/login · SPEC P1 清零） |
 | HG-GRAPH-MODULES | approved | web 00（预签 · 维护者授权代签文档闸） | 2026-08-31 | task_web_graph_l2_key_unify：**不新增一级模块**；仅 l2 by_symbol 18 裸键统一为 `path#symbol` 复合键（值不变 · G-L2 键形态迁移） |
 | HG-GRAPH-MODULES | approved | 00（代录 · 维护者授权「签收，后续文档授权00签收」） | 2026-10-04 | task_web_chat_history_hitl_ux：**不新增一级模块**；api/pinia/components 行增量备注（chatHistory/hitl client · chat store hitl.waiting/done-status/openHistoryThread 扩展 · chat-history/chat 组件目录）随 30 交付落盘 |
+| HG-GRAPH-MODULES | approved | web 00（代录 · 维护者授权 m00230「授权00签收后续文档」） | 2026-10-11 | task_web_capability_catalog（T-W3 **图谱先行** · 30 未开工）：新增 `capability` 一级模块行（目录页 · 规划路由 `/capability` + view + api + store）+ 新增 `10_flow_capability.graph.yaml`（G-L1）· `./scripts/graph-compile.sh` 绿 |
 
 ## 关联
 
@@ -49,4 +51,5 @@
 - LC Evidence flow：[`10_flow_lc_evidence.md`](./10_flow_lc_evidence.md)
 - Obs flow：[`10_flow_obs.md`](./10_flow_obs.md)
 - Login flow：[`10_flow_login.md`](./10_flow_login.md)
+- Capability flow：[`10_flow_capability.md`](./10_flow_capability.md)
 - Mermaid 约定：[`../shared/99_mermaid_protocol.md`](../shared/99_mermaid_protocol.md)
