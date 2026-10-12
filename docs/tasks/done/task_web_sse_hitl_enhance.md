@@ -1,6 +1,6 @@
 # Task：Web · 联调 T-W2 · SSE/HITL 增强批（F2/F3）
 
-> **状态**：`active` · **GO 30**（`HG-AUDIT-R1` approved · 2026-10-11 · 维护者授权 00 代录 m00230）  
+> **状态**：`done`（2026-10-12 验收通过 · S2/S3 全过 · main verify 252/252 绿 · R2/R2.1 审查 PASS · PR #61 MERGED · 归位 #62）  
 > **类型**：feature-lite / 联调增强（文档级补全 + decide UI 可选键 + 终态渲染核对）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS  
 > **上游**：`docs/spec/web-integration/SPEC-web-integration_v0.md`（signed · Q1-Q4 已裁 2026-10-11 维护者 m00026）§4 F2/F3 · §9 拆 task 规划 · 缺口②③④  
@@ -31,6 +31,7 @@
 | **experience_capture** | `recommended` |
 | **kpi_aggregator** | `CLOSE` |
 | **freeze_id** | `lg-rag-sse-v1`（**只消费**；不改 event 表 · 仅 doc comment 清单补全） |
+| **related_pr** | `#61`（MERGED 2026-10-12 · 栈式合入 drafts）· 落账归位 main PR `#62`（MERGED 2026-10-12） |
 
 ### 人工闸
 
@@ -121,12 +122,12 @@ SPEC §1.1 盘点核真三枚真残留（缺口②③④）：② `src/composabl
 ## 验收标准
 
 - [x] `HG-AUDIT-R1` approved（20-task-audit R1 **PASS-WITH-NIT** 零阻塞 · 2026-10-11 维护者授权 00 代录 m00230）
-- [ ] `useLgRagSse.ts` 帧型 doc comment 7 型齐（含 `hitl.waiting`）；diff 纯注释级
-- [ ] decide 卡片 `resume_mode` 三选 UI 交付：默认 inherit · 两步钉死不破 · 400 错误态可见
-- [ ] `done{resumed}` 终态渲染核对结论落档（禁等 `completed` 实证）
-- [ ] S2：断网 → replay 补齐零丢失 → 帧计数一致；未知帧容错实证
-- [ ] S3：六 env 组全链 挂起→审批→decide→resume→`done{resumed}` 渲染；`auto_resume=immediate` 自适应展示
-- [ ] **FP-5 闸**：`$HOME/.nvm/versions/node/v24.15.0/bin/pnpm test` 全量 225 条全绿（chat-store.spec.ts 65 条 it）· `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm lint` / `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm build` 绿
+- [x] `useLgRagSse.ts` 帧型 doc comment 7 型齐（含 `hitl.waiting`）；diff 纯注释级
+- [x] decide 卡片 `resume_mode` 三选 UI 交付：默认 inherit · 两步钉死不破 · 400 错误态可见
+- [x] `done{resumed}` 终态渲染核对结论落档（禁等 `completed` 实证）
+- [x] S2：断网 → replay 补齐零丢失 → 帧计数一致；未知帧容错实证
+- [x] S3：六 env 组全链 挂起→审批→decide→resume→`done{resumed}` 渲染；`auto_resume=immediate` 自适应展示
+- [x] **FP-5 闸**：`$HOME/.nvm/versions/node/v24.15.0/bin/pnpm test` 全量 225 条全绿（chat-store.spec.ts 65 条 it）· `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm lint` / `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm build` 绿
   - NIT-1 注：仓 `packageManager` 钉 `pnpm@10.32.1`，PATH 前置的 pnpm 11 会拒跑——本批 verify 命令一律用钉死路径 `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm`（维护者本机 v24.15.0 pnpm 10）
 - [ ] `npx spec-wave task lint --file docs/tasks/active/task_web_sse_hitl_enhance.md` PASS
 
@@ -203,6 +204,20 @@ FP-5 回退闸量化钉死（225 全量 / 65 chat-store）；FP-3 环境缓冲�
 | `npx spec-wave task lint --file docs/tasks/active/task_web_sse_hitl_enhance.md` | **PASS**（2026-10-11 起草稿实跑） |
 | 结论 | **HG-AUDIT-R1 approved（2026-10-11 · 维护者授权 00 代录 m00230 · R1 PASS-WITH-NIT）· GO 30** |
 
+### 最终验收实录（CLOSE · 2026-10-12）
+
+| 检查 | 结果 |
+|------|------|
+| 联调实操 | S2 断网 replay 补齐零丢失 + S3 六 env 组 HITL 全链（挂起→审批→decide→resume→`done{resumed}`）全过（2026-10-11 17:17–17:40 真跑 · 证据 `docs/harness/invokes/by-task/web-sse-hitl-enhance/`） |
+| 三缺口收敛 | 帧型注释 7 型（`useLgRagSse.ts:28`）· `resume_mode` 三选 UI（`HitlApprovalCard.vue` · 默认 inherit 载荷字面不变）· `done{resumed}` 终态钉（禁等 `completed` 实证） |
+| 实现审查 | R2 PASS-WITH-NIT（B-R2-1 补证棒解阻塞）→ R2.1 复核 PASS（`docs/harness/reviews/task_web-integration_impl_R2_20261011.md` · ad9f5c1）· NIT-R2-4 补尾棒已落（已失证据 7 行承证替代 · src/tests 零触碰） |
+| main verify（origin/main @95c758c · 2026-10-12 11:09） | **PASS**：`pnpm lint` exit 0 · Vitest **31 文件 252/252** · `pnpm build` 2.33s |
+| 合并 | PR #61 MERGED 2026-10-12（栈式合入 drafts）· 落账归位 main PR #62 MERGED 2026-10-12 |
+
+### KPI
+
+Task_KPI%: 100（PR #61 MERGED 2026-10-12 · 落账归位 PR #62 · 关账归档 done/）
+
 ---
 
 ## 修订
@@ -211,3 +226,4 @@ FP-5 回退闸量化钉死（225 全量 / 65 chat-store）；FP-3 环境缓冲�
 |------|------|
 | 2026-10-11 | 10 起草（00 代录 · 维护者令联调链执行）· SPEC §9 T-W2 行落地 |
 | 2026-10-11 | HG-AUDIT-R1 签认代录（00 · 维护者授权 m00230 · R1 PASS-WITH-NIT 审查文 58bf8de）· NIT-1 回填（NIT-4 留维护者裁定） |
+| 2026-10-12 | CLOSE：S2/S3 全过 · R2/R2.1 审查 PASS（NIT-R2-4 补尾已落）· main verify（lint exit 0 · Vitest 31 文件 252/252 · build 2.33s · 11:09）· PR #61 MERGED · 归位 #62 · 归档 done/ |
