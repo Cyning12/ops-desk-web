@@ -11,6 +11,8 @@ import { http } from './http'
  * 端点（cookie maintainer 鉴权 · 复用 http.ts axios 封装与 401 拦截）：
  * - GET /api/ops/hitl/pending → `{items:[...], count}`（仅本人 owner · 非 maintainer 403 · 未登录 401）
  * - POST /api/ops/hitl/requests/{id}/decide，body `{decision}` —— 置已决，**不自动 resume**（两步钉死）；
+ *   可选键 `resume_mode`（inherit/immediate/manual · 上游 router.py:184 白名单 · 未知值 **400** 非 422；
+ *   缺省/inherit 由后端按全局 env 裁定，前端默认**不送**该键）；
  *   重复/已决 → 409 · 未知/跨用户 → 404（不泄露存在性）· 非法 decision → 422
  * - POST /api/ops/hitl/requests/{id}/resume —— 既有端点复用（零改动 · 只新增 client 封装）
  *
@@ -37,6 +39,14 @@ export interface HitlPendingResponse {
 
 export type HitlDecision = 'approved' | 'rejected'
 
+/**
+ * decide 可选键 resume_mode（T-W2 · 上游 router.py:184 白名单三值 · 未知值 400）：
+ * - inherit：缺省（跟随后端全局 env OPS_HITL_AUTO_RESUME）——前端默认，**不送键**
+ * - immediate：decide(approved) 持久化成功后后端进程内自动续跑
+ * - manual：显式不自动续跑（维持两步钉死字面）
+ */
+export type HitlResumeMode = 'inherit' | 'immediate' | 'manual'
+
 /** decide 响应（上游 decide_request 返回形）；`resume` 提示恢复是客户端第二个显式动作 */
 export interface HitlDecideResponse {
   ok: boolean
@@ -45,6 +55,8 @@ export interface HitlDecideResponse {
     required: boolean
     method: string
     endpoint: string
+    /** resume_mode=immediate 时后端进程内自动续跑标记（T-W2 S3 实证键 · 可选） */
+    auto_triggered?: boolean
   }
 }
 
@@ -74,14 +86,21 @@ export async function fetchHitlPending(): Promise<HitlPendingResponse> {
   return { items, count }
 }
 
-/** B2 置已决（批准/驳回 · 与 OA callback 同语义）；成功不自动 resume */
+/**
+ * B2 置已决（批准/驳回 · 与 OA callback 同语义）；成功不自动 resume。
+ * T-W2：`resumeMode` 可选键——仅 immediate/manual 时随载荷送出；
+ * 缺省/inherit **不送键**（后端按全局 env 裁定 · 既有 {decision} 载荷字面不变）。
+ */
 export async function decideHitlRequest(
   requestId: string,
   decision: HitlDecision,
+  resumeMode?: HitlResumeMode,
 ): Promise<HitlDecideResponse> {
+  const body: Record<string, unknown> = { decision }
+  if (resumeMode && resumeMode !== 'inherit') body.resume_mode = resumeMode
   const { data } = await http.post<HitlDecideResponse>(
     `${HITL_REQUESTS_PATH}/${encodeURIComponent(requestId)}/decide`,
-    { decision },
+    body,
   )
   return data
 }

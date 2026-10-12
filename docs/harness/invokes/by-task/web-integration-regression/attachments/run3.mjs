@@ -1,0 +1,28 @@
+
+import { chromium } from 'playwright-core';
+import fs from 'fs';
+const BASE = 'http://127.0.0.1:5173';
+const SHOTS = '/tmp/tw1-evidence/shots';
+const LOG = '/tmp/tw1-evidence/ui_flow.log';
+const log = (s) => { console.log(s); fs.appendFileSync(LOG, s + '\n'); };
+const browser = await chromium.launch({ channel: 'chrome', headless: true });
+const ctx = await browser.newContext();
+const p = await ctx.newPage();
+await p.goto(BASE + '/login');
+await p.getByPlaceholder('username').fill('admin');
+await p.getByPlaceholder('invite token').fill('<one-time-invite-token-redacted>');
+await p.getByRole('button', { name: '登录' }).click();
+await p.waitForURL(BASE + '/overview', { timeout: 15000 });
+await p.goto(BASE + '/lg-rag');
+await p.getByPlaceholder('输入问法（1..8000 字）').fill('后端已断连的失败态验证');
+fs.writeFileSync('/tmp/tw1-e2e/ready', '1');
+for (let i = 0; i < 120 && !fs.existsSync('/tmp/tw1-e2e/go'); i++) await new Promise(r => setTimeout(r, 500));
+await p.getByRole('button', { name: '提交' }).click();
+await p.waitForSelector('.lg-rag-page__error', { timeout: 60000 });
+const errText = (await p.locator('.lg-rag-page__error').textContent()).replace(/\s+/g, ' ').slice(0, 160);
+const retryBtn = await p.locator('.lg-rag-page__error button', { hasText: '重试' }).count();
+log('S7-3 后端断连失败态 → 错误条=' + errText + ' · 重试按钮=' + retryBtn);
+await p.screenshot({ path: SHOTS + '/s7_03_failure_backend_down.png', fullPage: true });
+log('shot: s7_03_failure_backend_down.png');
+await browser.close();
+log('FAIL-FLOW-DONE');

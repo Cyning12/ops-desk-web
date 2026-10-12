@@ -179,6 +179,26 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
       expect(window.localStorage.getItem(LG_RAG_ACTIVE_RUN_STORAGE_KEY)).toBeNull()
     })
 
+    it("done{status:'resumed'}（T-W2 S3 实证真值字面）→ 终态清除 + lastDone 兜底（缺 latency_ms/model → 0/''）", () => {
+      const chat = useChatStore()
+      chat.sendMessage('问')
+      emitRunStart('r-1')
+
+      // S3 实证：resume 收尾 done 帧 payload.status='resumed' 且 latency_ms/model 缺省
+      // （ops-desk-api resume.py close() · 终态以 done 帧为准 · 前端禁等 completed 字面）
+      captured.onEvent?.({
+        event_type: 'done',
+        run_id: 'r-1',
+        seq: 2,
+        payload: { status: 'resumed' },
+      })
+
+      expect(chat.streaming).toBe(false)
+      expect(chat.activeRun).toBeNull()
+      expect(window.localStorage.getItem(LG_RAG_ACTIVE_RUN_STORAGE_KEY)).toBeNull()
+      expect(chat.lastDone).toEqual({ latency_ms: 0, model: '' })
+    })
+
     it("done{status:'failed'} → activeRun 清除（维持现行）", () => {
       const chat = useChatStore()
       chat.sendMessage('问')
@@ -209,6 +229,58 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
 
       expect(chat.streaming).toBe(false)
       expect(chat.lastDone).toEqual({ latency_ms: 12, model: 'm' })
+      expect(chat.activeRun).toBeNull()
+    })
+  })
+
+  describe('T-W2 S2 · 未知帧 default 容错（SPEC §3.3 钉案 · 帧型前瞻兼容）', () => {
+    it('hitl.resumed / tool_call / 未来帧型穿插 → 不崩 · 已知帧照常渲染 · 终态 done 照常清除', () => {
+      const chat = useChatStore()
+      chat.sendMessage('问')
+      emitRunStart('r-1')
+
+      // 后端真实帧型 hitl.resumed（resume 续跑宣告 · 前端无显式 case → default 忽略）
+      captured.onEvent?.({
+        event_type: 'hitl.resumed',
+        run_id: 'r-1',
+        seq: 2,
+        payload: { request_id: 'req-1', decided_by: 'admin' },
+      })
+      // 既有未展示帧型（chat.ts default 注释在案：tool_call / model.fallback）
+      captured.onEvent?.({
+        event_type: 'tool_call',
+        run_id: 'r-1',
+        seq: 3,
+        payload: { tool: 'x' },
+      })
+      // 前瞻未知帧型（未来后端新增）同路径容错
+      captured.onEvent?.({
+        event_type: 'x.future.v2',
+        run_id: 'r-1',
+        seq: 4,
+        payload: { anything: true },
+      })
+      // 未知帧不得改写 hitl 审批态 / 不得置错
+      expect(chat.error).toBeNull()
+      expect(chat.messages[1].hitl).toBeNull()
+      expect(chat.streaming).toBe(true)
+
+      // 已知帧仍正常消费 + 终态照常
+      captured.onEvent?.({
+        event_type: 'answer',
+        run_id: 'r-1',
+        seq: 5,
+        payload: { content: '答' },
+      })
+      captured.onEvent?.({
+        event_type: 'done',
+        run_id: 'r-1',
+        seq: 6,
+        payload: { status: 'resumed' },
+      })
+
+      expect(chat.messages[1].content).toBe('答')
+      expect(chat.streaming).toBe(false)
       expect(chat.activeRun).toBeNull()
     })
   })
@@ -262,6 +334,28 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
       expect(assistant.hitl?.note).toContain('已批准')
       // AC16①：动作链完成后刷新审批态
       expect(fetchHitlPending).toHaveBeenCalled()
+      expect(chat.error).toBeNull()
+    })
+
+    it('T-W2：immediate 决定 → decide 携 resume_mode=immediate；响应 required=false → 跳过第二步 resume（防撞 409 · S3 实证）', async () => {
+      vi.mocked(decideHitlRequest).mockResolvedValue({
+        ok: true,
+        request: { id: 'req-1', status: 'approved' },
+        resume: {
+          required: false,
+          auto_triggered: true,
+          method: 'POST',
+          endpoint: '/api/ops/hitl/requests/req-1/resume',
+        },
+      })
+      const chat = seedWaitingCard()
+      const assistant = chat.messages[1]
+
+      await chat.decideHitl(assistant, 'req-1', 'approved', 'immediate')
+
+      expect(decideHitlRequest).toHaveBeenCalledWith('req-1', 'approved', 'immediate')
+      expect(resumeHitlRequest).not.toHaveBeenCalled()
+      expect(assistant.hitl?.status).toBe('decided')
       expect(chat.error).toBeNull()
     })
 

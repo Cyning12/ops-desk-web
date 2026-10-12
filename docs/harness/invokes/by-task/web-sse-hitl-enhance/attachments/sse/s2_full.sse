@@ -1,0 +1,18 @@
+event: run.start
+data: {"run_id": "640d68970a564fbb8459d8d40cb1c5f6", "seq": 1, "ts_ms": 0, "agent_role": "system", "event_type": "run.start", "payload": {"mode": "supervisor", "query": "你好，请用一句话回复：T-W2 S2 断线续看验收 smoke。", "run_id": "640d68970a564fbb8459d8d40cb1c5f6", "thread_id": "d5a29ad63e3e4b8f91c6917ae9333858"}, "cursor": "640d68970a564fbb8459d8d40cb1c5f6:1"}
+
+event: node.progress
+data: {"run_id": "640d68970a564fbb8459d8d40cb1c5f6", "seq": 2, "ts_ms": 2461, "agent_role": "intent", "event_type": "node.progress", "payload": {"intent": {"domain": "general", "summary": "用户请求以一句话回复与T-W2 S2断线续看验收smoke相关的内容。", "risk_hint": "low", "needs_tool": false, "needs_skill": false, "is_composite": false}}, "cursor": "640d68970a564fbb8459d8d40cb1c5f6:2"}
+
+event: node.progress
+data: {"run_id": "640d68970a564fbb8459d8d40cb1c5f6", "seq": 3, "ts_ms": 2462, "agent_role": "strategy_builder", "event_type": "node.progress", "payload": {"allowed_capability_ids": []}, "cursor": "640d68970a564fbb8459d8d40cb1c5f6:3"}
+
+event: node.progress
+data: {"run_id": "640d68970a564fbb8459d8d40cb1c5f6", "seq": 4, "ts_ms": 2463, "agent_role": "supervisor", "event_type": "node.progress", "payload": {"subtasks": [{"id": "640d68970a564fbb8459d8d40cb1c5f6:1", "type": "rag", "alias": "t1", "input": "你好，请用一句话回复：T-W2 S2 断线续看验收 smoke。", "depends_on": [], "subtask_id": "640d68970a564fbb8459d8d40cb1c5f6:1"}]}, "cursor": "640d68970a564fbb8459d8d40cb1c5f6:4"}
+
+event: node.progress
+data: {"run_id": "640d68970a564fbb8459d8d40cb1c5f6", "seq": 5, "ts_ms": 2464, "agent_role": "subtask_join", "event_type": "node.progress", "payload": {"keys": ["inflight_subtask_ids"]}, "cursor": "640d68970a564fbb8459d8d40cb1c5f6:5"}
+
+event: subtask.progress
+data: {"run_id": "640d68970a564fbb8459d8d40cb1c5f6", "seq": 6, "ts_ms": 2465, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"type": "rag", "input": "你好，请用一句话回复：T-W2 S2 断线续看验收 smoke。", "status": "running", "message": "开始检索子任务：你好，请用一句话回复：T-W2 S2 断线续看验收 smoke。", "subtask_id": "640d68970a564fbb8459d8d40cb1c5f6:1"}, "cursor": "640d68970a564fbb8459d8d40cb1c5f6:6"}
+

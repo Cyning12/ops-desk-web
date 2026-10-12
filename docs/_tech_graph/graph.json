@@ -1,7 +1,7 @@
 {
   "schema_version": "graph_v2",
   "freeze_id": "OPS_DESK_WEB_TECH_GRAPH_FREEZE_20261011_V1",
-  "generated_at": "2026-10-11T08:26:11Z",
+  "generated_at": "2026-10-11T09:13:31Z",
   "graphs": [
     {
       "id": "00_main",
@@ -11,7 +11,7 @@
     },
     {
       "id": "10_flow_capability",
-      "title": "Capability 目录页加载流程（前端 · T-W3 图谱先行 · 30 未开工 · 文件名为规划命名以 task_web_capability_catalog 为准）",
+      "title": "Capability 目录页加载流程（前端 · T-W3 · task_web_capability_catalog）",
       "source_yaml_path": "l1/10_flow_capability.graph.yaml",
       "layer": "G-L1"
     },
@@ -954,7 +954,7 @@
       "to": "http_client",
       "mark": "->",
       "type": "depends_on",
-      "label": "http.get('/capability/mine')（九键投影 · {items,count}）",
+      "label": "http.get('/ops/capability/mine')（九键投影 · {items,count}）",
       "anchors": [],
       "sync": true
     },
@@ -974,7 +974,7 @@
       "to": "http_client",
       "mark": "->",
       "type": "depends_on",
-      "label": "http.get('/admin/capability/catalog')（只取 summary manifest_errors/manifest_error_details）",
+      "label": "http.get('/ops/admin/capability/catalog')（只取顶层两键 manifest_errors/manifest_error_details）",
       "anchors": [],
       "sync": true
     },
@@ -984,7 +984,7 @@
       "to": "ops_api",
       "mark": "->",
       "type": "depends_on",
-      "label": "GET /api/capability/mine · GET /api/admin/capability/catalog",
+      "label": "GET /api/ops/capability/mine · GET /api/ops/admin/capability/catalog",
       "anchors": [],
       "sync": true
     },
