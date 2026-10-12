@@ -20,9 +20,9 @@
 |---|---|---|
 | #59 T-W1 | **PASS-WITH-NIT** | 零 src 改动属实 · S1/S4/S6/S7/W5/W6 留痕齐全 · NIT-R2-1 四起证据引用未随仓落盘 |
 | #60 T-W3 | **PASS-WITH-NIT** | 验收逐项达标 · role 三级零探测钉死 · 菜单 +1 裁定合理（见 §3.4） · 测试锁行为质量高 |
-| #61 T-W2 | **FAIL（证据面）· 代码面 PASS-WITH-NIT** | 代码增量正确且 NIT-4 落地精准，但 task W4/W5 要求的 S2/S3 invoke 留痕 **零文件**——PR body 实证锚全指向 /tmp 易失路径，验收证据未随仓持久化 |
+| #61 T-W2 | **PASS-WITH-NIT**（R2.1 复核改判 · 原判 FAIL 证据面已主体解阻塞） | 代码增量正确且 NIT-4 落地精准 · c9a7353 补证棒将 S2/S3 帧级证据仓内化（17 文件 · 零代码改动）· 残余必办 NIT-R2-4（7 枚 logs 引而未落盘 · 含关键锚） |
 
-流程闸（分列 · 不代签）：HG-AUDIT-R1 三 task 均 approved（R1 在案）· 本审查不产生新签认 · #61 证据补齐后建议维护者复核本项。
+流程闸（分列 · 不代签）：HG-AUDIT-R1 三 task 均 approved（R1 在案）· 本审查不产生新签认 · #61 补证棒（c9a7353）经 R2.1 复核后证据面主体达标 · NIT-R2-4 清账建议随合并收尾一并处理。
 
 ---
 
@@ -67,7 +67,7 @@ invoke 正文引用 attachments/s1_auth_curl.log 与 ui_flow.log；run.mjs 引�
 ### NIT-R2-2（轻微）
 invoke 自述空集态「仅 Vitest 覆盖照登」——S5 实操未含空集注入（需清库 · 成本不对等），照登合规；若维护者要求 S5 全字面，可后续补空集实操。不阻塞。
 
-## 3. PR #61 T-W2 SSE/HITL 增强 — FAIL（证据面）· 代码面 PASS-WITH-NIT
+## 3. PR #61 T-W2 SSE/HITL 增强 — PASS-WITH-NIT（R2.1 复核改判 · 原判 FAIL 证据面 · 代码面自始至终 PASS）
 
 ### 代码面逐项（行号 = head 8efe8f2）
 | 验收项 | 结论 | 证据 |
@@ -80,8 +80,16 @@ invoke 自述空集态「仅 Vitest 覆盖照登」——S5 实操未含空集�
 | 未知帧容错 | PASS | chat.ts default 分支忽略未展示帧型（注释在案）· 新测试 hitl.resumed/tool_call/x.future.v2 三枚前瞻帧不崩不改态 |
 | FP-5 闸数值 | PASS（账面一致） | PR body 报 Vitest 230/230 = 225+5 新钉 · 文件清单 +5 钉清点一致（chat-store-hitl +3 · chat-view +2） |
 
-### 证据面 FAIL（阻塞项 · B-R2-1）
+### 证据面：B-R2-1 主体已解（R2.1 复核 · 原判 FAIL 存档见下）
+
+**R2.1 复核结论（2026-10-12 · head c9a7353）**：补证棒新增 docs/harness/invokes/by-task/web-sse-hitl-enhance/ 17 文件 534 行（invoke md 123 行 + SSE 原始体 7 枚 + 步骤脚本 9 枚）· `git diff 8efe8f2..c9a7353 -- src/ tests/` 为空（纯文档零代码改动 · 与自报一致）· 帧级抽查全部属实（见 §9 R2.1 复核注记）→ W4/W5「S2/S3 实操证据落 invoke」验收物主体达标，**B-R2-1 主体解阻塞**。残余瑕疵见 NIT-R2-4（必办）。
+
+<details><summary>原 R2 判词存档（2026-10-11 · head 8efe8f2 时点事实无误）</summary>
+
+### 原判：证据面 FAIL（阻塞项 · B-R2-1）
 task T-W2 W4/W5 验收要求 S2（断网 replay 零丢失 + 未知帧容错实证）与 S3（六 env 组 HITL 全链）**实操证据落 docs/harness/invokes**——PR head 树（8efe8f2）git ls-tree 实证：**web-sse-hitl 相关 invoke 文件零枚**，diff 文件清单仅 6 文件（4 src + 2 tests）。PR body 虽详述 S2/S3 执行（PARTIAL_EQ_FULL_PREFIX · GAP_EQ_FULL_TAIL seq8–18 · 六 env 组 :8050 · 三 run id），但全部实证锚指向 /tmp/tw2_* 易失路径，未随仓持久化；代码注释（hitl.ts:58 · chat.ts:996-998）两处引用「T-W2 S3 实证」亦无仓内佐证可溯。对比 #59/#60 均带 invoke + attachments 的交付形态，#61 证据链断裂。**裁定：验收证据项 FAIL——需补交 invoke_20261011_30_web-sse-hitl-enhance.md（+ SSE 样本/日志 attachments）后复核；代码面无需返工。**
+
+</details>
 
 ### NIT-R2-3（轻微）
 chat-view.spec.ts 新增 UI 钉以 mock.calls[0] 长度 2 断言 inherit 精确 2 参——与 chat-store-hitl.spec.ts:325 语义重复（双钉同一契约点），可接受（store/UI 两层各自独立价值），仅记录。
@@ -100,9 +108,11 @@ chat-view.spec.ts 新增 UI 钉以 mock.calls[0] 长度 2 断言 inherit 精确 
 - NIT-R2-1（#59）：四起证据文件引而未随仓落盘（s1_auth_curl.log · ui_flow.log · s4_02_reload_replay.png · s4_03_switch_thread.png）。
 - NIT-R2-2（#60）：S5 空集态仅 Vitest 覆盖（照登合规 · 可选补实操）。
 - NIT-R2-3（#61）：inherit 2 参契约点 store/UI 双钉语义重复（可接受 · 仅记录）。
+- **NIT-R2-4（#61 · R2.1 复核新增 · 必办）**：补证 invoke 正文引用 `attachments/logs/` 共 7 枚（api_8050_excerpt.log · vite_proxy_frames_ts.log · vitest_230of230_tail.log · eslint_clean.log · build_tail.log · s3_imm_decide_response_200.json · vite_dev_5174.log）**全部未随仓落盘**（git ls-tree c9a7353 实证 logs/ 目录不存在）。其中 `s3_imm_decide_response_200.json` 是响应驱动续链（chat.ts:999-1000 跳步判据 required=false · auto_triggered=true）的**唯一直接实证锚**；api_8050_excerpt.log 承载六 env 生效/bogus 400/双 resume 409/F-OBS-2 500 等 HTTP 级断言；verify 闸 230/230 数值亦无仓内佐证。且 invoke 自述「实证锚点全部仓内化 · 零 /tmp 引用」与产出表「logs/ 新建 7 枚」均与实际树不符——声明失实须修正。**处理口径：帧级验收链已完整（SSE 7 枚在仓）故不阻塞证据面改判；但须补交 logs 或修正 invoke 引用/声明后方可合并收尾。**
 
 ## 6. 阻塞项
-- **B-R2-1（#61 · 唯一阻塞）**：S2/S3 invoke 留痕缺失（task W4/W5 验收项）——补交 docs/harness/invokes/by-task/web-sse-hitl-enhance/ 后复核，代码面无返工需求。
+- ~~B-R2-1（#61）~~ **已解（R2.1 复核 2026-10-12 · c9a7353 补证复核 PASS）**：invoke + SSE 7 枚 + 脚本 9 枚仓内化 · 帧级链完整可溯 · 纯文档零代码改动。残余 NIT-R2-4（7 枚 logs 引而未落盘 · 必办清账项 · 见 §5）。
+- 当前无阻塞项。
 
 ## 7. 后端观察项转呈（#61 PR body 自报 · 非本仓裁定面）
 - F-OBS-1：done{resumed} 帧 latency_ms/model 缺省（前端兜底 0/'' 已钉）——后端是否补齐请维护者裁。
@@ -113,6 +123,18 @@ chat-view.spec.ts 新增 UI 钉以 mock.calls[0] 长度 2 断言 inherit 精确 
 - git ls-tree 实证：060bbd6（#59 invoke+raw 9+shots 20+run*.mjs 3）· 8f8844c（invoke_20261011_30_web-capability-catalog.md 在树）· 8efe8f2（无 web-sse-hitl invoke）
 - git show 行号级：hitl.ts:48/54-59/94-106 · chat.ts:718-738/978-1006 · useLgRagSse.ts:28/42 · HitlApprovalCard.vue:19/22/49-60 · capability.ts:23-24/30-39/64-69/75-82 · capability store:58-59 · CapabilityCatalogView.vue:11/96 · router/index.ts:73-79 · AppLayout.vue:47-49 · chat-store-hitl.spec.ts:325/356
 - 契约钉：src/api/http.ts:49 · src/tenant.ts:5（base 本地 grep）
+
+## 9. R2.1 复核注记（2026-10-12 · #61 补证棒 c9a7353）
+
+- 范围：`git diff 8efe8f2..c9a7353 --stat` = 17 文件 +534/-0 · 全位于 docs/harness/invokes/by-task/web-sse-hitl-enhance/ · `-- src/ tests/` 为空（零代码改动属实）。
+- 附件引用核对：正文引用的 scripts/ 与 sse/ 下 16 枚全部在树（OK）；logs/ 下 7 枚全部 MISSING → NIT-R2-4。
+- 帧级抽查（git show c9a7353 原文核验）：
+  - s3_replay_full_18frames.sse：seq 1–18 连续无缺 · seq6 hitl.waiting（decided 链前置）· seq7 done{waiting_approval} · **seq8 hitl.resumed{approved, decided_by=admin}** · seq18 done{status:'resumed' · latency_ms/model 缺省}——一 run 双 done 帧实证 W3「waiting_approval 特判续看 · resumed 通用终态」分支必要性；F-OBS-1 缺键属实（前端兜底钉有据）。
+  - s3_replay_gap_seq8-18.sse：seq 8–18 恰为全量尾部切片（帧型直方图与 full 尾段一致）→ GAP_EQ_FULL_TAIL 承证有效（S2 gap 0 字节撞 F-OBS-2 的承证替代成立）。
+  - s3_imm_replay.sse：seq 1–12 含 hitl.waiting → hitl.resumed → 续跑帧 → done → immediate 链帧级闭环属实（无需第二步请求的行为结果可见；required=false 键级实证因 logs 缺失暂以 Vitest 钉承证）。
+  - s2_partial vs s2_full：同 seq1–6 且帧型直方图一致 → PARTIAL_EQ_FULL_PREFIX 抽查成立。
+  - hitl.resumed 帧在 7 型清单外（useLgRagSse.ts:28 未收编）→ 未知帧容错为必备路径的论证属实。
+- 改判：#61 FAIL（证据面）→ **PASS-WITH-NIT** · B-R2-1 主体解阻塞 · NIT-R2-4 必办（补交 7 logs 或修正 invoke 声明）。
 
 ---
 审查人：20-task-audit 子 Agent（00 委派）· 本文不代签任何 human_gate · HG 栏位留白待维护者。
