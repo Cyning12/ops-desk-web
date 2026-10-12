@@ -53,6 +53,9 @@
 | 2026-09-18 | [`task_web_specwave_upgrade_2_4_2.md`](./task_web_specwave_upgrade_2_4_2.md) | `dsh-coding-kit@1.10.0` → `spec-wave@2.4.2`（Wave A）· PR #45 MERGED |
 | 2026-09-18 | [`task_web_specwave_upgrade_3_0_0.md`](./task_web_specwave_upgrade_3_0_0.md) | `spec-wave@2.4.2` → `3.0.0`（Wave B major）· PR #47 MERGED · 2026-10-11 滞后关账 |
 | 2026-10-11 | [`task_web_specwave_upgrade_3_3_0.md`](./task_web_specwave_upgrade_3_3_0.md) | `spec-wave@3.0.2` → `3.3.0` · tech_graph IB 对象形固定 · 图谱四闸绿 · PR #55 MERGED |
+| 2026-10-12 | [`task_web_integration_regression.md`](./task_web_integration_regression.md) | SPEC web-integration T-W1 · 回归批 F1/F4/F6/F7 · S1/S4/S6/S7 全过 · PR #59 MERGED · 归位 #62 |
+| 2026-10-12 | [`task_web_sse_hitl_enhance.md`](./task_web_sse_hitl_enhance.md) | T-W2 · SSE/HITL 增强（帧型注释 7 型 · `resume_mode` 三选 · `done{resumed}` 终态钉）· S2/S3 全过 · PR #61 MERGED · 归位 #62 |
+| 2026-10-12 | [`task_web_capability_catalog.md`](./task_web_capability_catalog.md) | T-W3 · Capability 目录页（F5 · 九键投影 · role 显隐 · G-L1 图谱）· S5 双角色全过 · PR #60 MERGED · 归位 #62 |
 | 2026-09-08 | [`task_web_fix_chat_live_reactivity.md`](./task_web_fix_chat_live_reactivity.md) | 修复：pushMessage 返回响应式代理（raw 突变绕过 Vue effect 致实流零渲染） · PR #43 MERGED |
 | 2026-09-08 | [`task_web_lg_rag_sse_subtask_message.md`](./task_web_lg_rag_sse_subtask_message.md) | `lg-rag-sse-v1` · 消费 api `subtask.progress.message` 上屏（显式优先 · running 零前缀） · PR #41 MERGED |
 | 2026-09-08 | [`task_web_lg_rag_sse_progressive_reveal.md`](./task_web_lg_rag_sse_progressive_reveal.md) | `lg-rag-sse-v1` · 客户端 reveal 队列（subtask output 打字机 + answer 突发匀速） · PR #39 MERGED |
@@ -109,6 +112,9 @@
 | 2026-10-04 | 归档 `task_web_chat_history_hitl_ux.md`（PR #52 · F1 历史+续看 / F2 HITL 审批面 · 修 waiting_approval 假完成 bug · 00 代签 · 同授权波次） |
 | 2026-10-11 | 归档 `task_web_specwave_upgrade_3_0_0.md`（PR #47 · spec-wave 2.4.2→3.0.0 Wave B · 滞后关账 · 随 3.3.0 wave 补归档 · 00「一并处理掉」） |
 | 2026-10-11 | 归档 `task_web_specwave_upgrade_3_3_0.md`（PR #55 · spec-wave 3.0.2→3.3.0 · tech_graph 格式固定 · HG-AUDIT-R1 00 签收） |
+| 2026-10-12 | 归档 `task_web_integration_regression.md`（PR #59 · 落账归位 #62 · T-W1 回归批 S1/S4/S6/S7 全过 · main verify 252/252 · R2/R2.1 PASS） |
+| 2026-10-12 | 归档 `task_web_sse_hitl_enhance.md`（PR #61 · 落账归位 #62 · T-W2 SSE/HITL 增强 S2/S3 全过 · FP-5 闸 252/252 · NIT-R2-4 补尾已落） |
+| 2026-10-12 | 归档 `task_web_capability_catalog.md`（PR #60 · 落账归位 #62 · T-W3 Capability 目录页 S5 双角色全过 · 图谱先行已落 compile 绿） |
 
 ## 给维护者
 

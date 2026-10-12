@@ -1,6 +1,6 @@
 # Task：Web · 联调 T-W1 · 回归批（F1/F4/F6/F7）
 
-> **状态**：`active` · **GO 30**（`HG-AUDIT-R1` approved · 2026-10-11 · 维护者授权 00 代录 m00230）  
+> **状态**：`done`（2026-10-12 验收通过 · S1/S4/S6/S7 全过 · main verify 252/252 绿 · R2/R2.1 审查 PASS · PR #59 MERGED · 归位 #62）  
 > **类型**：regression / 联调回归验证（后端功能面已接通 · 本批以验证为主）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS  
 > **上游**：`docs/spec/web-integration/SPEC-web-integration_v0.md`（signed · Q1-Q4 已裁 2026-10-11 维护者 m00026）§4 F1/F4/F6/F7 · §9 拆 task 规划  
@@ -31,6 +31,7 @@
 | **experience_capture** | `recommended` |
 | **kpi_aggregator** | `CLOSE` |
 | **freeze_id** | `lg-rag-sse-v1`（**只消费**；不改 event 表） |
+| **related_pr** | `#59`（MERGED 2026-10-12 · 栈式合入 drafts）· 落账归位 main PR `#62`（MERGED 2026-10-12） |
 
 ### 人工闸
 
@@ -120,13 +121,13 @@ SPEC §4 已核真：F1 认证会话 / F4 会话历史 / F6 仪表盘 / F7 lc-ev
 ## 验收标准
 
 - [x] `HG-AUDIT-R1` approved（20-task-audit R1 **PASS-WITH-NIT** 零阻塞 · 2026-10-11 维护者授权 00 代录 m00230）
-- [ ] S1 冷启动登录 → me → 刷新存续 → logout → 401 跳登录：全步通过，证据落 invoke
-- [ ] S4 多轮后刷新 → 历史完整回放 → 切 thread 正确
-- [ ] S6 四端点渲染 + 筛选交互通过
-- [ ] S7 同步调用成功 / 失败态渲染通过
-- [ ] role 驱动菜单核对结论落档（maintainer 入口显隐正确 · 普通用户零探测面）
-- [ ] 契约对拍结论落档（snake_case 照登 · threads envelope 例外照登）
-- [ ] `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm lint` / `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm test`（225 条全绿）/ `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm build` 绿
+- [x] S1 冷启动登录 → me → 刷新存续 → logout → 401 跳登录：全步通过，证据落 invoke
+- [x] S4 多轮后刷新 → 历史完整回放 → 切 thread 正确
+- [x] S6 四端点渲染 + 筛选交互通过
+- [x] S7 同步调用成功 / 失败态渲染通过
+- [x] role 驱动菜单核对结论落档（maintainer 入口显隐正确 · 普通用户零探测面）
+- [x] 契约对拍结论落档（snake_case 照登 · threads envelope 例外照登）
+- [x] `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm lint` / `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm test`（225 条全绿）/ `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm build` 绿
   - NIT-1 注：仓 `packageManager` 钉 `pnpm@10.32.1`，PATH 前置的 pnpm 11 会拒跑——本批 verify 命令一律用钉死路径 `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm`（维护者本机 v24.15.0 pnpm 10）
 - [ ] `npx spec-wave task lint --file docs/tasks/active/task_web_integration_regression.md` PASS
 
@@ -201,6 +202,20 @@ S1/S4/S6/S7 直接取自 SPEC §4 行；D1 倾向 A（vite proxy 已就绪 · �
 | `npx spec-wave task lint --file docs/tasks/active/task_web_integration_regression.md` | **PASS**（2026-10-11 起草稿实跑） |
 | 结论 | **HG-AUDIT-R1 approved（2026-10-11 · 维护者授权 00 代录 m00230 · R1 PASS-WITH-NIT）· GO 30** |
 
+### 最终验收实录（CLOSE · 2026-10-12）
+
+| 检查 | 结果 |
+|------|------|
+| 联调实操 | S1/S4/S6/S7 四场景本地双跑全过（2026-10-11 · 证据 `docs/harness/invokes/by-task/web-integration-regression/` · curl 链 + Playwright 截图 + 原始响应体 attachments） |
+| role 菜单核对 / 契约对拍 | 结论落档（maintainer 入口按 `/auth/me` role 显隐 · 普通用户零探测面；snake_case 原始体照登 · threads envelope 例外照登） |
+| 实现审查 | R2 PASS-WITH-NIT → R2.1 复核 PASS（`docs/harness/reviews/task_web-integration_impl_R2_20261011.md` · ad9f5c1 · 合审 T-W1/T-W2/T-W3） |
+| main verify（origin/main @95c758c · 2026-10-12 11:09） | **PASS**：`pnpm lint` exit 0 · Vitest **31 文件 252/252** · `pnpm build` 2.33s |
+| 合并 | PR #59 MERGED 2026-10-12（栈式合入 drafts）· 落账归位 main PR #62 MERGED 2026-10-12 |
+
+### KPI
+
+Task_KPI%: 100（PR #59 MERGED 2026-10-12 · 落账归位 PR #62 · 关账归档 done/）
+
 ---
 
 ## 修订
@@ -209,3 +224,4 @@ S1/S4/S6/S7 直接取自 SPEC §4 行；D1 倾向 A（vite proxy 已就绪 · �
 |------|------|
 | 2026-10-11 | 10 起草（00 代录 · 维护者令联调链执行）· SPEC §9 T-W1 行落地 |
 | 2026-10-11 | HG-AUDIT-R1 签认代录（00 · 维护者授权 m00230 · R1 PASS-WITH-NIT 审查文 58bf8de）· NIT-1/NIT-3 回填 |
+| 2026-10-12 | CLOSE：S1/S4/S6/S7 全过 · R2/R2.1 审查 PASS · main verify（lint exit 0 · Vitest 31 文件 252/252 · build 2.33s · 11:09）· PR #59 MERGED · 归位 #62 · 归档 done/ |

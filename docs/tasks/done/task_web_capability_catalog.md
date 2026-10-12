@@ -1,6 +1,6 @@
 # Task：Web · 联调 T-W3 · Capability 目录页（F5）
 
-> **状态**：`active` · **GO 30**（`HG-AUDIT-R1` + `HG-GRAPH-MODULES` 双 approved · 2026-10-11 · 维护者授权 00 代录 m00230）  
+> **状态**：`done`（2026-10-12 验收通过 · S5 双角色全过 · main verify 252/252 绿 · R2/R2.1 审查 PASS · PR #60 MERGED · 归位 #62）  
 > **类型**：feature / 新页面（既有后端功能面首次接通）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS  
 > **上游**：`docs/spec/web-integration/SPEC-web-integration_v0.md`（signed · Q1-Q4 已裁 2026-10-11 维护者 m00026）§4 F5 · §9 拆 task 规划 · A 面 `../ops-desk-api/docs/spec/tool-catalog-page/SPEC-tool-catalog-page_v0.md`  
@@ -31,6 +31,7 @@
 | **experience_capture** | `recommended` |
 | **kpi_aggregator** | `CLOSE` |
 | **freeze_id** | `lg-rag-sse-v1`（**只消费**；本 task 不涉 SSE 面） |
+| **related_pr** | `#60`（MERGED 2026-10-12 · 栈式合入 drafts）· 落账归位 main PR `#62`（MERGED 2026-10-12） |
 
 ### 人工闸
 
@@ -135,10 +136,10 @@ SPEC §4 F5 行：Capability 目录为 web 仓**唯一未接通**的功能面（
 
 - [x] `HG-AUDIT-R1` approved（20-task-audit R1 **PASS-WITH-NIT** 零阻塞 · 2026-10-11 维护者授权 00 代录 m00230）
 - [x] `HG-GRAPH-MODULES` approved（`01_modules.md` 已增 capability 模块行 · `10_flow_capability.graph.yaml` 已建 · `./scripts/graph-compile.sh` 绿 · 2026-10-11 维护者授权 00 代录 m00230）
-- [ ] 新路由 + 页面上线：`GET /capability/mine` 可见集九键投影表（排除 `adapter`/`args_schema` · {items,count} 照登）
-- [ ] S5：普通用户只见可见集（零探测面 · 菜单/路由/请求三级核对）；maintainer 见 `manifest_errors`/`manifest_error_details`；空集 / 故障态渲染通过
-- [ ] role 显隐由 `/auth/me` role 驱动（非前端硬编码账号）
-- [ ] `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm lint` / `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm test`（全量绿 · 含新增用例）/ `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm build` 绿
+- [x] 新路由 + 页面上线：`GET /capability/mine` 可见集九键投影表（排除 `adapter`/`args_schema` · {items,count} 照登）
+- [x] S5：普通用户只见可见集（零探测面 · 菜单/路由/请求三级核对）；maintainer 见 `manifest_errors`/`manifest_error_details`；空集 / 故障态渲染通过
+- [x] role 显隐由 `/auth/me` role 驱动（非前端硬编码账号）
+- [x] `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm lint` / `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm test`（全量绿 · 含新增用例）/ `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm build` 绿
   - NIT-1 注：仓 `packageManager` 钉 `pnpm@10.32.1`，PATH 前置的 pnpm 11 会拒跑——本批 verify 命令一律用钉死路径 `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm`（维护者本机 v24.15.0 pnpm 10）
 - [ ] `npx spec-wave task lint --file docs/tasks/active/task_web_capability_catalog.md` PASS
 
@@ -215,6 +216,20 @@ F5 是 SPEC §4 唯一 ❌ 未接通面：web 无路由/页面，后端 B1/B2 �
 | `npx spec-wave task lint --file docs/tasks/active/task_web_capability_catalog.md` | **PASS**（2026-10-11 起草稿实跑） |
 | 结论 | **HG-AUDIT-R1 + HG-GRAPH-MODULES 双 approved（2026-10-11 · 维护者授权 00 代录 m00230 · R1 PASS-WITH-NIT · 图谱先行已落 compile 绿）· GO 30** |
 
+### 最终验收实录（CLOSE · 2026-10-12）
+
+| 检查 | 结果 |
+|------|------|
+| 联调实操 | S5 双角色全过（viewer 零探测面 · admin catalog 403 后端闸门实证；maintainer 见 manifest_errors/details · 故障态独立 :8001 注入坏清单复现 · 证据 `docs/harness/invokes/by-task/web-capability-catalog/`） |
+| 交付面 | `src/api/capability.ts` + `src/stores/capability.ts` + `CapabilityCatalogView.vue` + 路由/菜单 · Vitest 22 条新增（capability-{api,store,view}）· 图谱 G-L1 已落（`01_modules.md` capability 行 + `10_flow_capability.graph.yaml` · compile 绿） |
+| 实现审查 | R2 PASS-WITH-NIT → R2.1 复核 PASS（`docs/harness/reviews/task_web-integration_impl_R2_20261011.md` · ad9f5c1 · 合审 T-W1/T-W2/T-W3） |
+| main verify（origin/main @95c758c · 2026-10-12 11:09） | **PASS**：`pnpm lint` exit 0 · Vitest **31 文件 252/252** · `pnpm build` 2.33s |
+| 合并 | PR #60 MERGED 2026-10-12（栈式合入 drafts）· 落账归位 main PR #62 MERGED 2026-10-12 |
+
+### KPI
+
+Task_KPI%: 100（PR #60 MERGED 2026-10-12 · 落账归位 PR #62 · 关账归档 done/）
+
 ---
 
 ## 修订
@@ -224,3 +239,4 @@ F5 是 SPEC §4 唯一 ❌ 未接通面：web 无路由/页面，后端 B1/B2 �
 | 2026-10-11 | 10 起草（00 代录 · 维护者令联调链执行）· SPEC §9 T-W3 行落地 · B1/B2 依赖解除（Q2 m00026） |
 | 2026-10-11 | HG-AUDIT-R1 签认代录（00 · 维护者授权 m00230 · R1 PASS-WITH-NIT 审查文 58bf8de）· NIT-1/NIT-5 回填 |
 | 2026-10-11 | HG-GRAPH-MODULES 签认代录（00 · 维护者授权 m00230）：图谱先行落盘——`01_modules.md` capability 模块行 + `10_flow_capability.graph.yaml` · graph-compile 绿 |
+| 2026-10-12 | CLOSE：S5 双角色全过 · R2/R2.1 审查 PASS · main verify（lint exit 0 · Vitest 31 文件 252/252 · build 2.33s · 11:09）· PR #60 MERGED · 归位 #62 · 归档 done/ |
