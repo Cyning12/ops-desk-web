@@ -2,7 +2,8 @@
 
 > **用途**：30 实现留痕（T-W2 SSE/HITL 增强批 · 帧型注释 7 型 + resume_mode 三选 UI + done{resumed} 终态钉 + 未知帧容错，并复跑 S2/S3 验收令）。  
 > **前置闸**：HG-TASK-DRAFT / HG-GRAPH-MODULES / HG-AUDIT-R1 全 approved（task 表真值 · 2026-10-11 · 维护者授权 00 代录 m00230）→ GO 30。  
-> **本棒性质**：R2 审查 B-R2-1 补证棒——S2/S3 实操已于 2026-10-11 17:17–17:40 真跑（PR #61 body 实证叙述在案），本文将存续证据仓内化；代码面零改动（R2 裁定代码面 PASS-WITH-NIT 无返工）。
+> **本棒性质**：R2 审查 B-R2-1 补证棒——S2/S3 实操已于 2026-10-11 17:17–17:40 真跑（PR #61 body 实证叙述在案），本文将存续证据仓内化；代码面零改动（R2 裁定代码面 PASS-WITH-NIT 无返工）。  
+> **NIT-R2-4 补尾（2026-10-12 · 30 帽纯文档棒）**：R2.1 复核（task_web-integration_impl_R2_20261011.md · ad9f5c1）改判 PASS-WITH-NIT，遗留「正文引用 attachments/logs/ 7 枚未随仓落盘 + 『锚点全部仓内化』声明失实」。本棒勘察 7 枚 /tmp 源全数已失 → 不落假文件，已失证据表补 7 行承证替代，正文失实引用/声明逐处修正为与实际树一致；src/tests 零触碰。
 
 ---
 
@@ -36,9 +37,9 @@
 | pnpm 版本 | 仓钉 pnpm@10.32.1；PATH 前置的 pnpm 11 拒跑 → 一律 `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm` |
 | NO_PROXY 双剥 | httpx 读小写 `no_proxy`，`[::1]` 解析炸 → 起后端/跑 curl 一律 `env -u NO_PROXY -u no_proxy`（步骤脚本首行均在案 · `attachments/scripts/`） |
 | vite proxy | 必须 `127.0.0.1`（macOS localhost 走 IPv6 打到 Docker 旧镜像 404） |
-| SSE 代理缓冲（FP-3） | vite dev proxy（:5174→:8050）转发 `/lg-rag/stream` 逐帧到达实证不缓冲——`attachments/logs/vite_proxy_frames_ts.log` 每行带 epoch 时间戳：seq1 t=...046.218 → seq8 t=...055.649，12s 窗内 8 帧跨 ~9.4s 渐进到达（一次性齐到=缓冲，未发生） |
+| SSE 代理缓冲（FP-3） | vite dev proxy（:5174→:8050）转发 `/lg-rag/stream` 逐帧到达实证不缓冲——帧时间戳源日志 `/tmp/tw2_proxy_ts.log` **已失未落仓**（见「已失/不落仓证据照登」表），时间戳实录引述留存本文：seq1 t=...046.218 → seq8 t=...055.649，12s 窗内 8 帧跨 ~9.4s 渐进到达（一次性齐到=缓冲，未发生）；采集脚本 `attachments/scripts/vite_proxy_smoke.sh` 在仓可复跑 |
 | S3 后端起法 | 独立实例 :8050（不动 T-W3 共用 :8000）：`env -i` 六 env 组 + `python3 serve_8050.py`（`attachments/scripts/serve_8050.py` · logging.basicConfig 启动器 · env 启动瞬间生效） |
-| 六 env 组生效实证 | `attachments/logs/api_8050_excerpt.log`：[L4] 能力层持久化：db · [L13] HITL 持久化：db · [L18]/[L86] strategy 候选 env 追加集生效 ids=['testing.write.echo'] · [L75]/[L77] delegation token_issued/token_verified（LG_RAG_DELEGATION_TOKEN_MODE=enforce 才会签发）· echo 写能力被 HITL 闸拦（OPS_CAPABILITY_ALLOW_WRITE=1 + ALLOW_WRITE_TAGS=testing → side_effect=write 强制审批） |
+| 六 env 组生效实证 | 源日志 `/tmp/tw2_api.log` **已失未落仓**（摘录件 `api_8050_excerpt.log` 未随仓落盘），行级实录引述留存本文：[L4] 能力层持久化：db · [L13] HITL 持久化：db · [L18]/[L86] strategy 候选 env 追加集生效 ids=['testing.write.echo'] · [L75]/[L77] delegation token_issued/token_verified（LG_RAG_DELEGATION_TOKEN_MODE=enforce 才会签发）· echo 写能力被 HITL 闸拦（OPS_CAPABILITY_ALLOW_WRITE=1 + ALLOW_WRITE_TAGS=testing → side_effect=write 强制审批） |
 
 ## 30 实施记录（W1–W6 实现锚 · head 8efe8f2）
 
@@ -71,7 +72,7 @@ run `640d68970a564fbb8459d8d40cb1c5f6`（thread d5a29ad6… · supervisor 模式
 ### run 88f15a0c8ca94114a732b17ad4ba9dc3（waiting → bogus 400 → decide → resume → replay 18 帧）
 
 1. **挂起**：`attachments/sse/s3_live.sse` 7 帧 seq1–7 · seq6 `hitl.waiting`（requests[0].id=hitl_1f92d67ea6494d7491b4 · reason「委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））」）· seq7 `done{status:'waiting_approval', latency_ms:23733}`——终帧但非完成态，续看游标保留（W3 分支实证）。
-2. **bogus resume_mode → 400 白名单**：decide 送非法 resume_mode → `api_8050_excerpt.log` [L64] `POST .../decide HTTP/1.1" 400 Bad Request`；随即合法 decide [L68] 200 OK（[L67] HITL 浏览器决策 decision=approved by=admin）。**响应体实录未落盘（会话易失已失）**——以 api.log 状态行 + 前端通用错误分支（chat.ts:1002-1006 · 不本地臆造第四值）测试钉为据。
+2. **bogus resume_mode → 400 白名单**：decide 送非法 resume_mode → 后端 api 日志（`/tmp/tw2_api.log` **已失未落仓**）实录 [L64] `POST .../decide HTTP/1.1" 400 Bad Request`；随即合法 decide [L68] 200 OK（[L67] HITL 浏览器决策 decision=approved by=admin）。**响应体实录未落盘（会话易失已失）**——以 api.log 状态行 + 前端通用错误分支（chat.ts:1002-1006 · 不本地臆造第四值）测试钉为据。
 3. **decide（默认 inherit 不送键）→ resume 两步钉死**：[L69] hitl_persist_guard_skip · [L70] 解锁 1 步重跑 · [L73] delegation_approval_consumed · [L75] token_issued · [L77] token_verified · [L80-81] HITL 恢复完成 replay=…:18 + `POST .../resume 200 OK`。
 4. **replay 全量 18 帧**：`attachments/sse/s3_replay_full_18frames.sse` **seq1–18 连续无缺**（python 核验 `seqs==list(range(1,19))` = True）· seq8 `hitl.resumed`（approved=[…:1] · decided_by=admin）· **seq18 `done{status:'resumed', latency_ms/model 缺省}`**（F-OBS-1 前端兜底 0/'' 已钉 AC10 测试）。缺口重放 after_seq=7 → `attachments/sse/s3_replay_gap_seq8-18.sse` 11 帧 = 全量尾部精确切片（GAP_EQ_FULL_TAIL=True · 零丢失零重复）。
 5. **echo 真执行**：replay 帧内 supervisor 规划 subtasks[{tool:testing.write.echo}] → 工具执行 → answer 收束（帧序 seq9–17 在 `s3_replay_full_18frames.sse` 可溯）。
@@ -79,18 +80,19 @@ run `640d68970a564fbb8459d8d40cb1c5f6`（thread d5a29ad6… · supervisor 模式
 ### run f79785708e7d46029943d1ecc4abfa1b（immediate 链）
 
 1. **挂起**：`attachments/sse/s3_imm_live.sse` 7 帧 · seq6 hitl.waiting（request hitl_5af5514e5a554de2ac96）· seq7 done{waiting_approval}。
-2. **decide resume_mode=immediate**：`attachments/logs/s3_imm_decide_response_200.json` 原始 200 响应体——`request.status=approved` · **`resume.required=false · auto_triggered=true`**（此即 chat.ts:999-1000 跳步判据的实证来源；同刻 api.log [L131-133] hitl_auto_resume_triggered/claimed resume_mode=immediate）。
+2. **decide resume_mode=immediate**：200 响应体实录——`request.status=approved` · **`resume.required=false · auto_triggered=true`**（此即 chat.ts:999-1000 跳步判据的实证来源；同刻 api.log [L131-133] hitl_auto_resume_triggered/claimed resume_mode=immediate）。**原始响应文件 `/tmp/tw2_imm_decide.json` 已失未落仓**——承证替代：跳步行为测试钉 tests/chat-store-hitl.spec.ts:340（「immediate 决定 → 响应 required=false → 跳过第二步 resume」）+ 判据代码 chat.ts:999-1000 在案（见「已失/不落仓证据照登」表）。
 3. **auto 续跑 replay**：`attachments/sse/s3_imm_replay.sse` 12 帧 seq1–12 · seq8 hitl.resumed → 续跑帧在案（UI 自适应 = 无第二步请求 · 不撞 409）。
-4. **二次 resume 幂等拒绝**：`s3_imm_step3_double_resume_409.sh` 对已 immediate 续跑的申请再 resume → api.log [L1010] `409 Conflict`（[L1009] WARNING 没有挂起的 interrupt）——实证前端若不跳步必撞此 409 误呈「已被处理」。
+4. **二次 resume 幂等拒绝**：`s3_imm_step3_double_resume_409.sh` 对已 immediate 续跑的申请再 resume → 后端 api 日志（`/tmp/tw2_api.log` 已失未落仓）实录 [L1010] `409 Conflict`（[L1009] WARNING 没有挂起的 interrupt）——实证前端若不跳步必撞此 409 误呈「已被处理」。
 
 ### F-OBS-2 传输观察（照登 · 已转呈后端裁）
 
-api_8050_excerpt.log [L340]：run 在飞时 `POST /lg-rag/replay` 瞬返 `500 Internal Server Error`（asyncpg 事务冲突栈 [L341-345]），沉降后恢复 200——S2 gap 捕获 0 字节即此所致。是否 409/Retry-After 语义化请维护者裁。
+后端 api 日志（`/tmp/tw2_api.log` 已失未落仓）实录 [L340]：run 在飞时 `POST /lg-rag/replay` 瞬返 `500 Internal Server Error`（asyncpg 事务冲突栈 [L341-345]），沉降后恢复 200——S2 gap 捕获 0 字节即此所致。是否 409/Retry-After 语义化请维护者裁。
 
 ## verify 闸
 
-`pnpm lint` ✅ exit 0（`attachments/logs/eslint_clean.log`）· `pnpm test` ✅ **230/230**（28 文件 · chat-store.spec.ts 65 it · chat-store-hitl.spec.ts 22 it · chat-view.spec.ts 7 it · +5 新钉 · `attachments/logs/vitest_230of230_tail.log`）· `pnpm build` ✅ vue-tsc + vite 1.88s（`attachments/logs/build_tail.log`）。  
+`pnpm lint` ✅ exit 0 · `pnpm test` ✅ **230/230**（28 文件 · chat-store.spec.ts 65 it · chat-store-hitl.spec.ts 22 it · chat-view.spec.ts 7 it · +5 新钉）· `pnpm build` ✅ vue-tsc + vite 1.88s。（当时日志尾部文件 `eslint_clean.log` / `vitest_230of230_tail.log` / `build_tail.log` 均源自 /tmp，**已失未落仓**，见「已失/不落仓证据照登」表；数值以本文实录 + 下方两次零回归复跑承证。）  
 **B-R2-1 补证棒复跑**（纯文档改动后 · 2026-10-11 18:12）：`pnpm lint` ✅ exit 0 · `pnpm test` ✅ 230/230（28 文件 · Duration 2.87s）零回归——纯 docs 零影响实证。
+**NIT-R2-4 补尾棒复跑**（纯文档改动后 · 2026-10-12 10:47 · 独立 worktree /tmp/ops-desk-web-tw2b）：`pnpm lint` ✅ exit 0 · `pnpm test` ✅ **230/230**（28 文件 · Duration 2.74s）零回归。
 
 ## 已失/不落仓证据照登（FP-1 宁缺勿假）
 
@@ -100,10 +102,17 @@ api_8050_excerpt.log [L340]：run 在飞时 `POST /lg-rag/replay` 瞬返 `500 In
 | bogus resume_mode 400 响应体 | 会话易失已失 | api.log [L64] 400 状态行 + [L68] 200 对照 + 前端通用错误分支测试钉 |
 | /tmp/tw2_8050.jar / tw2_5174.jar | 含 ops_session 会话令牌 · 不落仓 | 登录链已由 api.log [L10-11] 401→login 200 承证 |
 | S2/S3 UI 截图 | 本批验收为 curl+SSE 原始帧口径 · 无截图 | SSE 原始体即帧级真值；前端渲染行为由 230 测试钉覆盖 |
+| /tmp/tw2_api.log → attachments/logs/api_8050_excerpt.log | 已失（2026-10-12 勘察确认） | 六 env 生效 / bogus 400 / 双 resume 409 / F-OBS-2 500 的行级实录引述留存本文坑位表与 S3 节；HTTP 级行为由 chat-store-hitl.spec.ts 测试钉（400 白名单通用错误分支 · immediate 跳步 · 409 误呈规避）承证 |
+| /tmp/tw2_proxy_ts.log → attachments/logs/vite_proxy_frames_ts.log | 已失（2026-10-12 勘察确认） | FP-3 不缓冲时间戳引述留存本文坑位表（seq1 t=...046.218 → seq8 t=...055.649）；采集脚本 attachments/scripts/vite_proxy_smoke.sh 在仓可复跑 |
+| /tmp/tw2_test3.log → attachments/logs/vitest_230of230_tail.log | 已失（2026-10-12 勘察确认） | 230/230 数值由 2026-10-11 18:12 与 2026-10-12 10:47 两次零回归复跑承证（见「verify 闸」节） |
+| /tmp/tw2_lint3.log → attachments/logs/eslint_clean.log | 已失（2026-10-12 勘察确认） | lint exit 0 由同两次复跑承证 |
+| /tmp/tw2_build3.log → attachments/logs/build_tail.log | 已失（2026-10-12 勘察确认） | build ✅ vue-tsc + vite 1.88s 为当时实录；本棒仅 lint/test 复跑（纯 docs 不动构建面） |
+| /tmp/tw2_imm_decide.json → attachments/logs/s3_imm_decide_response_200.json | 已失（2026-10-12 勘察确认） | decide 响应 resume.required=false · auto_triggered=true 数值实录留存本文 S3 节；跳步判据代码 src/stores/chat.ts:999-1000 + 测试钉 tests/chat-store-hitl.spec.ts:340 承证 |
+| /tmp/tw2_vite.log → attachments/logs/vite_dev_5174.log | 已失（2026-10-12 勘察确认） | vite dev :5174 起服事实由 FP-3 时间戳引述 + vite_proxy_smoke.sh 承证 |
 
 ## B-R2-1 解阻塞声明
 
-R2 审查（task_web-integration_impl_R2_20261011.md §3 证据面 FAIL · §6 阻塞项）裁定：「需补交 invoke_20261011_30_web-sse-hitl-enhance.md（+ SSE 样本/日志 attachments）后复核；代码面无需返工」。本棒交付：① 本文落盘 `docs/harness/invokes/by-task/web-sse-hitl-enhance/`；② S2/S3 实证锚点全部仓内化（7 枚 SSE 原始体 + 8 枚步骤脚本 + 6 枚日志/响应实录 · 一律相对路径引用 · 零 /tmp 引用）；③ 已失证据如实标注承证替代。**B-R2-1 解阻塞条件（invoke 落盘 + 锚点仓内化）已满足，请 20 帽复核。**
+R2 审查（task_web-integration_impl_R2_20261011.md §3 证据面 FAIL · §6 阻塞项）裁定：「需补交 invoke_20261011_30_web-sse-hitl-enhance.md（+ SSE 样本/日志 attachments）后复核；代码面无需返工」。本棒交付：① 本文落盘 `docs/harness/invokes/by-task/web-sse-hitl-enhance/`；② S2/S3 实证锚点仓内化（7 枚 SSE 原始体 + 8 枚步骤脚本，一律相对路径引用；7 枚日志/响应实录源文件在 /tmp 已失未落仓，行级/数值实录引述留存本文，见「已失/不落仓证据照登」表）；③ 已失证据如实标注承证替代。**B-R2-1 解阻塞条件（invoke 落盘 + 存续锚点仓内化 + 已失证据照登承证）已满足，请 20 帽复核。**
 
 ## 30 产出（本棒纯文档 · src/tests 零触碰）
 
@@ -112,7 +121,7 @@ R2 审查（task_web-integration_impl_R2_20261011.md §3 证据面 FAIL · §6 �
 | `docs/harness/invokes/by-task/web-sse-hitl-enhance/invoke_20261011_30_web-sse-hitl-enhance.md` | 新建 | 本留痕 |
 | `.../attachments/sse/` | 新建 | 7 枚 SSE 原始体（s2_partial/s2_full/s3_live/s3_replay_full_18frames/s3_replay_gap_seq8-18/s3_imm_live/s3_imm_replay） |
 | `.../attachments/scripts/` | 新建 | 8 枚实操步骤脚本（serve_8050.py + s2_step1-4 + s3_imm_step1-3 + vite_proxy_smoke.sh · invite_token 变量化不落真值） |
-| `.../attachments/logs/` | 新建 | 7 枚（api_8050_excerpt 关键段带原始行号 · vitest_230of230_tail · eslint_clean · build_tail · vite_proxy_frames_ts · vite_dev_5174 · s3_imm_decide_response_200.json） |
+| `.../attachments/logs/` | ~~新建~~ → **未落盘**（NIT-R2-4 补尾修正） | 计划 7 枚日志/响应实录的 /tmp 源 2026-10-12 勘察全数已失，不落假文件；逐枚承证替代见「已失/不落仓证据照登」表，正文引用已改为如实标注 |
 
 ## 缺口
 
