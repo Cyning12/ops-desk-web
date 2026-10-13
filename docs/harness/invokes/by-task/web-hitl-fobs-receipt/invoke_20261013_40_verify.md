@@ -84,3 +84,18 @@ run `596f56bf649b40e894e8ef2be1f2aca5` · live 210 帧完整捕获（HTTP 200）
 | 日期 | 说明 |
 |------|------|
 | 2026-10-13 | 40 live 复验：F-OBS-1/F-OBS-2 双实证 ✅ · S2 零丢失 ✅ · 孤儿 run 观察项报回 api · 三裁定加固 |
+
+## post-30 复验（TC3 收口 · 2026-10-13）
+
+40 帽独立实证 · 零实现码改动 · 逐项实跑留证据（钉死 pnpm $HOME/.nvm/versions/node/v24.15.0/bin/pnpm）：
+
+| # | 项 | 结果 |
+|---|----|------|
+| 1 | git 形态 | `git log --oneline -5`：5260ac2（GREEN）盖 b992e4a（RED）盖 4fcefe3（签闸）✅；`git status --short` 仅 `?? .codex/`（可忽略）· 工作树干净 ✅ |
+| 2 | commit 形态 | `git show b992e4a --stat`：仅 tests/chat-store-hitl.spec.ts + chat-store.spec.ts + chat-view.spec.ts（90+/4-）· **零 src 改动 · 红测先行成立** ✅；`git show 5260ac2 --stat`：仅 src/stores/chat.ts（8±）+ src/views/ChatView.vue（2±）+ invoke_20261013_30_implement.md（103+）✅ |
+| 3 | 亲读核真改动字面 | src/stores/chat.ts:171-174 `ChatDoneInfo.latency_ms: number | null`（裁定 A 注记在行）✅；done 分支 chat.ts:732-739 `latency_ms: typeof latency === 'number' ? latency : null`（裁 ': 0' 假值）· :738 model 兜底 '' 零改动 · :729-731 waiting_approval break 零触达 ✅；src/views/ChatView.vue:261 `latency_ms === null ? '—' : \`\${...}ms\`` · :261-263 模型段 v-if 不动 ✅；tests/chat-store-hitl.spec.ts:182-219 双 it（缺键→`{latency_ms:null,model:''}` · 实值 139650→`{latency_ms:139650,model:''}`）✅；tests/chat-store.spec.ts:745-765 replay 409 新 it（`retryable:true` · detail 文案透传 · activeRun {run_id:'r-1',last_seq:3} 保留 · `replayLgRag` 仅调 1 次不自动重试）✅；tests/chat-view.spec.ts:317-360 徽标断言（`完成 · 耗时 —` · 不含 0ms · 不含「模型」· 实值渲染 139650ms）✅ |
+| 4 | 质量门独立重跑 | `pnpm lint` EXIT=0 ✅；`pnpm test` **255 passed (255) · 31 文件全绿**（基线 252+3 新增 · 零既有红）· EXIT=0 ✅；`pnpm build`（vue-tsc + vite）EXIT=0 ✅ |
+| 5 | spec-wave verify | `npx spec-wave verify --target . --task docs/tasks/active/task_web_hitl_fobs_receipt.md` → **VERIFY: PASS**（HG-TASK-DRAFT/HG-AUDIT-R1/HG-GRAPH-MODULES 全 approved）· EXIT=0 ✅ |
+| 6 | 禁触面抽验 | `git diff 4fcefe3..HEAD --name-only` = 恰 5 码/测文件 + 1 invoke（30_implement）· useLgRagSse.ts **不在列** · docs/_tech_graph/l1/01_modules.md **不在列** ✅ |
+
+**结论：TC3 可勾。** RED→GREEN 两 commit 形态合规（红测先行 · GREEN 最小实现）· 裁定 A/B/C 代码字面与测试断言逐项属实 · 三质量门 255 全绿 · verify PASS · 禁触面零越界。本帽零实现码改动 · 仅回填本 invoke 节。
