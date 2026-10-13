@@ -313,4 +313,49 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
     // Chat 主路径不受影响：composer 仍可用
     expect(wrapper.find('.chat-page__composer').exists()).toBe(true)
   })
+
+  it('R1-NIT-2 / TC3 徽标（裁定 A）：done 缺 latency_ms → 耗时段显「—」（非 0ms）；携实值 → 如实渲染', async () => {
+    const wrapper = mountView()
+    await flushPromises()
+    const chat = useChatStore()
+
+    chat.sendMessage('问')
+    captured.onEvent?.({
+      event_type: 'run.start',
+      run_id: 'r-1',
+      seq: 1,
+      payload: { run_id: 'r-1', thread_id: 't-1' },
+    })
+    // 缺 latency_ms（pre-fix 历史旧帧残留面）：耗时段显「—」如实不误导（禁假 0ms）
+    captured.onEvent?.({
+      event_type: 'done',
+      run_id: 'r-1',
+      seq: 2,
+      payload: { status: 'resumed' },
+    })
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('完成 · 耗时 —')
+    expect(wrapper.text()).not.toContain('0ms')
+    // 裁定 B：model 恒缺键 → 模型段不渲染（v-if 零改动）
+    expect(wrapper.text()).not.toContain('模型')
+
+    // F-OBS-1 闭环：携 latency_ms 实值（live 实证 139650）→ 原样渲染
+    chat.sendMessage('再问')
+    captured.onEvent?.({
+      event_type: 'run.start',
+      run_id: 'r-2',
+      seq: 1,
+      payload: { run_id: 'r-2', thread_id: 't-1' },
+    })
+    captured.onEvent?.({
+      event_type: 'done',
+      run_id: 'r-2',
+      seq: 2,
+      payload: { status: 'resumed', latency_ms: 139650 },
+    })
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('完成 · 耗时 139650ms')
+  })
 })

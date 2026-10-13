@@ -742,6 +742,28 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       expect(chat.error).toEqual({ stage: 'auth', message: '登录已过期，请重新登录', retryable: false })
     })
 
+    it('replay 409（F-OBS-2 · run 在飞）：else 分支 retryable 错误条 + detail 文案透传 + active-run 保留（裁定 C 现状锁存 · 对照 401/404/422 分态不变）', () => {
+      const chat = useChatStore()
+      seedBrokenLive(chat)
+      chat.resumeFromCursor()
+
+      // F-OBS-2：run 在飞 POST /lg-rag/replay → 409 + Retry-After: 2 + body {"detail":"Run is still in flight; retry after it settles."}
+      // （Retry-After 头不透传 · 裁定 C 非范围；message = body.detail 经 useLgRagSse 非 2xx 分类到达）
+      replayCaptured.onError?.({ kind: 'http', status: 409, message: 'Run is still in flight; retry after it settles.' })
+
+      expect(chat.streaming).toBe(false)
+      expect(chat.error).toEqual({
+        stage: 'http',
+        message: 'Run is still in flight; retry after it settles.',
+        retryable: true,
+      })
+      // active-run 保留 · 手动「续看」即恢复（api FP-3 缓解成立）
+      expect(chat.activeRun).toMatchObject({ run_id: 'r-1', last_seq: 3 })
+      expect(readActiveRun()).toMatchObject({ run_id: 'r-1', last_seq: 3 })
+      expect(chat.canResume).toBe(true)
+      expect(replayLgRag).toHaveBeenCalledTimes(1) // 不自动重试
+    })
+
     it('replay 网络错：保留 active-run 可再点续看；流再断 lastSeq 已推进可接力', () => {
       const chat = useChatStore()
       seedBrokenLive(chat)

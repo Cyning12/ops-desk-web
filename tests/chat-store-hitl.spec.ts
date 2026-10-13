@@ -179,13 +179,13 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
       expect(window.localStorage.getItem(LG_RAG_ACTIVE_RUN_STORAGE_KEY)).toBeNull()
     })
 
-    it("done{status:'resumed'}（T-W2 S3 实证真值字面）→ 终态清除 + lastDone 兜底（缺 latency_ms/model → 0/''）", () => {
+    it("done{status:'resumed'} 缺 latency_ms（裁定 A · pre-fix 历史旧帧残留面）→ 终态清除 + lastDone.latency_ms===null（禁假 0 · model 兜底 '' 保留）", () => {
       const chat = useChatStore()
       chat.sendMessage('问')
       emitRunStart('r-1')
 
-      // S3 实证：resume 收尾 done 帧 payload.status='resumed' 且 latency_ms/model 缺省
-      // （ops-desk-api resume.py close() · 终态以 done 帧为准 · 前端禁等 completed 字面）
+      // 裁定 A：裁 ': 0' 假值兜底——缺 latency_ms 存 null（徽标耗时段显「—」如实不误导）；
+      // 裁定 B：model 兜底 ': ''' 零改动（后端 FP-1 钉案 model 键永不提供）
       captured.onEvent?.({
         event_type: 'done',
         run_id: 'r-1',
@@ -196,7 +196,26 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
       expect(chat.streaming).toBe(false)
       expect(chat.activeRun).toBeNull()
       expect(window.localStorage.getItem(LG_RAG_ACTIVE_RUN_STORAGE_KEY)).toBeNull()
-      expect(chat.lastDone).toEqual({ latency_ms: 0, model: '' })
+      expect(chat.lastDone).toEqual({ latency_ms: null, model: '' })
+    })
+
+    it("done{status:'resumed'} 携 latency_ms 实值（F-OBS-1 · live 实证 139650）→ 原样透传（非 0 假值）", () => {
+      const chat = useChatStore()
+      chat.sendMessage('问')
+      emitRunStart('r-1')
+
+      // F-OBS-1 闭环：resume 终帧 done{status:'resumed'} 携 latency_ms int≥0 实值
+      // （本 task 40 live 实证 fobs_s3_full.sse seq18 latency_ms=139650 · model 键不存在）
+      captured.onEvent?.({
+        event_type: 'done',
+        run_id: 'r-1',
+        seq: 2,
+        payload: { status: 'resumed', latency_ms: 139650 },
+      })
+
+      expect(chat.streaming).toBe(false)
+      expect(chat.activeRun).toBeNull()
+      expect(chat.lastDone).toEqual({ latency_ms: 139650, model: '' })
     })
 
     it("done{status:'failed'} → activeRun 清除（维持现行）", () => {
