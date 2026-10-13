@@ -1,0 +1,612 @@
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 7, "ts_ms": 20808, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "router", "type": "rag", "detail": {"route": "rag"}, "status": "step", "message": "步骤：router", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:7"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 8, "ts_ms": 20813, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "retrieve", "type": "rag", "detail": {"phase": "start"}, "status": "step", "message": "开始检索…", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:8"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 9, "ts_ms": 21755, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "retrieve", "type": "rag", "detail": {"phase": "done", "hit_count": 0}, "status": "step", "message": "检索完成，命中 0 条", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:9"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 10, "ts_ms": 21756, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "grade", "type": "rag", "detail": {"phase": "start"}, "status": "step", "message": "评估检索结果…", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:10"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 11, "ts_ms": 21756, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "grade", "type": "rag", "detail": {"phase": "done", "graded": false, "hit_count": 0}, "status": "step", "message": "评估完成", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:11"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 12, "ts_ms": 21757, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "answer", "type": "rag", "detail": {"phase": "start"}, "status": "step", "message": "生成回答…", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:12"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 13, "ts_ms": 21757, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "answer", "type": "rag", "detail": {"phase": "done", "gate_action": null, "answer_chars": 20}, "status": "step", "message": "回答生成完成（20 字）", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:13"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 14, "ts_ms": 21760, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "rag", "type": "rag", "detail": {"chain_meta": {"hit_count": 0}}, "status": "step", "message": "步骤：rag", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:14"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 15, "ts_ms": 21760, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "evaluate", "type": "rag", "status": "step", "message": "步骤：evaluate", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:15"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 16, "ts_ms": 60213, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "rewrite", "type": "rag", "detail": {"retry_count": 1, "current_query": "F-OBS S2 replay 回执 零丢失复验"}, "status": "step", "message": "改写查询：F-OBS S2 replay 回执 零丢失复验", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:16"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 17, "ts_ms": 60216, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "retrieve", "type": "rag", "detail": {"phase": "start"}, "status": "step", "message": "开始检索…", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:17"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 18, "ts_ms": 60585, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "retrieve", "type": "rag", "detail": {"phase": "done", "hit_count": 0}, "status": "step", "message": "检索完成，命中 0 条", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:18"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 19, "ts_ms": 60585, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "grade", "type": "rag", "detail": {"phase": "start"}, "status": "step", "message": "评估检索结果…", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:19"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 20, "ts_ms": 60585, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "grade", "type": "rag", "detail": {"phase": "done", "graded": false, "hit_count": 0}, "status": "step", "message": "评估完成", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:20"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 21, "ts_ms": 60586, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "answer", "type": "rag", "detail": {"phase": "start"}, "status": "step", "message": "生成回答…", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:21"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 22, "ts_ms": 60586, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "answer", "type": "rag", "detail": {"phase": "done", "gate_action": null, "answer_chars": 20}, "status": "step", "message": "回答生成完成（20 字）", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:22"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 23, "ts_ms": 60589, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "rag", "type": "rag", "detail": {"chain_meta": {"hit_count": 0}}, "status": "step", "message": "步骤：rag", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:23"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 24, "ts_ms": 60589, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "evaluate", "type": "rag", "status": "step", "message": "步骤：evaluate", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:24"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 25, "ts_ms": 114247, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "rewrite", "type": "rag", "detail": {"retry_count": 2, "current_query": "F-OBS S2 replay ACK 零丢失 复验"}, "status": "step", "message": "改写查询：F-OBS S2 replay ACK 零丢失 复验", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:25"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 26, "ts_ms": 114249, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "retrieve", "type": "rag", "detail": {"phase": "start"}, "status": "step", "message": "开始检索…", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:26"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 27, "ts_ms": 114631, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "retrieve", "type": "rag", "detail": {"phase": "done", "hit_count": 0}, "status": "step", "message": "检索完成，命中 0 条", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:27"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 28, "ts_ms": 114631, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "grade", "type": "rag", "detail": {"phase": "start"}, "status": "step", "message": "评估检索结果…", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:28"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 29, "ts_ms": 114631, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "grade", "type": "rag", "detail": {"phase": "done", "graded": false, "hit_count": 0}, "status": "step", "message": "评估完成", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:29"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 30, "ts_ms": 114632, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "answer", "type": "rag", "detail": {"phase": "start"}, "status": "step", "message": "生成回答…", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:30"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 31, "ts_ms": 114632, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "answer", "type": "rag", "detail": {"phase": "done", "gate_action": null, "answer_chars": 20}, "status": "step", "message": "回答生成完成（20 字）", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:31"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 32, "ts_ms": 114635, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "rag", "type": "rag", "detail": {"chain_meta": {"hit_count": 0}}, "status": "step", "message": "步骤：rag", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:32"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 33, "ts_ms": 114636, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"step": "evaluate", "type": "rag", "status": "step", "message": "步骤：evaluate", "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:33"}
+
+event: subtask.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 34, "ts_ms": 114637, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"status": "done", "message": "子任务完成：未检索到足够依据，无法给出有根据的回答。", "subtask_result": {"id": "596f56bf649b40e894e8ef2be1f2aca5:1", "type": "rag", "alias": "t1", "input": "你好，请用一句话回复：F-OBS 回执 S2 replay 零丢失复验。", "output": "未检索到足够依据，无法给出有根据的回答。", "chain_meta": {"hit_count": 0}, "subtask_id": "596f56bf649b40e894e8ef2be1f2aca5:1"}}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:34"}
+
+event: node.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 35, "ts_ms": 114637, "agent_role": "subtask_join", "event_type": "node.progress", "payload": {"keys": ["inflight_subtask_ids"]}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:35"}
+
+event: node.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 36, "ts_ms": 114638, "agent_role": "observe", "event_type": "node.progress", "payload": {"keys": ["hitl_requests", "react_observation", "react_round", "supervisor_step_count"]}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:36"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 37, "ts_ms": 144387, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n\n"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:37"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 38, "ts_ms": 144387, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "###"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:38"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 39, "ts_ms": 144396, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:39"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 40, "ts_ms": 144396, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "子"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:40"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 41, "ts_ms": 144396, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "任务"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:41"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 42, "ts_ms": 144399, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:42"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 43, "ts_ms": 144399, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:43"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 44, "ts_ms": 144399, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:44"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 45, "ts_ms": 144400, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "R"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:45"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 46, "ts_ms": 144400, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "AG"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:46"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 47, "ts_ms": 144401, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:47"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 48, "ts_ms": 144402, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "检索"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:48"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 49, "ts_ms": 144402, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:49"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 50, "ts_ms": 144402, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:50"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 51, "ts_ms": 144402, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:51"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 52, "ts_ms": 144402, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "来源"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:52"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 53, "ts_ms": 144402, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:53"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 54, "ts_ms": 145479, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:54"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 55, "ts_ms": 145480, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "R"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:55"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 56, "ts_ms": 145480, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "AG"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:56"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 57, "ts_ms": 145480, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "（"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:57"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 58, "ts_ms": 145480, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "知识库"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:58"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 59, "ts_ms": 145480, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "检索"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:59"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 60, "ts_ms": 145480, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "）"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:60"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 61, "ts_ms": 145481, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:61"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 62, "ts_ms": 145481, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:62"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 63, "ts_ms": 145481, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:63"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 64, "ts_ms": 145481, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "执行"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:64"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 65, "ts_ms": 145481, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "状态"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:65"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 66, "ts_ms": 145481, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:66"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 67, "ts_ms": 145481, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:67"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 68, "ts_ms": 145481, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "失败"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:68"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 69, "ts_ms": 145481, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "（"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:69"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 70, "ts_ms": 145482, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "未"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:70"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 71, "ts_ms": 145482, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "命中"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:71"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 72, "ts_ms": 145482, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "相关"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:72"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 73, "ts_ms": 145482, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "文档"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:73"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 74, "ts_ms": 145482, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "）"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:74"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 75, "ts_ms": 145482, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:75"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 76, "ts_ms": 145482, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:76"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 77, "ts_ms": 145483, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:77"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 78, "ts_ms": 145483, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "结果"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:78"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 79, "ts_ms": 145483, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "详情"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:79"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 80, "ts_ms": 145483, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:80"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 81, "ts_ms": 145483, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:81"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 82, "ts_ms": 145483, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "检索"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:82"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 83, "ts_ms": 145483, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "命中"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:83"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 84, "ts_ms": 145483, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "数为"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:84"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 85, "ts_ms": 145483, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:85"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 86, "ts_ms": 145483, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "0"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:86"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 87, "ts_ms": 145483, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:87"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 88, "ts_ms": 145504, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "返回"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:88"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 89, "ts_ms": 145504, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "结果为"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:89"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 90, "ts_ms": 145504, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "“"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:90"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 91, "ts_ms": 145505, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "未"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:91"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 92, "ts_ms": 145505, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "检索"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:92"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 93, "ts_ms": 145505, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "到"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:93"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 94, "ts_ms": 145505, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "足够"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:94"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 95, "ts_ms": 145505, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "依据"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:95"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 96, "ts_ms": 145505, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:96"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 97, "ts_ms": 145507, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "无法"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:97"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 98, "ts_ms": 145507, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "给出"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:98"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 99, "ts_ms": 145507, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "有"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:99"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 100, "ts_ms": 145507, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "根据"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:100"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 101, "ts_ms": 145507, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "的回答"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:101"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 102, "ts_ms": 145508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "”。"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:102"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 103, "ts_ms": 145508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "当前"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:103"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 104, "ts_ms": 145508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "运维"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:104"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 105, "ts_ms": 145508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "知识库"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:105"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 106, "ts_ms": 145508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "中"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:106"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 107, "ts_ms": 145508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "暂无"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:107"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 108, "ts_ms": 145508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "关于"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:108"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 109, "ts_ms": 145508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "“"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:109"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 110, "ts_ms": 145508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "F"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:110"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 111, "ts_ms": 145508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-O"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:111"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 112, "ts_ms": 145578, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "BS"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:112"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 113, "ts_ms": 145578, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:113"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 114, "ts_ms": 145578, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "回执"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:114"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 115, "ts_ms": 145578, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " S"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:115"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 116, "ts_ms": 145584, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "2"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:116"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 117, "ts_ms": 145604, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " replay"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:117"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 118, "ts_ms": 145626, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:118"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 119, "ts_ms": 145648, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "零"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:119"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 120, "ts_ms": 145668, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "丢失"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:120"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 121, "ts_ms": 145684, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "复"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:121"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 122, "ts_ms": 145704, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "验"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:122"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 123, "ts_ms": 145724, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "”"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:123"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 124, "ts_ms": 145744, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "的"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:124"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 125, "ts_ms": 145764, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "术语"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:125"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 126, "ts_ms": 145793, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "定义"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:126"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 127, "ts_ms": 145809, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "、"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:127"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 128, "ts_ms": 145824, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "操作"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:128"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 129, "ts_ms": 145844, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "指引"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:129"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 130, "ts_ms": 145863, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "或"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:130"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 131, "ts_ms": 145884, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "状态"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:131"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 132, "ts_ms": 145903, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "说明"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:132"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 133, "ts_ms": 145923, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "。"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:133"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 134, "ts_ms": 145942, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n\n"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:134"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 135, "ts_ms": 145966, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "###"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:135"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 136, "ts_ms": 145983, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:136"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 137, "ts_ms": 146003, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "综合"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:137"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 138, "ts_ms": 146099, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "结论"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:138"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 139, "ts_ms": 146099, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:139"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 140, "ts_ms": 146099, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "基于"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:140"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 141, "ts_ms": 146099, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "当前"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:141"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 142, "ts_ms": 146103, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "知识库"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:142"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 143, "ts_ms": 146123, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "检索"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:143"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 144, "ts_ms": 146143, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "结果"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:144"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 145, "ts_ms": 146162, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:145"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 146, "ts_ms": 146190, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "暂无"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:146"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 147, "ts_ms": 146203, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "“"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:147"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 148, "ts_ms": 146222, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "F"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:148"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 149, "ts_ms": 146244, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-O"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:149"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 150, "ts_ms": 146262, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "BS"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:150"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 151, "ts_ms": 146285, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:151"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 152, "ts_ms": 146301, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "回执"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:152"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 153, "ts_ms": 146319, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " S"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:153"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 154, "ts_ms": 146338, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "2"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:154"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 155, "ts_ms": 146355, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " replay"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:155"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 156, "ts_ms": 146375, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:156"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 157, "ts_ms": 146397, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "零"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:157"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 158, "ts_ms": 146420, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "丢失"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:158"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 159, "ts_ms": 146435, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "复"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:159"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 160, "ts_ms": 146456, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "验"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:160"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 161, "ts_ms": 146479, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "”"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:161"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 162, "ts_ms": 146494, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "的相关"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:162"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 163, "ts_ms": 146517, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "依据"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:163"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 164, "ts_ms": 146535, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:164"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 165, "ts_ms": 146627, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "无法"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:165"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 166, "ts_ms": 146627, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "提供"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:166"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 167, "ts_ms": 146627, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "有效的"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:167"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 168, "ts_ms": 146627, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "复"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:168"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 169, "ts_ms": 146636, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "验"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:169"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 170, "ts_ms": 146655, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "结论"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:170"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 171, "ts_ms": 146674, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "或"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:171"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 172, "ts_ms": 146694, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "操作"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:172"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 173, "ts_ms": 146716, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "回复"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:173"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 174, "ts_ms": 146735, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "。"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:174"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 175, "ts_ms": 146758, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "如需"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:175"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 176, "ts_ms": 146774, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "进一步"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:176"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 177, "ts_ms": 146796, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "排查"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:177"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 178, "ts_ms": 146814, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:178"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 179, "ts_ms": 146834, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "请"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:179"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 180, "ts_ms": 146855, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "补充"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:180"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 181, "ts_ms": 146876, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "该"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:181"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 182, "ts_ms": 146895, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "提示"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:182"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 183, "ts_ms": 146915, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "出现"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:183"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 184, "ts_ms": 146934, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "的具体"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:184"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 185, "ts_ms": 146955, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "业务"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:185"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 186, "ts_ms": 146974, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "场景"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:186"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 187, "ts_ms": 146994, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "、"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:187"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 188, "ts_ms": 147018, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "完整"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:188"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 189, "ts_ms": 147035, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "日志"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:189"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 190, "ts_ms": 147056, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "或"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:190"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 191, "ts_ms": 147151, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "联系"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:191"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 192, "ts_ms": 147151, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " F"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:192"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 193, "ts_ms": 147152, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-O"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:193"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 194, "ts_ms": 147152, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "BS"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:194"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 195, "ts_ms": 147155, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:195"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 196, "ts_ms": 147175, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "系统"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:196"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 197, "ts_ms": 147197, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "对应"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:197"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 198, "ts_ms": 147216, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "负责人"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:198"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 199, "ts_ms": 147234, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "确认"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:199"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 200, "ts_ms": 147259, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "该"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:200"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 201, "ts_ms": 147275, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "状态"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:201"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 202, "ts_ms": 147295, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "的具体"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:202"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 203, "ts_ms": 147314, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "含义"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:203"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 204, "ts_ms": 147334, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "及"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:204"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 205, "ts_ms": 147354, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "处理"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:205"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 206, "ts_ms": 147376, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "方案"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:206"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 207, "ts_ms": 147396, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "。"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:207"}
+
+event: answer
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 208, "ts_ms": 147426, "agent_role": "aggregator", "event_type": "answer", "payload": {"final": true, "content": "### 子任务 1：RAG 检索\n- **来源**：RAG（知识库检索）\n- **执行状态**：失败（未命中相关文档）\n- **结果详情**：检索命中数为 0，返回结果为“未检索到足够依据，无法给出有根据的回答”。当前运维知识库中暂无关于“F-OBS 回执 S2 replay 零丢失复验”的术语定义、操作指引或状态说明。\n\n### 综合结论\n基于当前知识库检索结果，暂无“F-OBS 回执 S2 replay 零丢失复验”的相关依据，无法提供有效的复验结论或操作回复。如需进一步排查，请补充该提示出现的具体业务场景、完整日志或联系 F-OBS 系统对应负责人确认该状态的具体含义及处理方案。"}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:208"}
+
+event: node.progress
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 209, "ts_ms": 147435, "agent_role": "critic", "event_type": "node.progress", "payload": {"critic_verdict": {"reason": "no_error", "outcome": "pass"}, "rebinding_count": 0}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:209"}
+
+event: done
+data: {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "seq": 210, "ts_ms": 147436, "agent_role": "system", "event_type": "done", "payload": {"run_id": "596f56bf649b40e894e8ef2be1f2aca5", "thread_id": "25a4d4bdf5664a499018e7cdeb006cfc", "latency_ms": 147436}, "cursor": "596f56bf649b40e894e8ef2be1f2aca5:210"}
+

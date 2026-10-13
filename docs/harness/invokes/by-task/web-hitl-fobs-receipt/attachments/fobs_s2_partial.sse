@@ -1,0 +1,18 @@
+event: run.start
+data: {"run_id": "4740a8a06db9467f998fee6c31b32765", "seq": 1, "ts_ms": 0, "agent_role": "system", "event_type": "run.start", "payload": {"run_id": "4740a8a06db9467f998fee6c31b32765", "thread_id": "15c0eb67d98c4e5a8716d495c31902cc", "mode": "supervisor", "query": "你好，请用一句话回复：F-OBS 回执 S2 断线续看复验 smoke。"}, "cursor": "4740a8a06db9467f998fee6c31b32765:1"}
+
+event: node.progress
+data: {"run_id": "4740a8a06db9467f998fee6c31b32765", "seq": 2, "ts_ms": 3186, "agent_role": "intent", "event_type": "node.progress", "payload": {"intent": {"domain": "ops_kb", "needs_tool": false, "needs_skill": false, "is_composite": false, "risk_hint": "low", "summary": "请求一句话回复关于F-OBS回执S2断线续看复验的smoke测试内容。"}}, "cursor": "4740a8a06db9467f998fee6c31b32765:2"}
+
+event: node.progress
+data: {"run_id": "4740a8a06db9467f998fee6c31b32765", "seq": 3, "ts_ms": 3190, "agent_role": "strategy_builder", "event_type": "node.progress", "payload": {"allowed_capability_ids": []}, "cursor": "4740a8a06db9467f998fee6c31b32765:3"}
+
+event: node.progress
+data: {"run_id": "4740a8a06db9467f998fee6c31b32765", "seq": 4, "ts_ms": 3193, "agent_role": "supervisor", "event_type": "node.progress", "payload": {"subtasks": [{"id": "4740a8a06db9467f998fee6c31b32765:1", "subtask_id": "4740a8a06db9467f998fee6c31b32765:1", "alias": "t1", "type": "rag", "input": "你好，请用一句话回复：F-OBS 回执 S2 断线续看复验 smoke。", "depends_on": []}]}, "cursor": "4740a8a06db9467f998fee6c31b32765:4"}
+
+event: node.progress
+data: {"run_id": "4740a8a06db9467f998fee6c31b32765", "seq": 5, "ts_ms": 3198, "agent_role": "subtask_join", "event_type": "node.progress", "payload": {"keys": ["inflight_subtask_ids"]}, "cursor": "4740a8a06db9467f998fee6c31b32765:5"}
+
+event: subtask.progress
+data: {"run_id": "4740a8a06db9467f998fee6c31b32765", "seq": 6, "ts_ms": 3199, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"status": "running", "subtask_id": "4740a8a06db9467f998fee6c31b32765:1", "type": "rag", "input": "你好，请用一句话回复：F-OBS 回执 S2 断线续看复验 smoke。", "message": "开始检索子任务：你好，请用一句话回复：F-OBS 回执 S2 断线续看复验 smoke。"}, "cursor": "4740a8a06db9467f998fee6c31b32765:6"}
+
