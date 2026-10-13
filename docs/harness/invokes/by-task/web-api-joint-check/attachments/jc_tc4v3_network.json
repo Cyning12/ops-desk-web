@@ -1,0 +1,49 @@
+{
+  "steps": [
+    {
+      "name": "in-page-stream-badge",
+      "ok": true,
+      "detail": "完成 · 耗时 261547ms elapsed=262.0s"
+    },
+    {
+      "name": "script-error",
+      "ok": false,
+      "detail": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.chat-page__alert').filter({ hasText: '上次回答未完成' }) to be visible\u001b[22m\n"
+    }
+  ],
+  "badge_in_page": "完成 · 耗时 261547ms",
+  "active_run": null,
+  "console_errors": [],
+  "net": [
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200
+    },
+    {
+      "t": "0.3",
+      "method": "GET",
+      "url": "/api/ops/chat/sessions/latest",
+      "status": 200
+    },
+    {
+      "t": "0.3",
+      "method": "POST",
+      "url": "/api/ops/lg-rag/stream",
+      "status": 200
+    },
+    {
+      "t": "262.1",
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200
+    },
+    {
+      "t": "262.1",
+      "method": "GET",
+      "url": "/api/ops/chat/sessions/latest",
+      "status": 200
+    }
+  ]
+}

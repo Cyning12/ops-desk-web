@@ -1,0 +1,103 @@
+{
+  "steps": [
+    {
+      "name": "chat-ready",
+      "ok": true
+    },
+    {
+      "name": "hitl-trigger-sent",
+      "ok": true
+    },
+    {
+      "name": "hitl-card-visible",
+      "ok": true,
+      "detail": "人工审批待审批hitl_waiting 申请 hitl_973a380c77dd44dcb675续跑默认批准即续跑手动续跑 批准 驳回"
+    },
+    {
+      "name": "approve-clicked",
+      "ok": true
+    },
+    {
+      "name": "card-back-to-waiting-JC-F1",
+      "ok": true,
+      "detail": "人工审批待审批hitl_waiting 申请 hitl_973a380c77dd44dcb675续跑默认批准即续跑手动续跑 批准 驳回"
+    },
+    {
+      "name": "active-run-captured",
+      "ok": true,
+      "detail": "{\"run_id\":\"b3b2da4057f648109799a87250b22452\",\"last_seq\":7,\"thread_id\":\"31336d189e2f47c1b71670c7396c5d93\",\"updated_at\":\"2026-10-13T10:01:28.365Z\"}"
+    },
+    {
+      "name": "server-resume-settled",
+      "ok": true,
+      "detail": "replay 200 at 107.6s"
+    },
+    {
+      "name": "resume-notice-after-refresh",
+      "ok": true
+    },
+    {
+      "name": "script-error",
+      "ok": false,
+      "detail": "TimeoutError: locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.chat-page__hint').filter({ hasText: '完成 · 耗时' }) to be visible\u001b[22m\n"
+    }
+  ],
+  "card_after_45s": "人工审批待审批hitl_waiting 申请 hitl_973a380c77dd44dcb675续跑默认批准即续跑手动续跑 批准 驳回",
+  "active_run": {
+    "run_id": "b3b2da4057f648109799a87250b22452",
+    "last_seq": 7,
+    "thread_id": "31336d189e2f47c1b71670c7396c5d93",
+    "updated_at": "2026-10-13T10:01:28.365Z"
+  },
+  "console_errors": [],
+  "net": [
+    {
+      "t": "0.3",
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200
+    },
+    {
+      "t": "0.3",
+      "method": "GET",
+      "url": "/api/ops/chat/sessions/latest",
+      "status": 200
+    },
+    {
+      "t": "0.3",
+      "method": "POST",
+      "url": "/api/ops/lg-rag/stream",
+      "status": 200
+    },
+    {
+      "t": "62.5",
+      "method": "POST",
+      "url": "/api/ops/hitl/requests/hitl_973a380c77dd44dcb675/decide",
+      "status": 200
+    },
+    {
+      "t": "92.6",
+      "method": "POST",
+      "url": "/api/ops/hitl/requests/hitl_973a380c77dd44dcb675/resume",
+      "failed": "net::ERR_ABORTED"
+    },
+    {
+      "t": "107.6",
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200
+    },
+    {
+      "t": "107.7",
+      "method": "GET",
+      "url": "/api/ops/chat/sessions/latest",
+      "status": 200
+    },
+    {
+      "t": "107.7",
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200
+    }
+  ]
+}

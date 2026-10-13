@@ -1,0 +1,26 @@
+[
+  {
+    "url": "/api/ops/auth/me",
+    "status": 401,
+    "ct": "application/json",
+    "runId": ""
+  },
+  {
+    "url": "/api/ops/auth/login",
+    "status": 200,
+    "ct": "application/json",
+    "runId": ""
+  },
+  {
+    "url": "/api/ops/chat/sessions/latest",
+    "status": 200,
+    "ct": "application/json",
+    "runId": ""
+  },
+  {
+    "url": "/api/ops/lg-rag/stream",
+    "status": 200,
+    "ct": "text/event-stream; charset=utf-8",
+    "runId": "c0d88f91cccf4c1a8291646cb5543c2c"
+  }
+]

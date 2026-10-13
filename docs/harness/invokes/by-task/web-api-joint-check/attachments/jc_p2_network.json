@@ -1,0 +1,22 @@
+[
+  {
+    "url": "/api/ops/auth/me",
+    "status": 401
+  },
+  {
+    "url": "/api/ops/auth/login",
+    "status": 200
+  },
+  {
+    "url": "/api/ops/chat/sessions/latest",
+    "status": 200
+  },
+  {
+    "url": "/api/ops/lg-rag/stream",
+    "status": 200
+  },
+  {
+    "url": "/api/ops/hitl/requests/hitl_c70cdd261d9c45869b7a/decide",
+    "status": 200
+  }
+]

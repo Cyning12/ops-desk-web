@@ -1,0 +1,54 @@
+{
+  "steps": [
+    {
+      "name": "chat-ready",
+      "ok": true
+    },
+    {
+      "name": "hitl-trigger-sent",
+      "ok": true
+    },
+    {
+      "name": "hitl-card-visible",
+      "ok": true,
+      "detail": "人工审批待审批hitl_waiting 申请 hitl_feaea8e10cd944b4aefb续跑默认批准即续跑手动续跑 批准 驳回"
+    },
+    {
+      "name": "approve-clicked",
+      "ok": true
+    },
+    {
+      "name": "script-error",
+      "ok": false,
+      "detail": "TimeoutError: locator.waitFor: Timeout 360000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.hitl-card').first().getByRole('button', { name: '续看推进' }) to be visible\u001b[22m\n"
+    }
+  ],
+  "card_text": "人工审批待审批hitl_waiting 申请 hitl_feaea8e10cd944b4aefb续跑默认批准即续跑手动续跑 批准 驳回",
+  "console_errors": [],
+  "net": [
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "/api/ops/chat/sessions/latest",
+      "status": 200
+    },
+    {
+      "t": "0.3",
+      "method": "POST",
+      "url": "/api/ops/lg-rag/stream",
+      "status": 200
+    },
+    {
+      "t": "29.8",
+      "method": "POST",
+      "url": "/api/ops/hitl/requests/hitl_feaea8e10cd944b4aefb/decide",
+      "status": 200
+    }
+  ]
+}

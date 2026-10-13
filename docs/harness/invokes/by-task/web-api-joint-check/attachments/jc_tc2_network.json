@@ -1,0 +1,262 @@
+{
+  "verdict": {
+    "base": "http://127.0.0.1:5173",
+    "steps": [
+      {
+        "name": "cookie-session->authed",
+        "ok": true,
+        "detail": "http://127.0.0.1:5173/chat"
+      },
+      {
+        "name": "chat-view-ready",
+        "ok": true,
+        "detail": "http://127.0.0.1:5173/chat"
+      },
+      {
+        "name": "message-sent",
+        "ok": true,
+        "detail": "联调自检 TC2：请用一句话回答，ops-desk-web 前端项目名是什么？"
+      },
+      {
+        "name": "reply-complete",
+        "ok": true,
+        "detail": "完成 · 耗时 138410ms"
+      }
+    ],
+    "badge": "完成 · 耗时 138410ms",
+    "latency_ms": 138410,
+    "latency_real": true,
+    "last_reply_excerpt": "### 子任务 1：RAG 检索\n- **来源**：rag 检索\n- **结果说明**：检索命中数为 0，知识库中未检索到足够依据，无法给出有根据的回答。\n\n### 综合结论\n根据当前知识库检索结果，未收录 `ops-desk-web` 前端项目名的相关信息，故无法作答。",
+    "console_errors": []
+  },
+  "net": [
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/chat",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/main.ts",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/@vite/client",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/vue.js?v=6717f50c",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/styles/index.css",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/node_modules/.pnpm/element-plus@2.14.3_vue@3.5.40_typescript@5.8.3_/node_modules/element-plus/dist/index.css",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/App.vue",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/stores/index.ts",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/node_modules/.pnpm/vite@7.3.6_@types+node@24.13.3/node_modules/vite/dist/client/env.mjs",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/router/index.ts",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-PX6F3LHL.js?v=6717f50c",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/@id/__x00__plugin-vue:export-helper",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/pinia.js?v=6717f50c",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-ATB5D7RN.js?v=6717f50c",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/layouts/AppLayout.vue",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/api/http.ts",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/stores/auth.ts",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/vue-router.js?v=6717f50c",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/tenant.ts",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/layouts/AppLayout.vue?vue&type=style&index=0&scoped=e7291ef4&lang.css",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/api/auth.ts",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/axios.js?v=6717f50c",
+      "status": 200
+    },
+    {
+      "t": "0.1",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/element-plus.js?v=6717f50c",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/api/ops/auth/me",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/views/ChatView.vue",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/components/chat/HitlApprovalCard.vue",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/views/ChatView.vue?vue&type=style&index=0&scoped=a497a79e&lang.css",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/components/chat-history/ChatHistoryPanel.vue",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/stores/chat.ts",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/components/chat/HitlApprovalCard.vue?vue&type=style&index=0&scoped=c3dbe6d3&lang.css",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/components/chat-history/ChatHistoryPanel.vue?vue&type=style&index=0&scoped=3fcf38cf&lang.css",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/api/chatHistory.ts",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/api/chat.ts",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/api/hitl.ts",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/composables/useLgRagSse.ts",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/src/composables/useRevealQueue.ts",
+      "status": 200
+    },
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/api/ops/chat/sessions/latest",
+      "status": 200
+    },
+    {
+      "t": "0.3",
+      "method": "POST",
+      "url": "http://127.0.0.1:5173/api/ops/lg-rag/stream",
+      "status": 200
+    }
+  ]
+}

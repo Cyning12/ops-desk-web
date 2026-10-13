@@ -1,0 +1,70 @@
+{
+  "steps": [
+    {
+      "name": "resume-notice-restored",
+      "ok": true
+    },
+    {
+      "name": "resume-clicked",
+      "ok": true
+    },
+    {
+      "name": "resumed-badge",
+      "ok": true,
+      "detail": "完成 · 耗时 306187ms | matches_backend_306187=true"
+    },
+    {
+      "name": "refresh-restore",
+      "ok": false,
+      "detail": "messages=0 thinking_blocks=0"
+    }
+  ],
+  "badge": "完成 · 耗时 306187ms",
+  "latency_ms": 306187,
+  "latency_real": true,
+  "latency_matches_backend": true,
+  "model_shown": false,
+  "after_refresh": {
+    "messages": 0,
+    "thinking_blocks": 0
+  },
+  "console_errors": [],
+  "net": [
+    {
+      "t": "0.8",
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200
+    },
+    {
+      "t": "0.8",
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200
+    },
+    {
+      "t": "0.9",
+      "method": "GET",
+      "url": "/api/ops/chat/sessions/latest",
+      "status": 200
+    },
+    {
+      "t": "1.0",
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200
+    },
+    {
+      "t": "1.1",
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200
+    },
+    {
+      "t": "1.1",
+      "method": "GET",
+      "url": "/api/ops/chat/sessions/latest",
+      "status": 200
+    }
+  ]
+}

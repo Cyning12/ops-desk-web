@@ -1,0 +1,84 @@
+{
+  "steps": [
+    {
+      "name": "long-run-started",
+      "ok": true
+    },
+    {
+      "name": "inflight-409-errorbar",
+      "ok": true,
+      "detail": "[http] Run is still in flight; retry after it settles.连接中断，已收到的内容不会丢失续看"
+    },
+    {
+      "name": "active-run-captured",
+      "ok": true,
+      "detail": "{\"run_id\":\"1289023d30b14e2dba5d60caea98de88\",\"last_seq\":1,\"thread_id\":null,\"updated_at\":\"2026-10-13T10:14:13.411Z\"}"
+    },
+    {
+      "name": "server-run-settled",
+      "ok": false,
+      "detail": "null"
+    },
+    {
+      "name": "script-error",
+      "ok": false,
+      "detail": "TimeoutError: locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.chat-page__hint').filter({ hasText: '完成 · 耗时' }) to be visible\u001b[22m\n"
+    }
+  ],
+  "inflight_error_text": "[http] Run is still in flight; retry after it settles.连接中断，已收到的内容不会丢失续看",
+  "active_run": {
+    "run_id": "1289023d30b14e2dba5d60caea98de88",
+    "last_seq": 1,
+    "thread_id": null,
+    "updated_at": "2026-10-13T10:14:13.411Z"
+  },
+  "terminal_done": null,
+  "console_errors": [
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 409 (Conflict)"
+  ],
+  "net": [
+    {
+      "t": "0.2",
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200
+    },
+    {
+      "t": "0.3",
+      "method": "GET",
+      "url": "/api/ops/chat/sessions/latest",
+      "status": 200
+    },
+    {
+      "t": "0.3",
+      "method": "POST",
+      "url": "/api/ops/lg-rag/stream",
+      "status": 200
+    },
+    {
+      "t": "8.4",
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200
+    },
+    {
+      "t": "8.4",
+      "method": "GET",
+      "url": "/api/ops/chat/sessions/latest",
+      "status": 200
+    },
+    {
+      "t": "8.4",
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 409
+    },
+    {
+      "t": "649.7",
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 409
+    }
+  ]
+}
