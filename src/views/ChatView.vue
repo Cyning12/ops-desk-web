@@ -258,7 +258,7 @@ function onToggleHistory(): void {
     </p>
     <p v-if="!chat.error && chat.interrupted" class="chat-page__hint">已中断，可修改后重新发送。</p>
     <p v-if="!chat.error && !chat.interrupted && chat.lastDone" class="chat-page__hint">
-      完成 · 耗时 {{ chat.lastDone.latency_ms }}ms<template v-if="chat.lastDone.model">
+      完成 · 耗时 {{ chat.lastDone.latency_ms === null ? '—' : `${chat.lastDone.latency_ms}ms` }}<template v-if="chat.lastDone.model">
         · 模型 {{ chat.lastDone.model }}</template
       >
     </p>

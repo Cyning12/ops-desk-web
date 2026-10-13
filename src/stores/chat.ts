@@ -169,7 +169,9 @@ export interface ChatErrorState {
 }
 
 export interface ChatDoneInfo {
-  latency_ms: number
+  /** 裁定 A（web-hitl-fobs-receipt）：缺键存 null（裁 ': 0' 假值兜底 · 徽标耗时段显「—」）；实值 int≥0 原样透传 */
+  latency_ms: number | null
+  /** 裁定 B：后端 FP-1 钉案 model 键永不提供 → 兜底 '' 保留零改动（v-if 缺省不渲染） */
   model: string
 }
 
@@ -730,7 +732,9 @@ export const useChatStore = defineStore('chat', () => {
         const latency = event.payload?.latency_ms
         const model = event.payload?.model
         lastDone.value = {
-          latency_ms: typeof latency === 'number' ? latency : 0,
+          // 裁定 A：裁 ': 0' 假值兜底——缺键存 null（徽标显「—」如实）；实值原样透传（F-OBS-1）
+          latency_ms: typeof latency === 'number' ? latency : null,
+          // 裁定 B：model 兜底保留零改动（后端永不提供 · v-if 缺省不渲染）
           model: typeof model === 'string' ? model : '',
         }
         clearActiveRun()
