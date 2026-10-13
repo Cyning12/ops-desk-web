@@ -9,6 +9,7 @@
 
 ## 本波 active
 
+- **`web-hitl-fobs-receipt`**（2026-10-13 · 10/20/30/40 交付 · TC1–TC5 全勾）：T-W2 FP-1 双观察项回执——F-OBS-1 resume 终帧 `done{status:'resumed'}` 携 `latency_ms` 实值（live 139650ms int）· `model` 键永不提供（勿伪造）；F-OBS-2 run 在飞 `POST /lg-rag/replay` → **409 + Retry-After: 2 + detail 文案**（挂起/沉降仍 200 零 diff）。前端三裁定：A 裁 `latency_ms` 假值兜底 `: 0`（缺键存 null · 徽标显「—」）；B model 兜底保留零改动（v-if 缺省不渲染）；C 409 现状已足（else 分支 retryable+detail · Retry-After 自动退避另立口）。观察项：客户端断线孤儿 run 在飞标记 ≥13min 不清（replay 恒 409 · 与 api 40 孤儿 22b65ce2 同形态 · 报回 api 生命周期面）。真值：`docs/tasks/active/task_web_hitl_fobs_receipt.md` + `docs/harness/invokes/by-task/web-hitl-fobs-receipt/`。
 - **`web-chat-history-hitl-ux`**（2026-10-04 · 30 实现）：**`waiting_approval` ≠ 完成态**——`done` 按 `payload.status` 分支：waiting_approval 不清场（保留 active-run 续看游标 · 不记 lastDone 防「假完成」）；审批动作链 **decide → resume 两步**（契约钉 decide 不自动 resume · 前端链式两调用）；历史 run 视图映射既有 ChatMessage（裁定 F-C）· 续看复用 replayLgRag 不新造。真值：`docs/spec/web-chat-history-hitl-ux/SPEC-web-chat-history-hitl-ux_v0.md` §2/§6/§7 + `docs/tasks/active/task_web_chat_history_hitl_ux.md`。
 - **`web-lg-rag-sse-progressive-reveal`**（2026-09-08 · 30 实现中）：客户端 reveal 队列（`useRevealQueue`）——速率 **60 字/秒**（tick 50ms · 3 字/tick）；answer delta 入网络缓冲匀速出队；`content`/`final` 取消并以终稿替换；`done`/`error`/abort **刷齐已收**；subtask `step` 即时可读、`done` 解析 `subtask_result.output` 打字机；replay 默认 **4×** 加速。真值：`docs/tasks/active/task_web_lg_rag_sse_progressive_reveal.md`（00 定夺表）· 前置 T5/#28 · subtask-live/#38。
 - （以下为已交付指针，关账后可裁）
