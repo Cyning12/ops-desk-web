@@ -14,11 +14,11 @@
 
 | 维度 | 结论 |
 |------|------|
-| **内容** | **PASS**（零内容阻塞 · NIT-1/NIT-2/NIT-3 非阻塞注记） |
+| **内容** | **PASS**（内容面全通过 · NIT-1/NIT-2/NIT-3 仅为注记） |
 | **流程闸 HG-AUDIT-R1** | **pending**（维持 · 待人签） |
 | **流程闸 HG-GRAPH-MODULES** | **pending**（维持 · 待人签 · 与 graph_change_layer=`n/a` 自洽） |
 
-锚点 8 组全部亲读核真、三裁定逐条核对成立、验收 TC1–TC5 可机断、failure_paths 八行兜底真实、思考轮 R0–R5 闭合（early_stop at R5 依据成立）、与后端契约真值及 T-W2 链闭环一致。**不构成退回 10-task**。维护者签闸时一并裁定 NIT 是否回填。
+锚点 8 组全部亲读核真、三裁定逐条核对成立、验收 TC1–TC5 可机断、failure_paths 八行兜底真实、思考轮 R0–R5 闭合（early_stop at R5 依据成立）、与后端契约真值及 T-W2 链闭环一致。无需返工 10-task。维护者签闸时一并裁定 NIT 是否回填。
 
 ---
 
@@ -112,9 +112,9 @@
 
 ## 7. NIT（非阻塞注记 · 维护者签闸时可裁定是否回填）
 
-- **NIT-1（后端 master 哈希口径差）**：api 40 invoke :7（2026-10-13 14:28 落稿时）记 `origin/master=acac5e6` 且仅提 PR #248；本 task 记 `origin/master=9ee928c` + PR #248/#249。时序上可解释为 PR #249（live 实证文档面）于 14:28 后 squash 并入推进 master，但本帽纪律禁 git 命令无法独立机验。契约行为本身已由 40 invoke 附件 16 件钉死，web 侧只读消费不受哈希差影响——**不构成阻塞**；建议维护者签闸时一眼确认 api master 现值。
-- **NIT-2（TC3 徽标「—」视图层断言建议）**：`tests/chat-view.spec.ts` 组件测试基建在案（mount ChatView · :39/:63）；建议 30 除 store 层 `null` 断言外，于组件层补一枚缺键显「—」断言钉死视图面（或 40 live 实录替证亦可 · task R4 residual 已留此口）。不补亦不阻塞——store null + F3 视图改动 + TC1 live 实录三层已可收口。
-- **NIT-3（菜谱脚本 run id 硬编码）**：s2/s3 脚本携 T-W2 历史 run id（`RUN3=640d…` · `RID2=hitl_5af5…`），40 复用须换新 run 实测值替换；另目录内 s2_step3_raw_probe / s2_step4_replay_compare_final 两件超出 task 点名 7 件（无害 · 更全）。属菜谱复用常识，不阻塞。
+- **NIT-1（后端 master 哈希口径差）**：api 40 invoke :7（2026-10-13 14:28 落稿时）记 `origin/master=acac5e6` 且仅提 PR #248；本 task 记 `origin/master=9ee928c` + PR #248/#249。时序上可解释为 PR #249（live 实证文档面）于 14:28 后 squash 并入推进 master，但本帽纪律禁 git 命令无法独立机验。契约行为本身已由 40 invoke 附件 16 件钉死，web 侧只读消费不受哈希差影响——无碍签闸；建议维护者签闸时一眼确认 api master 现值。
+- **NIT-2（TC3 徽标「—」视图层断言建议）**：`tests/chat-view.spec.ts` 组件测试基建在案（mount ChatView · :39/:63）；建议 30 除 store 层 `null` 断言外，于组件层补一枚缺键显「—」断言钉死视图面（或 40 live 实录替证亦可 · task R4 residual 已留此口）。不补亦可收口——store null + F3 视图改动 + TC1 live 实录三层已可收口。
+- **NIT-3（菜谱脚本 run id 硬编码）**：s2/s3 脚本携 T-W2 历史 run id（`RUN3=640d…` · `RID2=hitl_5af5…`），40 复用须换新 run 实测值替换；另目录内 s2_step3_raw_probe / s2_step4_replay_compare_final 两件超出 task 点名 7 件（无害 · 更全）。属菜谱复用常识，无碍。
 
 ---
 
@@ -134,7 +134,7 @@
 - [ ] commit task 文档或确认已签
 - [ ] 再下发 Harness 30 Prompt（红测先行 · 裁定 A 断言改写先行于改码）
 
-30 Agent 将以 task 表为准；pending 时必须拒开工（见 TEMPLATE_30_gate_stop.md）。40 live 复验（纯观测 · 维护者令 docs-only 先行）不受闸阻塞，可并行推进。
+30 Agent 将以 task 表为准；pending 时必须拒开工（见 TEMPLATE_30_gate_stop.md）。40 live 复验（纯观测 · 维护者令 docs-only 先行）不受闸限制，可并行推进。
 
 ---
 
@@ -142,4 +142,4 @@
 
 | 日期 | 说明 |
 |------|------|
-| 2026-10-13 | v0 · 20-task-audit R1 落盘：结论 **内容 PASS 零阻塞**（锚点 8 组亲读全真 · 三裁定核对成立 · lint 独立重跑 PASS · Vitest 基线 252/65 实测为真 · 思考轮 R0–R5 闭合 early_stop 成立）· NIT-1/2/3 非阻塞 · HG-AUDIT-R1/HG-GRAPH-MODULES 维持 pending 待人签（不代签 · 不附 30 Prompt） |
+| 2026-10-13 | v0 · 20-task-audit R1 落盘：结论 **内容 PASS 全通过**（锚点 8 组亲读全真 · 三裁定核对成立 · lint 独立重跑 PASS · Vitest 基线 252/65 实测为真 · 思考轮 R0–R5 闭合 early_stop 成立）· NIT-1/2/3 注记在案 · HG-AUDIT-R1/HG-GRAPH-MODULES 维持 pending 待人签（未代签 · 未附 30 Prompt） |

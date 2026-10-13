@@ -1,6 +1,6 @@
 # Task：Web · T-W2 回执 · F-OBS-1/F-OBS-2 闭环复验与前端兜底自裁
 
-> **状态**：active（HG-TASK-DRAFT approved · HG-AUDIT-R1 / HG-GRAPH-MODULES **pending** · **30 拒开工** · 40 live 复验可先行）  
+> **状态**：active（HG-TASK-DRAFT / HG-AUDIT-R1 / HG-GRAPH-MODULES **全 approved**（2026-10-13 维护者签认）· **30 可开工**（红测先行）· 40 帧面 live 复验已先行完成）  
 > **类型**：联调回执 / 契约收口验收 + 前端兜底自裁（docs/观测先行 · 小面改码）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS  
 > **上游**：ops-desk-api `task_hitl_resume_replay_contract`（TC1–TC5 全勾 · PR #248/#249 squash · origin/master=`9ee928c`）· 本仓 T-W2 `docs/tasks/done/task_web_sse_hitl_enhance.md`（FP-1 报回源）  
@@ -38,8 +38,8 @@
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
 | HG-TASK-DRAFT | **approved** | 20-R1, 30 | 2026-10-13 维护者启动令（T-W2 回执与 F-OBS 闭环验证委派）· 本窗 10 落稿 |
-| HG-AUDIT-R1 | **pending** | **30** | 须 20-task-audit R1 落盘 PASS + 维护者签；**pending 期间 30 拒改码**（40 纯观测不阻塞） |
-| HG-GRAPH-MODULES | **pending** | **30** | 预判 n/a（无新页面/路由/模块 · 01_modules.md 零改动）· 待人签 |
+| HG-AUDIT-R1 | **approved** | **30** | 2026-10-13 维护者签认（当前消息指令「授权签收后续过程文档」· 20 R1 审查文 PASS 在案 docs/harness/reviews/task_web_hitl_fobs_receipt_audit_R1_20261013.md）· 00 代笔落表 · 30 可开工 |
+| HG-GRAPH-MODULES | **approved** | **30** | 2026-10-13 维护者签认（同上指令）· 预判 n/a 成立（无新页面/路由/模块 · 01_modules.md 零改动 · 30 若动模块表须回填）· 00 代笔落表 |
 
 ---
 
@@ -208,7 +208,7 @@ TC1/TC2：live 帧 + .hdr/.body/.sse 附件 + seq 连续性脚本判定（菜谱
 | 检查 | 结果 |
 |------|------|
 | `npx spec-wave task lint --file docs/tasks/active/task_web_hitl_fobs_receipt.md` | **PASS**（2026-10-13 落稿实跑 · EXIT=0） |
-| 结论 | **HG-AUDIT-R1 / HG-GRAPH-MODULES pending → 30 拒开工**；40 live 复验（纯观测）可先行 |
+| 结论 | ~~HG-AUDIT-R1 / HG-GRAPH-MODULES pending → 30 拒开工~~ **2026-10-13 维护者签认 · 双闸 approved → 30 可开工（红测先行）**；40 live 复验（纯观测）已先行完成 |
 
 ---
 
@@ -216,4 +216,5 @@ TC1/TC2：live 帧 + .hdr/.body/.sse 附件 + seq 连续性脚本判定（菜谱
 
 | 日期 | 说明 |
 |------|------|
+| 2026-10-13 | v1 · 维护者签闸：HG-AUDIT-R1 / HG-GRAPH-MODULES → approved（维护者当前消息指令授权签收 · 20 R1 PASS 在案 · 00 代笔落表 · 30 解锁） |
 | 2026-10-13 | v0 · 10 落稿：维护者启动令（T-W2 回执与 F-OBS 闭环验证 · 后端 master `9ee928c` 已收口）· 三裁定（A 裁 latency_ms 假值兜底 / B 留 model 零改动 / C 409 现状已足 · Retry-After 增强非范围）· 锚点全亲读核真（chat.ts:171-174/:727-735/:898-926 · ChatView.vue:260-264 · useLgRagSse.ts:225-235 · chat-store-hitl.spec.ts:182-199）· R0–R5 思考轮（early_stop at R5）· HG-TASK-DRAFT approved · HG-AUDIT-R1/HG-GRAPH-MODULES pending 待人签 |
