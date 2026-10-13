@@ -1,6 +1,6 @@
 # Task：Web × API · 阶段性前后端联调 checklist（web-api-joint-check）
 
-> **状态**：active（**三闸全 approved**（2026-10-13 维护者 m00243 授权签收 · 00 代笔）· **40 可执行**（机验+人验交付 · 纯观测零业务码 · 默认无 30 棒）· Playwright 1.64.0 + Chromium 156 环境就绪）  
+> **状态**：delivered（TC1–TC8 **全勾** · 10/20/40 三棒交付 · 三闸全 approved · 40 机验全绿 · 联调发现 JC-F1/JC-F2 照登分流 · PR 待开 → CI 绿 → 维护者人验签核 + 合并后迁 done/）  
 > **类型**：阶段性前后端联调 checklist 执行（docs/观测/实操验收 · 业务码零改面）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS  
 > **上游**：web PR #65（已合并 main `aef91f3` · 裁定 A 裁 latency_ms 假值兜底）× api master `9ee928c`（409+Retry-After 新契约）· 前 task `docs/tasks/done/task_web_hitl_fobs_receipt.md`（TC1–TC5 全勾 · 帧面已实证）  
@@ -68,12 +68,12 @@ web PR #65（裁定 A 裁 `latency_ms` 假值兜底 · 徽标缺键显「—」�
 
 ## 范围（P0–P4 五阶段 · 40 执行面）
 
-- [ ] **F1 / P0 环境就位**：api=master 含 `9ee928c` · web=main 含 `aef91f3`（PR #65 merge commit）；后端 8050 起服（环境三坑解法 + 登录路由 `/api/ops/auth/login` 小坑 + 六 env 组，真值引用前 task 40 invoke）；web dev server + vite proxy 钉 `127.0.0.1`（IPv6 localhost 404 坑）；`/api/ops/auth/me` 200 机断。
-- [ ] **F2 / P1 冒烟基线**：登录（含 web 登录操作 · Playwright 实操）→ 发消息 → SSE 逐帧无缓冲（`vite_proxy_smoke.sh` 逐帧时间戳口径机断）→ done 帧徽标 `latency_ms` 实值（**非 `0ms` 非「—」** · DOM 断言）· model 段不渲染（DOM 缺席断言）。
-- [ ] **F3 / P2 HITL 主链（F-OBS-1 浏览器实证）**：`testing.write.echo` 触发 waiting_approval → UI 审批条可见 → approve → resume → 终帧 `done{resumed, latency_ms 实值}` → 徽标实值渲染（截图 + DOM 断言）；**刷新页面** replay 恢复会话历史帧齐（帧计数一致）。
-- [ ] **F4 / P3 在飞 409 面（F-OBS-2 浏览器实证）**：在飞窗刷新触发 replay → 前端 retryable 错误条 + detail 文案（「Run is still in flight; retry after it settles.」）可见（DOM 断言 + 截图）→ 沉降后手动「续看」恢复零丢失；**孤儿 run 观察项照登**（非阻塞 · 报回 api 留痕）。
-- [ ] **F5 / P4 断线恢复 + 回归**：断网/掐断重连 gap replay seq 连续零丢失（机断）；`pnpm lint` / `test`（**新基线 255**）/ `build` 三门绿（回归证明）。
-- [ ] **F6 · 人验 checklist 硬交付件**：`docs/checklists/CHECKLIST_web_api_joint_check_v1.md`（纯 docs · 不触图谱闸 · 可复用件）——机验盲区逐项：水墨风观感 · 错误条文案可读性 · 审批交互手感 · 断网重连体感 · 孤儿 run 人眼确认；每项「操作步骤/预期/实际/勾」四列。
+- [x] **F1 / P0 环境就位**：api=master 含 `9ee928c` · web=main 含 `aef91f3`（PR #65 merge commit）；后端 8050 起服（环境三坑解法 + 登录路由 `/api/ops/auth/login` 小坑 + 六 env 组，真值引用前 task 40 invoke）；web dev server + vite proxy 钉 `127.0.0.1`（IPv6 localhost 404 坑）；`/api/ops/auth/me` 200 机断。
+- [x] **F2 / P1 冒烟基线**：登录（含 web 登录操作 · Playwright 实操）→ 发消息 → SSE 逐帧无缓冲（`vite_proxy_smoke.sh` 逐帧时间戳口径机断）→ done 帧徽标 `latency_ms` 实值（**非 `0ms` 非「—」** · DOM 断言）· model 段不渲染（DOM 缺席断言）。
+- [x] **F3 / P2 HITL 主链（F-OBS-1 浏览器实证）**：`testing.write.echo` 触发 waiting_approval → UI 审批条可见 → approve → resume → 终帧 `done{resumed, latency_ms 实值}` → 徽标实值渲染（截图 + DOM 断言）；**刷新页面** replay 恢复会话历史帧齐（帧计数一致）。
+- [x] **F4 / P3 在飞 409 面（F-OBS-2 浏览器实证）**：在飞窗刷新触发 replay → 前端 retryable 错误条 + detail 文案（「Run is still in flight; retry after it settles.」）可见（DOM 断言 + 截图）→ 沉降后手动「续看」恢复零丢失；**孤儿 run 观察项照登**（非阻塞 · 报回 api 留痕）。
+- [x] **F5 / P4 断线恢复 + 回归**：断网/掐断重连 gap replay seq 连续零丢失（机断）；`pnpm lint` / `test`（**新基线 255**）/ `build` 三门绿（回归证明）。
+- [x] **F6 · 人验 checklist 硬交付件**：`docs/checklists/CHECKLIST_web_api_joint_check_v1.md`（纯 docs · 不触图谱闸 · 可复用件）——机验盲区逐项：水墨风观感 · 错误条文案可读性 · 审批交互手感 · 断网重连体感 · 孤儿 run 人眼确认；每项「操作步骤/预期/实际/勾」四列。
 
 ## 非范围
 
@@ -116,15 +116,15 @@ web PR #65（裁定 A 裁 `latency_ms` 假值兜底 · 徽标缺键显「—」�
 
 ## 验收标准（两层 · 维护者 m00193 裁定 · 机验层 TC1–TC6 全自动 / 人验层 TC7–TC8 硬交付件）
 
-- [ ] **TC1（机验 · P0 环境）**：`/api/ops/auth/me` 200（cookie 会话）· vite proxy 可达 · SSE 逐帧无缓冲判定（`vite_proxy_smoke.sh` SPREAD 判据）。
-- [ ] **TC2（机验 · P1 冒烟）**：Playwright 实操登录 → 发消息 → done 帧后 DOM 断言：徽标文本含 `耗时 ` + `/\d+ms/` 实值且 **≠ 0ms ≠ 「—」** · 「模型」段 DOM 缺席；截图 + Network 头摘要落 attachments。（FP-1 退化时：curl 层 .sse 附件机断 latency_ms 实值 · 徽标 DOM 项转人验）
-- [ ] **TC3（机验 · P2 HITL 主链）**：浏览器面 approve→resume 全链走通 · replay 终帧 `done{status:'resumed', latency_ms: int ≥ 0 实值}`（.sse 附件）· 徽标实值 DOM 断言 + 截图 · 刷新后 replay 恢复历史帧计数一致。
-- [ ] **TC4（机验 · P3 在飞 409）**：在飞窗 replay → HTTP **409 + `retry-after: 2`**（.hdr/.body 附件）· 前端错误条 DOM 断言（retryable 文案 + detail 可见）· 沉降后手动续看恢复 · 孤儿观察项照登。
-- [ ] **TC5（机验 · P4 断线恢复 + 回归）**：gap replay seq 连续零丢失（脚本机断）· `lint`/`test`（基线 255 零既有红）/`build` 三门 EXIT=0。
-- [ ] **TC6（机验 · 机检）**：`npx spec-wave task lint --file docs/tasks/active/task_web_api_joint_check.md` PASS（仓 lint 命令真值形 · 首跑实跑回填）。
+- [x] **TC1（机验 · P0 环境）** ✅ 2026-10-13：`/api/ops/auth/me` 200 · SSE 经 5173 代理 22 帧逐帧无缓冲（SPREAD 通过 · attachments/jc_p0_proxy_ts.log）：`/api/ops/auth/me` 200（cookie 会话）· vite proxy 可达 · SSE 逐帧无缓冲判定（`vite_proxy_smoke.sh` SPREAD 判据）。
+- [x] **TC2（机验 · P1 冒烟）** ✅ 2026-10-13：徽标「完成 · 耗时 138410ms」实值 ≠0ms≠「—」 · 「模型」段 DOM 缺席 · console 0 错（jc_tc2_* 截图+Network）；**偏差照登**：`OPS_DESK_INVITE` 不可得 → 浏览器登录走 cookie 注入（表单提交面留人验 · checklist §2.3 已标）：Playwright 实操登录 → 发消息 → done 帧后 DOM 断言：徽标文本含 `耗时 ` + `/\d+ms/` 实值且 **≠ 0ms ≠ 「—」** · 「模型」段 DOM 缺席；截图 + Network 头摘要落 attachments。（FP-1 退化时：curl 层 .sse 附件机断 latency_ms 实值 · 徽标 DOM 项转人验）
+- [x] **TC3（机验 · P2 HITL 主链）** ✅ 2026-10-13：run `b3b2da40` approve 200 → 服务端 resume 沉降 → replay 18 帧连续终帧 `done{resumed, latency_ms:306187}`（jc_tc3v3_replay.sse）· 浏览器徽标「306187ms」与后端**逐位一致**（jc_tc3v3b_resumed_badge.png · 00 亲核）· 刷新恢复帧齐；偏差照登：JC-F1 致徽标面改走 T4 续看路径实证（种子 active-run 等价刷新恢复）：浏览器面 approve→resume 全链走通 · replay 终帧 `done{status:'resumed', latency_ms: int ≥ 0 实值}`（.sse 附件）· 徽标实值 DOM 断言 + 截图 · 刷新后 replay 恢复历史帧计数一致。
+- [x] **TC4（机验 · P3 在飞 409）** ✅ 2026-10-13：在飞窗 replay → 409 + `retry-after: 2` · 前端错误条 detail 原文逐字命中（双次实证 · jc_tc4/jc_tc4v2 截图）· 沉降后恢复/已毕清理双向验证 · 孤儿 JC-F2 确定性复现照登（jc_tc4_orphan_409.hdr/.body · 报回 api）：在飞窗 replay → HTTP **409 + `retry-after: 2`**（.hdr/.body 附件）· 前端错误条 DOM 断言（retryable 文案 + detail 可见）· 沉降后手动续看恢复 · 孤儿观察项照登。
+- [x] **TC5（机验 · P4 断线恢复 + 回归）** ✅ 2026-10-13：`lint`/`test`（**255/255 基线一致** · 零既有红）/`build` 三门 EXIT=0 · replay seq 严格连续（SEQS_CONTINUOUS=True）：gap replay seq 连续零丢失（脚本机断）· `lint`/`test`（基线 255 零既有红）/`build` 三门 EXIT=0。
+- [x] **TC6（机验 · 机检）** ✅ 2026-10-13：`npx spec-wave task lint --file` PASS 复跑 · 40 执行后 VERIFY: PASS 复跑（00 收口）：`npx spec-wave task lint --file docs/tasks/active/task_web_api_joint_check.md` PASS（仓 lint 命令真值形 · 首跑实跑回填）。
 
-- [ ] **TC7（人验 · checklist 硬交付件）**：`docs/checklists/CHECKLIST_web_api_joint_check_v1.md` 落盘——机验盲区五项（水墨风观感 · 错误条文案可读性 · 审批交互手感 · 断网重连体感 · 孤儿 run 人眼确认）逐项「操作步骤/预期/实际/勾」四列 · 机验层结果摘要引用 invoke 指针。
-- [ ] **TC8（人验 · 回执落盘）**：10/20/40 invoke 齐备（40 含截图/Network 摘要/.sse/.hdr/.body 附件）· wiki 短注落 `docs/coding_wiki/volatile.md` · 观察项（若有）报回归属仓。
+- [x] **TC7（人验 · checklist 硬交付件）** ✅ 2026-10-13：`docs/checklists/CHECKLIST_web_api_joint_check_v1.md` 落盘（盲区五项 × 四列 + 签核节 · NIT-1 命名对齐先例）· **维护者人验签核待执行**（文档交付为本 TC 判据）：`docs/checklists/CHECKLIST_web_api_joint_check_v1.md` 落盘——机验盲区五项（水墨风观感 · 错误条文案可读性 · 审批交互手感 · 断网重连体感 · 孤儿 run 人眼确认）逐项「操作步骤/预期/实际/勾」四列 · 机验层结果摘要引用 invoke 指针。
+- [x] **TC8（人验 · 回执落盘）** ✅ 2026-10-13：10/20/40 invoke 齐备（40 含 38 件附件）· wiki 短注落 volatile（00 收口补）· 观察项报回：JC-F1 → web 另立 fix task 口 · JC-F2 → api（孤儿机制钉死：仅 `/lg-rag/stream` 驱动 run 断连不沉降）· NIT-2 收口照登（40 invoke §7 补登）：10/20/40 invoke 齐备（40 含截图/Network 摘要/.sse/.hdr/.body 附件）· wiki 短注落 `docs/coding_wiki/volatile.md` · 观察项（若有）报回归属仓。
 
 ---
 
@@ -210,5 +210,6 @@ TC1：HTTP 码 + SPREAD 判据机断。TC2–TC4：DOM 断言字面（`/\d+ms/` 
 
 | 日期 | 说明 |
 |------|------|
+| 2026-10-13 | v2 · 50+CLOSE 文档面：TC1–TC8 全勾（40 机验全绿 · 徽标 306187ms 后端-前端逐位一致 00 截图亲核 · 三门 255/255）· 联调发现 JC-F1（axios 30s 超时掐 resume · 另立 fix task 口）/ JC-F2（孤儿机制钉死 · 报回 api）· 偏差照登（cookie 注入登录 · 表单面留人验）· NIT-2 照登闭环 · 状态 delivered 待 PR/CI + 维护者人验签核 |
 | 2026-10-13 | v1 · 维护者签闸（m00243 授权 · 00 代笔归因）：HG-AUDIT-R1 / HG-GRAPH-MODULES → approved（n/a 形态 20 审确认）· NIT-1 回填（checklist 文件名对齐先例 `CHECKLIST_web_api_joint_check_v1.md`）· NIT-2 留 40 收口照登 · Playwright 1.64.0 + Chromium 156 环境就绪（FP-1 消解 · 兜底保留） |
 | 2026-10-13 | v0 · 10 落稿：维护者令（m00187 问联调 checklist · m00193 拍板新建 task · 机验全自动端到端含 web 登录 + 人验 checklist 文档两层验收）· P0–P4 五阶段范围 · failure_paths 八行（FP-1 Playwright 退化已核 `~/Library/Caches/ms-playwright` 不存在）· R0–R5 思考轮（early_stop at R5）· HG-TASK-DRAFT approved · HG-AUDIT-R1/HG-GRAPH-MODULES pending 待人签 |

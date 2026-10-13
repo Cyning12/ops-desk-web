@@ -81,3 +81,9 @@
 - **联调发现 2 项**：JC-F1 axios 30s 全局超时掐断长 resume（另立 fix task）；JC-F2 刷新掐断 stream 驱动 run → 服务端 `Task was destroyed but it is pending!` → 孤儿化确定性复现（后端生命周期 · 已报回 api · 与孤儿 4740a8a0 同形态）。
 - **非阻塞观察项 1 项**：孤儿 run 4740a8a0/1289023d 在飞不沉降（已报回 api）。
 - **人验层**：机验盲区五项交付 [`CHECKLIST_web_api_joint_check_v1.md`](../../../checklists/CHECKLIST_web_api_joint_check_v1.md)，待维护者人验签核。
+
+## 7. 00 收口补登（2026-10-13）
+
+- **NIT-2 照登闭环**：task 元信息 `invoke_retention_profile=default`（字面含 10,30,40）与 `required_invoke_hats=10,20,40` 并存——本 task **无 30 棒**（业务码零改面 · 联调暴露 bug 另立 fix task），实际帽链 10/20/40 与 required_invoke_hats 一致，retention profile 字面不另改 · 照此登闭环。
+- **偏差照登确认**：浏览器登录走 cookie 注入（`OPS_DESK_INVITE` 不可得 · 表单提交面留人验 checklist §2.3）；TC3 徽标面因 JC-F1 走 T4 续看路径实证（种子 active-run 等价刷新恢复）——两处均已在 task 验收勾选留痕。
+- **分流**：JC-F1（web · `src/api/http.ts:50` axios 全局 30s 超时掐长 resume）另立 fix task 口；JC-F2（api · 孤儿 run 机制钉死）已报回 api 生命周期面。
