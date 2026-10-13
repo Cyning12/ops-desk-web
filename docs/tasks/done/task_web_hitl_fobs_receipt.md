@@ -1,6 +1,6 @@
 # Task：Web · T-W2 回执 · F-OBS-1/F-OBS-2 闭环复验与前端兜底自裁
 
-> **状态**：delivered（TC1–TC5 **全勾** · 10/20/30/40 四棒交付 · 三闸全 approved · PR 待开 → CI 绿 → 维护者合并后迁 done/）  
+> **状态**：done（TC1–TC5 **全勾** · 四棒交付 · 三闸全 approved · PR #65 已合并 main `aef91f3`（CI 绿）· 2026-10-13 迁 done/ 收口）  
 > **类型**：联调回执 / 契约收口验收 + 前端兜底自裁（docs/观测先行 · 小面改码）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS  
 > **上游**：ops-desk-api `task_hitl_resume_replay_contract`（TC1–TC5 全勾 · PR #248/#249 squash · origin/master=`9ee928c`）· 本仓 T-W2 `docs/tasks/done/task_web_sse_hitl_enhance.md`（FP-1 报回源）  
@@ -216,6 +216,7 @@ TC1/TC2：live 帧 + .hdr/.body/.sse 附件 + seq 连续性脚本判定（菜谱
 
 | 日期 | 说明 |
 |------|------|
+| 2026-10-13 | v3 · PR #65 维护者合并（main `aef91f3` · CI check/frontend 双绿）→ 迁 `done/` 收口；孤儿 run 观察项已报回 api 侧后续 |
 | 2026-10-13 | v2 · 50+CLOSE 文档面：TC1–TC5 全勾（40 帧面双实证 + 30 RED b992e4a→GREEN 5260ac2 + 40 post-30 独立复验 c8ac1c6 六项全过 · 255/255 · 三门绿）· 观察项：孤儿 run 在飞标记不沉降报回 api · 状态 delivered 待 PR/CI |
 | 2026-10-13 | v1 · 维护者签闸：HG-AUDIT-R1 / HG-GRAPH-MODULES → approved（维护者当前消息指令授权签收 · 20 R1 PASS 在案 · 00 代笔落表 · 30 解锁） |
 | 2026-10-13 | v0 · 10 落稿：维护者启动令（T-W2 回执与 F-OBS 闭环验证 · 后端 master `9ee928c` 已收口）· 三裁定（A 裁 latency_ms 假值兜底 / B 留 model 零改动 / C 409 现状已足 · Retry-After 增强非范围）· 锚点全亲读核真（chat.ts:171-174/:727-735/:898-926 · ChatView.vue:260-264 · useLgRagSse.ts:225-235 · chat-store-hitl.spec.ts:182-199）· R0–R5 思考轮（early_stop at R5）· HG-TASK-DRAFT approved · HG-AUDIT-R1/HG-GRAPH-MODULES pending 待人签 |
