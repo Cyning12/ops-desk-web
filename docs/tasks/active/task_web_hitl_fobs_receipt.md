@@ -1,6 +1,6 @@
 # Task：Web · T-W2 回执 · F-OBS-1/F-OBS-2 闭环复验与前端兜底自裁
 
-> **状态**：active（HG-TASK-DRAFT / HG-AUDIT-R1 / HG-GRAPH-MODULES **全 approved**（2026-10-13 维护者签认）· **30 可开工**（红测先行）· 40 帧面 live 复验已先行完成）  
+> **状态**：delivered（TC1–TC5 **全勾** · 10/20/30/40 四棒交付 · 三闸全 approved · PR 待开 → CI 绿 → 维护者合并后迁 done/）  
 > **类型**：联调回执 / 契约收口验收 + 前端兜底自裁（docs/观测先行 · 小面改码）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS  
 > **上游**：ops-desk-api `task_hitl_resume_replay_contract`（TC1–TC5 全勾 · PR #248/#249 squash · origin/master=`9ee928c`）· 本仓 T-W2 `docs/tasks/done/task_web_sse_hitl_enhance.md`（FP-1 报回源）  
@@ -125,11 +125,11 @@
 
 ## 验收标准
 
-- [ ] **TC1（40 · F-OBS-1 live 复验）**：S3 同形态复跑 → replay 终帧 `done{status:'resumed', latency_ms: int ≥ 0 实值}`（.sse 附件落盘）；**前端徽标渲染实值非「0ms」**（证据：live 帧附件 + store 字面回放/浏览器实录照登）；`model` 键缺失照登（与后端钉案一致）。
-- [ ] **TC2（40 · F-OBS-2 live 复验）**：run 在飞 `POST /lg-rag/replay` → HTTP **409 + `retry-after: 2` + detail 文案**（.hdr/.body 附件）；前端管线收到 409 → retryable 错误条 + 文案可见 · 手动续看恢复照登；沉降后 replay 200 补齐**零丢失**（全量 seq 连续 · 帧计数一致）。
-- [ ] **TC3（30 · 裁定 A · 红测先行）**：done 帧缺 `latency_ms` → `lastDone.latency_ms === null` 且徽标显「—」（**非** `0ms`）；含实值 → 如实渲染；`chat-store-hitl.spec.ts:182-199` 断言按裁定改写；RED（现兜底断言与裁定冲突）→ GREEN 时序 git 可查。
-- [ ] **TC4（30 · FP-5 闸）**：`$HOME/.nvm/versions/node/v24.15.0/bin/pnpm test` 全量绿（零新增红 · 基线 252 在案）· `lint` · `build` 绿。
-- [ ] **TC5（回执落盘）**：10/30/40 invoke 齐备（40 含附件）· 裁定 A/B/C 留痕 · 40 invoke 回执闭环 T-W2 链（F-OBS-1/F-OBS-2 双闭环证据）· `docs/coding_wiki/volatile.md` 短注落盘。
+- [x] **TC1（40 · F-OBS-1 live 复验）** ✅ 2026-10-13：S3 复跑 replay 终帧 seq18 `done{status:'resumed', latency_ms:139650(int)}`（attachments/fobs_s3_full.sse）· `model` 键缺失照登 · 徽标实值渲染 post-30 由 chat-view.spec.ts:317-360（139650ms 如实 · 缺键「—」）+ live 帧附件双证 · 40 invoke 在案：S3 同形态复跑 → replay 终帧 `done{status:'resumed', latency_ms: int ≥ 0 实值}`（.sse 附件落盘）；**前端徽标渲染实值非「0ms」**（证据：live 帧附件 + store 字面回放/浏览器实录照登）；`model` 键缺失照登（与后端钉案一致）。
+- [x] **TC2（40 · F-OBS-2 live 复验）** ✅ 2026-10-13：在飞 replay `409 + retry-after: 2 + detail 文案`（fobs_s3_409.hdr/.body · 孤儿 run 数十打稳定）· 前端 409 → retryable 错误条 + detail 透传锁存（chat-store.spec.ts:745-765）· 沉降/挂起 replay 200 零丢失（S2 不断线变体：LIVE_EQ_FULL / GAP_EQ_FULL_TAIL 均 True · 210 帧连续 · fobs_s2b_*.sse）：run 在飞 `POST /lg-rag/replay` → HTTP **409 + `retry-after: 2` + detail 文案**（.hdr/.body 附件）；前端管线收到 409 → retryable 错误条 + 文案可见 · 手动续看恢复照登；沉降后 replay 200 补齐**零丢失**（全量 seq 连续 · 帧计数一致）。
+- [x] **TC3（30 · 裁定 A · 红测先行）** ✅ 2026-10-13：RED `b992e4a`（仅测试 · `expected {latency_ms:+0} to deeply equal {latency_ms:null}`）→ GREEN `5260ac2`（chat.ts:736 `: null` 裁假值 · ChatDoneInfo.latency_ms `number|null` · ChatView.vue:261 缺键「—」）· 40 独立复验六项全过（c8ac1c6 · TC3 结论可勾）：done 帧缺 `latency_ms` → `lastDone.latency_ms === null` 且徽标显「—」（**非** `0ms`）；含实值 → 如实渲染；`chat-store-hitl.spec.ts:182-199` 断言按裁定改写；RED（现兜底断言与裁定冲突）→ GREEN 时序 git 可查。
+- [x] **TC4（30 · FP-5 闸）** ✅ 2026-10-13：40 独立重跑 lint EXIT=0 · test **255/255 全绿**（基线 252+3 新增 · 零既有红）· build（vue-tsc+vite）EXIT=0（钉死 pnpm 路径）：`$HOME/.nvm/versions/node/v24.15.0/bin/pnpm test` 全量绿（零新增红 · 基线 252 在案）· `lint` · `build` 绿。
+- [x] **TC5（回执落盘）** ✅ 2026-10-13：invoke 10/20/30/40 四件齐备（40 含 14 件 .sse/.hdr/.body 附件）· 裁定 A/B/C 留痕（task + 10 invoke + 40 invoke 三处）· T-W2 链双闭环（F-OBS-1/F-OBS-2 实证 + 孤儿 run 观察项报回 api）· volatile.md 短注在案：10/30/40 invoke 齐备（40 含附件）· 裁定 A/B/C 留痕 · 40 invoke 回执闭环 T-W2 链（F-OBS-1/F-OBS-2 双闭环证据）· `docs/coding_wiki/volatile.md` 短注落盘。
 - [ ] `npx spec-wave task lint --file docs/tasks/active/task_web_hitl_fobs_receipt.md` PASS。
 
 ---
@@ -216,5 +216,6 @@ TC1/TC2：live 帧 + .hdr/.body/.sse 附件 + seq 连续性脚本判定（菜谱
 
 | 日期 | 说明 |
 |------|------|
+| 2026-10-13 | v2 · 50+CLOSE 文档面：TC1–TC5 全勾（40 帧面双实证 + 30 RED b992e4a→GREEN 5260ac2 + 40 post-30 独立复验 c8ac1c6 六项全过 · 255/255 · 三门绿）· 观察项：孤儿 run 在飞标记不沉降报回 api · 状态 delivered 待 PR/CI |
 | 2026-10-13 | v1 · 维护者签闸：HG-AUDIT-R1 / HG-GRAPH-MODULES → approved（维护者当前消息指令授权签收 · 20 R1 PASS 在案 · 00 代笔落表 · 30 解锁） |
 | 2026-10-13 | v0 · 10 落稿：维护者启动令（T-W2 回执与 F-OBS 闭环验证 · 后端 master `9ee928c` 已收口）· 三裁定（A 裁 latency_ms 假值兜底 / B 留 model 零改动 / C 409 现状已足 · Retry-After 增强非范围）· 锚点全亲读核真（chat.ts:171-174/:727-735/:898-926 · ChatView.vue:260-264 · useLgRagSse.ts:225-235 · chat-store-hitl.spec.ts:182-199）· R0–R5 思考轮（early_stop at R5）· HG-TASK-DRAFT approved · HG-AUDIT-R1/HG-GRAPH-MODULES pending 待人签 |
