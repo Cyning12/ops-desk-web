@@ -159,7 +159,19 @@ export interface ChatMessage {
   hitl: ChatHitlState | null
   /** F1 · 历史 answer 超 32000 字符截断标记（上游 answer_truncated · AC6） */
   truncated?: boolean
+  /**
+   * D3 · History/live 机读终态（running / error / disconnected / completed / waiting_approval）
+   * 驱动徽标与「继续回复」CTA；waiting_approval 仍走 hitl 零 diff
+   */
+  runTerminalStatus?: string | null
+  /** D3 · error/disconnected（及 live worker_failed）可点「继续回复」 */
+  allowContinueReply?: boolean
+  /** D3 · 可选 continue_from_run_id 源（失败/中止 run）；缺省仍可新 stream（FP-4） */
+  continueFromRunId?: string | null
 }
+
+/** D3 ·「继续回复」新 stream 的固定 query 字面（30 裁定 · Vitest 钉死；api 再拼 partial 草稿） */
+export const CONTINUE_REPLY_QUERY = '请继续完成回答。'
 
 /** SSE error 事件 / 传输层错误的统一展示结构 */
 export interface ChatErrorState {
@@ -742,15 +754,24 @@ export const useChatStore = defineStore('chat', () => {
       }
       case 'error': {
         const retryable = event.payload?.retryable
+        const stage = payloadString(event, 'stage') || 'unknown'
         error.value = {
-          stage: payloadString(event, 'stage') || 'unknown',
+          stage,
           message: payloadString(event, 'message') || '对话出错',
           retryable: retryable === true,
         }
         streaming.value = false
         flushRevealQueues() // R1-N2
         answerTerminal = true // T5：error 后停止追加
-        clearActiveRun() // T4：error 终态同清除（服务端已判失败，续看无意义）
+        // D3：失败后可「继续回复」（新 stream · 非 replay）——清 active-run 前捕获 run_id
+        const failedRunId =
+          (activeRun.value?.run_id && activeRun.value.run_id) ||
+          (typeof event.run_id === 'string' ? event.run_id : null) ||
+          currentRunId
+        assistant.runTerminalStatus = 'error'
+        assistant.allowContinueReply = true
+        assistant.continueFromRunId = failedRunId
+        clearActiveRun() // T4：error 终态清除续看游标；「继续回复」≠「续看」
         break
       }
       default:
@@ -759,34 +780,26 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
-  function sendMessage(text: string): void {
-    const content = text.trim()
-    if (!content || streaming.value || !session.value) return
-
-    error.value = null
-    lastDone.value = null
-    interrupted.value = false
-    resumeHint.value = null
-
-    // 422 预检（SPEC §3.1：query 1..8000）；后端仍兜底校验
-    if (content.length > 8000) {
-      pushMessage('user').content = content
-      pushMessage('assistant')
-      error.value = { stage: 'validation', message: '消息过长（上限 8000 字），请精简后重发', retryable: false }
-      return
-    }
-
-    pushMessage('user').content = content
-    const assistant = pushMessage('assistant')
-
-    streaming.value = true
-    answerTerminal = false // T5：新 run 开局，允许 answer 追加/替换
-    resetRevealQueues()
-    revealSpeedMultiplier = 1 // live 速率
-    // T3：已存 thread_id 则带上续问（同会话同一 id）；无则由 api 生成（run.start 捕获落存）
-    const sentThreadId = threadId.value
+  /**
+   * live / continueReply 共用的 stream 回调装订（同 processFrame 管线）。
+   * 「继续回复」走本路径 · **永不**走 HITL resume / replay。
+   */
+  function startLgRagStream(
+    input: {
+      query: string
+      threadId?: string | null
+      continueFromRunId?: string | null
+    },
+    assistant: ChatMessage,
+  ): void {
+    const sentThreadId = input.threadId || null
     controller = streamLgRag(
-      { query: content, mode: 'supervisor', ...(sentThreadId ? { threadId: sentThreadId } : {}) },
+      {
+        query: input.query,
+        mode: 'supervisor',
+        ...(sentThreadId ? { threadId: sentThreadId } : {}),
+        ...(input.continueFromRunId ? { continueFromRunId: input.continueFromRunId } : {}),
+      },
       {
         onEvent: (event) => processFrame(event, assistant),
         onError: (transportError) => {
@@ -831,6 +844,74 @@ export const useChatStore = defineStore('chat', () => {
           streaming.value = false
         },
       },
+    )
+  }
+
+  function sendMessage(text: string): void {
+    const content = text.trim()
+    if (!content || streaming.value || !session.value) return
+
+    error.value = null
+    lastDone.value = null
+    interrupted.value = false
+    resumeHint.value = null
+
+    // 422 预检（SPEC §3.1：query 1..8000）；后端仍兜底校验
+    if (content.length > 8000) {
+      pushMessage('user').content = content
+      pushMessage('assistant')
+      error.value = { stage: 'validation', message: '消息过长（上限 8000 字），请精简后重发', retryable: false }
+      return
+    }
+
+    pushMessage('user').content = content
+    const assistant = pushMessage('assistant')
+
+    streaming.value = true
+    answerTerminal = false // T5：新 run 开局，允许 answer 追加/替换
+    resetRevealQueues()
+    revealSpeedMultiplier = 1 // live 速率
+    // T3：已存 thread_id 则带上续问（同会话同一 id）；无则由 api 生成（run.start 捕获落存）
+    startLgRagStream({ query: content, threadId: threadId.value }, assistant)
+  }
+
+  /**
+   * D3 ·「继续回复」：同 thread **新** POST /lg-rag/stream + 可选 continue_from_run_id。
+   * **禁** HITL resume · **禁** replay 当 LLM 续算。query 字面钉 CONTINUE_REPLY_QUERY。
+   */
+  function continueReply(fromAssistant: ChatMessage): void {
+    if (!fromAssistant.allowContinueReply || streaming.value || !session.value) return
+    const tid = threadId.value
+    if (!tid) {
+      error.value = {
+        stage: 'session',
+        message: '缺少会话上下文，请重新提问',
+        retryable: true,
+      }
+      return
+    }
+
+    error.value = null
+    lastDone.value = null
+    interrupted.value = false
+    resumeHint.value = null
+    // 清除源消息 CTA，避免重复点击；半截内容仍保留在历史气泡
+    fromAssistant.allowContinueReply = false
+
+    pushMessage('user').content = CONTINUE_REPLY_QUERY
+    const assistant = pushMessage('assistant')
+
+    streaming.value = true
+    answerTerminal = false
+    resetRevealQueues()
+    revealSpeedMultiplier = 1
+    startLgRagStream(
+      {
+        query: CONTINUE_REPLY_QUERY,
+        threadId: tid,
+        continueFromRunId: fromAssistant.continueFromRunId,
+      },
+      assistant,
     )
   }
 
@@ -1073,25 +1154,34 @@ export const useChatStore = defineStore('chat', () => {
             return block
           })
         : []
+      const terminal = typeof run.terminal_status === 'string' ? run.terminal_status : ''
       const assistant: ChatMessage = {
         id: `h-${++messageSeq}`,
         role: 'assistant',
+        // F1：running/error/disconnected 均保留已聚合半截 answer（勿因非 completed 清空）
         content: typeof run.answer === 'string' ? run.answer : '',
         thinking: [],
         subtasks,
         hitl: null,
         truncated: run.answer_truncated === true,
+        runTerminalStatus: terminal || null,
       }
       // terminal_status=waiting_approval → 待审批形态（**非**完成态 · FP-F1 同口径）；
       // 历史 hitl 为 requests 列表（上游 collect_hitl_requests 透传），reason 取首条申请自带 reason
-      if (run.terminal_status === 'waiting_approval') {
+      if (terminal === 'waiting_approval') {
         const requests = extractHitlRequests(run.hitl)
         const firstReason = requests.find((request) => typeof request.reason === 'string')
         assistant.hitl = buildHitlState(
           typeof firstReason?.reason === 'string' ? firstReason.reason : '',
           requests,
         )
+      } else if (terminal === 'error' || terminal === 'disconnected') {
+        // D3：失败/补偿中止 →「继续回复」= 新 stream（禁 HITL resume · 禁假续算）
+        assistant.allowContinueReply = true
+        assistant.continueFromRunId =
+          typeof run.run_id === 'string' && run.run_id ? run.run_id : null
       }
+      // running：半截可见 + 生成中徽标；**勿** allowContinueReply（TC-W2）
       mapped.push(assistant)
     }
     return mapped
@@ -1174,6 +1264,7 @@ export const useChatStore = defineStore('chat', () => {
     hitlPendingError,
     loadLatestSession,
     sendMessage,
+    continueReply,
     stopStreaming,
     startNewSession,
     dismissRestoredNotice,

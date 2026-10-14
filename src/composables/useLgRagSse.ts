@@ -121,6 +121,11 @@ export interface StreamLgRagInput {
   mode?: LgRagStreamMode
   /** T2 留空由 api 生成；多轮语义属 T3 */
   threadId?: string
+  /**
+   * Wave B「继续回复」：可选失败/中止 run 的 run_id → body.continue_from_run_id
+   * （api 注入 partial 草稿 · 新 run · 禁 HITL resume）
+   */
+  continueFromRunId?: string
 }
 
 /** 发起 lg-rag SSE 流式请求；返回控制器（abort 中断） */
@@ -133,6 +138,7 @@ export function streamLgRag(
     mode: input.mode ?? 'supervisor',
   }
   if (input.threadId) body.thread_id = input.threadId
+  if (input.continueFromRunId) body.continue_from_run_id = input.continueFromRunId
   return postLgRagSse(LG_RAG_STREAM_PATH, body, callbacks)
 }
 

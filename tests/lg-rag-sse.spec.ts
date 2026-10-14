@@ -181,6 +181,35 @@ describe('streamLgRag', () => {
     expect(JSON.parse(init.body as string)).toEqual({ query: 'q', mode: 'basic', thread_id: 't-9' })
   })
 
+  it('TC-W3 传输层：continueFromRunId → body.continue_from_run_id（可选字段；缺省不出现）', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(sseResponse([frame(DONE)]))
+    vi.stubGlobal('fetch', fetchMock)
+
+    const withContinue = streamLgRag({
+      query: '请继续完成回答。',
+      mode: 'supervisor',
+      threadId: 't-cont',
+      continueFromRunId: 'run-failed-1',
+    })
+    await withContinue.done
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+    expect(JSON.parse(init.body as string)).toEqual({
+      query: '请继续完成回答。',
+      mode: 'supervisor',
+      thread_id: 't-cont',
+      continue_from_run_id: 'run-failed-1',
+    })
+
+    fetchMock.mockClear()
+    const without = streamLgRag({ query: 'q', threadId: 't-2' })
+    await without.done
+    const body = JSON.parse(
+      (fetchMock.mock.calls[0] as [string, RequestInit])[1].body as string,
+    ) as Record<string, unknown>
+    expect(body).not.toHaveProperty('continue_from_run_id')
+  })
+
   it('error 事件作为普通事件帧回调（不触发传输层 onError）', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(sseResponse([frame(ERROR_EVENT)])))
 
