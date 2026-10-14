@@ -314,6 +314,79 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
     expect(wrapper.find('.chat-page__composer').exists()).toBe(true)
   })
 
+  it('TC-W1/W2/W3 视图：running 半截+生成中无继续回复；error 半截+继续回复按钮（≠续看）', async () => {
+    const partial = '半截可见答案'
+    vi.mocked(fetchThreadHistory).mockResolvedValue({
+      thread_id: 't-cta',
+      runs: [
+        {
+          run_id: 'r-run',
+          started_at: '2026-10-14T01:00:00',
+          query: '问 running',
+          answer: partial,
+          answer_truncated: false,
+          subtasks: [],
+          terminal_status: 'running',
+          hitl: [],
+        },
+      ],
+      next_cursor: null,
+    })
+    const wrapper = mountView()
+    await flushPromises()
+    const chat = useChatStore()
+
+    await chat.openHistoryThread('t-cta')
+    await flushPromises()
+
+    expect(wrapper.find('.chat-message--assistant .chat-message__text').text()).toBe(partial)
+    expect(wrapper.find('[data-test="run-status-running"]').exists()).toBe(true)
+    expect(wrapper.find('[data-test="run-status-running"]').text()).toContain('生成中')
+    expect(wrapper.find('[data-test="continue-reply"]').exists()).toBe(false)
+    // 文案分词：续看按钮不因 History running 出现（无 active-run）
+    expect(wrapper.text()).not.toContain('继续回复')
+
+    vi.mocked(fetchThreadHistory).mockResolvedValue({
+      thread_id: 't-cta',
+      runs: [
+        {
+          run_id: 'r-err',
+          started_at: '2026-10-14T01:00:00',
+          query: '问 error',
+          answer: partial,
+          answer_truncated: false,
+          subtasks: [],
+          terminal_status: 'error',
+          hitl: [],
+        },
+      ],
+      next_cursor: null,
+    })
+    await chat.openHistoryThread('t-cta')
+    await flushPromises()
+
+    expect(wrapper.find('.chat-message--assistant .chat-message__text').text()).toBe(partial)
+    expect(wrapper.find('[data-test="continue-reply"]').exists()).toBe(true)
+    expect(wrapper.find('[data-test="continue-reply"]').text()).toBe('继续回复')
+    // 与「续看」分词：错误条无 active-run → 不渲染续看
+    const resumeButtons = wrapper
+      .findAll('button')
+      .filter((b) => b.text().trim() === '续看')
+    expect(resumeButtons.length).toBe(0)
+
+    await wrapper.find('[data-test="continue-reply"]').trigger('click')
+    await flushPromises()
+    expect(streamLgRag).toHaveBeenCalledWith(
+      expect.objectContaining({
+        threadId: 't-cta',
+        continueFromRunId: 'r-err',
+        query: '请继续完成回答。',
+      }),
+      expect.any(Object),
+    )
+    expect(resumeHitlRequest).not.toHaveBeenCalled()
+  })
+
   it('R1-NIT-2 / TC3 徽标（裁定 A）：done 缺 latency_ms → 耗时段显「—」（非 0ms）；携实值 → 如实渲染', async () => {
     const wrapper = mountView()
     await flushPromises()

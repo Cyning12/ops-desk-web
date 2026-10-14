@@ -26,7 +26,7 @@ vi.mock('../src/composables/useLgRagSse', () => ({
 
 import { fetchLatestSession } from '../src/api/chat'
 import { fetchThreadHistory } from '../src/api/chatHistory'
-import type { ChatThreadHistoryPage } from '../src/api/chatHistory'
+import type { ChatHistoryRun, ChatThreadHistoryPage } from '../src/api/chatHistory'
 import { decideHitlRequest, fetchHitlPending, resumeHitlRequest } from '../src/api/hitl'
 import type { HitlDecideResponse } from '../src/api/hitl'
 import { replayLgRag, streamLgRag } from '../src/composables/useLgRagSse'
@@ -684,6 +684,170 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
       resolveHistory(emptyPage)
       await first
       expect(chat.historyLoading).toBe(false)
+    })
+  })
+
+  describe('D3 · terminal_status → CTA 矩阵（web-lg-rag-sse-continue-reply · TC-W1–W4）', () => {
+    const PARTIAL = '半截回答可见内容'
+    const RUN_BASE: ChatHistoryRun = {
+      run_id: 'r-partial',
+      started_at: '2026-10-14T01:00:00',
+      query: '请总结上文',
+      answer: PARTIAL,
+      answer_truncated: false,
+      subtasks: [],
+      terminal_status: 'completed',
+      hitl: [],
+    }
+
+    function historyRun(
+      overrides: Partial<ChatHistoryRun> & { terminal_status: string; run_id?: string },
+    ): ChatHistoryRun {
+      return { ...RUN_BASE, answer: PARTIAL, ...overrides }
+    }
+
+    it('TC-W1：running|error 半截 answer 打开后 assistant 气泡保留', async () => {
+      for (const status of ['running', 'error'] as const) {
+        vi.mocked(fetchThreadHistory).mockResolvedValue({
+          thread_id: 't-partial',
+          runs: [historyRun({ terminal_status: status, run_id: `r-${status}` })],
+          next_cursor: null,
+        })
+        const chat = useChatStore()
+        await chat.openHistoryThread('t-partial')
+        const assistant = chat.messages[1]
+        expect(assistant.role).toBe('assistant')
+        expect(assistant.content).toBe(PARTIAL)
+        expect(assistant.runTerminalStatus).toBe(status)
+      }
+    })
+
+    it('TC-W2：running → 无继续回复 CTA；零 HITL resume；续看文案不混', async () => {
+      vi.mocked(fetchThreadHistory).mockResolvedValue({
+        thread_id: 't-run',
+        runs: [historyRun({ terminal_status: 'running', run_id: 'r-running' })],
+        next_cursor: null,
+      })
+      const chat = useChatStore()
+      await chat.openHistoryThread('t-run')
+
+      const assistant = chat.messages[1]
+      expect(assistant.allowContinueReply).toBeFalsy()
+      expect(assistant.continueFromRunId).toBeFalsy()
+      expect(assistant.runTerminalStatus).toBe('running')
+      expect(chat.activeRun).toBeNull()
+      expect(resumeHitlRequest).not.toHaveBeenCalled()
+      expect(replayLgRag).not.toHaveBeenCalled()
+      expect(streamLgRag).not.toHaveBeenCalled()
+    })
+
+    it('TC-W3：error → 继续回复 = 新 stream + continue_from_run_id；零 HITL resume', async () => {
+      vi.mocked(fetchThreadHistory).mockResolvedValue({
+        thread_id: 't-err',
+        runs: [historyRun({ terminal_status: 'error', run_id: 'r-failed' })],
+        next_cursor: null,
+      })
+      const chat = useChatStore()
+      await chat.openHistoryThread('t-err')
+
+      const assistant = chat.messages[1]
+      expect(assistant.allowContinueReply).toBe(true)
+      expect(assistant.continueFromRunId).toBe('r-failed')
+      expect(assistant.content).toBe(PARTIAL)
+
+      chat.continueReply(assistant)
+
+      expect(streamLgRag).toHaveBeenCalledTimes(1)
+      expect(vi.mocked(streamLgRag).mock.calls[0][0]).toEqual({
+        query: '请继续完成回答。',
+        mode: 'supervisor',
+        threadId: 't-err',
+        continueFromRunId: 'r-failed',
+      })
+      expect(resumeHitlRequest).not.toHaveBeenCalled()
+      expect(replayLgRag).not.toHaveBeenCalled()
+    })
+
+    it('TC-W3b：disconnected → 同 error CTA（继续回复 + continue_from）', async () => {
+      vi.mocked(fetchThreadHistory).mockResolvedValue({
+        thread_id: 't-disc',
+        runs: [historyRun({ terminal_status: 'disconnected', run_id: 'r-disc' })],
+        next_cursor: null,
+      })
+      const chat = useChatStore()
+      await chat.openHistoryThread('t-disc')
+
+      expect(chat.messages[1].allowContinueReply).toBe(true)
+      expect(chat.messages[1].continueFromRunId).toBe('r-disc')
+      chat.continueReply(chat.messages[1])
+      expect(vi.mocked(streamLgRag).mock.calls[0][0]).toMatchObject({
+        threadId: 't-disc',
+        continueFromRunId: 'r-disc',
+        query: '请继续完成回答。',
+      })
+      expect(resumeHitlRequest).not.toHaveBeenCalled()
+    })
+
+    it('TC-W4：live error.stage=lg_rag.worker_failed → 同继续回复 CTA', () => {
+      const chat = useChatStore()
+      chat.sendMessage('live 问')
+      emitRunStart('r-live-fail', 't-live')
+      captured.onEvent?.({
+        event_type: 'answer',
+        run_id: 'r-live-fail',
+        seq: 2,
+        payload: { delta: PARTIAL },
+      })
+      captured.onEvent?.({
+        event_type: 'error',
+        run_id: 'r-live-fail',
+        seq: 3,
+        payload: {
+          stage: 'lg_rag.worker_failed',
+          message: 'worker failed',
+          retryable: false,
+        },
+      })
+
+      const assistant = chat.messages[1]
+      expect(assistant.allowContinueReply).toBe(true)
+      expect(assistant.continueFromRunId).toBe('r-live-fail')
+      expect(assistant.runTerminalStatus).toBe('error')
+      expect(chat.activeRun).toBeNull()
+
+      vi.mocked(streamLgRag).mockClear()
+      chat.continueReply(assistant)
+      expect(streamLgRag).toHaveBeenCalledWith(
+        expect.objectContaining({
+          continueFromRunId: 'r-live-fail',
+          threadId: 't-live',
+          query: '请继续完成回答。',
+        }),
+        expect.any(Object),
+      )
+      expect(resumeHitlRequest).not.toHaveBeenCalled()
+    })
+
+    it('waiting_approval / completed 零 diff：无继续回复 CTA', async () => {
+      vi.mocked(fetchThreadHistory).mockResolvedValue({
+        thread_id: 't-ok',
+        runs: [
+          historyRun({ terminal_status: 'completed', run_id: 'r-ok' }),
+          historyRun({
+            terminal_status: 'waiting_approval',
+            run_id: 'r-hitl',
+            hitl: [{ id: 'req-1', reason: '需审批' }],
+          }),
+        ],
+        next_cursor: null,
+      })
+      const chat = useChatStore()
+      await chat.openHistoryThread('t-ok')
+
+      expect(chat.messages[1].allowContinueReply).toBeFalsy()
+      expect(chat.messages[3].allowContinueReply).toBeFalsy()
+      expect(chat.messages[3].hitl?.status).toBe('waiting')
+      expect(chat.activeRun?.run_id).toBe('r-hitl')
     })
   })
 })

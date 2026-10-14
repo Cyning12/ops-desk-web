@@ -71,6 +71,11 @@ function onResume(): void {
   chat.resumeFromCursor()
 }
 
+// D3：失败/中止后「继续回复」= 同 thread 新 stream（≠ 续看 replay · ≠ HITL resume）
+function onContinueReply(message: (typeof chat.messages)[number]): void {
+  chat.continueReply(message)
+}
+
 // F1：点击历史条目 → B1 history 加载渲染 + waiting_approval thread 续看挂起（store 内闭环）
 function onSelectHistory(threadId: string): void {
   void chat.openHistoryThread(threadId)
@@ -223,6 +228,31 @@ function onToggleHistory(): void {
               >子任务执行中…</span
             >
             <span v-else-if="chat.streaming" class="chat-message__pending">处理中…</span>
+            <p
+              v-if="message.runTerminalStatus === 'running'"
+              class="chat-message__run-status"
+              data-test="run-status-running"
+            >
+              生成中…
+            </p>
+            <p
+              v-else-if="message.runTerminalStatus === 'error' || message.runTerminalStatus === 'disconnected'"
+              class="chat-message__run-status chat-message__run-status--failed"
+              data-test="run-status-failed"
+            >
+              {{ message.runTerminalStatus === 'disconnected' ? '已中止' : '生成失败' }}
+            </p>
+            <el-button
+              v-if="message.allowContinueReply"
+              size="small"
+              plain
+              class="chat-message__continue-reply"
+              data-test="continue-reply"
+              :disabled="chat.streaming"
+              @click="onContinueReply(message)"
+            >
+              继续回复
+            </el-button>
             <p v-if="message.truncated" class="chat-message__truncated" data-test="answer-truncated">
               内容过长已截断
             </p>
@@ -427,6 +457,22 @@ function onToggleHistory(): void {
   font-size: 12px;
   opacity: 0.55;
   font-style: italic;
+}
+
+/* D3 · terminal_status 轻量徽标 +「继续回复」（≠「续看」） */
+.chat-message__run-status {
+  margin: 6px 0 0;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.chat-message__run-status--failed {
+  color: var(--el-color-danger);
+  opacity: 0.85;
+}
+
+.chat-message__continue-reply {
+  margin-top: 8px;
 }
 
 /* T5 打字机光标态（R1-N4 内决 · 最小 UI 增量）：streaming 中最新 assistant 气泡尾随闪烁光标 */
