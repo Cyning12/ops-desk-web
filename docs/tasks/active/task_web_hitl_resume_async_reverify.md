@@ -38,8 +38,8 @@
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
 | HG-TASK-DRAFT | **approved** | 20-R1, 40 | 2026-10-15 api 00 启动令 `invoke_20261015_00_dispatch_web_reverify.md`（维护者 m00383「B方案…生成api的启动Prompt,交由api agent的00来统筹」裁定链下游 · 复验归 web agent 见回执 §联调）· 本窗 10 落稿 |
-| HG-AUDIT-R1 | **pending** | **40** | 待人签：20 R1 审查文 PASS 后维护者签认 → 40 开工（纯观测 · 无 30 棒） |
-| HG-GRAPH-MODULES | **pending** | 30（无 30 棒） | 预判 n/a 成立（零改码 · 01_modules.md 零改动）· 随 HG-AUDIT-R1 一并待人签确认；实证破预判即停走新 task |
+| HG-AUDIT-R1 | **approved** | **40** | 2026-10-15 维护者签认（会话 m00111：「/harness-00-delegate-only 签收，授权00签收后续文档」· 授权 00 代笔落表 · fobs 先例同法）→ **40 解锁**（纯观测 · 无 30 棒） |
+| HG-GRAPH-MODULES | **approved**（n/a 确认） | 30（无 30 棒） | 2026-10-15 维护者随 HG-AUDIT-R1 一并签认（同 m00111 授权链）：零改码 · 01_modules.md 零改动预判成立；实证破预判即停走新 task |
 
 ---
 
@@ -207,7 +207,7 @@ TC1：Playwright network.json 请求计时（resume duration <1s）+ 零 ERR_ABO
 | 检查 | 结果 |
 |------|------|
 | `npx spec-wave task lint --file docs/tasks/active/task_web_hitl_resume_async_reverify.md` | **PASS**（2026-10-15 落稿实跑 · EXIT=0 · 零 warning） |
-| 结论 | HG-AUDIT-R1 / HG-GRAPH-MODULES **pending** → **40 拒开工**（待维护者签认） |
+| 结论 | HG-AUDIT-R1 / HG-GRAPH-MODULES **approved**（2026-10-15 维护者 m00111 签认 · 00 代笔落表）→ **40 解锁** |
 
 ---
 
@@ -216,3 +216,4 @@ TC1：Playwright network.json 请求计时（resume duration <1s）+ 零 ERR_ABO
 | 日期 | 说明 |
 |------|------|
 | 2026-10-15 | v0 · 10 落稿：api 00 启动令（JC-F1 B 方案复验 · api #252 已并 master `2a5878c`）· 零改码预判双重核真（回执 + 静态 grep：resume 弱消费 · persisted 无消费分支 · chat.ts:1085 响应不消费）· 验收照启动令六项映射 TC1–TC6 + TC7 · R0–R5 思考轮（early_stop at R5）· HG-TASK-DRAFT approved · HG-AUDIT-R1/HG-GRAPH-MODULES pending 待人签 |
+| 2026-10-15 | v1 · 维护者签闸（会话 m00111：20 R1 PASS 后签认 HG-AUDIT-R1 + HG-GRAPH-MODULES n/a 确认 · 授权 00 代笔落表并签收后续过程文档）→ 40 live 复验解锁 |
