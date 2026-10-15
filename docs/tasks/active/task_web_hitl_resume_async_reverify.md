@@ -73,13 +73,13 @@
 
 ## 范围
 
-- [ ] **F1（40 · TC3v4 断链场景重跑）**：api master `2a5878c` 六 env 组起服 + web dev（vite `--host 127.0.0.1` · `VITE_API_PROXY=http://127.0.0.1:8050`）→ 浏览器（Playwright `~/.agent-tools/pw`）提问触发 write 工具 → 点「批准」→ decide 200 → resume 客户端实测 **<1s 返回 200** · Network 面板 **零 `ERR_ABORTED`**（对照旧证据 jc_tc3v2_network.json 30.1s 掐断 · network.json 附件落盘）。
-- [ ] **F2（40 · 卡片状态流转实证）**：decide 后 → resume 后卡片进入「已批准/恢复中/已完成」流转态 · **全程零误回「待审批」**（JC-F1 假相消除实证 · 逐态截图留证 · pageerror/console.error=0）。
-- [ ] **F3（40 · replay 追帧 + 徽标）**：沉降后 replay 200 全量 · 帧 seq 连续 · 终帧 `done{status:'resumed', latency_ms:int≥0, 无 model 键}` 逐键对拍（.sse 附件 + seq 连续性脚本机断）；徽标渲染 latency_ms 实值（刷新/续看恢复路径 · 与后端终帧逐位一致）。
-- [ ] **F4（40 · 在飞窗时序复核）**：resume 秒回后 replay 立即打——**200 部分帧（裁定 a · 既有语义）或 409+Retry-After:2（仅限无收尾帧 live run）两形态均属正确**，前端均不得异常展示/报错（错误条文案如实透传 · 照登实测命中形态）。
-- [ ] **F5（40 · 弱消费复查照登）**：`HitlResumeResponse.resume: unknown` 零改动确认（已静态核真 · live 响应体照登键形）；`replay.persisted` 恒 true 后 web 无依赖此键的展示/告警分支（已 grep 核真 · 照登结论）。
-- [ ] **F6（40 · 回归）**：驳回 resume 收工链（rejected 也可 resume 出结论）；immediate `resume_mode` 链（web 有入口的部分：decide 携 `resume_mode=immediate` → 响应 required=false → 前端不链第二步 · 后台沉降后 replay 追帧）。
-- [ ] **F7（回执落盘）**：10/20/40 invoke 齐（`docs/harness/invokes/by-task/web-hitl-resume-async-reverify/`）· **复验结论回执（PASS/FAIL + 证据指针）落 `docs/harness/invokes/by-task/hitl-resume-async-handoff/`** · volatile.md 短注 · task 验收回填。
+- [x] **F1（40 · TC3v4 断链场景重跑）**：api master `2a5878c` 六 env 组起服 + web dev（vite `--host 127.0.0.1` · `VITE_API_PROXY=http://127.0.0.1:8050`）→ 浏览器（Playwright `~/.agent-tools/pw`）提问触发 write 工具 → 点「批准」→ decide 200 → resume 客户端实测 **<1s 返回 200** · Network 面板 **零 `ERR_ABORTED`**（对照旧证据 jc_tc3v2_network.json 30.1s 掐断 · network.json 附件落盘）。
+- [x] **F2（40 · 卡片状态流转实证）**：decide 后 → resume 后卡片进入「已批准/恢复中/已完成」流转态 · **全程零误回「待审批」**（JC-F1 假相消除实证 · 逐态截图留证 · pageerror/console.error=0）。
+- [x] **F3（40 · replay 追帧 + 徽标）**：沉降后 replay 200 全量 · 帧 seq 连续 · 终帧 `done{status:'resumed', latency_ms:int≥0, 无 model 键}` 逐键对拍（.sse 附件 + seq 连续性脚本机断）；徽标渲染 latency_ms 实值（刷新/续看恢复路径 · 与后端终帧逐位一致）。
+- [x] **F4（40 · 在飞窗时序复核）**：resume 秒回后 replay 立即打——**200 部分帧（裁定 a · 既有语义）或 409+Retry-After:2（仅限无收尾帧 live run）两形态均属正确**，前端均不得异常展示/报错（错误条文案如实透传 · 照登实测命中形态）。
+- [x] **F5（40 · 弱消费复查照登）**：`HitlResumeResponse.resume: unknown` 零改动确认（已静态核真 · live 响应体照登键形）；`replay.persisted` 恒 true 后 web 无依赖此键的展示/告警分支（已 grep 核真 · 照登结论）。
+- [x] **F6（40 · 回归）**：驳回 resume 收工链（rejected 也可 resume 出结论）；immediate `resume_mode` 链（web 有入口的部分：decide 携 `resume_mode=immediate` → 响应 required=false → 前端不链第二步 · 后台沉降后 replay 追帧）。
+- [x] **F7（回执落盘）**：10/20/40 invoke 齐（`docs/harness/invokes/by-task/web-hitl-resume-async-reverify/`）· **复验结论回执（PASS/FAIL + 证据指针）落 `docs/harness/invokes/by-task/hitl-resume-async-handoff/`** · volatile.md 短注 · task 验收回填。
 
 ## 非范围
 
@@ -127,13 +127,13 @@
 
 ## 验收标准
 
-- [ ] **TC1（40 · resume 不再被掐断）**：decide(approved) → resume 客户端实测 **<1s 返回 200**（network.json 计时实证）· Network 面板零 `ERR_ABORTED`（对照旧证据 jc_tc3v2_network.json 30.1s 掐断）。
-- [ ] **TC2（40 · 卡片零误回待审批）**：decide → resume 后卡片进入「已批准/恢复中/已完成」流转 · **全程零误回「待审批」**（逐态截图 · pageerror/console.error=0）。
-- [ ] **TC3（40 · replay 追帧 + 徽标）**：沉降后 replay 200 · 帧 seq 严格连续（脚本机断）· 终帧 `done{status:'resumed', latency_ms:int≥0, 无 model 键}` 逐键对拍（.sse 附件）· 徽标渲染 latency_ms 实值与后端终帧逐位一致（截图）。
-- [ ] **TC4（40 · 在飞窗两形态）**：resume 秒回后 replay 立即打 → 实测命中形态照登（200 部分帧 或 409+Retry-After:2+detail 原文）· 前端无异常展示/报错。
-- [ ] **TC5（40 · 弱消费复查）**：live 响应面键形 `{ok,request,resume,replay,ts}` 照登 · `resume.status="accepted"` · `replay.persisted=true` 且确认 web 无依赖此键分支（grep 核真结论照登 · `resume: unknown` 零改动）。
-- [ ] **TC6（40 · 回归）**：驳回 resume 收工链通过；immediate `resume_mode` 链（web 入口面）通过（decide 秒回 · required=false 不链第二步 · 沉降后 replay 终帧 resumed）。
-- [ ] **TC7（质量门 + 回执落盘）**：`pnpm lint`/`test`（基线 255 零漂移）/`build` 三门绿（钉死 pnpm 路径）；10/20/40 invoke 齐；**复验结论回执落 `hitl-resume-async-handoff/`（PASS/FAIL + 证据指针）**；volatile.md 短注；`npx spec-wave task lint --file docs/tasks/active/task_web_hitl_resume_async_reverify.md` PASS。
+- [x] **TC1（40 · resume 不再被掐断）**：decide(approved) → resume 客户端实测 **<1s 返回 200**（network.json 计时实证）· Network 面板零 `ERR_ABORTED`（对照旧证据 jc_tc3v2_network.json 30.1s 掐断）。
+- [x] **TC2（40 · 卡片零误回待审批）**：decide → resume 后卡片进入「已批准/恢复中/已完成」流转 · **全程零误回「待审批」**（逐态截图 · pageerror/console.error=0）。
+- [x] **TC3（40 · replay 追帧 + 徽标）**：沉降后 replay 200 · 帧 seq 严格连续（脚本机断）· 终帧 `done{status:'resumed', latency_ms:int≥0, 无 model 键}` 逐键对拍（.sse 附件）· 徽标渲染 latency_ms 实值与后端终帧逐位一致（截图）。
+- [x] **TC4（40 · 在飞窗两形态）**：resume 秒回后 replay 立即打 → 实测命中形态照登（200 部分帧 或 409+Retry-After:2+detail 原文）· 前端无异常展示/报错。
+- [x] **TC5（40 · 弱消费复查）**：live 响应面键形 `{ok,request,resume,replay,ts}` 照登 · `resume.status="accepted"` · `replay.persisted=true` 且确认 web 无依赖此键分支（grep 核真结论照登 · `resume: unknown` 零改动）。
+- [x] **TC6（40 · 回归）**：驳回 resume 收工链通过；immediate `resume_mode` 链（web 入口面）通过（decide 秒回 · required=false 不链第二步 · 沉降后 replay 终帧 resumed）。
+- [x] **TC7（质量门 + 回执落盘）**：`pnpm lint`/`test`（基线 255 零漂移）/`build` 三门绿（钉死 pnpm 路径）；10/20/40 invoke 齐；**复验结论回执落 `hitl-resume-async-handoff/`（PASS/FAIL + 证据指针）**；volatile.md 短注；`npx spec-wave task lint --file docs/tasks/active/task_web_hitl_resume_async_reverify.md` PASS。
 
 ---
 
@@ -217,3 +217,4 @@ TC1：Playwright network.json 请求计时（resume duration <1s）+ 零 ERR_ABO
 |------|------|
 | 2026-10-15 | v0 · 10 落稿：api 00 启动令（JC-F1 B 方案复验 · api #252 已并 master `2a5878c`）· 零改码预判双重核真（回执 + 静态 grep：resume 弱消费 · persisted 无消费分支 · chat.ts:1085 响应不消费）· 验收照启动令六项映射 TC1–TC6 + TC7 · R0–R5 思考轮（early_stop at R5）· HG-TASK-DRAFT approved · HG-AUDIT-R1/HG-GRAPH-MODULES pending 待人签 |
 | 2026-10-15 | v1 · 维护者签闸（会话 m00111：20 R1 PASS 后签认 HG-AUDIT-R1 + HG-GRAPH-MODULES n/a 确认 · 授权 00 代笔落表并签收后续过程文档）→ 40 live 复验解锁 |
+| 2026-10-15 | v2 · 40 live 复验 **TC1–TC7 全 PASS · JC-F1 跨仓闭环 · web 零改码实证**（resume 34.77ms vs 旧 30.1s 掐断 · 45s 窗零误回待审批 · 18 帧 seq 连续 · 终帧 done{resumed,152757} · 徽标逐位一致 · 驳回/immediate 双链绿 · lint/test263/build 三门绿）→ 40 invoke + handoff 回执 + volatile 短注落盘 · 验收 F1–F7/TC1–TC7 全勾 |
