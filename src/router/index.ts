@@ -20,7 +20,8 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: AppLayout,
-    redirect: '/overview',
+    // demo-agent-host-surface（B2）：默认落地页 = Agent 工作台（/lg-rag 路由，path/name 不动）
+    redirect: '/lg-rag',
     children: [
       {
         path: 'overview',
@@ -68,7 +69,7 @@ const routes: RouteRecordRaw[] = [
         path: 'lg-rag',
         name: 'lg-rag',
         component: () => import('../views/LgRagView.vue'),
-        meta: { title: 'LG RAG' },
+        meta: { title: 'Agent 工作台' },
       },
       {
         // F5 Capability 目录页（task_web_capability_catalog）：全登录用户可见可见集；
