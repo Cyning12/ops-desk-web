@@ -27,7 +27,7 @@ async function onSubmit(): Promise<void> {
   try {
     await auth.login(form.username, form.inviteToken)
     const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : null
-    await router.push(redirect && redirect.startsWith('/') ? redirect : '/overview')
+    await router.push(redirect && redirect.startsWith('/') ? redirect : '/chat')
   } catch (error) {
     const apiError = error as ApiError
     // 网络层失败（无响应）时给出可达性提示；否则展示后端 message（detail）
