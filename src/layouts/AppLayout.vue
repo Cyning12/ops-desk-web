@@ -41,9 +41,10 @@ async function onTenantChange(value: string): Promise<void> {
         <el-menu-item index="/issues">Issues</el-menu-item>
         <el-menu-item index="/pulls">Pulls</el-menu-item>
         <el-menu-item index="/graph">Graph</el-menu-item>
-        <!-- demo-agent-host-surface（D1/D2 名实分离）：/chat /lc-evidence 仅菜单隐藏，
-             路由与组件保留（深链不拦截）；/lg-rag 菜单展示名改「Agent 工作台」（path 不动） -->
-        <el-menu-item index="/lg-rag">Agent 工作台</el-menu-item>
+        <!-- demo-agent-host-surface 维护者修正裁定（2026-10-16，名实分离不变）：
+             /chat = lg-rag 直接对话页 = 三方演示「Agent 工作台」（菜单恢复，文案 Agent 工作台，path 不动）；
+             /lg-rag（mode 选择页）与 /lc-evidence 仅菜单隐藏，路由与组件保留（深链不拦截） -->
+        <el-menu-item index="/chat">Agent 工作台</el-menu-item>
         <!-- F5 Capability 目录页：全登录用户可见（mine 端点任意登录用户）；
              maintainer 故障详情在页内按 /auth/me role 显隐，菜单层零 maintainer 探测面 -->
         <el-menu-item index="/capability">Capability</el-menu-item>
