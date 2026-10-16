@@ -1,6 +1,6 @@
 # Task：Web · hitl-resume-async 复验（JC-F1 B 方案 · api 异步化后联调 TC3 链重跑 · 零改码预判）
 
-> **状态**：draft（10 落稿 · 闸 pending · 40 拒开工）  
+> **状态**：done（2026-10-16 CLOSE · 40 TC1–TC7 全 PASS · JC-F1 跨仓闭环 · web 零改码实证 · api PR #253 联合 CLOSE · 归档 done/）  
 > **类型**：跨仓联调复验（纯观测 · 预期零改码 · 无 30 棒）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS  
 > **上游**：ops-desk-api `task_hitl_resume_async`（api PR #252 MERGED · squash `0e5f6b1` · api master `2a5878c` 已核 ancestor）· 本仓 JC-F1 发现源 `task_web_api_joint_check`（CLOSED · 归档 commit `a30d705` · PR #66）  
@@ -39,7 +39,7 @@
 |---------------|--------|-------------|------|
 | HG-TASK-DRAFT | **approved** | 20-R1, 40 | 2026-10-15 api 00 启动令 `invoke_20261015_00_dispatch_web_reverify.md`（维护者 m00383「B方案…生成api的启动Prompt,交由api agent的00来统筹」裁定链下游 · 复验归 web agent 见回执 §联调）· 本窗 10 落稿 |
 | HG-AUDIT-R1 | **approved** | **40** | 2026-10-15 维护者签认（会话 m00111：「/harness-00-delegate-only 签收，授权00签收后续文档」· 授权 00 代笔落表 · fobs 先例同法）→ **40 解锁**（纯观测 · 无 30 棒） |
-| HG-GRAPH-MODULES | **approved**（n/a 确认） | 30（无 30 棒） | 2026-10-15 维护者随 HG-AUDIT-R1 一并签认（同 m00111 授权链）：零改码 · 01_modules.md 零改动预判成立；实证破预判即停走新 task |
+| HG-GRAPH-MODULES | **approved** | — | n/a 确认：2026-10-15 维护者随 HG-AUDIT-R1 一并签认（同 m00111 授权链）· 零改码 · 01_modules.md 零改动预判成立（无 30 棒）；实证破预判即停走新 task |
 
 ---
 
@@ -172,7 +172,7 @@
 | R2 | 裁定生成：纯观测无 30 棒（回执零改动预判 + 静态核真双重成立）；验收照启动令六项原文映射 TC1–TC6 不增删；在飞窗两形态均属正确预钉（FP-6 防假红） | false | — | 在飞窗实测命中哪形态不可预知（两可 · 均已钉判据） |
 | R3 | 反例与边界：旧时代 30.1s 掐断链已根除（p95 毫秒级 vs 30s 超时 · 三个数量级余量）；catch「其他错误→waiting」分支仍在但触发前提（超时/断网）消失；immediate 分流既有钉案（required=false 不链第二步）回归入 TC6；卡片 409 分态「已被处理」与在飞重复 resume 409 文案差照登不误判（FP-7） | false | — | echo 场景沉降时长 100–310s · 复验耗时预算（FP-9 已钉） |
 | R4 | 验收可测性：TC1 network.json 计时机断 · TC2 截图+console 计数 · TC3 .sse 附件 seq 连续性脚本+终帧逐键对拍 · TC4 实测形态照登 · TC5 grep 结论+live 键形 · TC6 双链实证 · TC7 三门+invoke 齐备机断 | false | — | 浏览器实录依赖 Playwright 环境（在案核真） |
-| R5 | 收口：范围 F1–F7 · 非范围六条 · failure_paths 十行 · 验收七条 · 依赖六条 · 必读八项齐备；HG-TASK-DRAFT approved（api 00 启动令）· HG-AUDIT-R1/HG-GRAPH-MODULES pending 不代签 | true | 纯观测复验机理单一 · 锚点全亲读核真 · 契约真值 api 回执钉死 · 再轮无新增信息 | 裁定生效待闸 · 在飞窗命中形态实判 |
+| R5 | 收口：范围 F1–F7 · 非范围六条 · failure_paths 十行 · 验收七条 · 依赖六条 · 必读八项齐备；HG-TASK-DRAFT approved（api 00 启动令）· HG-AUDIT-R1/HG-GRAPH-MODULES 当时待人签不代签（v1 已 approved） | true | 纯观测复验机理单一 · 锚点全亲读核真 · 契约真值 api 回执钉死 · 再轮无新增信息 | 裁定生效待闸 · 在飞窗命中形态实判 |
 
 **actual_last_round**：R5（early_stop）
 
@@ -211,10 +211,28 @@ TC1：Playwright network.json 请求计时（resume duration <1s）+ 零 ERR_ABO
 
 ---
 
+### 最终验收实录（CLOSE · 2026-10-16）
+
+| 检查 | 结果 |
+|------|------|
+| 40 live 复验 | **TC1–TC7 全 PASS**（`invoke_20261015_40_verify.md` + attachments 19 件 · commit `9711ef3`）：resume **34.77ms** 200（旧 30.1s ERR_ABORTED 根除 · 三个数量级余量）· 45s 采样窗零误回「待审批」· 沉降 replay 18 帧 seq 严格连续 · 终帧 `done{resumed, latency_ms=152757 int, 无 model}` 徽标逐位一致 · 在飞窗命中裁定 a（200 部分帧 9 帧）· 驳回/immediate 双链绿（immediate required=false 前端不链第二步 live 实证） |
+| 质量门 | `pnpm lint` EXIT=0 · Vitest 31 文件 **263/263**（test_strategy_note 基线 255 系 10-13 旧值 · f1d88fe/b992e4a 后实际基线 263 · 零改动零漂移）· `pnpm build` EXIT=0 · `npx spec-wave task lint` PASS |
+| 零改码实证 | `src/` 零改动 · `hitl.ts:76` `resume: unknown` 弱消费 · `persisted` 全 src 零消费分支 · `chat.ts:1084-1086` 响应体不消费 —— **B 方案对 web 完全透明的预判实证成立** |
+| 回执交付 | `invoke_20261015_40_web_reverify_receipt.md` 落 `hitl-resume-async-handoff/`（api 50-CLOSE 等待件）· volatile.md 短注 |
+| 联合 CLOSE | api `task_hitl_resume_async` PR **#253 MERGED**（api master `33c1a7d` · 2026-10-15 · JC-F1 跨仓闭环）→ web 侧随本 CLOSE 关账归档 |
+| 环境新坑留痕 | postgresql@18 须 `pg_ctl` 直起（brew services 被 smart shutdown 杀）· `pnpm dev -- --host` 双横线吞参绑 ::1（已入 40 invoke / volatile） |
+
+### KPI
+
+Task_KPI%: 100（TC1–TC7 全 PASS · 联合 CLOSE 2026-10-16 · 关账归档 done/）
+
+---
+
 ## 修订记录
 
 | 日期 | 说明 |
 |------|------|
-| 2026-10-15 | v0 · 10 落稿：api 00 启动令（JC-F1 B 方案复验 · api #252 已并 master `2a5878c`）· 零改码预判双重核真（回执 + 静态 grep：resume 弱消费 · persisted 无消费分支 · chat.ts:1085 响应不消费）· 验收照启动令六项映射 TC1–TC6 + TC7 · R0–R5 思考轮（early_stop at R5）· HG-TASK-DRAFT approved · HG-AUDIT-R1/HG-GRAPH-MODULES pending 待人签 |
+| 2026-10-15 | v0 · 10 落稿：api 00 启动令（JC-F1 B 方案复验 · api #252 已并 master `2a5878c`）· 零改码预判双重核真（回执 + 静态 grep：resume 弱消费 · persisted 无消费分支 · chat.ts:1085 响应不消费）· 验收照启动令六项映射 TC1–TC6 + TC7 · R0–R5 思考轮（early_stop at R5）· HG-TASK-DRAFT approved · HG-AUDIT-R1/HG-GRAPH-MODULES 待人签（v1 已补 approved） |
 | 2026-10-15 | v1 · 维护者签闸（会话 m00111：20 R1 PASS 后签认 HG-AUDIT-R1 + HG-GRAPH-MODULES n/a 确认 · 授权 00 代笔落表并签收后续过程文档）→ 40 live 复验解锁 |
 | 2026-10-15 | v2 · 40 live 复验 **TC1–TC7 全 PASS · JC-F1 跨仓闭环 · web 零改码实证**（resume 34.77ms vs 旧 30.1s 掐断 · 45s 窗零误回待审批 · 18 帧 seq 连续 · 终帧 done{resumed,152757} · 徽标逐位一致 · 驳回/immediate 双链绿 · lint/test263/build 三门绿）→ 40 invoke + handoff 回执 + volatile 短注落盘 · 验收 F1–F7/TC1–TC7 全勾 |
+| 2026-10-16 | v3 · CLOSE：api PR #253 MERGED（master `33c1a7d`）联合 CLOSE 确认 → 最终验收实录 + KPI 回填 · `invoke_20261016_50_close.md` 落盘 · 归档 done/ · active README 行移除 · done/README.md 登记 |

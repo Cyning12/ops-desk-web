@@ -56,6 +56,7 @@
 | 2026-10-12 | [`task_web_integration_regression.md`](./task_web_integration_regression.md) | SPEC web-integration T-W1 · 回归批 F1/F4/F6/F7 · S1/S4/S6/S7 全过 · PR #59 MERGED · 归位 #62 |
 | 2026-10-12 | [`task_web_sse_hitl_enhance.md`](./task_web_sse_hitl_enhance.md) | T-W2 · SSE/HITL 增强（帧型注释 7 型 · `resume_mode` 三选 · `done{resumed}` 终态钉）· S2/S3 全过 · PR #61 MERGED · 归位 #62 |
 | 2026-10-12 | [`task_web_capability_catalog.md`](./task_web_capability_catalog.md) | T-W3 · Capability 目录页（F5 · 九键投影 · role 显隐 · G-L1 图谱）· S5 双角色全过 · PR #60 MERGED · 归位 #62 |
+| 2026-10-16 | [`task_web_hitl_resume_async_reverify.md`](./task_web_hitl_resume_async_reverify.md) | JC-F1 B 方案复验 · api resume 异步化 web 侧零改码实证（resume 34.77ms 根除 30.1s 掐断 · TC1–TC7 全 PASS）· api #252/#253 联合 CLOSE · 纯文档档待并 main |
 | 2026-09-08 | [`task_web_fix_chat_live_reactivity.md`](./task_web_fix_chat_live_reactivity.md) | 修复：pushMessage 返回响应式代理（raw 突变绕过 Vue effect 致实流零渲染） · PR #43 MERGED |
 | 2026-09-08 | [`task_web_lg_rag_sse_subtask_message.md`](./task_web_lg_rag_sse_subtask_message.md) | `lg-rag-sse-v1` · 消费 api `subtask.progress.message` 上屏（显式优先 · running 零前缀） · PR #41 MERGED |
 | 2026-09-08 | [`task_web_lg_rag_sse_progressive_reveal.md`](./task_web_lg_rag_sse_progressive_reveal.md) | `lg-rag-sse-v1` · 客户端 reveal 队列（subtask output 打字机 + answer 突发匀速） · PR #39 MERGED |
