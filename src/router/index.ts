@@ -20,8 +20,8 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: AppLayout,
-    // demo-agent-host-surface（B2）：默认落地页 = Agent 工作台（/lg-rag 路由，path/name 不动）
-    redirect: '/lg-rag',
+    // demo-agent-host-surface 维护者修正裁定（2026-10-16）：默认落地页 = Agent 工作台（/chat 直接对话页，path/name 不动）
+    redirect: '/chat',
     children: [
       {
         path: 'overview',
@@ -57,7 +57,8 @@ const routes: RouteRecordRaw[] = [
         path: 'chat',
         name: 'chat',
         component: () => import('../views/ChatView.vue'),
-        meta: { title: 'Chat' },
+        // demo-agent-host-surface 维护者修正裁定（2026-10-16）：/chat = lg-rag 直接对话页 = Agent 工作台（页标题真值）
+        meta: { title: 'Agent 工作台' },
       },
       {
         path: 'lc-evidence',
@@ -69,7 +70,8 @@ const routes: RouteRecordRaw[] = [
         path: 'lg-rag',
         name: 'lg-rag',
         component: () => import('../views/LgRagView.vue'),
-        meta: { title: 'Agent 工作台' },
+        // mode 选择调用页：菜单隐藏（深链不拦截），标题恢复 LG RAG
+        meta: { title: 'LG RAG' },
       },
       {
         // F5 Capability 目录页（task_web_capability_catalog）：全登录用户可见可见集；
