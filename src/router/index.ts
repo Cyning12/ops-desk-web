@@ -94,14 +94,14 @@ const router = createRouter({
  * 认证守卫：
  * - 首次导航等待 ensureMe 会话探测完成后再放行（刷新页面恢复会话）
  * - 非 public 路由未登录 → /login?redirect=<原路径>
- * - 已登录访问 /login → /overview
+ * - 已登录访问 /login → /chat（Agent 工作台，维护者裁定 2026-10-16）
  */
 router.beforeEach(async (to) => {
   const auth = useAuthStore()
   await auth.ensureMe()
 
   if (to.meta.public) {
-    if (to.name === 'login' && auth.isLoggedIn) return { path: '/overview' }
+    if (to.name === 'login' && auth.isLoggedIn) return { path: '/chat' }
     return true
   }
   if (!auth.isLoggedIn) {

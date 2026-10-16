@@ -42,11 +42,11 @@ describe('router 认证守卫', () => {
     expect(router.currentRoute.value.path).toBe('/issues')
   })
 
-  it('已登录访问 /login → 重定向 /overview', async () => {
+  it('已登录访问 /login → 重定向 /chat（Agent 工作台）', async () => {
     vi.mocked(fetchMe).mockResolvedValue(fakeMe)
 
     await router.push('/login')
-    expect(router.currentRoute.value.path).toBe('/overview')
+    expect(router.currentRoute.value.path).toBe('/chat')
   })
 
   it('未登录访问 /login → 放行停留在登录页', async () => {
