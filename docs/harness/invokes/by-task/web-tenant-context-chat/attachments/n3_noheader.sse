@@ -1,0 +1,12 @@
+event: run.start
+data: {"run_id": "2fffb76c0c80403fa01c3a6b793c101c", "seq": 1, "ts_ms": 0, "agent_role": "system", "event_type": "run.start", "payload": {"run_id": "2fffb76c0c80403fa01c3a6b793c101c", "thread_id": "b98b77590b1c45cf88c42aa01f944beb", "mode": "basic", "query": "ok"}, "cursor": "2fffb76c0c80403fa01c3a6b793c101c:1"}
+
+event: node.progress
+data: {"run_id": "2fffb76c0c80403fa01c3a6b793c101c", "seq": 2, "ts_ms": 507, "agent_role": "rag", "event_type": "node.progress", "payload": {"answer_preview": "未检索到足够依据，无法给出有根据的回答。"}, "cursor": "2fffb76c0c80403fa01c3a6b793c101c:2"}
+
+event: answer
+data: {"run_id": "2fffb76c0c80403fa01c3a6b793c101c", "seq": 3, "ts_ms": 508, "agent_role": "system", "event_type": "answer", "payload": {"content": "", "note": "no_aggregator"}, "cursor": "2fffb76c0c80403fa01c3a6b793c101c:3"}
+
+event: done
+data: {"run_id": "2fffb76c0c80403fa01c3a6b793c101c", "seq": 4, "ts_ms": 508, "agent_role": "system", "event_type": "done", "payload": {"run_id": "2fffb76c0c80403fa01c3a6b793c101c", "thread_id": "b98b77590b1c45cf88c42aa01f944beb", "latency_ms": 508}, "cursor": "2fffb76c0c80403fa01c3a6b793c101c:4"}
+

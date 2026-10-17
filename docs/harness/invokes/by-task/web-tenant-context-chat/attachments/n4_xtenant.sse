@@ -1,0 +1,1953 @@
+event: run.start
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 1, "ts_ms": 0, "agent_role": "system", "event_type": "run.start", "payload": {"run_id": "1d324cf018814193af88841fd683d5f1", "thread_id": "be39dbebc89b45e0995eb7645b81ebef", "mode": "supervisor", "query": "请用工具查询 issue #16 的标题和状态，原样返回"}, "cursor": "1d324cf018814193af88841fd683d5f1:1"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 2, "ts_ms": 1733, "agent_role": "intent", "event_type": "node.progress", "payload": {"intent": {"domain": "ops_kb", "needs_tool": true, "needs_skill": false, "is_composite": false, "risk_hint": "low", "summary": "查询 issue #16 的标题和状态"}}, "cursor": "1d324cf018814193af88841fd683d5f1:2"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 3, "ts_ms": 1735, "agent_role": "strategy_builder", "event_type": "node.progress", "payload": {"allowed_capability_ids": ["utc_now_iso", "mock_get_issue_status", "mock_get_deploy_info", "get_issue_by_number", "get_pr_by_number", "testing.write.echo"]}, "cursor": "1d324cf018814193af88841fd683d5f1:3"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 4, "ts_ms": 25321, "agent_role": "supervisor", "event_type": "node.progress", "payload": {"subtasks": [{"id": "1d324cf018814193af88841fd683d5f1:1", "subtask_id": "1d324cf018814193af88841fd683d5f1:1", "alias": "t1", "type": "tool", "input": "issue_number=16", "tool": "get_issue_by_number", "produces": ["title", "status"], "depends_on": []}]}, "cursor": "1d324cf018814193af88841fd683d5f1:4"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 5, "ts_ms": 25325, "agent_role": "subtask_join", "event_type": "node.progress", "payload": {"keys": ["inflight_subtask_ids"]}, "cursor": "1d324cf018814193af88841fd683d5f1:5"}
+
+event: subtask.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 6, "ts_ms": 25326, "agent_role": "tool_exec", "event_type": "subtask.progress", "payload": {"status": "running", "subtask_id": "1d324cf018814193af88841fd683d5f1:1", "type": "tool", "input": "issue_number=16", "message": "开始工具调用：issue_number=16"}, "cursor": "1d324cf018814193af88841fd683d5f1:6"}
+
+event: subtask.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 7, "ts_ms": 25337, "agent_role": "tool_exec", "event_type": "subtask.progress", "payload": {"subtask_result": {"id": "1d324cf018814193af88841fd683d5f1:1", "subtask_id": "1d324cf018814193af88841fd683d5f1:1", "type": "tool", "input": "issue_number=16", "alias": "t1", "tool": "get_issue_by_number", "error": "LookupError('issue_not_found')"}, "status": "done", "message": "子任务失败：LookupError('issue_not_found')"}, "cursor": "1d324cf018814193af88841fd683d5f1:7"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 8, "ts_ms": 25341, "agent_role": "subtask_join", "event_type": "node.progress", "payload": {"keys": ["inflight_subtask_ids"]}, "cursor": "1d324cf018814193af88841fd683d5f1:8"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 9, "ts_ms": 25343, "agent_role": "observe", "event_type": "node.progress", "payload": {"keys": ["hitl_requests", "react_observation", "react_round", "supervisor_step_count"]}, "cursor": "1d324cf018814193af88841fd683d5f1:9"}
+
+: keepalive
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 10, "ts_ms": 63645, "agent_role": "supervisor", "event_type": "node.progress", "payload": {"subtasks": [{"id": "1d324cf018814193af88841fd683d5f1:2", "subtask_id": "1d324cf018814193af88841fd683d5f1:2", "alias": "t1", "type": "tool", "input": "16", "tool": "get_issue_by_number", "depends_on": []}]}, "cursor": "1d324cf018814193af88841fd683d5f1:10"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 11, "ts_ms": 63649, "agent_role": "subtask_join", "event_type": "node.progress", "payload": {"keys": ["inflight_subtask_ids"]}, "cursor": "1d324cf018814193af88841fd683d5f1:11"}
+
+event: subtask.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 12, "ts_ms": 63650, "agent_role": "tool_exec", "event_type": "subtask.progress", "payload": {"status": "running", "subtask_id": "1d324cf018814193af88841fd683d5f1:2", "type": "tool", "input": "16", "message": "开始工具调用：16"}, "cursor": "1d324cf018814193af88841fd683d5f1:12"}
+
+event: subtask.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 13, "ts_ms": 63657, "agent_role": "tool_exec", "event_type": "subtask.progress", "payload": {"subtask_result": {"id": "1d324cf018814193af88841fd683d5f1:2", "subtask_id": "1d324cf018814193af88841fd683d5f1:2", "type": "tool", "input": "16", "alias": "t1", "tool": "get_issue_by_number", "error": "LookupError('issue_not_found')"}, "status": "done", "message": "子任务失败：LookupError('issue_not_found')"}, "cursor": "1d324cf018814193af88841fd683d5f1:13"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 14, "ts_ms": 63662, "agent_role": "subtask_join", "event_type": "node.progress", "payload": {"keys": ["inflight_subtask_ids"]}, "cursor": "1d324cf018814193af88841fd683d5f1:14"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 15, "ts_ms": 63665, "agent_role": "observe", "event_type": "node.progress", "payload": {"keys": ["hitl_requests", "react_observation", "react_round", "supervisor_step_count"]}, "cursor": "1d324cf018814193af88841fd683d5f1:15"}
+
+: keepalive
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 16, "ts_ms": 117927, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:16"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 17, "ts_ms": 117927, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "###"}, "cursor": "1d324cf018814193af88841fd683d5f1:17"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 18, "ts_ms": 118418, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:18"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 19, "ts_ms": 118418, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "子"}, "cursor": "1d324cf018814193af88841fd683d5f1:19"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 20, "ts_ms": 118418, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "任务"}, "cursor": "1d324cf018814193af88841fd683d5f1:20"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 21, "ts_ms": 118418, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:21"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 22, "ts_ms": 118418, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:22"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 23, "ts_ms": 118418, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "（"}, "cursor": "1d324cf018814193af88841fd683d5f1:23"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 24, "ts_ms": 118418, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "工具"}, "cursor": "1d324cf018814193af88841fd683d5f1:24"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 25, "ts_ms": 118419, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "查询"}, "cursor": "1d324cf018814193af88841fd683d5f1:25"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 26, "ts_ms": 118419, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "）"}, "cursor": "1d324cf018814193af88841fd683d5f1:26"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 27, "ts_ms": 118419, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:27"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 28, "ts_ms": 118419, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:28"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 29, "ts_ms": 118419, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:29"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 30, "ts_ms": 118419, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "来源"}, "cursor": "1d324cf018814193af88841fd683d5f1:30"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 31, "ts_ms": 118419, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "类型"}, "cursor": "1d324cf018814193af88841fd683d5f1:31"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 32, "ts_ms": 118419, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:32"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 33, "ts_ms": 118419, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:33"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 34, "ts_ms": 118419, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "工具"}, "cursor": "1d324cf018814193af88841fd683d5f1:34"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 35, "ts_ms": 118419, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "查询"}, "cursor": "1d324cf018814193af88841fd683d5f1:35"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 36, "ts_ms": 118420, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:36"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 37, "ts_ms": 118461, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:37"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 38, "ts_ms": 118538, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:38"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 39, "ts_ms": 118597, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "调用"}, "cursor": "1d324cf018814193af88841fd683d5f1:39"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 40, "ts_ms": 118973, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "工具"}, "cursor": "1d324cf018814193af88841fd683d5f1:40"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 41, "ts_ms": 120030, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:41"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 42, "ts_ms": 121218, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:42"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 43, "ts_ms": 122614, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:43"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 44, "ts_ms": 123656, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "get"}, "cursor": "1d324cf018814193af88841fd683d5f1:44"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 45, "ts_ms": 125380, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:45"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 46, "ts_ms": 126508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_by"}, "cursor": "1d324cf018814193af88841fd683d5f1:46"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 47, "ts_ms": 126508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_number"}, "cursor": "1d324cf018814193af88841fd683d5f1:47"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 48, "ts_ms": 126508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:48"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 49, "ts_ms": 126509, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:49"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 50, "ts_ms": 126509, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:50"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 51, "ts_ms": 126509, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:51"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 52, "ts_ms": 126509, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "输入"}, "cursor": "1d324cf018814193af88841fd683d5f1:52"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 53, "ts_ms": 126509, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "参数"}, "cursor": "1d324cf018814193af88841fd683d5f1:53"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 54, "ts_ms": 126562, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:54"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 55, "ts_ms": 126569, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:55"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 56, "ts_ms": 126607, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:56"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 57, "ts_ms": 126639, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:57"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 58, "ts_ms": 126677, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_number"}, "cursor": "1d324cf018814193af88841fd683d5f1:58"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 59, "ts_ms": 126731, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "="}, "cursor": "1d324cf018814193af88841fd683d5f1:59"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 60, "ts_ms": 126742, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:60"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 61, "ts_ms": 126779, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "6"}, "cursor": "1d324cf018814193af88841fd683d5f1:61"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 62, "ts_ms": 126812, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:62"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 63, "ts_ms": 126850, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:63"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 64, "ts_ms": 126886, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:64"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 65, "ts_ms": 126915, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:65"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 66, "ts_ms": 126952, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "执行"}, "cursor": "1d324cf018814193af88841fd683d5f1:66"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 67, "ts_ms": 126992, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "状态"}, "cursor": "1d324cf018814193af88841fd683d5f1:67"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 68, "ts_ms": 127035, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:68"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 69, "ts_ms": 127087, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:69"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 70, "ts_ms": 127098, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "失败"}, "cursor": "1d324cf018814193af88841fd683d5f1:70"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 71, "ts_ms": 127140, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:71"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 72, "ts_ms": 127161, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:72"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 73, "ts_ms": 127193, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:73"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 74, "ts_ms": 127240, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "错误"}, "cursor": "1d324cf018814193af88841fd683d5f1:74"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 75, "ts_ms": 127362, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "信息"}, "cursor": "1d324cf018814193af88841fd683d5f1:75"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 76, "ts_ms": 127363, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:76"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 77, "ts_ms": 127363, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:77"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 78, "ts_ms": 127367, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:78"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 79, "ts_ms": 127403, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "Lookup"}, "cursor": "1d324cf018814193af88841fd683d5f1:79"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 80, "ts_ms": 127444, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "Error"}, "cursor": "1d324cf018814193af88841fd683d5f1:80"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 81, "ts_ms": 127471, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "('"}, "cursor": "1d324cf018814193af88841fd683d5f1:81"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 82, "ts_ms": 127505, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:82"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 83, "ts_ms": 127555, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_not"}, "cursor": "1d324cf018814193af88841fd683d5f1:83"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 84, "ts_ms": 127575, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_found"}, "cursor": "1d324cf018814193af88841fd683d5f1:84"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 85, "ts_ms": 127609, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "')"}, "cursor": "1d324cf018814193af88841fd683d5f1:85"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 86, "ts_ms": 127665, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:86"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 87, "ts_ms": 127678, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:87"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 88, "ts_ms": 127716, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:88"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 89, "ts_ms": 127746, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:89"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 90, "ts_ms": 127789, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "说明"}, "cursor": "1d324cf018814193af88841fd683d5f1:90"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 91, "ts_ms": 127817, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:91"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 92, "ts_ms": 127851, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:92"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 93, "ts_ms": 127892, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "尝试"}, "cursor": "1d324cf018814193af88841fd683d5f1:93"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 94, "ts_ms": 127921, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "查询"}, "cursor": "1d324cf018814193af88841fd683d5f1:94"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 95, "ts_ms": 127954, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:95"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 96, "ts_ms": 127989, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " #"}, "cursor": "1d324cf018814193af88841fd683d5f1:96"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 97, "ts_ms": 128025, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:97"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 98, "ts_ms": 128062, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "6"}, "cursor": "1d324cf018814193af88841fd683d5f1:98"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 99, "ts_ms": 128096, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:99"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 100, "ts_ms": 128128, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "时"}, "cursor": "1d324cf018814193af88841fd683d5f1:100"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 101, "ts_ms": 128169, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "系统"}, "cursor": "1d324cf018814193af88841fd683d5f1:101"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 102, "ts_ms": 128199, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "未"}, "cursor": "1d324cf018814193af88841fd683d5f1:102"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 103, "ts_ms": 128235, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "检索"}, "cursor": "1d324cf018814193af88841fd683d5f1:103"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 104, "ts_ms": 128267, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "到"}, "cursor": "1d324cf018814193af88841fd683d5f1:104"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 105, "ts_ms": 128301, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "对应"}, "cursor": "1d324cf018814193af88841fd683d5f1:105"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 106, "ts_ms": 128413, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "记录"}, "cursor": "1d324cf018814193af88841fd683d5f1:106"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 107, "ts_ms": 128414, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "1d324cf018814193af88841fd683d5f1:107"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 108, "ts_ms": 128414, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "无法"}, "cursor": "1d324cf018814193af88841fd683d5f1:108"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 109, "ts_ms": 128440, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "提取"}, "cursor": "1d324cf018814193af88841fd683d5f1:109"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 110, "ts_ms": 128475, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "标题"}, "cursor": "1d324cf018814193af88841fd683d5f1:110"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 111, "ts_ms": 128508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "与"}, "cursor": "1d324cf018814193af88841fd683d5f1:111"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 112, "ts_ms": 128544, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "状态"}, "cursor": "1d324cf018814193af88841fd683d5f1:112"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 113, "ts_ms": 128579, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "。"}, "cursor": "1d324cf018814193af88841fd683d5f1:113"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 114, "ts_ms": 128613, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:114"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 115, "ts_ms": 128647, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "###"}, "cursor": "1d324cf018814193af88841fd683d5f1:115"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 116, "ts_ms": 128682, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:116"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 117, "ts_ms": 128721, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "子"}, "cursor": "1d324cf018814193af88841fd683d5f1:117"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 118, "ts_ms": 128751, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "任务"}, "cursor": "1d324cf018814193af88841fd683d5f1:118"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 119, "ts_ms": 128788, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:119"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 120, "ts_ms": 128820, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "2"}, "cursor": "1d324cf018814193af88841fd683d5f1:120"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 121, "ts_ms": 128854, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "（"}, "cursor": "1d324cf018814193af88841fd683d5f1:121"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 122, "ts_ms": 128891, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "工具"}, "cursor": "1d324cf018814193af88841fd683d5f1:122"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 123, "ts_ms": 128942, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "查询"}, "cursor": "1d324cf018814193af88841fd683d5f1:123"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 124, "ts_ms": 128959, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "）"}, "cursor": "1d324cf018814193af88841fd683d5f1:124"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 125, "ts_ms": 128992, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:125"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 126, "ts_ms": 129027, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:126"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 127, "ts_ms": 129081, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:127"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 128, "ts_ms": 129098, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "来源"}, "cursor": "1d324cf018814193af88841fd683d5f1:128"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 129, "ts_ms": 129135, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "类型"}, "cursor": "1d324cf018814193af88841fd683d5f1:129"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 130, "ts_ms": 129168, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:130"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 131, "ts_ms": 129205, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:131"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 132, "ts_ms": 129471, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "工具"}, "cursor": "1d324cf018814193af88841fd683d5f1:132"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 133, "ts_ms": 129471, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "查询"}, "cursor": "1d324cf018814193af88841fd683d5f1:133"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 134, "ts_ms": 129471, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:134"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 135, "ts_ms": 129472, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:135"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 136, "ts_ms": 129472, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:136"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 137, "ts_ms": 129472, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "调用"}, "cursor": "1d324cf018814193af88841fd683d5f1:137"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 138, "ts_ms": 129472, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "工具"}, "cursor": "1d324cf018814193af88841fd683d5f1:138"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 139, "ts_ms": 129479, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:139"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 140, "ts_ms": 129519, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:140"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 141, "ts_ms": 129551, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:141"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 142, "ts_ms": 129583, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "get"}, "cursor": "1d324cf018814193af88841fd683d5f1:142"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 143, "ts_ms": 129669, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:143"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 144, "ts_ms": 129672, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_by"}, "cursor": "1d324cf018814193af88841fd683d5f1:144"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 145, "ts_ms": 129696, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_number"}, "cursor": "1d324cf018814193af88841fd683d5f1:145"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 146, "ts_ms": 129724, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:146"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 147, "ts_ms": 129882, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:147"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 148, "ts_ms": 129910, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:148"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 149, "ts_ms": 129943, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:149"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 150, "ts_ms": 129987, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "输入"}, "cursor": "1d324cf018814193af88841fd683d5f1:150"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 151, "ts_ms": 130013, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "参数"}, "cursor": "1d324cf018814193af88841fd683d5f1:151"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 152, "ts_ms": 130047, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:152"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 153, "ts_ms": 130081, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:153"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 154, "ts_ms": 130120, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:154"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 155, "ts_ms": 130151, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:155"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 156, "ts_ms": 130213, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "6"}, "cursor": "1d324cf018814193af88841fd683d5f1:156"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 157, "ts_ms": 130222, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:157"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 158, "ts_ms": 130257, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:158"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 159, "ts_ms": 130290, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:159"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 160, "ts_ms": 130326, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:160"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 161, "ts_ms": 130363, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "执行"}, "cursor": "1d324cf018814193af88841fd683d5f1:161"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 162, "ts_ms": 130508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "状态"}, "cursor": "1d324cf018814193af88841fd683d5f1:162"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 163, "ts_ms": 130509, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:163"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 164, "ts_ms": 130509, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:164"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 165, "ts_ms": 130509, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "失败"}, "cursor": "1d324cf018814193af88841fd683d5f1:165"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 166, "ts_ms": 130537, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:166"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 167, "ts_ms": 130568, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:167"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 168, "ts_ms": 130607, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:168"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 169, "ts_ms": 130639, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "错误"}, "cursor": "1d324cf018814193af88841fd683d5f1:169"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 170, "ts_ms": 130672, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "信息"}, "cursor": "1d324cf018814193af88841fd683d5f1:170"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 171, "ts_ms": 130708, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:171"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 172, "ts_ms": 130741, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:172"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 173, "ts_ms": 130775, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:173"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 174, "ts_ms": 130809, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "Lookup"}, "cursor": "1d324cf018814193af88841fd683d5f1:174"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 175, "ts_ms": 130844, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "Error"}, "cursor": "1d324cf018814193af88841fd683d5f1:175"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 176, "ts_ms": 130879, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "('"}, "cursor": "1d324cf018814193af88841fd683d5f1:176"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 177, "ts_ms": 130913, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:177"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 178, "ts_ms": 130948, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_not"}, "cursor": "1d324cf018814193af88841fd683d5f1:178"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 179, "ts_ms": 130982, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_found"}, "cursor": "1d324cf018814193af88841fd683d5f1:179"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 180, "ts_ms": 131017, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "')"}, "cursor": "1d324cf018814193af88841fd683d5f1:180"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 181, "ts_ms": 131053, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:181"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 182, "ts_ms": 131085, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:182"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 183, "ts_ms": 131129, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:183"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 184, "ts_ms": 131155, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:184"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 185, "ts_ms": 131189, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "说明"}, "cursor": "1d324cf018814193af88841fd683d5f1:185"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 186, "ts_ms": 131224, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:186"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 187, "ts_ms": 131258, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:187"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 188, "ts_ms": 131293, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "同上"}, "cursor": "1d324cf018814193af88841fd683d5f1:188"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 189, "ts_ms": 131336, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "1d324cf018814193af88841fd683d5f1:189"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 190, "ts_ms": 131362, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "因"}, "cursor": "1d324cf018814193af88841fd683d5f1:190"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 191, "ts_ms": 131396, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "参数"}, "cursor": "1d324cf018814193af88841fd683d5f1:191"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 192, "ts_ms": 131430, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "解析"}, "cursor": "1d324cf018814193af88841fd683d5f1:192"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 193, "ts_ms": 131558, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "差异"}, "cursor": "1d324cf018814193af88841fd683d5f1:193"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 194, "ts_ms": 131558, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "再次"}, "cursor": "1d324cf018814193af88841fd683d5f1:194"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 195, "ts_ms": 131558, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "调用"}, "cursor": "1d324cf018814193af88841fd683d5f1:195"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 196, "ts_ms": 131558, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "工具"}, "cursor": "1d324cf018814193af88841fd683d5f1:196"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 197, "ts_ms": 131588, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "1d324cf018814193af88841fd683d5f1:197"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 198, "ts_ms": 131625, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "但仍"}, "cursor": "1d324cf018814193af88841fd683d5f1:198"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 199, "ts_ms": 131657, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "返回"}, "cursor": "1d324cf018814193af88841fd683d5f1:199"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 200, "ts_ms": 131695, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "未"}, "cursor": "1d324cf018814193af88841fd683d5f1:200"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 201, "ts_ms": 131746, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "找"}, "cursor": "1d324cf018814193af88841fd683d5f1:201"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 202, "ts_ms": 131761, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "到的"}, "cursor": "1d324cf018814193af88841fd683d5f1:202"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 203, "ts_ms": 131798, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "错误"}, "cursor": "1d324cf018814193af88841fd683d5f1:203"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 204, "ts_ms": 131833, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "1d324cf018814193af88841fd683d5f1:204"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 205, "ts_ms": 131868, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "无"}, "cursor": "1d324cf018814193af88841fd683d5f1:205"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 206, "ts_ms": 131901, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "有效"}, "cursor": "1d324cf018814193af88841fd683d5f1:206"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 207, "ts_ms": 131935, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "数据"}, "cursor": "1d324cf018814193af88841fd683d5f1:207"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 208, "ts_ms": 131970, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "返回"}, "cursor": "1d324cf018814193af88841fd683d5f1:208"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 209, "ts_ms": 132004, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "。"}, "cursor": "1d324cf018814193af88841fd683d5f1:209"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 210, "ts_ms": 132039, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:210"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 211, "ts_ms": 132072, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "###"}, "cursor": "1d324cf018814193af88841fd683d5f1:211"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 212, "ts_ms": 132111, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:212"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 213, "ts_ms": 132140, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "综合"}, "cursor": "1d324cf018814193af88841fd683d5f1:213"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 214, "ts_ms": 132174, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "结论"}, "cursor": "1d324cf018814193af88841fd683d5f1:214"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 215, "ts_ms": 132211, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:215"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 216, "ts_ms": 132258, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "针对"}, "cursor": "1d324cf018814193af88841fd683d5f1:216"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 217, "ts_ms": 132280, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "“"}, "cursor": "1d324cf018814193af88841fd683d5f1:217"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 218, "ts_ms": 132314, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "查询"}, "cursor": "1d324cf018814193af88841fd683d5f1:218"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 219, "ts_ms": 132348, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:219"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 220, "ts_ms": 132383, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " #"}, "cursor": "1d324cf018814193af88841fd683d5f1:220"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 221, "ts_ms": 132417, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:221"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 222, "ts_ms": 132465, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "6"}, "cursor": "1d324cf018814193af88841fd683d5f1:222"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 223, "ts_ms": 132487, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:223"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 224, "ts_ms": 132605, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "的"}, "cursor": "1d324cf018814193af88841fd683d5f1:224"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 225, "ts_ms": 132605, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "标题"}, "cursor": "1d324cf018814193af88841fd683d5f1:225"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 226, "ts_ms": 132605, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "和"}, "cursor": "1d324cf018814193af88841fd683d5f1:226"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 227, "ts_ms": 132653, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "状态"}, "cursor": "1d324cf018814193af88841fd683d5f1:227"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 228, "ts_ms": 132658, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "”"}, "cursor": "1d324cf018814193af88841fd683d5f1:228"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 229, "ts_ms": 132693, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "的请求"}, "cursor": "1d324cf018814193af88841fd683d5f1:229"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 230, "ts_ms": 132733, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "1d324cf018814193af88841fd683d5f1:230"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 231, "ts_ms": 132762, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "系统"}, "cursor": "1d324cf018814193af88841fd683d5f1:231"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 232, "ts_ms": 132798, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "先后"}, "cursor": "1d324cf018814193af88841fd683d5f1:232"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 233, "ts_ms": 132833, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "执行"}, "cursor": "1d324cf018814193af88841fd683d5f1:233"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 234, "ts_ms": 132880, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "了"}, "cursor": "1d324cf018814193af88841fd683d5f1:234"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 235, "ts_ms": 132902, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "两次"}, "cursor": "1d324cf018814193af88841fd683d5f1:235"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 236, "ts_ms": 132936, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:236"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 237, "ts_ms": 132971, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "工具"}, "cursor": "1d324cf018814193af88841fd683d5f1:237"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 238, "ts_ms": 133005, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "查询"}, "cursor": "1d324cf018814193af88841fd683d5f1:238"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 239, "ts_ms": 133039, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:239"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 240, "ts_ms": 133075, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "（"}, "cursor": "1d324cf018814193af88841fd683d5f1:240"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 241, "ts_ms": 133108, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:241"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 242, "ts_ms": 133141, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "get"}, "cursor": "1d324cf018814193af88841fd683d5f1:242"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 243, "ts_ms": 133179, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:243"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 244, "ts_ms": 133215, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_by"}, "cursor": "1d324cf018814193af88841fd683d5f1:244"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 245, "ts_ms": 133245, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_number"}, "cursor": "1d324cf018814193af88841fd683d5f1:245"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 246, "ts_ms": 133280, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:246"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 247, "ts_ms": 133315, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "）。"}, "cursor": "1d324cf018814193af88841fd683d5f1:247"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 248, "ts_ms": 133350, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "两次"}, "cursor": "1d324cf018814193af88841fd683d5f1:248"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 249, "ts_ms": 133392, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "执行"}, "cursor": "1d324cf018814193af88841fd683d5f1:249"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 250, "ts_ms": 133424, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "均"}, "cursor": "1d324cf018814193af88841fd683d5f1:250"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 251, "ts_ms": 133454, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "因"}, "cursor": "1d324cf018814193af88841fd683d5f1:251"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 252, "ts_ms": 133494, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " `"}, "cursor": "1d324cf018814193af88841fd683d5f1:252"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 253, "ts_ms": 133524, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "Lookup"}, "cursor": "1d324cf018814193af88841fd683d5f1:253"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 254, "ts_ms": 133557, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "Error"}, "cursor": "1d324cf018814193af88841fd683d5f1:254"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 255, "ts_ms": 133653, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "('"}, "cursor": "1d324cf018814193af88841fd683d5f1:255"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 256, "ts_ms": 133653, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:256"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 257, "ts_ms": 133660, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_not"}, "cursor": "1d324cf018814193af88841fd683d5f1:257"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 258, "ts_ms": 133699, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_found"}, "cursor": "1d324cf018814193af88841fd683d5f1:258"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 259, "ts_ms": 133882, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "')"}, "cursor": "1d324cf018814193af88841fd683d5f1:259"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 260, "ts_ms": 133882, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:260"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 261, "ts_ms": 133882, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:261"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 262, "ts_ms": 133882, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "失败"}, "cursor": "1d324cf018814193af88841fd683d5f1:262"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 263, "ts_ms": 133885, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "1d324cf018814193af88841fd683d5f1:263"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 264, "ts_ms": 133885, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "表明"}, "cursor": "1d324cf018814193af88841fd683d5f1:264"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 265, "ts_ms": 133885, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "当前"}, "cursor": "1d324cf018814193af88841fd683d5f1:265"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 266, "ts_ms": 133897, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "数据"}, "cursor": "1d324cf018814193af88841fd683d5f1:266"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 267, "ts_ms": 133923, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "源"}, "cursor": "1d324cf018814193af88841fd683d5f1:267"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 268, "ts_ms": 133944, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "中"}, "cursor": "1d324cf018814193af88841fd683d5f1:268"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 269, "ts_ms": 133968, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:269"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 270, "ts_ms": 134006, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "不存在"}, "cursor": "1d324cf018814193af88841fd683d5f1:270"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 271, "ts_ms": 134074, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:271"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 272, "ts_ms": 134076, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " #"}, "cursor": "1d324cf018814193af88841fd683d5f1:272"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 273, "ts_ms": 134076, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:273"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 274, "ts_ms": 134088, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "6"}, "cursor": "1d324cf018814193af88841fd683d5f1:274"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 275, "ts_ms": 134114, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:275"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 276, "ts_ms": 134304, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:276"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 277, "ts_ms": 134314, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "的记录"}, "cursor": "1d324cf018814193af88841fd683d5f1:277"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 278, "ts_ms": 134564, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "。"}, "cursor": "1d324cf018814193af88841fd683d5f1:278"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 279, "ts_ms": 134590, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "因此"}, "cursor": "1d324cf018814193af88841fd683d5f1:279"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 280, "ts_ms": 134701, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "1d324cf018814193af88841fd683d5f1:280"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 281, "ts_ms": 134701, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "无法"}, "cursor": "1d324cf018814193af88841fd683d5f1:281"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 282, "ts_ms": 134701, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "提供"}, "cursor": "1d324cf018814193af88841fd683d5f1:282"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 283, "ts_ms": 134729, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "该"}, "cursor": "1d324cf018814193af88841fd683d5f1:283"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 284, "ts_ms": 134763, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:284"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 285, "ts_ms": 134799, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:285"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 286, "ts_ms": 134833, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "的"}, "cursor": "1d324cf018814193af88841fd683d5f1:286"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 287, "ts_ms": 134869, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "标题"}, "cursor": "1d324cf018814193af88841fd683d5f1:287"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 288, "ts_ms": 134919, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "和"}, "cursor": "1d324cf018814193af88841fd683d5f1:288"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 289, "ts_ms": 134935, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "状态"}, "cursor": "1d324cf018814193af88841fd683d5f1:289"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 290, "ts_ms": 134972, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "信息"}, "cursor": "1d324cf018814193af88841fd683d5f1:290"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 291, "ts_ms": 135004, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "。"}, "cursor": "1d324cf018814193af88841fd683d5f1:291"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 292, "ts_ms": 135042, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "建议"}, "cursor": "1d324cf018814193af88841fd683d5f1:292"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 293, "ts_ms": 135075, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "核对"}, "cursor": "1d324cf018814193af88841fd683d5f1:293"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 294, "ts_ms": 135110, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:294"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 295, "ts_ms": 135154, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:295"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 296, "ts_ms": 135178, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "编号"}, "cursor": "1d324cf018814193af88841fd683d5f1:296"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 297, "ts_ms": 135214, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "是否正确"}, "cursor": "1d324cf018814193af88841fd683d5f1:297"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 298, "ts_ms": 135251, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "1d324cf018814193af88841fd683d5f1:298"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 299, "ts_ms": 135281, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "或"}, "cursor": "1d324cf018814193af88841fd683d5f1:299"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 300, "ts_ms": 135315, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "确认"}, "cursor": "1d324cf018814193af88841fd683d5f1:300"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 301, "ts_ms": 135351, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "该"}, "cursor": "1d324cf018814193af88841fd683d5f1:301"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 302, "ts_ms": 135386, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:302"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 303, "ts_ms": 135434, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:303"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 304, "ts_ms": 135456, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "是否"}, "cursor": "1d324cf018814193af88841fd683d5f1:304"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 305, "ts_ms": 135490, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "已被"}, "cursor": "1d324cf018814193af88841fd683d5f1:305"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 306, "ts_ms": 135525, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "归档"}, "cursor": "1d324cf018814193af88841fd683d5f1:306"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 307, "ts_ms": 135559, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "、"}, "cursor": "1d324cf018814193af88841fd683d5f1:307"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 308, "ts_ms": 135593, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "删除"}, "cursor": "1d324cf018814193af88841fd683d5f1:308"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 309, "ts_ms": 135637, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "或"}, "cursor": "1d324cf018814193af88841fd683d5f1:309"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 310, "ts_ms": 135752, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "移至"}, "cursor": "1d324cf018814193af88841fd683d5f1:310"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 311, "ts_ms": 135753, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "其他"}, "cursor": "1d324cf018814193af88841fd683d5f1:311"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 312, "ts_ms": 135867, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "仓库"}, "cursor": "1d324cf018814193af88841fd683d5f1:312"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 313, "ts_ms": 135867, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "/"}, "cursor": "1d324cf018814193af88841fd683d5f1:313"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 314, "ts_ms": 135868, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "系统"}, "cursor": "1d324cf018814193af88841fd683d5f1:314"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 315, "ts_ms": 135869, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "。"}, "cursor": "1d324cf018814193af88841fd683d5f1:315"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 316, "ts_ms": 135879, "agent_role": "aggregator", "event_type": "answer", "payload": {"content": "### 子任务 1（工具查询）\n- **来源类型**：工具查询\n- **调用工具**：`get_issue_by_number`\n- **输入参数**：`issue_number=16`\n- **执行状态**：失败\n- **错误信息**：`LookupError('issue_not_found')`\n- **说明**：尝试查询 issue #16 时系统未检索到对应记录，无法提取标题与状态。\n\n### 子任务 2（工具查询）\n- **来源类型**：工具查询\n- **调用工具**：`get_issue_by_number`\n- **输入参数**：`16`\n- **执行状态**：失败\n- **错误信息**：`LookupError('issue_not_found')`\n- **说明**：同上，因参数解析差异再次调用工具，但仍返回未找到的错误，无有效数据返回。\n\n### 综合结论\n针对“查询 issue #16 的标题和状态”的请求，系统先后执行了两次**工具查询**（`get_issue_by_number`）。两次执行均因 `LookupError('issue_not_found')` 失败，表明当前数据源中**不存在 issue #16** 的记录。因此，无法提供该 issue 的标题和状态信息。建议核对 issue 编号是否正确，或确认该 issue 是否已被归档、删除或移至其他仓库/系统。", "final": true}, "cursor": "1d324cf018814193af88841fd683d5f1:316"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 317, "ts_ms": 135883, "agent_role": "critic", "event_type": "node.progress", "payload": {"subtasks": [{"id": "1d324cf018814193af88841fd683d5f1:2", "subtask_id": "1d324cf018814193af88841fd683d5f1:2", "alias": "t1", "type": "tool", "input": "16", "tool": "get_issue_by_number", "depends_on": []}], "critic_verdict": {"outcome": "retry_planner", "reason": "error_nonempty_allowlist"}, "rebinding_count": 0, "subtask_result": []}, "cursor": "1d324cf018814193af88841fd683d5f1:317"}
+
+: keepalive
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 318, "ts_ms": 174763, "agent_role": "supervisor", "event_type": "node.progress", "payload": {"subtasks": [{"id": "1d324cf018814193af88841fd683d5f1:3", "subtask_id": "1d324cf018814193af88841fd683d5f1:3", "alias": "t1", "type": "tool", "input": "16", "tool": "get_issue_by_number", "depends_on": []}]}, "cursor": "1d324cf018814193af88841fd683d5f1:318"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 319, "ts_ms": 174766, "agent_role": "subtask_join", "event_type": "node.progress", "payload": {"keys": ["inflight_subtask_ids"]}, "cursor": "1d324cf018814193af88841fd683d5f1:319"}
+
+event: subtask.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 320, "ts_ms": 174767, "agent_role": "tool_exec", "event_type": "subtask.progress", "payload": {"status": "running", "subtask_id": "1d324cf018814193af88841fd683d5f1:3", "type": "tool", "input": "16", "message": "开始工具调用：16"}, "cursor": "1d324cf018814193af88841fd683d5f1:320"}
+
+event: subtask.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 321, "ts_ms": 174783, "agent_role": "tool_exec", "event_type": "subtask.progress", "payload": {"subtask_result": {"id": "1d324cf018814193af88841fd683d5f1:3", "subtask_id": "1d324cf018814193af88841fd683d5f1:3", "type": "tool", "input": "16", "alias": "t1", "tool": "get_issue_by_number", "error": "LookupError('issue_not_found')"}, "status": "done", "message": "子任务失败：LookupError('issue_not_found')"}, "cursor": "1d324cf018814193af88841fd683d5f1:321"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 322, "ts_ms": 174786, "agent_role": "subtask_join", "event_type": "node.progress", "payload": {"keys": ["inflight_subtask_ids"]}, "cursor": "1d324cf018814193af88841fd683d5f1:322"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 323, "ts_ms": 174789, "agent_role": "observe", "event_type": "node.progress", "payload": {"keys": ["hitl_requests", "react_observation", "react_round", "supervisor_step_count"]}, "cursor": "1d324cf018814193af88841fd683d5f1:323"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 324, "ts_ms": 201248, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:324"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 325, "ts_ms": 201270, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "###"}, "cursor": "1d324cf018814193af88841fd683d5f1:325"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 326, "ts_ms": 201296, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:326"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 327, "ts_ms": 201317, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "子"}, "cursor": "1d324cf018814193af88841fd683d5f1:327"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 328, "ts_ms": 201340, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "任务"}, "cursor": "1d324cf018814193af88841fd683d5f1:328"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 329, "ts_ms": 201377, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "执行"}, "cursor": "1d324cf018814193af88841fd683d5f1:329"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 330, "ts_ms": 201387, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "结果"}, "cursor": "1d324cf018814193af88841fd683d5f1:330"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 331, "ts_ms": 201412, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:331"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 332, "ts_ms": 201435, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:332"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 333, "ts_ms": 201458, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "子"}, "cursor": "1d324cf018814193af88841fd683d5f1:333"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 334, "ts_ms": 201483, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "任务"}, "cursor": "1d324cf018814193af88841fd683d5f1:334"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 335, "ts_ms": 201506, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:335"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 336, "ts_ms": 201530, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:336"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 337, "ts_ms": 201553, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:337"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 338, "ts_ms": 201584, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " (`"}, "cursor": "1d324cf018814193af88841fd683d5f1:338"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 339, "ts_ms": 201607, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:339"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 340, "ts_ms": 201624, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "d"}, "cursor": "1d324cf018814193af88841fd683d5f1:340"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 341, "ts_ms": 201646, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "3"}, "cursor": "1d324cf018814193af88841fd683d5f1:341"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 342, "ts_ms": 201670, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "2"}, "cursor": "1d324cf018814193af88841fd683d5f1:342"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 343, "ts_ms": 201694, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "4"}, "cursor": "1d324cf018814193af88841fd683d5f1:343"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 344, "ts_ms": 201718, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "cf"}, "cursor": "1d324cf018814193af88841fd683d5f1:344"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 345, "ts_ms": 201810, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "0"}, "cursor": "1d324cf018814193af88841fd683d5f1:345"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 346, "ts_ms": 201811, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:346"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 347, "ts_ms": 201811, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "8"}, "cursor": "1d324cf018814193af88841fd683d5f1:347"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 348, "ts_ms": 201839, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "8"}, "cursor": "1d324cf018814193af88841fd683d5f1:348"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 349, "ts_ms": 201839, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:349"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 350, "ts_ms": 201858, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "4"}, "cursor": "1d324cf018814193af88841fd683d5f1:350"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 351, "ts_ms": 201887, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:351"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 352, "ts_ms": 201913, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "9"}, "cursor": "1d324cf018814193af88841fd683d5f1:352"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 353, "ts_ms": 201927, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "3"}, "cursor": "1d324cf018814193af88841fd683d5f1:353"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 354, "ts_ms": 201964, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "af"}, "cursor": "1d324cf018814193af88841fd683d5f1:354"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 355, "ts_ms": 201976, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "8"}, "cursor": "1d324cf018814193af88841fd683d5f1:355"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 356, "ts_ms": 202000, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "8"}, "cursor": "1d324cf018814193af88841fd683d5f1:356"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 357, "ts_ms": 202026, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "8"}, "cursor": "1d324cf018814193af88841fd683d5f1:357"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 358, "ts_ms": 202108, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "4"}, "cursor": "1d324cf018814193af88841fd683d5f1:358"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 359, "ts_ms": 202109, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:359"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 360, "ts_ms": 202109, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "fd"}, "cursor": "1d324cf018814193af88841fd683d5f1:360"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 361, "ts_ms": 202125, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "6"}, "cursor": "1d324cf018814193af88841fd683d5f1:361"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 362, "ts_ms": 202140, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "8"}, "cursor": "1d324cf018814193af88841fd683d5f1:362"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 363, "ts_ms": 202165, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "3"}, "cursor": "1d324cf018814193af88841fd683d5f1:363"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 364, "ts_ms": 202189, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "d"}, "cursor": "1d324cf018814193af88841fd683d5f1:364"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 365, "ts_ms": 202213, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "5"}, "cursor": "1d324cf018814193af88841fd683d5f1:365"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 366, "ts_ms": 202264, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "f"}, "cursor": "1d324cf018814193af88841fd683d5f1:366"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 367, "ts_ms": 202403, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:367"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 368, "ts_ms": 202404, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": ":"}, "cursor": "1d324cf018814193af88841fd683d5f1:368"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 369, "ts_ms": 202404, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "2"}, "cursor": "1d324cf018814193af88841fd683d5f1:369"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 370, "ts_ms": 202406, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`)"}, "cursor": "1d324cf018814193af88841fd683d5f1:370"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 371, "ts_ms": 202407, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:371"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 372, "ts_ms": 202407, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:372"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 373, "ts_ms": 202410, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:373"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 374, "ts_ms": 202440, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "来源"}, "cursor": "1d324cf018814193af88841fd683d5f1:374"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 375, "ts_ms": 202460, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "/"}, "cursor": "1d324cf018814193af88841fd683d5f1:375"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 376, "ts_ms": 202508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "类型"}, "cursor": "1d324cf018814193af88841fd683d5f1:376"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 377, "ts_ms": 202509, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:377"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 378, "ts_ms": 202642, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:378"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 379, "ts_ms": 202668, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "工具"}, "cursor": "1d324cf018814193af88841fd683d5f1:379"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 380, "ts_ms": 202682, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "查询"}, "cursor": "1d324cf018814193af88841fd683d5f1:380"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 381, "ts_ms": 202710, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " (`"}, "cursor": "1d324cf018814193af88841fd683d5f1:381"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 382, "ts_ms": 202733, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "get"}, "cursor": "1d324cf018814193af88841fd683d5f1:382"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 383, "ts_ms": 202755, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:383"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 384, "ts_ms": 202861, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_by"}, "cursor": "1d324cf018814193af88841fd683d5f1:384"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 385, "ts_ms": 202861, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_number"}, "cursor": "1d324cf018814193af88841fd683d5f1:385"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 386, "ts_ms": 202861, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`)"}, "cursor": "1d324cf018814193af88841fd683d5f1:386"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 387, "ts_ms": 202861, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:387"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 388, "ts_ms": 202872, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:388"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 389, "ts_ms": 202897, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:389"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 390, "ts_ms": 202916, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "输入"}, "cursor": "1d324cf018814193af88841fd683d5f1:390"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 391, "ts_ms": 202942, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "参数"}, "cursor": "1d324cf018814193af88841fd683d5f1:391"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 392, "ts_ms": 202965, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:392"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 393, "ts_ms": 203019, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:393"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 394, "ts_ms": 203019, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:394"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 395, "ts_ms": 203040, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:395"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 396, "ts_ms": 203060, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "6"}, "cursor": "1d324cf018814193af88841fd683d5f1:396"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 397, "ts_ms": 203083, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:397"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 398, "ts_ms": 203107, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:398"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 399, "ts_ms": 203132, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:399"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 400, "ts_ms": 203157, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:400"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 401, "ts_ms": 203181, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "执行"}, "cursor": "1d324cf018814193af88841fd683d5f1:401"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 402, "ts_ms": 203224, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "状态"}, "cursor": "1d324cf018814193af88841fd683d5f1:402"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 403, "ts_ms": 203234, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:403"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 404, "ts_ms": 203248, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:404"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 405, "ts_ms": 203295, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "❌"}, "cursor": "1d324cf018814193af88841fd683d5f1:405"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 406, "ts_ms": 203318, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:406"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 407, "ts_ms": 203347, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "失败"}, "cursor": "1d324cf018814193af88841fd683d5f1:407"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 408, "ts_ms": 203392, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:408"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 409, "ts_ms": 203393, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:409"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 410, "ts_ms": 203414, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:410"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 411, "ts_ms": 203438, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "错误"}, "cursor": "1d324cf018814193af88841fd683d5f1:411"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 412, "ts_ms": 203460, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "信息"}, "cursor": "1d324cf018814193af88841fd683d5f1:412"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 413, "ts_ms": 203484, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:413"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 414, "ts_ms": 203511, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:414"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 415, "ts_ms": 203537, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:415"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 416, "ts_ms": 203556, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "Lookup"}, "cursor": "1d324cf018814193af88841fd683d5f1:416"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 417, "ts_ms": 203580, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "Error"}, "cursor": "1d324cf018814193af88841fd683d5f1:417"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 418, "ts_ms": 203603, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "('"}, "cursor": "1d324cf018814193af88841fd683d5f1:418"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 419, "ts_ms": 203639, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:419"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 420, "ts_ms": 203651, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_not"}, "cursor": "1d324cf018814193af88841fd683d5f1:420"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 421, "ts_ms": 203673, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_found"}, "cursor": "1d324cf018814193af88841fd683d5f1:421"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 422, "ts_ms": 203697, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "')"}, "cursor": "1d324cf018814193af88841fd683d5f1:422"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 423, "ts_ms": 203722, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:423"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 424, "ts_ms": 203746, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:424"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 425, "ts_ms": 203772, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:425"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 426, "ts_ms": 203793, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "子"}, "cursor": "1d324cf018814193af88841fd683d5f1:426"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 427, "ts_ms": 203909, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "任务"}, "cursor": "1d324cf018814193af88841fd683d5f1:427"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 428, "ts_ms": 203910, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:428"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 429, "ts_ms": 203910, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "2"}, "cursor": "1d324cf018814193af88841fd683d5f1:429"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 430, "ts_ms": 203910, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:430"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 431, "ts_ms": 203910, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " (`"}, "cursor": "1d324cf018814193af88841fd683d5f1:431"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 432, "ts_ms": 203936, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:432"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 433, "ts_ms": 203961, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "d"}, "cursor": "1d324cf018814193af88841fd683d5f1:433"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 434, "ts_ms": 203982, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "3"}, "cursor": "1d324cf018814193af88841fd683d5f1:434"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 435, "ts_ms": 204005, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "2"}, "cursor": "1d324cf018814193af88841fd683d5f1:435"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 436, "ts_ms": 204027, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "4"}, "cursor": "1d324cf018814193af88841fd683d5f1:436"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 437, "ts_ms": 204061, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "cf"}, "cursor": "1d324cf018814193af88841fd683d5f1:437"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 438, "ts_ms": 204075, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "0"}, "cursor": "1d324cf018814193af88841fd683d5f1:438"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 439, "ts_ms": 204099, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:439"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 440, "ts_ms": 204145, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "8"}, "cursor": "1d324cf018814193af88841fd683d5f1:440"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 441, "ts_ms": 204147, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "8"}, "cursor": "1d324cf018814193af88841fd683d5f1:441"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 442, "ts_ms": 204240, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:442"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 443, "ts_ms": 204361, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "4"}, "cursor": "1d324cf018814193af88841fd683d5f1:443"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 444, "ts_ms": 204362, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:444"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 445, "ts_ms": 204378, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "9"}, "cursor": "1d324cf018814193af88841fd683d5f1:445"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 446, "ts_ms": 204496, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "3"}, "cursor": "1d324cf018814193af88841fd683d5f1:446"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 447, "ts_ms": 206072, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "af"}, "cursor": "1d324cf018814193af88841fd683d5f1:447"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 448, "ts_ms": 207108, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "8"}, "cursor": "1d324cf018814193af88841fd683d5f1:448"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 449, "ts_ms": 208119, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "8"}, "cursor": "1d324cf018814193af88841fd683d5f1:449"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 450, "ts_ms": 209185, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "8"}, "cursor": "1d324cf018814193af88841fd683d5f1:450"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 451, "ts_ms": 210339, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "4"}, "cursor": "1d324cf018814193af88841fd683d5f1:451"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 452, "ts_ms": 211577, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:452"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 453, "ts_ms": 211718, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "fd"}, "cursor": "1d324cf018814193af88841fd683d5f1:453"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 454, "ts_ms": 211737, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "6"}, "cursor": "1d324cf018814193af88841fd683d5f1:454"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 455, "ts_ms": 211779, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "8"}, "cursor": "1d324cf018814193af88841fd683d5f1:455"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 456, "ts_ms": 211784, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "3"}, "cursor": "1d324cf018814193af88841fd683d5f1:456"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 457, "ts_ms": 211807, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "d"}, "cursor": "1d324cf018814193af88841fd683d5f1:457"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 458, "ts_ms": 211830, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "5"}, "cursor": "1d324cf018814193af88841fd683d5f1:458"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 459, "ts_ms": 211854, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "f"}, "cursor": "1d324cf018814193af88841fd683d5f1:459"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 460, "ts_ms": 211877, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:460"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 461, "ts_ms": 211926, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": ":"}, "cursor": "1d324cf018814193af88841fd683d5f1:461"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 462, "ts_ms": 211926, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "3"}, "cursor": "1d324cf018814193af88841fd683d5f1:462"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 463, "ts_ms": 211950, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`)"}, "cursor": "1d324cf018814193af88841fd683d5f1:463"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 464, "ts_ms": 211973, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:464"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 465, "ts_ms": 211997, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:465"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 466, "ts_ms": 212021, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:466"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 467, "ts_ms": 212045, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "来源"}, "cursor": "1d324cf018814193af88841fd683d5f1:467"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 468, "ts_ms": 212069, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "/"}, "cursor": "1d324cf018814193af88841fd683d5f1:468"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 469, "ts_ms": 212092, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "类型"}, "cursor": "1d324cf018814193af88841fd683d5f1:469"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 470, "ts_ms": 212139, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:470"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 471, "ts_ms": 212143, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:471"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 472, "ts_ms": 212163, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "工具"}, "cursor": "1d324cf018814193af88841fd683d5f1:472"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 473, "ts_ms": 212189, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "查询"}, "cursor": "1d324cf018814193af88841fd683d5f1:473"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 474, "ts_ms": 212296, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " (`"}, "cursor": "1d324cf018814193af88841fd683d5f1:474"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 475, "ts_ms": 212297, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "get"}, "cursor": "1d324cf018814193af88841fd683d5f1:475"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 476, "ts_ms": 212297, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:476"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 477, "ts_ms": 212297, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_by"}, "cursor": "1d324cf018814193af88841fd683d5f1:477"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 478, "ts_ms": 212326, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_number"}, "cursor": "1d324cf018814193af88841fd683d5f1:478"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 479, "ts_ms": 212328, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`)"}, "cursor": "1d324cf018814193af88841fd683d5f1:479"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 480, "ts_ms": 212355, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:480"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 481, "ts_ms": 212374, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:481"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 482, "ts_ms": 212398, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:482"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 483, "ts_ms": 212422, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "输入"}, "cursor": "1d324cf018814193af88841fd683d5f1:483"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 484, "ts_ms": 212447, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "参数"}, "cursor": "1d324cf018814193af88841fd683d5f1:484"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 485, "ts_ms": 212470, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:485"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 486, "ts_ms": 212494, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:486"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 487, "ts_ms": 212517, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:487"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 488, "ts_ms": 212556, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:488"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 489, "ts_ms": 212566, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "6"}, "cursor": "1d324cf018814193af88841fd683d5f1:489"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 490, "ts_ms": 212591, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:490"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 491, "ts_ms": 212612, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:491"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 492, "ts_ms": 212635, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:492"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 493, "ts_ms": 212665, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:493"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 494, "ts_ms": 212683, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "执行"}, "cursor": "1d324cf018814193af88841fd683d5f1:494"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 495, "ts_ms": 212705, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "状态"}, "cursor": "1d324cf018814193af88841fd683d5f1:495"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 496, "ts_ms": 212731, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:496"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 497, "ts_ms": 212754, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:497"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 498, "ts_ms": 212827, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "❌"}, "cursor": "1d324cf018814193af88841fd683d5f1:498"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 499, "ts_ms": 212827, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:499"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 500, "ts_ms": 212851, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "失败"}, "cursor": "1d324cf018814193af88841fd683d5f1:500"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 501, "ts_ms": 212872, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:501"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 502, "ts_ms": 212897, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "-"}, "cursor": "1d324cf018814193af88841fd683d5f1:502"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 503, "ts_ms": 212919, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " **"}, "cursor": "1d324cf018814193af88841fd683d5f1:503"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 504, "ts_ms": 212943, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "错误"}, "cursor": "1d324cf018814193af88841fd683d5f1:504"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 505, "ts_ms": 212972, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "信息"}, "cursor": "1d324cf018814193af88841fd683d5f1:505"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 506, "ts_ms": 212994, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:506"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 507, "ts_ms": 213015, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:507"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 508, "ts_ms": 213052, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:508"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 509, "ts_ms": 213065, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "Lookup"}, "cursor": "1d324cf018814193af88841fd683d5f1:509"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 510, "ts_ms": 213090, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "Error"}, "cursor": "1d324cf018814193af88841fd683d5f1:510"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 511, "ts_ms": 213110, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "('"}, "cursor": "1d324cf018814193af88841fd683d5f1:511"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 512, "ts_ms": 213133, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:512"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 513, "ts_ms": 213158, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_not"}, "cursor": "1d324cf018814193af88841fd683d5f1:513"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 514, "ts_ms": 213180, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_found"}, "cursor": "1d324cf018814193af88841fd683d5f1:514"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 515, "ts_ms": 213205, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "')"}, "cursor": "1d324cf018814193af88841fd683d5f1:515"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 516, "ts_ms": 213227, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:516"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 517, "ts_ms": 213347, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:517"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 518, "ts_ms": 213347, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "---"}, "cursor": "1d324cf018814193af88841fd683d5f1:518"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 519, "ts_ms": 213347, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:519"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 520, "ts_ms": 213347, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "###"}, "cursor": "1d324cf018814193af88841fd683d5f1:520"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 521, "ts_ms": 213348, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:521"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 522, "ts_ms": 213372, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "综合"}, "cursor": "1d324cf018814193af88841fd683d5f1:522"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 523, "ts_ms": 213394, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "结论"}, "cursor": "1d324cf018814193af88841fd683d5f1:523"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 524, "ts_ms": 213416, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:524"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 525, "ts_ms": 213457, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "本次"}, "cursor": "1d324cf018814193af88841fd683d5f1:525"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 526, "ts_ms": 213536, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "任务"}, "cursor": "1d324cf018814193af88841fd683d5f1:526"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 527, "ts_ms": 213537, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "共"}, "cursor": "1d324cf018814193af88841fd683d5f1:527"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 528, "ts_ms": 213539, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "触发"}, "cursor": "1d324cf018814193af88841fd683d5f1:528"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 529, "ts_ms": 213539, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "两次"}, "cursor": "1d324cf018814193af88841fd683d5f1:529"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 530, "ts_ms": 213557, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "工具"}, "cursor": "1d324cf018814193af88841fd683d5f1:530"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 531, "ts_ms": 213587, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "查询"}, "cursor": "1d324cf018814193af88841fd683d5f1:531"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 532, "ts_ms": 213726, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "1d324cf018814193af88841fd683d5f1:532"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 533, "ts_ms": 213748, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "均"}, "cursor": "1d324cf018814193af88841fd683d5f1:533"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 534, "ts_ms": 213772, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "因"}, "cursor": "1d324cf018814193af88841fd683d5f1:534"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 535, "ts_ms": 213795, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "系统"}, "cursor": "1d324cf018814193af88841fd683d5f1:535"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 536, "ts_ms": 213820, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "返回"}, "cursor": "1d324cf018814193af88841fd683d5f1:536"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 537, "ts_ms": 213841, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " `"}, "cursor": "1d324cf018814193af88841fd683d5f1:537"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 538, "ts_ms": 213864, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "Lookup"}, "cursor": "1d324cf018814193af88841fd683d5f1:538"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 539, "ts_ms": 213893, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "Error"}, "cursor": "1d324cf018814193af88841fd683d5f1:539"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 540, "ts_ms": 213913, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "('"}, "cursor": "1d324cf018814193af88841fd683d5f1:540"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 541, "ts_ms": 213935, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:541"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 542, "ts_ms": 213980, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_not"}, "cursor": "1d324cf018814193af88841fd683d5f1:542"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 543, "ts_ms": 213986, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "_found"}, "cursor": "1d324cf018814193af88841fd683d5f1:543"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 544, "ts_ms": 214048, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "')"}, "cursor": "1d324cf018814193af88841fd683d5f1:544"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 545, "ts_ms": 214048, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:545"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 546, "ts_ms": 214055, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:546"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 547, "ts_ms": 214084, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "而"}, "cursor": "1d324cf018814193af88841fd683d5f1:547"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 548, "ts_ms": 214122, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "执行"}, "cursor": "1d324cf018814193af88841fd683d5f1:548"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 549, "ts_ms": 214127, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "失败"}, "cursor": "1d324cf018814193af88841fd683d5f1:549"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 550, "ts_ms": 214150, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "。"}, "cursor": "1d324cf018814193af88841fd683d5f1:550"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 551, "ts_ms": 214211, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "结果表明"}, "cursor": "1d324cf018814193af88841fd683d5f1:551"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 552, "ts_ms": 214212, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "1d324cf018814193af88841fd683d5f1:552"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 553, "ts_ms": 214233, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "当前"}, "cursor": "1d324cf018814193af88841fd683d5f1:553"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 554, "ts_ms": 214245, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " Issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:554"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 555, "ts_ms": 214273, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:555"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 556, "ts_ms": 214294, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "库"}, "cursor": "1d324cf018814193af88841fd683d5f1:556"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 557, "ts_ms": 214400, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "中"}, "cursor": "1d324cf018814193af88841fd683d5f1:557"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 558, "ts_ms": 214400, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "不存在"}, "cursor": "1d324cf018814193af88841fd683d5f1:558"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 559, "ts_ms": 214400, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "编号"}, "cursor": "1d324cf018814193af88841fd683d5f1:559"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 560, "ts_ms": 214401, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "为"}, "cursor": "1d324cf018814193af88841fd683d5f1:560"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 561, "ts_ms": 214412, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " `"}, "cursor": "1d324cf018814193af88841fd683d5f1:561"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 562, "ts_ms": 214435, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "#"}, "cursor": "1d324cf018814193af88841fd683d5f1:562"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 563, "ts_ms": 214458, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:563"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 564, "ts_ms": 214481, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "6"}, "cursor": "1d324cf018814193af88841fd683d5f1:564"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 565, "ts_ms": 214508, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "`"}, "cursor": "1d324cf018814193af88841fd683d5f1:565"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 566, "ts_ms": 214530, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:566"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 567, "ts_ms": 214552, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "的记录"}, "cursor": "1d324cf018814193af88841fd683d5f1:567"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 568, "ts_ms": 214588, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "1d324cf018814193af88841fd683d5f1:568"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 569, "ts_ms": 214602, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "或"}, "cursor": "1d324cf018814193af88841fd683d5f1:569"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 570, "ts_ms": 214626, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "该"}, "cursor": "1d324cf018814193af88841fd683d5f1:570"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 571, "ts_ms": 214659, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " Issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:571"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 572, "ts_ms": 214673, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:572"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 573, "ts_ms": 214698, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "已被"}, "cursor": "1d324cf018814193af88841fd683d5f1:573"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 574, "ts_ms": 214719, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "归档"}, "cursor": "1d324cf018814193af88841fd683d5f1:574"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 575, "ts_ms": 214743, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "/"}, "cursor": "1d324cf018814193af88841fd683d5f1:575"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 576, "ts_ms": 214767, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "删除"}, "cursor": "1d324cf018814193af88841fd683d5f1:576"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 577, "ts_ms": 214808, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "/"}, "cursor": "1d324cf018814193af88841fd683d5f1:577"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 578, "ts_ms": 214816, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "当前"}, "cursor": "1d324cf018814193af88841fd683d5f1:578"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 579, "ts_ms": 214838, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "会话"}, "cursor": "1d324cf018814193af88841fd683d5f1:579"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 580, "ts_ms": 214860, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "无"}, "cursor": "1d324cf018814193af88841fd683d5f1:580"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 581, "ts_ms": 214885, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "查看"}, "cursor": "1d324cf018814193af88841fd683d5f1:581"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 582, "ts_ms": 214911, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "权限"}, "cursor": "1d324cf018814193af88841fd683d5f1:582"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 583, "ts_ms": 214934, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "。"}, "cursor": "1d324cf018814193af88841fd683d5f1:583"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 584, "ts_ms": 214956, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "因此"}, "cursor": "1d324cf018814193af88841fd683d5f1:584"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 585, "ts_ms": 214979, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "，"}, "cursor": "1d324cf018814193af88841fd683d5f1:585"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 586, "ts_ms": 215005, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**"}, "cursor": "1d324cf018814193af88841fd683d5f1:586"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 587, "ts_ms": 215028, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "无法"}, "cursor": "1d324cf018814193af88841fd683d5f1:587"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 588, "ts_ms": 215052, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "提供"}, "cursor": "1d324cf018814193af88841fd683d5f1:588"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 589, "ts_ms": 215099, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:589"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 590, "ts_ms": 215099, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " #"}, "cursor": "1d324cf018814193af88841fd683d5f1:590"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 591, "ts_ms": 215123, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:591"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 592, "ts_ms": 215151, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "6"}, "cursor": "1d324cf018814193af88841fd683d5f1:592"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 593, "ts_ms": 215171, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:593"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 594, "ts_ms": 215194, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "的"}, "cursor": "1d324cf018814193af88841fd683d5f1:594"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 595, "ts_ms": 215218, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "标题"}, "cursor": "1d324cf018814193af88841fd683d5f1:595"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 596, "ts_ms": 215241, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "和"}, "cursor": "1d324cf018814193af88841fd683d5f1:596"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 597, "ts_ms": 215265, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "状态"}, "cursor": "1d324cf018814193af88841fd683d5f1:597"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 598, "ts_ms": 215305, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "**。"}, "cursor": "1d324cf018814193af88841fd683d5f1:598"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 599, "ts_ms": 215312, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:599"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 600, "ts_ms": 215336, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "建议"}, "cursor": "1d324cf018814193af88841fd683d5f1:600"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 601, "ts_ms": 215447, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "："}, "cursor": "1d324cf018814193af88841fd683d5f1:601"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 602, "ts_ms": 215447, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:602"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 603, "ts_ms": 215447, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "1"}, "cursor": "1d324cf018814193af88841fd683d5f1:603"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 604, "ts_ms": 215447, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "."}, "cursor": "1d324cf018814193af88841fd683d5f1:604"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 605, "ts_ms": 215454, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:605"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 606, "ts_ms": 215492, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "核对"}, "cursor": "1d324cf018814193af88841fd683d5f1:606"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 607, "ts_ms": 215501, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " Issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:607"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 608, "ts_ms": 215525, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:608"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 609, "ts_ms": 215548, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "编号"}, "cursor": "1d324cf018814193af88841fd683d5f1:609"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 610, "ts_ms": 215573, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "是否"}, "cursor": "1d324cf018814193af88841fd683d5f1:610"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 611, "ts_ms": 215598, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "准确"}, "cursor": "1d324cf018814193af88841fd683d5f1:611"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 612, "ts_ms": 215621, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "；"}, "cursor": "1d324cf018814193af88841fd683d5f1:612"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 613, "ts_ms": 215644, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:613"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 614, "ts_ms": 215668, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "2"}, "cursor": "1d324cf018814193af88841fd683d5f1:614"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 615, "ts_ms": 215716, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "."}, "cursor": "1d324cf018814193af88841fd683d5f1:615"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 616, "ts_ms": 215717, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:616"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 617, "ts_ms": 215740, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "检查"}, "cursor": "1d324cf018814193af88841fd683d5f1:617"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 618, "ts_ms": 215767, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "当前"}, "cursor": "1d324cf018814193af88841fd683d5f1:618"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 619, "ts_ms": 215787, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "账号"}, "cursor": "1d324cf018814193af88841fd683d5f1:619"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 620, "ts_ms": 215810, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "是否"}, "cursor": "1d324cf018814193af88841fd683d5f1:620"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 621, "ts_ms": 215837, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "具备"}, "cursor": "1d324cf018814193af88841fd683d5f1:621"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 622, "ts_ms": 215858, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "对应"}, "cursor": "1d324cf018814193af88841fd683d5f1:622"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 623, "ts_ms": 215881, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "仓库"}, "cursor": "1d324cf018814193af88841fd683d5f1:623"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 624, "ts_ms": 215906, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "/"}, "cursor": "1d324cf018814193af88841fd683d5f1:624"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 625, "ts_ms": 215932, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "项目的"}, "cursor": "1d324cf018814193af88841fd683d5f1:625"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 626, "ts_ms": 215980, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " Issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:626"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 627, "ts_ms": 215980, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:627"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 628, "ts_ms": 215999, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "查看"}, "cursor": "1d324cf018814193af88841fd683d5f1:628"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 629, "ts_ms": 216025, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "权限"}, "cursor": "1d324cf018814193af88841fd683d5f1:629"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 630, "ts_ms": 216047, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "；"}, "cursor": "1d324cf018814193af88841fd683d5f1:630"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 631, "ts_ms": 216073, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "\n"}, "cursor": "1d324cf018814193af88841fd683d5f1:631"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 632, "ts_ms": 216096, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "3"}, "cursor": "1d324cf018814193af88841fd683d5f1:632"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 633, "ts_ms": 216118, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "."}, "cursor": "1d324cf018814193af88841fd683d5f1:633"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 634, "ts_ms": 216144, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:634"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 635, "ts_ms": 216178, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "确认"}, "cursor": "1d324cf018814193af88841fd683d5f1:635"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 636, "ts_ms": 216189, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "该"}, "cursor": "1d324cf018814193af88841fd683d5f1:636"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 637, "ts_ms": 216228, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " Issue"}, "cursor": "1d324cf018814193af88841fd683d5f1:637"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 638, "ts_ms": 216239, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": " "}, "cursor": "1d324cf018814193af88841fd683d5f1:638"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 639, "ts_ms": 216264, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "是否"}, "cursor": "1d324cf018814193af88841fd683d5f1:639"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 640, "ts_ms": 216285, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "处于"}, "cursor": "1d324cf018814193af88841fd683d5f1:640"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 641, "ts_ms": 216311, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "已"}, "cursor": "1d324cf018814193af88841fd683d5f1:641"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 642, "ts_ms": 216332, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "关闭"}, "cursor": "1d324cf018814193af88841fd683d5f1:642"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 643, "ts_ms": 216357, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "或"}, "cursor": "1d324cf018814193af88841fd683d5f1:643"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 644, "ts_ms": 216492, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "隐藏"}, "cursor": "1d324cf018814193af88841fd683d5f1:644"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 645, "ts_ms": 216492, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "状态"}, "cursor": "1d324cf018814193af88841fd683d5f1:645"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 646, "ts_ms": 216492, "agent_role": "aggregator", "event_type": "answer", "payload": {"delta": "。"}, "cursor": "1d324cf018814193af88841fd683d5f1:646"}
+
+event: answer
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 647, "ts_ms": 216503, "agent_role": "aggregator", "event_type": "answer", "payload": {"content": "### 子任务执行结果\n\n**子任务 1** (`1d324cf018814193af88841fd683d5f1:2`)\n- **来源/类型**：工具查询 (`get_issue_by_number`)\n- **输入参数**：`16`\n- **执行状态**：❌ 失败\n- **错误信息**：`LookupError('issue_not_found')`\n\n**子任务 2** (`1d324cf018814193af88841fd683d5f1:3`)\n- **来源/类型**：工具查询 (`get_issue_by_number`)\n- **输入参数**：`16`\n- **执行状态**：❌ 失败\n- **错误信息**：`LookupError('issue_not_found')`\n\n---\n\n### 综合结论\n本次任务共触发两次工具查询，均因系统返回 `LookupError('issue_not_found')` 而执行失败。结果表明，当前 Issue 库中不存在编号为 `#16` 的记录，或该 Issue 已被归档/删除/当前会话无查看权限。因此，**无法提供 issue #16 的标题和状态**。\n\n建议：\n1. 核对 Issue 编号是否准确；\n2. 检查当前账号是否具备对应仓库/项目的 Issue 查看权限；\n3. 确认该 Issue 是否处于已关闭或隐藏状态。", "final": true}, "cursor": "1d324cf018814193af88841fd683d5f1:647"}
+
+event: node.progress
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 648, "ts_ms": 216511, "agent_role": "critic", "event_type": "node.progress", "payload": {"critic_verdict": {"outcome": "end", "reason": "budget_exhausted"}, "rebinding_count": 0}, "cursor": "1d324cf018814193af88841fd683d5f1:648"}
+
+event: done
+data: {"run_id": "1d324cf018814193af88841fd683d5f1", "seq": 649, "ts_ms": 216512, "agent_role": "system", "event_type": "done", "payload": {"run_id": "1d324cf018814193af88841fd683d5f1", "thread_id": "be39dbebc89b45e0995eb7645b81ebef", "latency_ms": 216512}, "cursor": "1d324cf018814193af88841fd683d5f1:649"}
+
