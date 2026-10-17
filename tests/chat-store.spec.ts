@@ -503,6 +503,20 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       expect(chat.threadId).toBeNull()
     })
 
+    it('http else 分支 403 tenant_header_mismatch：detail 机器串 → 中文映射（裁定 A/B · 观察项实录面）；未知串仍原文兜底（上行 query invalid 锁存）', () => {
+      const chat = useChatStore()
+      chat.sendMessage('首轮')
+
+      captured.onError?.({ kind: 'http', status: 403, message: 'tenant_header_mismatch' })
+
+      expect(chat.error).toEqual({
+        stage: 'http',
+        message: '租户状态已变化，请重新选择租户后再发送',
+        retryable: true,
+      })
+      expect(chat.threadId).toBeNull()
+    })
+
     it('401：清本地 id + 清 auth 会话（沿用 T2 跳登录）', async () => {
       const chat = await createRestoredChat('t-stored')
       const auth = useAuthStore()
@@ -754,7 +768,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       expect(chat.streaming).toBe(false)
       expect(chat.error).toEqual({
         stage: 'http',
-        message: 'Run is still in flight; retry after it settles.',
+        message: '回答仍在生成中，请稍后点「续看」接力',
         retryable: true,
       })
       // active-run 保留 · 手动「续看」即恢复（api FP-3 缓解成立）
