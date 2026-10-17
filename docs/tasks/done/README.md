@@ -61,6 +61,7 @@
 | 2026-10-17 | [`task_web_hitl_fobs_receipt.md`](./task_web_hitl_fobs_receipt.md) | T-W2 回执 · F-OBS-1/F-OBS-2 闭环复验 + 前端兜底三裁定（A 裁 latency_ms 假值 / B 留 model / C 409 现状）· TC1–TC5 全勾 · PR #65 MERGED `aef91f3` |
 | 2026-10-17 | [`task_web_lg_rag_sse_continue_reply.md`](./task_web_lg_rag_sse_continue_reply.md) | D3 · History 半截可见 + running 勿假续算 + error「继续回复」新 stream（`continue_from_run_id`）· TC-W1–W7 全勾 · 263 tests · PR #67 MERGED `028ed29` |
 | 2026-10-17 | [`task_web_tenant_context_chat.md`](./task_web_tenant_context_chat.md) | 阶段 T · Chat 请求租户上下文（F1=C `X-Ops-Tenant-Id` + A/B 切换 UI）· 五闸全 approved · W1–W6 + 跨租户负样本联调全勾（403/422/fail-closed）· 联调证据 PR #76 MERGED `ffff3ce` |
+| 2026-10-17 | [`task_web_http_error_i18n.md`](./task_web_http_error_i18n.md) | http 错误条机器串中文化（`localizeHttpErrorDetail` 七枚举+前缀脱敏+原文兜底 · `[http]` 前缀渲染层中文化 · 判据零污）· TC1–TC6 全勾 · test 294=293 绿+既有红 1 · PR #79 MERGED `5373e5a` |
 | 2026-09-08 | [`task_web_fix_chat_live_reactivity.md`](./task_web_fix_chat_live_reactivity.md) | 修复：pushMessage 返回响应式代理（raw 突变绕过 Vue effect 致实流零渲染） · PR #43 MERGED |
 | 2026-09-08 | [`task_web_lg_rag_sse_subtask_message.md`](./task_web_lg_rag_sse_subtask_message.md) | `lg-rag-sse-v1` · 消费 api `subtask.progress.message` 上屏（显式优先 · running 零前缀） · PR #41 MERGED |
 | 2026-09-08 | [`task_web_lg_rag_sse_progressive_reveal.md`](./task_web_lg_rag_sse_progressive_reveal.md) | `lg-rag-sse-v1` · 客户端 reveal 队列（subtask output 打字机 + answer 突发匀速） · PR #39 MERGED |
