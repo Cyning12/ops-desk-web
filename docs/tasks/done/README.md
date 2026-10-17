@@ -58,6 +58,8 @@
 | 2026-10-12 | [`task_web_capability_catalog.md`](./task_web_capability_catalog.md) | T-W3 · Capability 目录页（F5 · 九键投影 · role 显隐 · G-L1 图谱）· S5 双角色全过 · PR #60 MERGED · 归位 #62 |
 | 2026-10-17 | [`task_web_hitl_decision_surface.md`](./task_web_hitl_decision_surface.md) | HITL 审批决策面（pending 消费 · decide/resume 接管 · resume 后自动追帧 ≤10次/≤120s · 409 分流钉死「恢复进行中」≠「已被处理」）· PR #73 MERGED · TC1–TC18 + TC-L1~L5 全 PASS |
 | 2026-10-16 | [`task_web_hitl_resume_async_reverify.md`](./task_web_hitl_resume_async_reverify.md) | JC-F1 B 方案复验 · api resume 异步化 web 侧零改码实证（resume 34.77ms 根除 30.1s 掐断 · TC1–TC7 全 PASS）· api #252/#253 联合 CLOSE · 纯文档档待并 main |
+| 2026-10-17 | [`task_web_hitl_fobs_receipt.md`](./task_web_hitl_fobs_receipt.md) | T-W2 回执 · F-OBS-1/F-OBS-2 闭环复验 + 前端兜底三裁定（A 裁 latency_ms 假值 / B 留 model / C 409 现状）· TC1–TC5 全勾 · PR #65 MERGED `aef91f3` |
+| 2026-10-17 | [`task_web_lg_rag_sse_continue_reply.md`](./task_web_lg_rag_sse_continue_reply.md) | D3 · History 半截可见 + running 勿假续算 + error「继续回复」新 stream（`continue_from_run_id`）· TC-W1–W7 全勾 · 263 tests · PR #67 MERGED `028ed29` |
 | 2026-09-08 | [`task_web_fix_chat_live_reactivity.md`](./task_web_fix_chat_live_reactivity.md) | 修复：pushMessage 返回响应式代理（raw 突变绕过 Vue effect 致实流零渲染） · PR #43 MERGED |
 | 2026-09-08 | [`task_web_lg_rag_sse_subtask_message.md`](./task_web_lg_rag_sse_subtask_message.md) | `lg-rag-sse-v1` · 消费 api `subtask.progress.message` 上屏（显式优先 · running 零前缀） · PR #41 MERGED |
 | 2026-09-08 | [`task_web_lg_rag_sse_progressive_reveal.md`](./task_web_lg_rag_sse_progressive_reveal.md) | `lg-rag-sse-v1` · 客户端 reveal 队列（subtask output 打字机 + answer 突发匀速） · PR #39 MERGED |

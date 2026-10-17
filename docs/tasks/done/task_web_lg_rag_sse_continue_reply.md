@@ -1,6 +1,6 @@
 # Task：Web · D3 · History 半截可见 +「继续回复」CTA（对齐 api RunWorker）
 
-> **状态**：gates approved · **40 PASS**（2026-10-14 · `invoke_20261014_40_verify.md`）· 待 commit/PR/CLOSE  
+> **状态**：done（2026-10-17 CLOSE · PR #67 MERGED main `028ed29` · 三闸 approved · 40 PASS 263 tests 三门绿 · 归档 done/）  
 
 > **类型**：feature-lite / 前端实现（**非联调主交付** · Vitest 机断优先）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS；**禁止**本 task 改 api  
@@ -224,6 +224,7 @@ TC-W1–W5 纯前端机断；W6 过程；W7 钉非联调边界。
 
 | 日期 | 说明 |
 |------|------|
+| 2026-10-17 | v1.0 · PR #67 已合并 main `028ed29` → 迁 `done/` 收口（50+CLOSE · 00 代笔） |
 | 2026-10-14 | v0.3 · 40 自检 PASS：lint/test/build 复跑 · 263 · verify PASS · TC-W6 勾 · **未 commit** |
 | 2026-10-14 | v0.2 · 30 实现：F1–F5 · TC-W1–W5/W7 勾 · query 字面钉死 · wiki_delta · 图谱 n/a · **未 commit** · 建议派 40 |
 | 2026-10-14 | v0.1 · 00 代录三闸 approved · 可 30 |
