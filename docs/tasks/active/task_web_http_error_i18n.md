@@ -38,8 +38,8 @@
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
 | HG-TASK-DRAFT | **approved** | 20-R1, 30 | 2026-10-17 维护者令「继续下一个task」· 00 代录 |
-| HG-AUDIT-R1 | **pending** | **30** | 待 20-task-audit R1 审查文 PASS 后维护者签认（**禁代签**） |
-| HG-GRAPH-MODULES | **pending** | **30** | 待维护者签认（**禁代签**）；预判 n/a 成立（helper 落 src/stores/** pinia glob 内 · 无新一级模块） |
+| HG-AUDIT-R1 | **approved** | **30** | 2026-10-17 维护者签（「双闸全签 · 含裁定 C」· 点名确认 NIT-1 裁定 C）· 20 R1 PASS-with-NIT 在案 `docs/harness/reviews/task_web_http_error_i18n_audit_R1_20261017.md` · 00 代录 |
+| HG-GRAPH-MODULES | **approved** | **30** | 2026-10-17 维护者签（同上）· n/a 预判经 20 核成立（helper 落 src/stores/** pinia glob 内 · 无新一级模块）· 00 代录 |
 
 ---
 
