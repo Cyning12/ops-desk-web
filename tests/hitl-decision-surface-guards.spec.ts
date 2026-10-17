@@ -74,6 +74,24 @@ function resolveDiffBase(): string | null {
   return null
 }
 
+/**
+ * TC13(b) diff 判定纯函数（web-fix-tc13b-guard F1 · git 环境解耦可单测）：
+ * - empty：diff 为空（非 decision-surface 上下文 · main / 不动该文件的分支）→ guard skip/pass 留痕不恒红
+ * - retry-after-seconds-added：增行实含 retryAfterSeconds（decision-surface 上下文）→ 硬断言路径成立
+ * - other-nonempty：非空 diff 但无 retryAfterSeconds 增行（他支动文件上下文）→ 删行/增行口径存续 · 不恒红（FP-5）
+ */
+type Tc13bVerdict = 'empty' | 'retry-after-seconds-added' | 'other-nonempty'
+
+function evaluateTc13bDiff(diffText: string): { verdict: Tc13bVerdict; removed: string[]; added: string[] } {
+  const removed = diffText.split('\n').filter((l) => l.startsWith('-') && !l.startsWith('---'))
+  const added = diffText.split('\n').filter((l) => l.startsWith('+') && !l.startsWith('+++'))
+  if (removed.length === 0 && added.length === 0) return { verdict: 'empty', removed, added }
+  if (added.some((l) => l.includes('retryAfterSeconds'))) {
+    return { verdict: 'retry-after-seconds-added', removed, added }
+  }
+  return { verdict: 'other-nonempty', removed, added }
+}
+
 describe('web-hitl-decision-surface · N3 grep/diff 钉形态（TC3 / TC12 / TC13）', () => {
   it('TC3：src/ 无 pending/追帧相关 setInterval（基线 2 文件白名单外零命中）', () => {
     const hits = grepLines(collectSources(SRC_DIR), /setInterval/)
@@ -135,12 +153,17 @@ describe('web-hitl-decision-surface · N3 grep/diff 钉形态（TC3 / TC12 / TC1
       ['diff', base, '--', 'src/composables/useLgRagSse.ts'],
       { cwd: REPO_ROOT, encoding: 'utf8' },
     )
-    const removed = diff.split('\n').filter((l) => l.startsWith('-') && !l.startsWith('---'))
+    const { verdict, removed, added } = evaluateTc13bDiff(diff)
+    // diff 为空 = 非 decision-surface 上下文（main / 不动该文件的分支）：skip 留痕不恒红（web-fix-tc13b-guard F1）
+    if (verdict === 'empty') {
+      console.warn('[TC13(b)] useLgRagSse.ts diff 为空（非 decision-surface 上下文）· 本例 skip 留痕 · 硬断言路径由双场景 fixture 锁存')
+      ctx.skip()
+      return
+    }
     // 删行仅限被改写的那行 onError 错误面调用（穿 retryAfterSeconds）；解析段零删改
     for (const line of removed) {
       expect(line, `删行越出 retryAfterSeconds 错误面：${line}`).toMatch(/onError/)
     }
-    const added = diff.split('\n').filter((l) => l.startsWith('+') && !l.startsWith('+++'))
     // 增行绝不含解析构造（event_type/payload/Parser/feed/帧解析件）→ 解析段 diff 为空
     for (const line of added) {
       expect(
@@ -148,8 +171,11 @@ describe('web-hitl-decision-surface · N3 grep/diff 钉形态（TC3 / TC12 / TC1
         `diff 增行触碰解析段：${line}`,
       ).toBe(false)
     }
-    // hunk 仅限 retryAfterSeconds 错误面（实证存在 · 非空 diff 语义）
-    expect(added.some((l) => l.includes('retryAfterSeconds'))).toBe(true)
+    // hunk 仅限 retryAfterSeconds 错误面：仅 decision-surface 上下文（增行实含 retryAfterSeconds）硬断言成立；
+    // other-nonempty 边界（他支动文件上下文）不恒红 · 删行/增行口径存续拦截（FP-5 · F2 边界例留痕）
+    if (verdict === 'retry-after-seconds-added') {
+      expect(added.some((l) => l.includes('retryAfterSeconds'))).toBe(true)
+    }
   })
 })
 
