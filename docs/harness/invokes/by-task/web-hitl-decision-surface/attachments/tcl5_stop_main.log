@@ -1,0 +1,22 @@
+{
+  "steps": [
+    "stop: replaySeen=1 streamingReset=true timerCleared=true"
+  ],
+  "rid": "hitl_196871da08cb40b8a5bf",
+  "resume": {
+    "status": 200,
+    "replay": {
+      "run_id": "0ca54ae17fdf46a5bb8fcec3c1412065",
+      "cursor": "0ca54ae17fdf46a5bb8fcec3c1412065:7",
+      "events_persisted": 0,
+      "events_failed": 0,
+      "persisted": true,
+      "re_interrupted": false
+    }
+  },
+  "replaySeenBeforeStop": 1,
+  "streamingReset": true,
+  "replayAtStop": 1,
+  "replayAfter8s": 1,
+  "timerCleared": true
+}

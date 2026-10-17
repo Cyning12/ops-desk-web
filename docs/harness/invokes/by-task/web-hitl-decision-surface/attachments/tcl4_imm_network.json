@@ -1,0 +1,188 @@
+{
+  "net": [
+    {
+      "t": 1792228285733,
+      "method": "GET",
+      "url": "/src/api/http.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228285736,
+      "method": "GET",
+      "url": "/src/api/auth.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228285791,
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228285794,
+      "method": "GET",
+      "url": "/src/api/chatHistory.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228285795,
+      "method": "GET",
+      "url": "/src/api/chat.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228285795,
+      "method": "GET",
+      "url": "/src/api/hitl.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228285833,
+      "method": "GET",
+      "url": "/api/ops/chat/sessions/latest",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228285840,
+      "method": "GET",
+      "url": "/api/ops/hitl/pending",
+      "status": 200,
+      "retryAfter": null,
+      "body": "{\"items\":[{\"id\":\"hitl_519a9d3a624d4913ad45\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:31:29.100026+00:00\"},{\"id\":\"hitl_578a9f0e90fe4f848fe1\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:32:51.737097+00:00\"},{\"id\":\"hitl_f0f1e8ab440a42f8ba55\",\"run_id\":\"4dfe31da07744366800c6054e602fcde\",\"thread_id\":\"43194cf645f347f08fd25ce59d2a419b\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T08:53:20.432664+00:00\"},{\"id\":\"hitl_008b3906cb3b424c82f2\",\"run_id\":\"9038ec4ea8694634a8d3e09b99d985cb\",\"thread_id\":\"1594d729487b4826859c38c004f3d175\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T09:05:58.045162+00:00\"},{\"id\":\"hitl_5352631f481546ac94ed\",\"run_id\":\"9038ec4ea8694634a8d3e09b99d985cb\",\"thread_id\":\"1594d729487b4826859c38c004f3d175\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T09:07:16.831121+00:00\"}],\"count\":5}"
+    },
+    {
+      "t": 1792228285913,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/stream",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228317959,
+      "method": "POST",
+      "url": "/api/ops/hitl/requests/hitl_6330e9429e4647e29487/decide",
+      "status": 200,
+      "retryAfter": null,
+      "body": "{\"ok\":true,\"request\":{\"id\":\"hitl_6330e9429e4647e29487\",\"run_id\":\"043779de05d946fd9773e919b9694ae0\",\"thread_id\":\"89c1681266b34b4abdb501953e71be1c\",\"checkpoint_id\":null,\"tenant_id\":\"\",\"subtask_id\":\"043779de05d946fd9773e919b9694ae0:1\",\"blocked_by\":\"delegation_issue_hitl_required\",\"unlock_subtask_id\":\"043779de05d946fd9773e919b9694ae0:1\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"detail\":\"\",\"payload\":{\"observation\":{\"done\":1,\"round\":0,\"planned\":1},\"capability_id\":\"testing.write.echo\"},\"status\":\"approved\",\"decision_by\":\"admin\",\"decision_note\":\"\",\"decided_at\":\"2026-10-17T09:11:57.949062+00:00\",\"created_at\":\"2026-10-17T09:11:57.643414+00:00\",\"persisted\":true},\"resume\":{\"required\":false,\"auto_triggered\":true,\"method\":\"POST\",\"endpoint\":\"/api/ops/hitl/requests/hitl_6330e9429e4647e29487/resume\"}}"
+    },
+    {
+      "t": 1792228317995,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792228318002,
+      "method": "GET",
+      "url": "/api/ops/hitl/pending",
+      "status": 200,
+      "retryAfter": null,
+      "body": "{\"items\":[{\"id\":\"hitl_519a9d3a624d4913ad45\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:31:29.100026+00:00\"},{\"id\":\"hitl_578a9f0e90fe4f848fe1\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:32:51.737097+00:00\"},{\"id\":\"hitl_f0f1e8ab440a42f8ba55\",\"run_id\":\"4dfe31da07744366800c6054e602fcde\",\"thread_id\":\"43194cf645f347f08fd25ce59d2a419b\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T08:53:20.432664+00:00\"},{\"id\":\"hitl_008b3906cb3b424c82f2\",\"run_id\":\"9038ec4ea8694634a8d3e09b99d985cb\",\"thread_id\":\"1594d729487b4826859c38c004f3d175\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T09:05:58.045162+00:00\"},{\"id\":\"hitl_5352631f481546ac94ed\",\"run_id\":\"9038ec4ea8694634a8d3e09b99d985cb\",\"thread_id\":\"1594d729487b4826859c38c004f3d175\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T09:07:16.831121+00:00\"}],\"count\":5}"
+    },
+    {
+      "t": 1792228320019,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": [
+        {
+          "seq": 8,
+          "t": "hitl.resumed"
+        },
+        {
+          "seq": 9,
+          "t": "node.progress"
+        }
+      ]
+    },
+    {
+      "t": 1792228471586,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792228471586,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792228471586,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792228471586,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792228471586,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792228471586,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": [
+        {
+          "seq": 10,
+          "t": "node.progress"
+        },
+        {
+          "seq": 11,
+          "t": "node.progress"
+        },
+        {
+          "seq": 12,
+          "t": "subtask.progress"
+        }
+      ]
+    },
+    {
+      "t": 1792228471586,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792228471587,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    }
+  ],
+  "errors": [],
+  "extra": null
+}

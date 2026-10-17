@@ -1,0 +1,47 @@
+{
+  "steps": [
+    "curl decide 200 status=approved",
+    "ui decide 409 note=该申请已被处理",
+    "cleanup resume fired"
+  ],
+  "rid": "hitl_87d8ba9e15a249279a8d",
+  "preDecide": {
+    "ok": true,
+    "request": {
+      "id": "hitl_87d8ba9e15a249279a8d",
+      "run_id": "849cae8d24e44bf780095dbf62645e8d",
+      "thread_id": "d3fe57fdb4474217a9fbe8975200610f",
+      "checkpoint_id": null,
+      "tenant_id": "",
+      "subtask_id": "849cae8d24e44bf780095dbf62645e8d:1",
+      "blocked_by": "delegation_issue_hitl_required",
+      "unlock_subtask_id": "849cae8d24e44bf780095dbf62645e8d:1",
+      "reason": "委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））",
+      "detail": "",
+      "payload": {
+        "observation": {
+          "done": 1,
+          "round": 0,
+          "planned": 1
+        },
+        "capability_id": "testing.write.echo"
+      },
+      "status": "approved",
+      "decision_by": "admin",
+      "decision_note": "web40-l3a-predecide",
+      "decided_at": "2026-10-17T08:59:34.273058+00:00",
+      "created_at": "2026-10-17T08:59:34.120306+00:00",
+      "persisted": true
+    },
+    "resume": {
+      "required": true,
+      "method": "POST",
+      "endpoint": "/api/ops/hitl/requests/hitl_87d8ba9e15a249279a8d/resume"
+    }
+  },
+  "uiDecideStatus": 409,
+  "uiDecideBody": "{\"detail\":\"申请已是 approved，不接受重复决定\"}",
+  "cardNote": "该申请已被处理",
+  "hasProcessed": true,
+  "hasInProgress": false
+}

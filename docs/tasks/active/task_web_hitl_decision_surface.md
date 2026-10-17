@@ -185,11 +185,11 @@ SPEC §1 已钉：上游 HITL 后端三连变更（PR #250/#248/#252 · 全 MERG
 
 **40 · live 联调棒位（预留 · 对 ops-desk-api compose 环境 · 契约 freeze + live 实证）：**
 
-- [ ] **TC-L1（40 · 全链追帧）**：api compose 六 env 组起服 → 提问触发 write 工具 → `hitl.waiting` 卡片 → 批准 → resume 秒回 200 携 `replay.cursor` → 前端**自动追帧**（零手动点击）→ 终帧 `done{status:'resumed', latency_ms:int≥0, 无 model 键}` 逐键对拍（.sse/network 附件落盘）· 徽标实值 · 模型段不渲染 · `streaming=false`。
-- [ ] **TC-L2（40 · 在飞窗两形态）**：resume 秒回后追帧进行中 replay 立即打 → 实测命中形态照登（200 部分帧续追 或 409+Retry-After:2 退避 · **均属正确**）· 前端零错误条轰炸 · 退避间隔 ≥ 头秒数。
-- [ ] **TC-L3（40 · 409 分流 live 实证）**：在飞期重复 resume → 409「该申请的恢复正在执行中」→ 卡片「恢复进行中」· **零「已被处理」假相**；decide 重复提交 409 →「已被处理」。
-- [ ] **TC-L4（40 · 回归双链）**：驳回 resume 收工链通过（rejected 也可 resume 出结论）；immediate `resume_mode` 链（required=false 前端不链第二步 · 沉降后追帧终帧 resumed）。
-- [ ] **TC-L5（40 · 降级面照登）**：cursor 空串回退手动续看 / 追帧超限降级提示 / 手动停止清理——live 命中即照登，未命中以 Vitest 面为准判 n/a（不假造触发）。
+- [x] **TC-L1（40 · 全链追帧）**（PASS · invoke_20261017_40_live.md · 沉降 147s>墙钟 120s 超限降级属 FP-T5 预期正确 · 终帧 done{resumed,147017,无 model 键}逐键对拍+徽标逐位 match）：api compose 六 env 组起服 → 提问触发 write 工具 → `hitl.waiting` 卡片 → 批准 → resume 秒回 200 携 `replay.cursor` → 前端**自动追帧**（零手动点击）→ 终帧 `done{status:'resumed', latency_ms:int≥0, 无 model 键}` 逐键对拍（.sse/network 附件落盘）· 徽标实值 · 模型段不渲染 · `streaming=false`。
+- [x] **TC-L2（40 · 在飞窗两形态）**（PASS · 形态 A 200 部分帧续追 live 命中 ×2 · 形态 B 409+Retry-After live 未命中照登 · 以 Vitest TC8 面为准）：resume 秒回后追帧进行中 replay 立即打 → 实测命中形态照登（200 部分帧续追 或 409+Retry-After:2 退避 · **均属正确**）· 前端零错误条轰炸 · 退避间隔 ≥ 头秒数。
+- [x] **TC-L3（40 · 409 分流 live 实证）**（PASS · resume 在飞 409→「恢复进行中」零「已被处理」假相 · decide 重复 409→「已被处理」）：在飞期重复 resume → 409「该申请的恢复正在执行中」→ 卡片「恢复进行中」· **零「已被处理」假相**；decide 重复提交 409 →「已被处理」。
+- [x] **TC-L4（40 · 回归双链）**（PASS · 驳回收工链 done{waiting_approval,78813} · immediate required=false 前端零 resume 链第二步 · done{resumed,140627}）：驳回 resume 收工链通过（rejected 也可 resume 出结论）；immediate `resume_mode` 链（required=false 前端不链第二步 · 沉降后追帧终帧 resumed）。
+- [x] **TC-L5（40 · 降级面照登）**（PASS · 超限降级提示+手动停止清理 live 命中 · cursor 空串回退未命中判 n/a）：cursor 空串回退手动续看 / 追帧超限降级提示 / 手动停止清理——live 命中即照登，未命中以 Vitest 面为准判 n/a（不假造触发）。
 - [ ] **TC18（收口 · F7）**：10/20/30/40 invoke 齐 · wiki_delta 短注 · 本 task 验收回填 · `npx spec-wave task lint --file docs/tasks/active/task_web_hitl_decision_surface.md` PASS。
 
 ---
@@ -275,4 +275,5 @@ TC1–TC16 全机断：调用次数/顺序（TC1/TC2/TC4）· fake timers 退避
 | 日期 | 说明 |
 |------|------|
 | 2026-10-17 | v0 · 10-task 落稿（draft）：承 signed SPEC-web-hitl-decision-surface v0（HG-SPEC-SIGNOFF=approved · 含 D-A 定夺 S1）+ 20-spec-audit R1 pass；范围 F1–F7（D1–D4 + 40 live 棒位 + 落盘）· 非范围 12 条 · TC1–TC16（AC 一一映射）+ TC-L1–L5（40 预留）+ TC17 收口共 22 条 · failure_paths FP-H1~H13 全承 + FP-T1~T5 task 层增补共 18 行 · 追帧上限定稿 ≤10 次/≤120s · nit N1（真址 `chat.ts:569-597`）/N2（AC16 消歧）/N3（grep/diff 断言形态钉死）体内闭合 · R0–R5 思考轮（early_stop at R5）· 人工闸全 pending 未代签 · 零 git 操作 |
+| 2026-10-17 | v2 · 40 live 联调棒回填（invoke_20261017_40_live.md）：TC-L1~L5 全 PASS 勾选（环境=api master d3fd056 compose 六 env 组 + checkpointer=postgres · Playwright 驱动 /tmp 不入仓）· TC-L2 形态 B 未命中照登 n/a · 驱动脚本三 bug（HttpOnly cookie/const 重赋值/-d 引号层）全登 invoke 偏差节 · 拆台照登 · 闸态不动 |
 | 2026-10-17 | v1 · 20-task-audit R1 退回回填（B1/B2 + nit a · 以审查文 docs/harness/reviews/task_web_hitl_decision_surface_audit_R1_20261017.md 为准）：**B1** 新增 TC17（30 · 旧测 grep 影响面清点 · 行为变更类）——影响面四锚点经本帽真读复核（chat-store.spec.ts:745-752 · chat-store-hitl.spec.ts:475-482/:354/:589/:615-629 · done 帧断言族 :182-199/:202-213/:256-298 + chat-view.spec.ts:390-428）· 收口改 TC18 · 验收共 23 条（先例：done task R1 回填 AC17）；**B2** AC16①/② 归因更正五处+依赖表（signed SPEC-web-chat-history-hitl-ux §7 仅 AC1–AC15 无 AC16 · 真址 done task task_web_chat_history_hitl_ux.md:147 task 级验收项）；**nit a** FP-T4 chat-store it 数 65→66（`it(` 计数两轮复核 · 基线 263 口径不变）· 闸态不动全 pending · 零 git |

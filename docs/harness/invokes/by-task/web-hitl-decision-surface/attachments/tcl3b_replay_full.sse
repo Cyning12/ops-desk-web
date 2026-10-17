@@ -1,0 +1,54 @@
+event: run.start
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 1, "ts_ms": 0, "agent_role": "system", "event_type": "run.start", "payload": {"mode": "supervisor", "query": "这是一个需要调用工具的任务（就像查询 issue 状态一样）：请调用工具 testing.write.echo 回显一条备注 note=web40-l3b-1792227803061", "run_id": "a7f2212548fe43d8894fd1b05cc57d52", "thread_id": "4381c9bc2e424c0482efd9f61e1339df"}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:1"}
+
+event: node.progress
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 2, "ts_ms": 2341, "agent_role": "intent", "event_type": "node.progress", "payload": {"intent": {"domain": "ops_kb", "summary": "调用testing.write.echo工具回显一条备注", "risk_hint": "low", "needs_tool": true, "needs_skill": false, "is_composite": false}}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:2"}
+
+event: node.progress
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 3, "ts_ms": 2346, "agent_role": "strategy_builder", "event_type": "node.progress", "payload": {"allowed_capability_ids": ["utc_now_iso", "mock_get_issue_status", "mock_get_deploy_info", "get_issue_by_number", "get_pr_by_number", "testing.write.echo"]}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:3"}
+
+event: node.progress
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 4, "ts_ms": 6986, "agent_role": "supervisor", "event_type": "node.progress", "payload": {"subtasks": [{"id": "a7f2212548fe43d8894fd1b05cc57d52:1", "tool": "testing.write.echo", "type": "tool", "alias": "t1", "input": "note=web40-l3b-1792227803061", "depends_on": [], "subtask_id": "a7f2212548fe43d8894fd1b05cc57d52:1"}]}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:4"}
+
+event: node.progress
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 5, "ts_ms": 6992, "agent_role": "subtask_join", "event_type": "node.progress", "payload": {"subtask_result": {"id": "a7f2212548fe43d8894fd1b05cc57d52:1", "tool": "testing.write.echo", "type": "tool", "alias": "t1", "error": "委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））", "input": "note=web40-l3b-1792227803061", "blocked_by": "delegation_issue_hitl_required", "subtask_id": "a7f2212548fe43d8894fd1b05cc57d52:1", "hitl_required": true}}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:5"}
+
+event: hitl.waiting
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 6, "ts_ms": 6999, "agent_role": "system", "event_type": "hitl.waiting", "payload": {"round": 0, "reason": "hitl_waiting", "run_id": "a7f2212548fe43d8894fd1b05cc57d52", "requests": [{"id": "hitl_abec93b035b743398451", "reason": "委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））", "blocked_by": "delegation_issue_hitl_required", "subtask_id": "a7f2212548fe43d8894fd1b05cc57d52:1", "unlock_subtask_id": "a7f2212548fe43d8894fd1b05cc57d52:1"}], "thread_id": "4381c9bc2e424c0482efd9f61e1339df", "unpersisted": false, "checkpoint_id": null}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:6"}
+
+event: done
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 7, "ts_ms": 6999, "agent_role": "system", "event_type": "done", "payload": {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "status": "waiting_approval", "thread_id": "4381c9bc2e424c0482efd9f61e1339df", "latency_ms": 6999}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:7"}
+
+event: hitl.resumed
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 8, "ts_ms": 0, "agent_role": "system", "event_type": "hitl.resumed", "payload": {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "approved": ["a7f2212548fe43d8894fd1b05cc57d52:1"], "thread_id": "4381c9bc2e424c0482efd9f61e1339df", "decided_by": "admin"}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:8"}
+
+event: node.progress
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 9, "ts_ms": 18, "agent_role": "observe", "event_type": "node.progress", "payload": {"subtask_result": []}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:9"}
+
+event: node.progress
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 10, "ts_ms": 8299, "agent_role": "supervisor", "event_type": "node.progress", "payload": {"subtasks": [{"id": "a7f2212548fe43d8894fd1b05cc57d52:1", "tool": "testing.write.echo", "type": "tool", "alias": "t1", "input": "note=web40-l3b-1792227803061", "depends_on": [], "subtask_id": "a7f2212548fe43d8894fd1b05cc57d52:1"}, {"id": "a7f2212548fe43d8894fd1b05cc57d52:2", "type": "rag", "alias": "t1", "input": "这是一个需要调用工具的任务（就像查询 issue 状态一样）：请调用工具 testing.write.echo 回显一条备注 note=web40-l3b-1792227803061", "depends_on": [], "subtask_id": "a7f2212548fe43d8894fd1b05cc57d52:2"}], "subtask_result": []}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:10"}
+
+event: node.progress
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 11, "ts_ms": 8305, "agent_role": "subtask_join", "event_type": "node.progress", "payload": {"keys": ["inflight_subtask_ids"]}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:11"}
+
+event: subtask.progress
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 12, "ts_ms": 8321, "agent_role": "tool_exec", "event_type": "subtask.progress", "payload": {"status": "done", "message": "信息抽取完成（3 类有结果）", "subtask_result": {"id": "a7f2212548fe43d8894fd1b05cc57d52:1", "tool": "testing.write.echo", "type": "tool", "alias": "t1", "input": "note=web40-l3b-1792227803061", "output": {"note": "语义 mock · 无真实写操作（testing-write-capability 测试专用）", "tool": "testing_write_echo", "input": "note=web40-l3b-1792227803061", "written": false}, "subtask_id": "a7f2212548fe43d8894fd1b05cc57d52:1"}}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:12"}
+
+event: subtask.progress
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 13, "ts_ms": 75400, "agent_role": "rag_subtask", "event_type": "subtask.progress", "payload": {"status": "done", "message": "子任务完成：未检索到足够依据，无法给出有根据的回答。", "subtask_result": {"id": "a7f2212548fe43d8894fd1b05cc57d52:2", "type": "rag", "alias": "t1", "input": "这是一个需要调用工具的任务（就像查询 issue 状态一样）：请调用工具 testing.write.echo 回显一条备注 note=web40-l3b-1792227803061", "output": "未检索到足够依据，无法给出有根据的回答。", "chain_meta": {"hit_count": 0}, "subtask_id": "a7f2212548fe43d8894fd1b05cc57d52:2"}}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:13"}
+
+event: node.progress
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 14, "ts_ms": 75403, "agent_role": "subtask_join", "event_type": "node.progress", "payload": {"keys": ["inflight_subtask_ids"]}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:14"}
+
+event: node.progress
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 15, "ts_ms": 75405, "agent_role": "observe", "event_type": "node.progress", "payload": {"keys": ["hitl_requests", "react_observation", "react_round", "supervisor_step_count"]}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:15"}
+
+event: answer
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 16, "ts_ms": 110311, "agent_role": "aggregator", "event_type": "answer", "payload": {"final": true, "content": "## 子任务执行结果\n\n### 子任务 1：工具调用\n- **来源**：工具查询\n- **调用工具**：`testing.write.echo`\n- **输入参数**：`note=web40-l3b-1792227803061`\n- **返回结果**：\n  ```json\n  {\n    \"tool\": \"testing_write_echo\",\n    \"input\": \"note=web40-l3b-1792227803061\",\n    \"written\": false,\n    \"note\": \"语义 mock · 无真实写操作（testing-write-capability 测试专用）\"\n  }\n  ```\n- **状态说明**：工具调用成功执行。返回结果明确提示该接口为**语义 Mock 测试专用**，`written: false` 表示系统未执行任何真实的数据写入动作，仅完成了参数接收与回显。\n\n### 子任务 2：知识库检索\n- **来源**：RAG检索\n- **输入内容**：原始问题文本\n- **返回结果**：`未检索到足够依据，无法给出有根据的回答。`（`hit_count: 0`）\n- **状态说明**：检索失败/无匹配结果。知识库中未找到与该工具调用请求相关的操作指南或背景文档，如实记录无依据状态。\n\n---\n\n## 综合结论\n针对您“调用工具 `testing.write.echo` 回显备注 `note=web40-l3b-1792227803061`”的请求，系统已完成工具调用。核心结果如下：\n1. **工具执行结果**：参数已成功传入并回显，但由于该工具为 `testing-write-capability` 测试专用接口，实际状态为 **未写入**（`written: false`），仅作为语义模拟验证，请放心该操作不会产生任何真实数据变更。\n2. **知识库补充**：内部检索未命中相关文档，无额外配置或上下文说明。\n若您需要在生产环境中真实写入该备注，请替换为对应的正式写数据工具并重新发起调用。当前测试回显任务已按要求完成。"}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:16"}
+
+event: node.progress
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 17, "ts_ms": 110317, "agent_role": "critic", "event_type": "node.progress", "payload": {"critic_verdict": {"reason": "no_error", "outcome": "pass"}, "rebinding_count": 0}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:17"}
+
+event: done
+data: {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "seq": 18, "ts_ms": 110320, "agent_role": "system", "event_type": "done", "payload": {"run_id": "a7f2212548fe43d8894fd1b05cc57d52", "status": "resumed", "thread_id": "4381c9bc2e424c0482efd9f61e1339df", "latency_ms": 110320, "events_persisted": 10}, "cursor": "a7f2212548fe43d8894fd1b05cc57d52:18"}
+

@@ -1,0 +1,34 @@
+{
+  "steps": [
+    "decide=200 required=false resumeReqs=0 note=已批准 · 恢复进行中",
+    "settle=true terminal={\"seq\":18,\"payload\":{\"run_id\":\"043779de05d946fd9773e919b9694ae0\",\"status\":\"resumed\",\"thread_id\":\"89c1681266b34b4abdb501953e71be1c\",\"latency_ms\":140627,\"events_persisted\":10}}"
+  ],
+  "rid": "hitl_6330e9429e4647e29487",
+  "decide": {
+    "status": 200,
+    "resume": {
+      "required": false,
+      "auto_triggered": true,
+      "method": "POST",
+      "endpoint": "/api/ops/hitl/requests/hitl_6330e9429e4647e29487/resume"
+    }
+  },
+  "resumeReqCount": 0,
+  "cardNote": "已批准 · 恢复进行中",
+  "chaseStarted": true,
+  "settle": {
+    "settled": true,
+    "waitedMs": 150580,
+    "frameCount": 18,
+    "terminal": {
+      "seq": 18,
+      "payload": {
+        "run_id": "043779de05d946fd9773e919b9694ae0",
+        "status": "resumed",
+        "thread_id": "89c1681266b34b4abdb501953e71be1c",
+        "latency_ms": 140627,
+        "events_persisted": 10
+      }
+    }
+  }
+}

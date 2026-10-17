@@ -1,0 +1,68 @@
+{
+  "steps": [
+    "hitl.waiting card visible rid=hitl_b418d14793964f12a056",
+    "decide 200 50ms · resume 200 81ms cursor=2217e927ff3d48b7bdb0d1d7dc312d55:7",
+    "chase window done badge=null degrade=恢复仍在进行，可稍后手动续看",
+    "settle=false waited=361027ms frames=0",
+    "badge=完成 · 耗时 147017ms match=null modelSeg=false streamingFalse=true"
+  ],
+  "rid": "hitl_b418d14793964f12a056",
+  "triggerWaitMs": 34015,
+  "decide": {
+    "status": 200,
+    "ms": 50
+  },
+  "resume": {
+    "status": 200,
+    "ms": 81,
+    "replay": {
+      "run_id": "2217e927ff3d48b7bdb0d1d7dc312d55",
+      "cursor": "2217e927ff3d48b7bdb0d1d7dc312d55:7",
+      "events_persisted": 0,
+      "events_failed": 0,
+      "persisted": true,
+      "re_interrupted": false
+    },
+    "resumeKeys": [
+      "ok",
+      "request",
+      "resume",
+      "replay",
+      "ts"
+    ]
+  },
+  "chase": {
+    "samples": [
+      {
+        "t": 30006,
+        "note": "已批准 · 恢复进行中",
+        "hint": "",
+        "nReplay": 10,
+        "streaming": false
+      },
+      {
+        "t": 62013,
+        "note": "恢复仍在进行，可稍后手动续看",
+        "hint": "",
+        "nReplay": 10,
+        "streaming": false
+      }
+    ],
+    "badgeText": null,
+    "degradeNote": "恢复仍在进行，可稍后手动续看",
+    "chaseWindowMs": 62013
+  },
+  "runId": "2217e927ff3d48b7bdb0d1d7dc312d55",
+  "settle": {
+    "settled": false,
+    "waitedMs": 361027,
+    "frameCount": 0,
+    "terminal": null,
+    "seqContiguous": true,
+    "resumedCount": 0
+  },
+  "finalBadge": "完成 · 耗时 147017ms",
+  "badgeMatch": null,
+  "badgeHasModel": false,
+  "streamingFalse": true
+}
