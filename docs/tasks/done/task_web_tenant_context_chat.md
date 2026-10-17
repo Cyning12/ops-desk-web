@@ -1,6 +1,6 @@
 # Task：Web · 阶段 T · Chat 请求租户上下文
 
-> **状态**：`active` · **验收全勾** · **仅剩 CLOSE**（闸全 approved · 30 已完成 · 2026-10-17 hat 40 跨租户负样本 api 联调 PASS；CLOSE 归 00/维护者）  
+> **状态**：done（2026-10-17 CLOSE · 五闸全 approved · 验收全勾：W1–W6 + Playwright A/B 冒烟 + hat 40 跨租户负样本 api 联调 PASS（PR #76）· 归档 done/）  
 > **类型**：feature / 只读多租户客户端  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS  
 > **上游**：workspace `docs/contracts/api-v1-tenant-readonly-context-draft.md` · `docs/05-plan/06_stage_t_second_tenant_prep_v0_zh.md` · api `task_tenant_readonly_predicate`  
@@ -204,3 +204,4 @@ api 阶段 T 将拒绝「无租户 / 错租户」的只读查询。Web 主 Chat�
 | 2026-09-18 | 对齐契约 F1=C / F2 / F3 |
 | 2026-09-18 | F4 接受 · `HG-CONTRACT-FREEZE` approved |
 | 2026-10-17 | hat 40 跨租户负样本 api 联调 PASS（invoke_20261017_40_cross_tenant_verify）· 末项勾选 · 状态行刷新为仅剩 CLOSE（不 CLOSE · 归 00/维护者） |
+| 2026-10-17 | 50+CLOSE：联调证据并 main（PR #76 `ffff3ce`）→ 迁 `done/` 收口（00 代笔） |
