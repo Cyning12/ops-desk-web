@@ -31,7 +31,7 @@
 | **experience_capture** | `recommended` |
 | **kpi_aggregator** | `CLOSE` |
 | **freeze_id** | `lg-rag-sse-v1`（**只消费**；不改 event 表 · 不动 SSE 管线/解析段 · detail 原文透传语义不变） |
-| **related_pr** | 待开（勿 auto-merge） |
+| **related_pr** | PR #79（squash 并 main `5373e5a` · 2026-10-17 · CI check/frontend 双绿） |
 
 ### 人工闸
 
@@ -203,3 +203,4 @@ TC1 helper 纯函数直测（命中/前缀/兜底/空串四组字面断言）全
 | 日期 | 说明 |
 |------|------|
 | 2026-10-17 | v0 · 10 落稿：维护者令「继续下一个task」（00 代录 HG-TASK-DRAFT）· 观察项源 tenant-context-chat 40 invoke §5（PR #77）· 三裁定（A 映射表 helper / B 仅呈现面接入判据零污 / C stage 前缀渲染层中文化）· 锚点与后端七枚举全亲读核真（chat.ts 七落点 · useLgRagSse.ts:236-256 · ChatView.vue:273-291 · api tenant_context.py/router.py/history_router.py 行号钉死）· 基线实跑 283=282 绿+TC13(b) 既有红照登 · R0–R5 思考轮（early_stop at R5）· HG-AUDIT-R1/HG-GRAPH-MODULES pending 待人签 |
+| 2026-10-17 | v1 · CLOSE：PR #79 squash 并 main `5373e5a`（RED 24efd85 → GREEN c16feef · 新 src/stores/httpErrorI18n.ts 七枚举+前缀脱敏+原文兜底接入 chat.ts 七落点 + ChatView.vue:279 · test 294=293 绿 + TC13(b) 既有红照登零新增红 · lint/build 绿 · CI check/frontend 双绿）· 10/20/30 invoke 齐 · 残留：R-1 TC13(b) 修复另立 task web-fix-tc13b-guard（进行中）· R-2 后端新机器串走原文兜底不劣化待补录 · 00 迁 done |
