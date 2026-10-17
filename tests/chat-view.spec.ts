@@ -1,6 +1,7 @@
 import { flushPromises, mount } from '@vue/test-utils'
 import ElementPlus from 'element-plus'
 import { createPinia, setActivePinia, type Pinia } from 'pinia'
+import { nextTick } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ApiError } from '../src/api/http'
@@ -552,5 +553,24 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
     expect(wrapper.text()).toContain('435584ms')
     expect(wrapper.text()).not.toContain('模型')
     expect(wrapper.text()).toContain('恢复后的回答')
+  })
+
+  it('TC3：错误条 stage 前缀渲染层中文化（裁定 C）—— 标题不含 [http] 字面 · 含中文标签 · 未知 stage 原值透传', async () => {
+    const wrapper = mountView()
+    await flushPromises()
+    const chat = useChatStore()
+
+    chat.error = { stage: 'http', message: '租户状态已变化，请重新选择租户后再发送', retryable: true }
+    await nextTick()
+    const alertTitle = wrapper.find('.chat-page__alert .el-alert__title')
+    expect(alertTitle.exists()).toBe(true)
+    expect(alertTitle.text()).not.toContain('[http]')
+    expect(alertTitle.text()).toContain('请求失败')
+    // store state 的 stage 字面不动（chat-store 断言 stage:'http' 零回归）
+    expect(chat.error?.stage).toBe('http')
+
+    chat.error = { stage: 'weird-stage', message: 'm', retryable: true }
+    await nextTick()
+    expect(wrapper.find('.chat-page__alert .el-alert__title').text()).toContain('[weird-stage]')
   })
 })
