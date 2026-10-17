@@ -28,7 +28,7 @@ import { fetchLatestSession } from '../src/api/chat'
 import { fetchThreadHistory } from '../src/api/chatHistory'
 import type { ChatHistoryRun, ChatThreadHistoryPage } from '../src/api/chatHistory'
 import { decideHitlRequest, fetchHitlPending, resumeHitlRequest } from '../src/api/hitl'
-import type { HitlDecideResponse } from '../src/api/hitl'
+import type { HitlDecideResponse, HitlResumeResponse } from '../src/api/hitl'
 import { replayLgRag, streamLgRag } from '../src/composables/useLgRagSse'
 import {
   LG_RAG_ACTIVE_RUN_STORAGE_KEY,
@@ -848,6 +848,399 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
       expect(chat.messages[3].allowContinueReply).toBeFalsy()
       expect(chat.messages[3].hitl?.status).toBe('waiting')
       expect(chat.activeRun?.run_id).toBe('r-hitl')
+    })
+  })
+
+  describe('web-hitl-decision-surface · D3 resume 后自动追帧（TC4–TC12 / TC14）', () => {
+    const decideOk: HitlDecideResponse = {
+      ok: true,
+      request: { id: 'req-1', status: 'approved' },
+      resume: { required: true, method: 'POST', endpoint: '/api/ops/hitl/requests/req-1/resume' },
+    }
+
+    function resumeOk(cursor: string): HitlResumeResponse {
+      return {
+        ok: true,
+        request: {},
+        resume: {},
+        replay: {
+          run_id: 'r-1',
+          cursor,
+          events_persisted: 3,
+          events_failed: 0,
+          persisted: true,
+          re_interrupted: false,
+        },
+        ts: 1,
+      }
+    }
+
+    /** 种 waiting 审批卡片 + active-run 游标（run.start seq1 → hitl.waiting seq2 · activeRun.last_seq=2） */
+    function seedWaitingCardWithRun() {
+      const chat = useChatStore()
+      chat.sendMessage('部署服务')
+      emitRunStart('r-1')
+      captured.onEvent?.({
+        event_type: 'hitl.waiting',
+        run_id: 'r-1',
+        seq: 2,
+        payload: { reason: '需审批', requests: [{ id: 'req-1' }] },
+      })
+      return chat
+    }
+
+    /** 追帧 replay 序列 mock：每次调用同步执行 handler（handler 须以 onDone/onError/onAborted 收尾以解开 chase await） */
+    function mockChaseReplay(handlers: Array<(cb: LgRagSseCallbacks) => void>): void {
+      let i = 0
+      vi.mocked(replayLgRag).mockImplementation((_input, cb) => {
+        const handler = handlers[Math.min(i, handlers.length - 1)]
+        i += 1
+        handler(cb ?? {})
+        return { abort: vi.fn(), done: Promise.resolve() }
+      })
+    }
+
+    async function flushMicrotasks(): Promise<void> {
+      for (let i = 0; i < 5; i += 1) await Promise.resolve()
+    }
+
+    it('TC4：decide→resume→replayLgRag 顺序链 · 起点游标 = replay.cursor 解析值（r-1:9 → after_seq 9）', async () => {
+      vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+      vi.mocked(resumeHitlRequest).mockResolvedValue(resumeOk('r-1:9'))
+      const chat = seedWaitingCardWithRun()
+      const assistant = chat.messages[1]
+      const pendingCallsBefore = vi.mocked(fetchHitlPending).mock.calls.length
+
+      await chat.decideHitl(assistant, 'req-1', 'approved')
+
+      // 调用顺序钉死：decide → resume → replayLgRag
+      expect(vi.mocked(decideHitlRequest).mock.invocationCallOrder[0]).toBeLessThan(
+        vi.mocked(resumeHitlRequest).mock.invocationCallOrder[0],
+      )
+      expect(vi.mocked(resumeHitlRequest).mock.invocationCallOrder[0]).toBeLessThan(
+        vi.mocked(replayLgRag).mock.invocationCallOrder[0],
+      )
+      // 起点游标 = cursor 解析值（非 active-run 游标 2）
+      expect(vi.mocked(replayLgRag).mock.calls[0][0]).toEqual({ run_id: 'r-1', after_seq: 9 })
+      expect(assistant.hitl?.status).toBe('decided')
+      expect(assistant.hitl?.note).toBe('已批准 · 恢复进行中')
+      // TC2：动作链完成后审批态再刷新恰 1 次（存续）
+      expect(vi.mocked(fetchHitlPending).mock.calls.length).toBe(pendingCallsBefore + 1)
+      expect(chat.error).toBeNull()
+    })
+
+    it('TC5：immediate required=false + active-run → 不调 resume · 以 active-run 游标（last_seq=2）起追帧', async () => {
+      vi.mocked(decideHitlRequest).mockResolvedValue({
+        ok: true,
+        request: { id: 'req-1', status: 'approved' },
+        resume: { required: false, auto_triggered: true, method: 'POST', endpoint: '' },
+      })
+      const chat = seedWaitingCardWithRun()
+
+      await chat.decideHitl(chat.messages[1], 'req-1', 'approved', 'immediate')
+
+      expect(resumeHitlRequest).not.toHaveBeenCalled()
+      expect(vi.mocked(replayLgRag).mock.calls[0][0]).toEqual({ run_id: 'r-1', after_seq: 2 })
+      expect(chat.messages[1].hitl?.note).toBe('已批准 · 恢复进行中')
+      expect(chat.error).toBeNull()
+    })
+
+    it('TC6：追帧帧流 hitl.resumed→进度→answer→done{resumed,435584} 经 processFrame 渲染 · 终帧收尾完整', async () => {
+      vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+      vi.mocked(resumeHitlRequest).mockResolvedValue(resumeOk('r-1:2'))
+      mockChaseReplay([
+        (cb) => {
+          cb.onEvent?.({
+            event_type: 'hitl.resumed',
+            run_id: 'r-1',
+            seq: 3,
+            payload: { reason: '需审批', request_id: 'req-1' },
+          })
+          cb.onEvent?.({
+            event_type: 'node.progress',
+            run_id: 'r-1',
+            seq: 4,
+            agent_role: 'ops',
+            payload: { node: 'resume', detail: '恢复段重放' },
+          })
+          cb.onEvent?.({ event_type: 'answer', run_id: 'r-1', seq: 5, payload: { delta: '恢复后的回答' } })
+          cb.onEvent?.({
+            event_type: 'done',
+            run_id: 'r-1',
+            seq: 6,
+            payload: { status: 'resumed', latency_ms: 435584 },
+          })
+          cb.onDone?.()
+        },
+      ])
+      const chat = seedWaitingCardWithRun()
+      const assistant = chat.messages[1]
+
+      await chat.decideHitl(assistant, 'req-1', 'approved')
+      await flushMicrotasks()
+
+      // 终帧后：streaming 复位 · active-run 清 · 徽标数据如实（TC12 同帧形：无 model 键 → ''）
+      expect(chat.streaming).toBe(false)
+      expect(chat.activeRun).toBeNull()
+      expect(chat.canResume).toBe(false)
+      expect(chat.lastDone?.latency_ms).toBe(435584)
+      expect(chat.lastDone?.model).toBe('')
+      // hitl.resumed：default 忽略不崩不误渲（卡片仍 decided · 不重建 waiting）
+      expect(assistant.hitl?.status).toBe('decided')
+      expect(assistant.hitl?.note).toBe('已批准 · 恢复进行中')
+      // 进度帧入 thinking · answer delta 渲染进同一 assistant 消息（processFrame 管线复用实证）
+      expect(assistant.thinking.length).toBeGreaterThan(0)
+      expect(assistant.content).toContain('恢复后的回答')
+    })
+
+    it('TC7：干净结束未见终帧 ≥2s 再追 · 连追 10 次上限降级「恢复仍在进行，可稍后手动续看」+ active-run 保留', async () => {
+      vi.useFakeTimers()
+      try {
+        vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+        vi.mocked(resumeHitlRequest).mockResolvedValue(resumeOk('r-1:2'))
+        mockChaseReplay([
+          (cb) => {
+            cb.onEvent?.({
+              event_type: 'node.progress',
+              run_id: 'r-1',
+              seq: 10,
+              payload: { node: 'resume' },
+            })
+            cb.onDone?.() // 干净结束 · 未见终帧（恢复段在写）
+          },
+        ])
+        const chat = seedWaitingCardWithRun()
+        const assistant = chat.messages[1]
+
+        await chat.decideHitl(assistant, 'req-1', 'approved')
+        expect(replayLgRag).toHaveBeenCalledTimes(1)
+
+        // ≥2s 才再追：1999ms 不触发，+1ms 触发第二次
+        await vi.advanceTimersByTimeAsync(1999)
+        expect(replayLgRag).toHaveBeenCalledTimes(1)
+        await vi.advanceTimersByTimeAsync(1)
+        expect(replayLgRag).toHaveBeenCalledTimes(2)
+        // 游标随帧推进（seq 2 → 10）
+        expect(vi.mocked(replayLgRag).mock.calls[1][0]).toEqual({ run_id: 'r-1', after_seq: 10 })
+
+        // 连追至 10 次上限（墙钟 18s < 120s · 次数先到为准）
+        await vi.advanceTimersByTimeAsync(2000 * 8)
+        expect(replayLgRag).toHaveBeenCalledTimes(10)
+        await vi.advanceTimersByTimeAsync(2000)
+        expect(replayLgRag).toHaveBeenCalledTimes(10) // 第 11 次进入上限判定 → 降级不再发请求
+
+        expect(assistant.hitl?.note).toBe('恢复仍在进行，可稍后手动续看')
+        expect(chat.resumeHint).toBe('恢复仍在进行，可稍后手动续看')
+        expect(chat.streaming).toBe(false)
+        expect(chat.activeRun?.run_id).toBe('r-1') // 上限降级不清 active-run
+        expect(chat.canResume).toBe(true) // 手动续看兜底可用
+        await vi.advanceTimersByTimeAsync(10_000)
+        expect(replayLgRag).toHaveBeenCalledTimes(10)
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('TC8：replay 409 + Retry-After 按头退避不弹错误条 · 缺头默认 2s · 连续 409 计入同上限', async () => {
+      vi.useFakeTimers()
+      try {
+        vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+        vi.mocked(resumeHitlRequest).mockResolvedValue(resumeOk('r-1:9'))
+        mockChaseReplay([
+          (cb) => cb.onError?.({ kind: 'http', status: 409, message: 'run active', retryAfterSeconds: 3 }),
+          (cb) => cb.onError?.({ kind: 'http', status: 409, message: 'run active' }),
+          (cb) => {
+            cb.onEvent?.({
+              event_type: 'done',
+              run_id: 'r-1',
+              seq: 12,
+              payload: { status: 'resumed', latency_ms: 100 },
+            })
+            cb.onDone?.()
+          },
+        ])
+        const chat = seedWaitingCardWithRun()
+
+        await chat.decideHitl(chat.messages[1], 'req-1', 'approved')
+        expect(replayLgRag).toHaveBeenCalledTimes(1)
+        expect(chat.error).toBeNull() // 409 退避不弹错误条（FP-H2）
+
+        // Retry-After: 3 → 2999ms 不触发 · +1ms 触发第二次
+        await vi.advanceTimersByTimeAsync(2999)
+        expect(replayLgRag).toHaveBeenCalledTimes(1)
+        await vi.advanceTimersByTimeAsync(1)
+        expect(replayLgRag).toHaveBeenCalledTimes(2)
+        expect(chat.error).toBeNull()
+        // 409 无新帧 → 游标不变仍 9
+        expect(vi.mocked(replayLgRag).mock.calls[1][0]).toEqual({ run_id: 'r-1', after_seq: 9 })
+
+        // 缺 Retry-After 头 → 默认 2s
+        await vi.advanceTimersByTimeAsync(1999)
+        expect(replayLgRag).toHaveBeenCalledTimes(2)
+        await vi.advanceTimersByTimeAsync(1)
+        expect(replayLgRag).toHaveBeenCalledTimes(3)
+
+        // 第三次见终帧 → 收尾（两次 409 已计入 attempts 上限 · 本例未触顶）
+        expect(chat.streaming).toBe(false)
+        expect(chat.activeRun).toBeNull()
+        expect(chat.lastDone?.latency_ms).toBe(100)
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('TC9：resume 409「正在执行中」→「恢复进行中」非「已被处理」· 不并发第二次 resume · 有游标起追帧等沉降', async () => {
+      vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+      vi.mocked(resumeHitlRequest).mockRejectedValue(apiError(409, '该申请的恢复正在执行中，待沉降后再试'))
+      const chat = seedWaitingCardWithRun()
+      const assistant = chat.messages[1]
+
+      await chat.decideHitl(assistant, 'req-1', 'approved')
+
+      expect(assistant.hitl?.status).toBe('decided')
+      expect(assistant.hitl?.note).toBe('恢复进行中')
+      expect(assistant.hitl?.note).not.toContain('已被处理') // decide 409 语义禁混（分流对侧由 AC9 decide 409 存续测钉死）
+      expect(resumeHitlRequest).toHaveBeenCalledTimes(1) // 不并发重提
+      expect(chat.error).toBeNull()
+      // active-run 游标起追帧等沉降
+      expect(vi.mocked(replayLgRag).mock.calls[0][0]).toEqual({ run_id: 'r-1', after_seq: 2 })
+    })
+
+    it('TC10：resume 503 → 中性错误条「恢复服务暂不可用」· 不自动重试不发 replay', async () => {
+      vi.useFakeTimers()
+      try {
+        vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+        vi.mocked(resumeHitlRequest).mockRejectedValue(apiError(503, 'checkpoint store not configured'))
+        const chat = seedWaitingCardWithRun()
+        const assistant = chat.messages[1]
+
+        await chat.decideHitl(assistant, 'req-1', 'approved')
+
+        expect(assistant.hitl?.status).toBe('decided')
+        expect(assistant.hitl?.note).toBe('已批准 · 点击续看推进')
+        expect(chat.error).toEqual({
+          stage: 'resume',
+          message: '恢复服务暂不可用，请稍后重试',
+          retryable: false,
+        })
+        await vi.advanceTimersByTimeAsync(10_000)
+        expect(replayLgRag).not.toHaveBeenCalled() // 不当可重试面自动重试
+        expect(resumeHitlRequest).toHaveBeenCalledTimes(1)
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('TC10：stranded 409（非「正在执行中」）→ 中性「该会话已无法恢复，请重新开会话」· 不自动重试', async () => {
+      vi.useFakeTimers()
+      try {
+        vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+        vi.mocked(resumeHitlRequest).mockRejectedValue(apiError(409, 'stranded_checkpoint'))
+        const chat = seedWaitingCardWithRun()
+        const assistant = chat.messages[1]
+
+        await chat.decideHitl(assistant, 'req-1', 'approved')
+
+        expect(assistant.hitl?.note).toBe('已批准 · 点击续看推进')
+        expect(chat.error).toEqual({
+          stage: 'resume',
+          message: '该会话已无法恢复，请重新开会话',
+          retryable: false,
+        })
+        await vi.advanceTimersByTimeAsync(10_000)
+        expect(replayLgRag).not.toHaveBeenCalled()
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('TC11：追帧中 stopStreaming → 退避定时器清除不再追 · streaming 复位', async () => {
+      vi.useFakeTimers()
+      try {
+        vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+        vi.mocked(resumeHitlRequest).mockResolvedValue(resumeOk('r-1:2'))
+        mockChaseReplay([(cb) => cb.onDone?.()]) // 干净结束 → 2s 后再追（定时器挂起）
+        const chat = seedWaitingCardWithRun()
+
+        await chat.decideHitl(chat.messages[1], 'req-1', 'approved')
+        expect(replayLgRag).toHaveBeenCalledTimes(1)
+
+        chat.stopStreaming()
+        expect(chat.streaming).toBe(false)
+        await vi.advanceTimersByTimeAsync(10_000)
+        expect(replayLgRag).toHaveBeenCalledTimes(1) // 定时器已清 + 代际失效：零残留定时器
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('TC11：追帧中 startNewSession → 退避定时器清除不再追', async () => {
+      vi.useFakeTimers()
+      try {
+        vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+        vi.mocked(resumeHitlRequest).mockResolvedValue(resumeOk('r-1:2'))
+        mockChaseReplay([(cb) => cb.onDone?.()])
+        const chat = seedWaitingCardWithRun()
+
+        await chat.decideHitl(chat.messages[1], 'req-1', 'approved')
+        expect(replayLgRag).toHaveBeenCalledTimes(1)
+
+        chat.startNewSession()
+        expect(chat.streaming).toBe(false)
+        await vi.advanceTimersByTimeAsync(10_000)
+        expect(replayLgRag).toHaveBeenCalledTimes(1)
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('TC12：done{resumed} 缺 latency_ms/model → lastDone 如实 null/空串（禁伪造兜底）', async () => {
+      vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+      vi.mocked(resumeHitlRequest).mockResolvedValue(resumeOk('r-1:2'))
+      mockChaseReplay([
+        (cb) => {
+          cb.onEvent?.({ event_type: 'done', run_id: 'r-1', seq: 3, payload: { status: 'resumed' } })
+          cb.onDone?.()
+        },
+      ])
+      const chat = seedWaitingCardWithRun()
+
+      await chat.decideHitl(chat.messages[1], 'req-1', 'approved')
+      await flushMicrotasks()
+
+      expect(chat.lastDone).toEqual({ latency_ms: null, model: '' })
+    })
+
+    it('TC14：mock 字段族与契约逐键对齐 + 未知键容忍（hitl.waiting payload / decide / resume 响应携未知键不崩）', async () => {
+      vi.mocked(decideHitlRequest).mockResolvedValue({
+        ...decideOk,
+        future_decide_key: { nested: true },
+      } as unknown as HitlDecideResponse)
+      vi.mocked(resumeHitlRequest).mockResolvedValue({
+        ...resumeOk('r-1:2'),
+        future_resume_key: 'tolerated',
+      } as unknown as HitlResumeResponse)
+      const chat = useChatStore()
+      chat.sendMessage('部署服务')
+      emitRunStart('r-1')
+      captured.onEvent?.({
+        event_type: 'hitl.waiting',
+        run_id: 'r-1',
+        seq: 2,
+        payload: {
+          reason: '需审批',
+          requests: [{ id: 'req-1', unknown_req_key: 1 }],
+          future_payload_key: { any: 'thing' },
+        },
+      })
+      const assistant = chat.messages[1]
+      expect(assistant.hitl?.status).toBe('waiting')
+
+      await chat.decideHitl(assistant, 'req-1', 'approved')
+
+      expect(assistant.hitl?.status).toBe('decided')
+      expect(assistant.hitl?.note).toContain('已批准')
+      expect(chat.error).toBeNull()
     })
   })
 })

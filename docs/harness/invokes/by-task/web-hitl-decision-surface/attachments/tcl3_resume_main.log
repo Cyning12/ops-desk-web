@@ -1,0 +1,52 @@
+{
+  "steps": [
+    "curl resume accepted cursor=a7f2212548fe43d8894fd1b05cc57d52:7",
+    "ui resume 409 note=恢复进行中 resumeReqs=1",
+    "settle=false terminal=null"
+  ],
+  "rid": "hitl_abec93b035b743398451",
+  "decideStatus": 200,
+  "curlResume": {
+    "status": 200,
+    "body": {
+      "ok": true,
+      "request": {
+        "id": "hitl_abec93b035b743398451",
+        "status": "approved",
+        "run_id": "a7f2212548fe43d8894fd1b05cc57d52",
+        "thread_id": "4381c9bc2e424c0482efd9f61e1339df"
+      },
+      "resume": {
+        "status": "accepted",
+        "thread_id": "4381c9bc2e424c0482efd9f61e1339df",
+        "approved": [
+          "a7f2212548fe43d8894fd1b05cc57d52:1"
+        ],
+        "rejected": [],
+        "decided_by": "admin"
+      },
+      "replay": {
+        "run_id": "a7f2212548fe43d8894fd1b05cc57d52",
+        "cursor": "a7f2212548fe43d8894fd1b05cc57d52:7",
+        "events_persisted": 0,
+        "events_failed": 0,
+        "persisted": true,
+        "re_interrupted": false
+      },
+      "ts": 1792227810.7035732
+    }
+  },
+  "uiResumeStatus": 409,
+  "uiResumeBody": "{\"detail\":\"该申请的恢复正在执行中，待沉降后再试\"}",
+  "cardNote": "恢复进行中",
+  "hasInProgress": true,
+  "hasProcessed": false,
+  "resumeReqCount": 1,
+  "chaseStarted": true,
+  "settle": {
+    "settled": false,
+    "waitedMs": 361171,
+    "frameCount": 0,
+    "terminal": null
+  }
+}

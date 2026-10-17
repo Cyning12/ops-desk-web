@@ -1,0 +1,88 @@
+{
+  "net": [
+    {
+      "t": 1792227545588,
+      "method": "GET",
+      "url": "/src/api/http.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227545589,
+      "method": "GET",
+      "url": "/src/api/auth.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227545646,
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227545650,
+      "method": "GET",
+      "url": "/src/api/chatHistory.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227545651,
+      "method": "GET",
+      "url": "/src/api/chat.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227545651,
+      "method": "GET",
+      "url": "/src/api/hitl.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227545698,
+      "method": "GET",
+      "url": "/api/ops/chat/sessions/latest",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227545699,
+      "method": "GET",
+      "url": "/api/ops/hitl/pending",
+      "status": 200,
+      "retryAfter": null,
+      "body": "{\"items\":[{\"id\":\"hitl_519a9d3a624d4913ad45\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:31:29.100026+00:00\"},{\"id\":\"hitl_578a9f0e90fe4f848fe1\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:32:51.737097+00:00\"},{\"id\":\"hitl_f0f1e8ab440a42f8ba55\",\"run_id\":\"4dfe31da07744366800c6054e602fcde\",\"thread_id\":\"43194cf645f347f08fd25ce59d2a419b\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T08:53:20.432664+00:00\"}],\"count\":3}"
+    },
+    {
+      "t": 1792227545783,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/stream",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227574337,
+      "method": "POST",
+      "url": "/api/ops/hitl/requests/hitl_87d8ba9e15a249279a8d/decide",
+      "status": 409,
+      "retryAfter": null,
+      "body": "{\"detail\":\"申请已是 approved，不接受重复决定\"}"
+    },
+    {
+      "t": 1792227574349,
+      "method": "GET",
+      "url": "/api/ops/hitl/pending",
+      "status": 200,
+      "retryAfter": null,
+      "body": "{\"items\":[{\"id\":\"hitl_519a9d3a624d4913ad45\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:31:29.100026+00:00\"},{\"id\":\"hitl_578a9f0e90fe4f848fe1\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:32:51.737097+00:00\"},{\"id\":\"hitl_f0f1e8ab440a42f8ba55\",\"run_id\":\"4dfe31da07744366800c6054e602fcde\",\"thread_id\":\"43194cf645f347f08fd25ce59d2a419b\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T08:53:20.432664+00:00\"}],\"count\":3}"
+    }
+  ],
+  "errors": [
+    "console.error: Failed to load resource: the server responded with a status of 409 (Conflict)"
+  ],
+  "extra": null
+}

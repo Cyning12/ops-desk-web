@@ -1,0 +1,64 @@
+{
+  "steps": [
+    "decide=200 rejected · resume=200 note=已驳回 · 恢复进行中",
+    "settle=false terminal=null"
+  ],
+  "rid": "hitl_3591142d2a7c4ea0b3b8",
+  "decide": {
+    "status": 200,
+    "body": {
+      "ok": true,
+      "request": {
+        "id": "hitl_3591142d2a7c4ea0b3b8",
+        "run_id": "9038ec4ea8694634a8d3e09b99d985cb",
+        "thread_id": "1594d729487b4826859c38c004f3d175",
+        "checkpoint_id": null,
+        "tenant_id": "",
+        "subtask_id": "9038ec4ea8694634a8d3e09b99d985cb:1",
+        "blocked_by": "delegation_issue_hitl_required",
+        "unlock_subtask_id": "9038ec4ea8694634a8d3e09b99d985cb:1",
+        "reason": "委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））",
+        "detail": "",
+        "payload": {
+          "observation": {
+            "done": 1,
+            "round": 0,
+            "planned": 1
+          },
+          "capability_id": "testing.write.echo"
+        },
+        "status": "rejected",
+        "decision_by": "admin",
+        "decision_note": "",
+        "decided_at": "2026-10-17T09:05:57.988948+00:00",
+        "created_at": "2026-10-17T09:05:57.847156+00:00",
+        "persisted": true
+      },
+      "resume": {
+        "required": true,
+        "method": "POST",
+        "endpoint": "/api/ops/hitl/requests/hitl_3591142d2a7c4ea0b3b8/resume"
+      }
+    }
+  },
+  "resume": {
+    "status": 200,
+    "replay": {
+      "run_id": "9038ec4ea8694634a8d3e09b99d985cb",
+      "cursor": "9038ec4ea8694634a8d3e09b99d985cb:7",
+      "events_persisted": 0,
+      "events_failed": 0,
+      "persisted": true,
+      "re_interrupted": false
+    }
+  },
+  "cardNote": "已驳回 · 恢复进行中",
+  "settle": {
+    "settled": false,
+    "waitedMs": 361145,
+    "frameCount": 0,
+    "terminal": null,
+    "resumedCount": 0,
+    "newWaitingCount": 0
+  }
+}

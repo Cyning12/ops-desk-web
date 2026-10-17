@@ -6,7 +6,7 @@ import type { ChatSession } from '../api/chat'
 import { fetchThreadHistory } from '../api/chatHistory'
 import type { ChatHistoryRun } from '../api/chatHistory'
 import { decideHitlRequest, fetchHitlPending, resumeHitlRequest } from '../api/hitl'
-import type { HitlDecision, HitlPendingItem, HitlResumeMode } from '../api/hitl'
+import type { HitlDecision, HitlDecideResponse, HitlPendingItem, HitlResumeMode } from '../api/hitl'
 import type { ApiError } from '../api/http'
 import { replayLgRag, streamLgRag } from '../composables/useLgRagSse'
 import type { LgRagSseController, LgRagSseEvent } from '../composables/useLgRagSse'
@@ -455,6 +455,10 @@ export const useChatStore = defineStore('chat', () => {
   const canResume = computed(() => activeRun.value !== null && !streaming.value)
 
   let controller: LgRagSseController | null = null
+  // D3 追帧器（chaseResumedRun）：退避定时器句柄 + 代际戳；stopStreaming/startNewSession/切会话
+  // 使在飞与待触发的追帧一并失效（FP-H10 不泄漏）
+  let chaseTimer: ReturnType<typeof setTimeout> | null = null
+  let chaseGeneration = 0
   let messageSeq = 0
   // T4：per run_id 的 seq 去重基线（lastAppliedSeq）；run 切换即重置
   let currentRunId: string | null = null
@@ -916,8 +920,18 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   function stopStreaming(): void {
+    // D3：追帧退避定时器一并清除（不泄漏 · FP-H10）；代际戳使在飞 step 的后续调度失效
+    if (chaseTimer !== null) {
+      clearTimeout(chaseTimer)
+      chaseTimer = null
+    }
+    chaseGeneration += 1
     controller?.abort()
     controller = null
+    // TC11：追帧间隙（退避定时器挂起 · 无在飞请求）abort 为 no-op，须本地复位 streaming/刷齐队列
+    // （live/在飞路径由 onAborted 回调置位 · 幂等双写不冲突）
+    streaming.value = false
+    flushRevealQueues()
   }
 
   /** 清本地 thread_id（ref + localStorage + 恢复提示条） */
@@ -948,6 +962,154 @@ export const useChatStore = defineStore('chat', () => {
   /** 关闭「上次回答未完成·续看」提示条（保留 active-run，仅不再打扰） */
   function dismissResumeNotice(): void {
     resumeNotice.value = false
+  }
+
+  // D3 追帧上限（task 定稿 · 双界先到为准）：连续追帧 ≤10 次 且 墙钟 ≤120s
+  const CHASE_MAX_ATTEMPTS = 10
+  const CHASE_MAX_WALL_MS = 120_000
+  /** 干净结束未见终帧的再追间隔 / replay 409 缺 Retry-After 头的默认退避（毫秒） */
+  const CHASE_INTERVAL_MS = 2_000
+
+  /** 解析 resume 200 携 replay.cursor（"{run_id}:{seq}" · 与 extractFrameCursor :574-597 同兜底规则）；非法 → null（FP-H1 回退手动路径） */
+  function parseReplayCursor(cursor: string): { run_id: string; after_seq: number } | null {
+    const idx = cursor.lastIndexOf(':')
+    if (idx <= 0) return null
+    const runId = cursor.slice(0, idx)
+    const seq = Number(cursor.slice(idx + 1))
+    if (!runId || !Number.isFinite(seq)) return null
+    return { run_id: runId, after_seq: seq }
+  }
+
+  /**
+   * D3 · resume 受理后的自动追帧器（FP-H2/H3/H4 · 帧复用 processFrame 同一管线 · 渲染进当前 assistant 消息）：
+   * - replay 干净结束未见终帧（恢复段在写）→ 携末帧 cursor 约 2s 再追（FP-H3）
+   * - replay 409 + Retry-After → 按头秒数退避自动重试（缺头默认 2s · D-C retryAfterSeconds）· 不弹错误条（FP-H2）
+   * - 上限：连续追帧 ≤10 次 且 墙钟 ≤120s（先到为准 · 409 并入同一上限）；超限降级
+   *   「恢复仍在进行，可稍后手动续看」+ active-run 保留不清（canResume 为真 · 手动续看兜底 FP-H11/FP-T5）
+   * - 传输层终断（401/404/422/网络错）语义沿用 resumeFromCursor · 不并入退避重试
+   * - stopStreaming/startNewSession → 清退避定时器 + 代际戳失效（FP-H10 不泄漏）
+   */
+  function chaseResumedRun(
+    assistant: ChatMessage,
+    start: { run_id: string; after_seq: number },
+  ): void {
+    const generation = ++chaseGeneration
+    const startedAt = Date.now()
+    let attempts = 0
+    let cursor = start
+
+    const degrade = (): void => {
+      // 超限降级：active-run 保留不清 · 卡片/提示条双落点 · 可手动续看
+      streaming.value = false
+      flushRevealQueues()
+      answerTerminal = true
+      if (assistant.hitl) assistant.hitl.note = '恢复仍在进行，可稍后手动续看'
+      resumeHint.value = '恢复仍在进行，可稍后手动续看'
+    }
+
+    const scheduleNext = (delayMs: number): void => {
+      if (generation !== chaseGeneration) return
+      if (chaseTimer !== null) clearTimeout(chaseTimer)
+      chaseTimer = setTimeout(() => {
+        chaseTimer = null
+        void step()
+      }, delayMs)
+    }
+
+    const step = async (): Promise<void> => {
+      if (generation !== chaseGeneration) return
+      if (attempts >= CHASE_MAX_ATTEMPTS || Date.now() - startedAt >= CHASE_MAX_WALL_MS) {
+        degrade()
+        return
+      }
+      attempts += 1
+      // 接力去重基线：已推进的 seq 一律忽略（与 resumeFromCursor 同防御）
+      currentRunId = cursor.run_id
+      lastAppliedSeq = cursor.after_seq
+      let sawTerminal = false
+      let lastSeq = cursor.after_seq
+      let backoffMs: number | null = null
+
+      error.value = null
+      resumeHint.value = null
+      streaming.value = true
+      answerTerminal = false // T5：replay 接力重置（同 resumeFromCursor）
+      resetRevealQueues()
+      revealSpeedMultiplier = REVEAL_REPLAY_SPEED_MULTIPLIER
+
+      await new Promise<void>((resolve) => {
+        controller = replayLgRag(cursor, {
+          onEvent: (event) => {
+            if (event.event_type === 'done' || event.event_type === 'error') sawTerminal = true
+            const { seq } = extractFrameCursor(event)
+            if (seq !== null) lastSeq = Math.max(lastSeq, seq)
+            processFrame(event, assistant)
+          },
+          onError: (transportError) => {
+            if (transportError.status === 409) {
+              // FP-H2：run 在飞 replay 409 + Retry-After → 退避自动重试 · 不弹错误条不计失败
+              backoffMs = (transportError.retryAfterSeconds ?? CHASE_INTERVAL_MS / 1000) * 1000
+              streaming.value = false
+              flushRevealQueues()
+              resolve()
+              return
+            }
+            streaming.value = false
+            flushRevealQueues()
+            answerTerminal = true
+            sawTerminal = true // 传输层终断：不再自动追（401/404/422/网络错各有落点 · 不并退避）
+            if (transportError.status === 401) {
+              // replay 401：清 thread_id + 清 active-run + 清 auth，跳登录（FP-H7 · 与 live 401 同语义）
+              clearThreadId()
+              clearActiveRun()
+              useAuthStore().clearSession()
+              error.value = { stage: 'auth', message: '登录已过期，请重新登录', retryable: false }
+            } else if (transportError.status === 404 || transportError.status === 422) {
+              // FP-H6：404 未知/跨用户 run · 422 非法游标 → 清 active-run + 中性提示（语义沿用 resumeFromCursor）
+              clearActiveRun()
+              error.value = {
+                stage: 'resume',
+                message:
+                  transportError.status === 404
+                    ? '已无法续看（对话记录不存在或已过期），请重新提问'
+                    : '续看请求校验未通过（' + transportError.message + '），请重新提问',
+                retryable: false,
+              }
+            } else {
+              // 网络错/超时：保留 active-run 可手动续看（非 409 不自动退避重试）
+              error.value = {
+                stage: transportError.kind,
+                message: transportError.message,
+                retryable: true,
+              }
+            }
+            resolve()
+          },
+          onAborted: () => {
+            streaming.value = false
+            interrupted.value = true
+            flushRevealQueues()
+            answerTerminal = true
+            clearActiveRun()
+            resolve()
+          },
+          onDone: () => resolve(),
+        })
+      })
+
+      if (generation !== chaseGeneration) return // 追帧期间 stopStreaming/startNewSession 已接管清理
+      if (sawTerminal) {
+        // 终帧/终断：done/error 帧由 handleEvent 收尾（streaming=false+clearActiveRun 等）；传输层错误已在 onError 落点
+        streaming.value = false
+        flushRevealQueues()
+        return
+      }
+      // FP-H3 干净结束未见终帧 → 携末帧 cursor 再追；FP-H2 409 → 按 Retry-After 退避
+      cursor = { run_id: cursor.run_id, after_seq: lastSeq }
+      scheduleNext(backoffMs ?? CHASE_INTERVAL_MS)
+    }
+
+    void step()
   }
 
   /**
@@ -1056,8 +1218,10 @@ export const useChatStore = defineStore('chat', () => {
    * F2-3 · 审批动作链（契约两步钉死 · 不合并单端点）：
    * 批准/驳回 → POST decide {decision}（T-W2 可选 resume_mode · 默认 inherit 不送）→ 成功 → POST resume（链式两调用 · decide 先于 resume）。
    * 例外（响应驱动 · 非请求臆断）：decide 响应 resume.required=false（immediate 后端已自动续跑）→ 跳过第二步 resume（S3 实证再链必 409）。
-   * 动作中卡片 acting（loading · 禁重复点击）；成功后 FP-F7 卡片保持「已批准/已驳回 · 点击续看推进」。
-   * 分态（FP-F2/F4/F10）：409 → 已被处理（不弹错误条 · 刷新审批态）；404 → 中性「申请不存在或已处理」；
+   * D3：resume 200 携 replay.cursor → 自动追帧（chaseResumedRun · 复用 processFrame 管线）；cursor 缺失/非法回退手动续看（FP-H1）；
+   * resume 在飞 409 →「恢复进行中」分流不并发重提（FP-H4）；503/stranded 409 → 中性错误条不自动重试（FP-H12）。
+   * 动作中卡片 acting（loading · 禁重复点击）；decide 成功后 decided +「已批准/已驳回 · 恢复进行中/点击续看推进」。
+   * 分态（FP-F2/F4/F10）：decide 409 → 已被处理（不弹错误条 · 刷新审批态）；404 → 中性「申请不存在或已处理」；
    * 403 → 动作隐藏/降级「无审批权限」（不炸屏）；401 → http 拦截器全局跳登录；其他 → 回 waiting 可重试。
    */
   async function decideHitl(
@@ -1071,19 +1235,15 @@ export const useChatStore = defineStore('chat', () => {
     if (hitl.status !== 'waiting') return // acting/decided/resolved/forbidden/unavailable 不可重复触发
     hitl.status = 'acting'
     hitl.note = null
+    // D3：外 try 只包 decide；resume 失败不再混入 decide 分态（FP-H4 分流前提）
+    let decideResp: HitlDecideResponse
     try {
       // T-W2：resume_mode 可选键——默认 inherit **不送**（保持 {decision} 载荷字面 · 两步钉死不破）；
       // 仅 immediate/manual 透传第三参（非法值由后端白名单 400 → 走下方通用错误分支展示，不本地臆造第四值）
-      const decideResp =
+      decideResp =
         resumeMode === 'inherit'
           ? await decideHitlRequest(requestId, decision)
           : await decideHitlRequest(requestId, decision, resumeMode)
-      // T-W2 S3 实证：immediate 时后端 decide 即进程内自动续跑（响应 resume.required=false · auto_triggered=true），
-      // 前端再链第二步 resume 必撞 409「没有挂起的 interrupt」误呈「已被处理」——按响应 required 决定是否续链；
-      // inherit/manual 响应 required=true → 维持 decide → resume 两步钉死不变
-      if (decideResp.resume?.required !== false) {
-        await resumeHitlRequest(requestId)
-      }
     } catch (err) {
       const apiError = err as ApiError
       if (apiError.status === 409) {
@@ -1117,8 +1277,87 @@ export const useChatStore = defineStore('chat', () => {
     }
     hitl.status = 'decided'
     hitl.decision = decision
-    hitl.note = decision === 'approved' ? '已批准 · 点击续看推进' : '已驳回 · 点击续看推进'
-    void refreshHitlPending() // AC16①：动作链完成后刷新审批态
+    const decidedNote = decision === 'approved' ? '已批准' : '已驳回'
+    // T-W2 S3 实证例外存续：immediate 时后端 decide 即进程内自动续跑（required=false · auto_triggered=true），
+    // 前端再链第二步 resume 必撞 409——不调 resume；有 active-run 游标则直接起追帧（D2-1 同管线），
+    // 无游标（异常面）回退手动续看（FP-H1 同形回退）
+    if (decideResp.resume?.required === false) {
+      const run = activeRun.value
+      if (run) {
+        hitl.note = `${decidedNote} · 恢复进行中`
+        chaseResumedRun(assistant, { run_id: run.run_id, after_seq: run.last_seq })
+      } else {
+        hitl.note = `${decidedNote} · 点击续看推进`
+      }
+      void refreshHitlPending() // AC16①：动作链完成后刷新审批态
+      return
+    }
+    // inherit/manual：两步钉死第二步 resume（D2-1 消费 replay.cursor）
+    try {
+      const resumeResp = await resumeHitlRequest(requestId)
+      // D2-1：resume 秒回 200 携 replay.cursor → 自动起追帧（复用 processFrame 管线 · 渲染进当前 assistant 消息）；
+      // cursor 空串/缺失/非法（best-effort 契约）→ FP-H1 回退既有手动路径零回归
+      const cursorText = typeof resumeResp.replay?.cursor === 'string' ? resumeResp.replay.cursor : ''
+      const start = cursorText ? parseReplayCursor(cursorText) : null
+      if (start) {
+        hitl.note = `${decidedNote} · 恢复进行中`
+        chaseResumedRun(assistant, start)
+      } else {
+        hitl.note = `${decidedNote} · 点击续看推进`
+      }
+      void refreshHitlPending() // AC16①
+      return
+    } catch (err) {
+      const apiError = err as ApiError
+      // D3-4 分流（FP-H4 修现状假相）：resume 在飞 409「该申请的恢复正在执行中」（api router.py:565 文案子串判据）
+      // →「恢复进行中」· 不并发重提 · 有 active-run 游标则起追帧等沉降；**禁**呈「已被处理」（那是 decide 409 语义）
+      if (apiError.status === 409 && apiError.message.includes('正在执行中')) {
+        hitl.note = '恢复进行中'
+        const run = activeRun.value
+        if (run) chaseResumedRun(assistant, { run_id: run.run_id, after_seq: run.last_seq })
+        void refreshHitlPending()
+        return
+      }
+      // FP-H12：resume 503（checkpoint 未配置）/ stranded_checkpoint 409 → 中性错误条 · 不当可重试面自动重试
+      if (apiError.status === 503 || apiError.status === 409) {
+        hitl.note = `${decidedNote} · 点击续看推进`
+        error.value = {
+          stage: 'resume',
+          message:
+            apiError.status === 503
+              ? '恢复服务暂不可用，请稍后重试'
+              : '该会话已无法恢复，请重新开会话',
+          retryable: false,
+        }
+        void refreshHitlPending()
+        return
+      }
+      if (apiError.status === 404) {
+        // FP-F10 存续：中性文案，不区分越权与不存在（归属不泄露）
+        hitl.status = 'resolved'
+        hitl.note = '申请不存在或已处理'
+        return
+      }
+      if (apiError.status === 403) {
+        // FP-F4 存续：非 maintainer → 动作隐藏/降级呈现
+        hitl.status = 'forbidden'
+        hitl.note = '无审批权限'
+        return
+      }
+      if (apiError.status === 401) {
+        // 401 由 http.ts 拦截器全局跳登录；卡片回待审批态（登录后可重试）
+        hitl.status = 'waiting'
+        return
+      }
+      // resume 网络/其他错误：decide 已决（不可回 waiting 重复 decide）· 错误条可重试提示 · 手动续看兜底
+      hitl.note = `${decidedNote} · 恢复失败，请稍后重试`
+      error.value = {
+        stage: 'resume',
+        message: apiError.message || '恢复失败，请稍后重试',
+        retryable: true,
+      }
+      void refreshHitlPending()
+    }
   }
 
   /** F1-3（裁定 F-C）：B1 history run 消息视图 → 既有 ChatMessage 结构（query→user · answer→assistant ·

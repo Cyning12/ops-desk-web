@@ -1,0 +1,240 @@
+{
+  "net": [
+    {
+      "t": 1792227056907,
+      "method": "GET",
+      "url": "/src/api/http.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227056907,
+      "method": "GET",
+      "url": "/src/api/auth.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227056966,
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227057040,
+      "method": "GET",
+      "url": "/src/api/chatHistory.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227057040,
+      "method": "GET",
+      "url": "/src/api/chat.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227057040,
+      "method": "GET",
+      "url": "/src/api/hitl.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227057092,
+      "method": "GET",
+      "url": "/api/ops/chat/sessions/latest",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227057112,
+      "method": "GET",
+      "url": "/api/ops/hitl/pending",
+      "status": 200,
+      "retryAfter": null,
+      "body": "{\"items\":[{\"id\":\"hitl_519a9d3a624d4913ad45\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:31:29.100026+00:00\"},{\"id\":\"hitl_578a9f0e90fe4f848fe1\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:32:51.737097+00:00\"}],\"count\":2}"
+    },
+    {
+      "t": 1792227057296,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/stream",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792227091256,
+      "method": "POST",
+      "url": "/api/ops/hitl/requests/hitl_b418d14793964f12a056/decide",
+      "status": 200,
+      "retryAfter": null,
+      "body": "{\"ok\":true,\"request\":{\"id\":\"hitl_b418d14793964f12a056\",\"run_id\":\"2217e927ff3d48b7bdb0d1d7dc312d55\",\"thread_id\":\"302faaafc0b04af9883581d076ceead4\",\"checkpoint_id\":null,\"tenant_id\":\"\",\"subtask_id\":\"2217e927ff3d48b7bdb0d1d7dc312d55:1\",\"blocked_by\":\"delegation_issue_hitl_required\",\"unlock_subtask_id\":\"2217e927ff3d48b7bdb0d1d7dc312d55:1\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"detail\":\"\",\"payload\":{\"observation\":{\"done\":1,\"round\":0,\"planned\":1},\"capability_id\":\"testing.write.echo\"},\"status\":\"approved\",\"decision_by\":\"admin\",\"decision_note\":\"\",\"decided_at\":\"2026-10-17T08:51:31.250127+00:00\",\"created_at\":\"2026-10-17T08:51:30.674640+00:00\",\"persisted\":true},\"resume\":{\"required\":true,\"method\":\"POST\",\"endpoint\":\"/api/ops/hitl/requests/hitl_b418d14793964f12a056/resume\"}}"
+    },
+    {
+      "t": 1792227091288,
+      "method": "POST",
+      "url": "/api/ops/hitl/requests/hitl_b418d14793964f12a056/resume",
+      "status": 200,
+      "retryAfter": null,
+      "body": "{\"ok\":true,\"request\":{\"id\":\"hitl_b418d14793964f12a056\",\"status\":\"approved\",\"run_id\":\"2217e927ff3d48b7bdb0d1d7dc312d55\",\"thread_id\":\"302faaafc0b04af9883581d076ceead4\"},\"resume\":{\"status\":\"accepted\",\"thread_id\":\"302faaafc0b04af9883581d076ceead4\",\"approved\":[\"2217e927ff3d48b7bdb0d1d7dc312d55:1\"],\"rejected\":[],\"decided_by\":\"admin\"},\"replay\":{\"run_id\":\"2217e927ff3d48b7bdb0d1d7dc312d55\",\"cursor\":\"2217e927ff3d48b7bdb0d1d7dc312d55:7\",\"events_persisted\":0,\"events_failed\":0,\"persisted\":true,\"re_interrupted\":false},\"ts\":1792227091.284128}"
+    },
+    {
+      "t": 1792227091318,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": [
+        {
+          "seq": 8,
+          "t": "hitl.resumed"
+        }
+      ]
+    },
+    {
+      "t": 1792227091322,
+      "method": "GET",
+      "url": "/api/ops/hitl/pending",
+      "status": 200,
+      "retryAfter": null,
+      "body": "{\"items\":[{\"id\":\"hitl_519a9d3a624d4913ad45\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:31:29.100026+00:00\"},{\"id\":\"hitl_578a9f0e90fe4f848fe1\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:32:51.737097+00:00\"}],\"count\":2}"
+    },
+    {
+      "t": 1792227093338,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": [
+        {
+          "seq": 9,
+          "t": "node.progress"
+        }
+      ]
+    },
+    {
+      "t": 1792227095362,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792227097379,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792227099397,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792227101411,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792227103429,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792227105450,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792227107470,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": [
+        {
+          "seq": 10,
+          "t": "node.progress"
+        },
+        {
+          "seq": 11,
+          "t": "node.progress"
+        },
+        {
+          "seq": 12,
+          "t": "subtask.progress"
+        }
+      ]
+    },
+    {
+      "t": 1792227109494,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": []
+    },
+    {
+      "t": 1792227514412,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": [
+        {
+          "seq": 13,
+          "t": "subtask.progress"
+        },
+        {
+          "seq": 14,
+          "t": "node.progress"
+        },
+        {
+          "seq": 15,
+          "t": "node.progress"
+        },
+        {
+          "seq": 16,
+          "t": "answer"
+        },
+        {
+          "seq": 17,
+          "t": "node.progress"
+        },
+        {
+          "seq": 18,
+          "t": "done",
+          "st": "resumed"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "extra": {
+    "replayCursor": {
+      "run_id": "2217e927ff3d48b7bdb0d1d7dc312d55",
+      "cursor": "2217e927ff3d48b7bdb0d1d7dc312d55:7",
+      "events_persisted": 0,
+      "events_failed": 0,
+      "persisted": true,
+      "re_interrupted": false
+    }
+  }
+}

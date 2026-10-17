@@ -1,0 +1,107 @@
+{
+  "net": [
+    {
+      "t": 1792228440766,
+      "method": "GET",
+      "url": "/src/api/http.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228440767,
+      "method": "GET",
+      "url": "/src/api/auth.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228440824,
+      "method": "GET",
+      "url": "/api/ops/auth/me",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228440828,
+      "method": "GET",
+      "url": "/src/api/chatHistory.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228440828,
+      "method": "GET",
+      "url": "/src/api/chat.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228440829,
+      "method": "GET",
+      "url": "/src/api/hitl.ts",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228440871,
+      "method": "GET",
+      "url": "/api/ops/chat/sessions/latest",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228440875,
+      "method": "GET",
+      "url": "/api/ops/hitl/pending",
+      "status": 200,
+      "retryAfter": null,
+      "body": "{\"items\":[{\"id\":\"hitl_519a9d3a624d4913ad45\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:31:29.100026+00:00\"},{\"id\":\"hitl_578a9f0e90fe4f848fe1\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:32:51.737097+00:00\"},{\"id\":\"hitl_f0f1e8ab440a42f8ba55\",\"run_id\":\"4dfe31da07744366800c6054e602fcde\",\"thread_id\":\"43194cf645f347f08fd25ce59d2a419b\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T08:53:20.432664+00:00\"},{\"id\":\"hitl_008b3906cb3b424c82f2\",\"run_id\":\"9038ec4ea8694634a8d3e09b99d985cb\",\"thread_id\":\"1594d729487b4826859c38c004f3d175\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T09:05:58.045162+00:00\"},{\"id\":\"hitl_5352631f481546ac94ed\",\"run_id\":\"9038ec4ea8694634a8d3e09b99d985cb\",\"thread_id\":\"1594d729487b4826859c38c004f3d175\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T09:07:16.831121+00:00\"}],\"count\":5}"
+    },
+    {
+      "t": 1792228440963,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/stream",
+      "status": 200,
+      "retryAfter": null
+    },
+    {
+      "t": 1792228479058,
+      "method": "POST",
+      "url": "/api/ops/hitl/requests/hitl_196871da08cb40b8a5bf/decide",
+      "status": 200,
+      "retryAfter": null,
+      "body": "{\"ok\":true,\"request\":{\"id\":\"hitl_196871da08cb40b8a5bf\",\"run_id\":\"0ca54ae17fdf46a5bb8fcec3c1412065\",\"thread_id\":\"77b09c12433246cdb9dfae7ecbd639c8\",\"checkpoint_id\":null,\"tenant_id\":\"\",\"subtask_id\":\"0ca54ae17fdf46a5bb8fcec3c1412065:1\",\"blocked_by\":\"delegation_issue_hitl_required\",\"unlock_subtask_id\":\"0ca54ae17fdf46a5bb8fcec3c1412065:1\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"detail\":\"\",\"payload\":{\"observation\":{\"done\":1,\"round\":0,\"planned\":1},\"capability_id\":\"testing.write.echo\"},\"status\":\"approved\",\"decision_by\":\"admin\",\"decision_note\":\"\",\"decided_at\":\"2026-10-17T09:14:39.052115+00:00\",\"created_at\":\"2026-10-17T09:14:38.589425+00:00\",\"persisted\":true},\"resume\":{\"required\":true,\"method\":\"POST\",\"endpoint\":\"/api/ops/hitl/requests/hitl_196871da08cb40b8a5bf/resume\"}}"
+    },
+    {
+      "t": 1792228479091,
+      "method": "POST",
+      "url": "/api/ops/hitl/requests/hitl_196871da08cb40b8a5bf/resume",
+      "status": 200,
+      "retryAfter": null,
+      "body": "{\"ok\":true,\"request\":{\"id\":\"hitl_196871da08cb40b8a5bf\",\"status\":\"approved\",\"run_id\":\"0ca54ae17fdf46a5bb8fcec3c1412065\",\"thread_id\":\"77b09c12433246cdb9dfae7ecbd639c8\"},\"resume\":{\"status\":\"accepted\",\"thread_id\":\"77b09c12433246cdb9dfae7ecbd639c8\",\"approved\":[\"0ca54ae17fdf46a5bb8fcec3c1412065:1\"],\"rejected\":[],\"decided_by\":\"admin\"},\"replay\":{\"run_id\":\"0ca54ae17fdf46a5bb8fcec3c1412065\",\"cursor\":\"0ca54ae17fdf46a5bb8fcec3c1412065:7\",\"events_persisted\":0,\"events_failed\":0,\"persisted\":true,\"re_interrupted\":false},\"ts\":1792228479.0863278}"
+    },
+    {
+      "t": 1792228479109,
+      "method": "POST",
+      "url": "/api/ops/lg-rag/replay",
+      "status": 200,
+      "retryAfter": null,
+      "replayFrames": [
+        {
+          "seq": 8,
+          "t": "hitl.resumed"
+        }
+      ]
+    },
+    {
+      "t": 1792228479113,
+      "method": "GET",
+      "url": "/api/ops/hitl/pending",
+      "status": 200,
+      "retryAfter": null,
+      "body": "{\"items\":[{\"id\":\"hitl_519a9d3a624d4913ad45\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:31:29.100026+00:00\"},{\"id\":\"hitl_578a9f0e90fe4f848fe1\",\"run_id\":\"b03208e1343c45b8b1761a4aaf61486e\",\"thread_id\":\"d6aa0f9a603749b2957a98dfd53b0b54\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-14T10:32:51.737097+00:00\"},{\"id\":\"hitl_f0f1e8ab440a42f8ba55\",\"run_id\":\"4dfe31da07744366800c6054e602fcde\",\"thread_id\":\"43194cf645f347f08fd25ce59d2a419b\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T08:53:20.432664+00:00\"},{\"id\":\"hitl_008b3906cb3b424c82f2\",\"run_id\":\"9038ec4ea8694634a8d3e09b99d985cb\",\"thread_id\":\"1594d729487b4826859c38c004f3d175\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T09:05:58.045162+00:00\"},{\"id\":\"hitl_5352631f481546ac94ed\",\"run_id\":\"9038ec4ea8694634a8d3e09b99d985cb\",\"thread_id\":\"1594d729487b4826859c38c004f3d175\",\"reason\":\"委派签发需人工审批（capability testing.write.echo 非只读（side_effect=write））\",\"blocked_by\":\"delegation_issue_hitl_required\",\"created_at\":\"2026-10-17T09:07:16.831121+00:00\"}],\"count\":5}"
+    }
+  ],
+  "errors": [],
+  "extra": null
+}
