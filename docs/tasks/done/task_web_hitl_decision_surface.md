@@ -1,6 +1,6 @@
 # Task：Web · HITL 审批决策面（pending 消费 · decide/resume · resume 后追帧 · 409 重试纪律）（web-hitl-decision-surface）
 
-> **状态**：`draft`（2026-10-17 本窗 10-task 落稿 · 人工闸全 pending · **严禁代签** · 待人签解锁 30）  
+> **状态**：done（2026-10-17 CLOSE · PR #73 MERGED squash `e07e4ac` · TC1–TC18 Vitest 283 passed 三门绿 + TC-L1~L5 40 live 全 PASS 零假绿 · 归档 done/）  
 > **类型**：SPEC 承接实现（30 改码 + 40 live 联调 · 红测先行）  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS；**禁止**本 task 改 `ops-desk-api` 任何文件  
 > **SPEC（signed · 唯一需求真值）**：`docs/spec/web-hitl-decision-surface/SPEC-web-hitl-decision-surface_v0.md`（HG-SPEC-SIGNOFF=**approved** · 2026-10-17 维护者人签 · **含 D-A 定夺：认可 S1 事件驱动零定时器** · 20-spec-audit R1 **pass**：`docs/harness/reviews/spec_web_hitl_decision_surface_audit_R1_20261017.md`）  
@@ -278,3 +278,4 @@ TC1–TC16 全机断：调用次数/顺序（TC1/TC2/TC4）· fake timers 退避
 | 2026-10-17 | v2 · 40 live 联调棒回填（invoke_20261017_40_live.md）：TC-L1~L5 全 PASS 勾选（环境=api master d3fd056 compose 六 env 组 + checkpointer=postgres · Playwright 驱动 /tmp 不入仓）· TC-L2 形态 B 未命中照登 n/a · 驱动脚本三 bug（HttpOnly cookie/const 重赋值/-d 引号层）全登 invoke 偏差节 · 拆台照登 · 闸态不动 |
 | 2026-10-17 | v1 · 20-task-audit R1 退回回填（B1/B2 + nit a · 以审查文 docs/harness/reviews/task_web_hitl_decision_surface_audit_R1_20261017.md 为准）：**B1** 新增 TC17（30 · 旧测 grep 影响面清点 · 行为变更类）——影响面四锚点经本帽真读复核（chat-store.spec.ts:745-752 · chat-store-hitl.spec.ts:475-482/:354/:589/:615-629 · done 帧断言族 :182-199/:202-213/:256-298 + chat-view.spec.ts:390-428）· 收口改 TC18 · 验收共 23 条（先例：done task R1 回填 AC17）；**B2** AC16①/② 归因更正五处+依赖表（signed SPEC-web-chat-history-hitl-ux §7 仅 AC1–AC15 无 AC16 · 真址 done task task_web_chat_history_hitl_ux.md:147 task 级验收项）；**nit a** FP-T4 chat-store it 数 65→66（`it(` 计数两轮复核 · 基线 263 口径不变）· 闸态不动全 pending · 零 git |
 | 2026-10-17 | v3 · 00 TC18 收口回填（本棒纯文档验收回填零实现码）：F1–F5/TC1–TC17 勾选（引 30 invoke 逐 TC 实证 + PR #73 CI 三门绿 · TC13(b) CI skip 留痕路径照登）· F6/TC-L1~L5 已勾存续 · F7/TC18 勾选（invoke 齐 7 件 · volatile 短注落盘）· 闸态不动 |
+| 2026-10-17 | v4 · 50 CLOSE（维护者授权合并 m00749）：PR #73 squash `e07e4ac` 已并 main · 归档 done/ · 状态行 CLOSED · done/README 登记 · invoke_20261017_50_close.md 落盘 · 无遗留开账项 |
