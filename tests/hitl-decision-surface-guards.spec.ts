@@ -152,3 +152,71 @@ describe('web-hitl-decision-surface · N3 grep/diff 钉形态（TC3 / TC12 / TC1
     expect(added.some((l) => l.includes('retryAfterSeconds'))).toBe(true)
   })
 })
+
+/**
+ * web-fix-tc13b-guard F2 · evaluateTc13bDiff 双场景 Vitest 锁存（红测先行 · 本块先于实现提交）：
+ * 空 diff → skip/pass 路径；含 retryAfterSeconds 增行 diff fixture → 硬断言路径成立；
+ * 边界（非空 diff 无 retryAfterSeconds 增行）→ 不恒红且 :138-150 口径存续（FP-5 留痕）。
+ */
+describe('web-fix-tc13b-guard · evaluateTc13bDiff 判定锁存（空 diff / PR #73 fixture / 边界）', () => {
+  it('场景一：空 diff → empty 判定（非 decision-surface 上下文 · guard 走 skip/pass 留痕不恒红）', () => {
+    expect(evaluateTc13bDiff('').verdict).toBe('empty')
+    expect(evaluateTc13bDiff('\n').verdict).toBe('empty')
+  })
+
+  it('场景二：含 retryAfterSeconds 增行 diff fixture → 硬断言路径成立（fixture 取自 PR #73 squash e07e4ac 真实 diff 形态）', () => {
+    // fixture 来源留痕：git show e07e4ac -- src/composables/useLgRagSse.ts（PR #73 · task_web_hitl_decision_surface · 裁定 D-C）
+    const PR73_FIXTURE = [
+      'diff --git a/src/composables/useLgRagSse.ts b/src/composables/useLgRagSse.ts',
+      'index 47373ad..e2c317f 100644',
+      '--- a/src/composables/useLgRagSse.ts',
+      '+++ b/src/composables/useLgRagSse.ts',
+      '@@ -37,6 +37,11 @@ export interface LgRagSseTransportError {',
+      '   /** HTTP 状态码；网络层失败/超时为 null */',
+      '   status: number | null',
+      '   message: string',
+      '+  /**',
+      '+   * 裁定 D-C 错误面可选增键：响应 Retry-After 头秒数（如 HITL 在飞 replay 409 + Retry-After: 2）。',
+      '+   * 缺头/非法值时为 undefined（消费方默认 2s）；既有消费方零改动兼容（可选键）。',
+      '+   */',
+      '+  retryAfterSeconds?: number',
+      ' }',
+      '@@ -237,7 +242,17 @@ function postLgRagSse(',
+      '       } catch {',
+      '         // 无 JSON 错误体：保留默认 message',
+      '       }',
+      "-      callbacks.onError?.({ kind: 'http', status: response.status, message })",
+      "+      // 裁定 D-C：Retry-After 头外抛（HITL 在飞 replay 409 退避凭据）；缺头/非法值/无 headers 面不挂键",
+      "+      const retryAfterRaw = response.headers?.get?.('Retry-After') ?? null",
+      '+      const retryAfterSeconds = retryAfterRaw === null ? NaN : Number(retryAfterRaw)',
+      '+      callbacks.onError?.({',
+      "+        kind: 'http',",
+      '+        status: response.status,',
+      '+        message,',
+      '+        ...(Number.isFinite(retryAfterSeconds) && retryAfterSeconds >= 0',
+      '+          ? { retryAfterSeconds }',
+      '+          : {}),',
+      '+      })',
+      '       return',
+      '     }',
+    ].join('\n')
+    const result = evaluateTc13bDiff(PR73_FIXTURE)
+    expect(result.verdict).toBe('retry-after-seconds-added')
+    // 硬断言路径锁存：增行实含 retryAfterSeconds（若判定被误松为 skip/pass 或断言缺失 · 本例即红 · FP-2）
+    expect(result.added.some((l) => l.includes('retryAfterSeconds'))).toBe(true)
+  })
+
+  it('边界留痕：非空 diff 但无 retryAfterSeconds 增行 → other-nonempty（他支动文件上下文 · :152 不恒红 · :138-150 口径存续 · FP-5）', () => {
+    const OTHER_DIFF = [
+      'diff --git a/src/composables/useLgRagSse.ts b/src/composables/useLgRagSse.ts',
+      '--- a/src/composables/useLgRagSse.ts',
+      '+++ b/src/composables/useLgRagSse.ts',
+      '@@ -1,1 +1,1 @@',
+      "-      callbacks.onError?.({ kind: 'http', status: response.status, message })",
+      "+      callbacks.onError?.({ kind: 'http', status: response.status, message: message.trim() })",
+    ].join('\n')
+    const result = evaluateTc13bDiff(OTHER_DIFF)
+    expect(result.verdict).toBe('other-nonempty')
+    expect(result.added.some((l) => l.includes('retryAfterSeconds'))).toBe(false)
+  })
+})
