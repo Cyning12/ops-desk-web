@@ -37,6 +37,11 @@ export interface LgRagSseTransportError {
   /** HTTP 状态码；网络层失败/超时为 null */
   status: number | null
   message: string
+  /**
+   * 裁定 D-C 错误面可选增键：响应 Retry-After 头秒数（如 HITL 在飞 replay 409 + Retry-After: 2）。
+   * 缺头/非法值时为 undefined（消费方默认 2s）；既有消费方零改动兼容（可选键）。
+   */
+  retryAfterSeconds?: number
 }
 
 export interface LgRagSseCallbacks {
@@ -237,7 +242,17 @@ function postLgRagSse(
       } catch {
         // 无 JSON 错误体：保留默认 message
       }
-      callbacks.onError?.({ kind: 'http', status: response.status, message })
+      // 裁定 D-C：Retry-After 头外抛（HITL 在飞 replay 409 退避凭据）；缺头/非法值/无 headers 面不挂键
+      const retryAfterRaw = response.headers?.get?.('Retry-After') ?? null
+      const retryAfterSeconds = retryAfterRaw === null ? NaN : Number(retryAfterRaw)
+      callbacks.onError?.({
+        kind: 'http',
+        status: response.status,
+        message,
+        ...(Number.isFinite(retryAfterSeconds) && retryAfterSeconds >= 0
+          ? { retryAfterSeconds }
+          : {}),
+      })
       return
     }
 

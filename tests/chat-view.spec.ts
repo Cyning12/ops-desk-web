@@ -65,6 +65,10 @@ function mountView() {
   })
 }
 
+function apiError(status: number, message = 'err'): ApiError {
+  return { status, message, raw: null }
+}
+
 describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
   beforeEach(async () => {
     window.localStorage.clear()
@@ -430,5 +434,123 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
     await flushPromises()
 
     expect(wrapper.text()).toContain('完成 · 耗时 139650ms')
+  })
+
+  it('TC1：挂载 Chat 页即拉 pending 恰 1 次（S1 事件驱动 · 零定时器轮询）', async () => {
+    mountView()
+    await flushPromises()
+    expect(fetchHitlPending).toHaveBeenCalledTimes(1)
+  })
+
+  it('TC1：pending 拉取 403/501/网络错 → 降级文案呈现 · 主路径（提问/流式）不阻塞', async () => {
+    // 403 → 无审批权限
+    vi.mocked(fetchHitlPending).mockRejectedValue(apiError(403, 'forbidden'))
+    const wrapper = mountView()
+    await flushPromises()
+    expect(wrapper.find('[data-test="hitl-pending-error"]').text()).toContain('无审批权限')
+    // 主路径不阻塞：仍可提问进入流式
+    const chat = useChatStore()
+    chat.sendMessage('还能提问')
+    expect(chat.streaming).toBe(true)
+    expect(chat.messages[0].content).toBe('还能提问')
+
+    // 501 → 审批服务暂不可用
+    vi.mocked(fetchHitlPending).mockRejectedValue(apiError(501, 'not implemented'))
+    const wrapper501 = mountView()
+    await flushPromises()
+    expect(wrapper501.find('[data-test="hitl-pending-error"]').text()).toContain('审批服务暂不可用')
+
+    // 网络错（无 status）→ 同中性降级
+    vi.mocked(fetchHitlPending).mockRejectedValue({ message: 'Network Error' })
+    const wrapperNet = mountView()
+    await flushPromises()
+    expect(wrapperNet.find('[data-test="hitl-pending-error"]').text()).toContain('审批服务暂不可用')
+  })
+
+  it('TC2：pending 非空 → 提示行「待审批 N 条」+ 手动刷新按钮再拉恰 1 次', async () => {
+    vi.mocked(fetchHitlPending).mockResolvedValue({
+      items: [
+        {
+          id: 'req-9',
+          run_id: 'r-9',
+          thread_id: 't-9',
+          reason: '高危操作需审批',
+          blocked_by: null,
+          created_at: '2026-10-17T00:00:00Z',
+        },
+      ],
+      count: 1,
+    })
+    const wrapper = mountView()
+    await flushPromises()
+
+    const hint = wrapper.find('[data-test="hitl-pending-hint"]')
+    expect(hint.exists()).toBe(true)
+    expect(hint.text()).toContain('待审批 1 条')
+    expect(fetchHitlPending).toHaveBeenCalledTimes(1) // 挂载 1 次
+
+    await wrapper.find('[data-test="hitl-pending-refresh"]').trigger('click')
+    await flushPromises()
+    expect(fetchHitlPending).toHaveBeenCalledTimes(2) // 手动刷新再拉恰 1 次
+  })
+
+  it('TC6 DOM：resume 200 携 cursor → 追帧 done{resumed,latency_ms:435584} → 徽标 435584ms 且模型段 DOM 不存在', async () => {
+    vi.mocked(decideHitlRequest).mockResolvedValue({
+      ok: true,
+      request: { id: 'req-1', status: 'approved' },
+      resume: { required: true, method: 'POST', endpoint: '/api/ops/hitl/requests/req-1/resume' },
+    })
+    vi.mocked(resumeHitlRequest).mockResolvedValue({
+      ok: true,
+      request: {},
+      resume: {},
+      replay: {
+        run_id: 'r-1',
+        cursor: 'r-1:2',
+        events_persisted: 3,
+        events_failed: 0,
+        persisted: true,
+        re_interrupted: false,
+      },
+      ts: 1,
+    })
+    vi.mocked(replayLgRag).mockImplementation((_input, cb) => {
+      cb?.onEvent?.({ event_type: 'hitl.resumed', run_id: 'r-1', seq: 3, payload: {} })
+      cb?.onEvent?.({ event_type: 'answer', run_id: 'r-1', seq: 4, payload: { delta: '恢复后的回答' } })
+      cb?.onEvent?.({
+        event_type: 'done',
+        run_id: 'r-1',
+        seq: 5,
+        payload: { status: 'resumed', latency_ms: 435584 },
+      })
+      cb?.onDone?.()
+      return { abort: vi.fn(), done: Promise.resolve() }
+    })
+    const wrapper = mountView()
+    await flushPromises()
+    const chat = useChatStore()
+
+    chat.sendMessage('部署服务')
+    captured.onEvent?.({
+      event_type: 'run.start',
+      run_id: 'r-1',
+      seq: 1,
+      payload: { run_id: 'r-1', thread_id: 't-1' },
+    })
+    captured.onEvent?.({
+      event_type: 'hitl.waiting',
+      run_id: 'r-1',
+      seq: 2,
+      payload: { reason: '需审批', requests: [{ id: 'req-1' }] },
+    })
+    await flushPromises()
+
+    await chat.decideHitl(chat.messages[1], 'req-1', 'approved')
+    await flushPromises()
+
+    // 徽标如实渲染 latency_ms（TC12 同帧形：无 model 键 → 模型段 DOM 不存在）
+    expect(wrapper.text()).toContain('435584ms')
+    expect(wrapper.text()).not.toContain('模型')
+    expect(wrapper.text()).toContain('恢复后的回答')
   })
 })

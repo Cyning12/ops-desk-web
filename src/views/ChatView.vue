@@ -19,6 +19,8 @@ const historyOpen = ref(false)
 
 onMounted(() => {
   void chat.loadLatestSession()
+  // F1/D1-1（web-hitl-decision-surface）：进入 Chat 页一次性 pending 核对（第三消费点 · 承 done task AC16①/② · S1 事件驱动零定时器）
+  void chat.refreshHitlPending()
 })
 
 onBeforeUnmount(() => {
@@ -64,6 +66,11 @@ function onStop(): void {
 
 function onNewSession(): void {
   chat.startNewSession()
+}
+
+// F1/D1-3：pending 手动刷新最小入口（单行提示 + 刷新钮 · 非全局面板 · 不轮询）
+function onRefreshPending(): void {
+  void chat.refreshHitlPending()
 }
 
 // T4：手动触发 replay 续看（断连错误条 / 刷新「上次回答未完成」条共用；不自动 replay）
@@ -285,6 +292,12 @@ function onToggleHistory(): void {
     <p v-if="chat.resumeHint" class="chat-page__hint">{{ chat.resumeHint }}</p>
     <p v-if="chat.hitlPendingError" class="chat-page__hint" data-test="hitl-pending-error">
       {{ chat.hitlPendingError }}
+    </p>
+    <p v-if="chat.hitlPending.length" class="chat-page__hint" data-test="hitl-pending-hint">
+      待审批 {{ chat.hitlPending.length }} 条
+      <el-button size="small" plain data-test="hitl-pending-refresh" @click="onRefreshPending">
+        刷新
+      </el-button>
     </p>
     <p v-if="!chat.error && chat.interrupted" class="chat-page__hint">已中断，可修改后重新发送。</p>
     <p v-if="!chat.error && !chat.interrupted && chat.lastDone" class="chat-page__hint">
