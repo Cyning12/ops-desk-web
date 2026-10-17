@@ -28,6 +28,10 @@
 
 - **`web-lg-rag-sse-subtask-message`**（2026-09-08 · 30/40 交付）：subtask.progress 三态优先消费可选 payload.message（api subtask_message.py 确定性模板 · ≤200 字）——running 非空 message **原样零前缀**（不再套「执行中 ·」叠句 · R1-N3）；step 原样即时上屏、同 subtask_id 替换不堆行；done 有 subtask_result.output 仍打字机渐显 output（message 不得覆盖/截断/替代），无 output 时 message **显式优先**作完成摘要（先于 summary/content · R1-N1/N2）再降级 extractSubtaskDoneText；空串视为缺省走本地兜底；node.progress 的 summarizeProgress 直出顺序（summary→content→message）**不变**。真值：docs/tasks/active/task_web_lg_rag_sse_subtask_message.md（00 定夺表）· 入口 src/stores/chat.ts extractPayloadMessage。
 
+## web-hitl-decision-surface（2026-10-17 · 30/40 交付）
+
+- **`web-hitl-decision-surface`**（2026-10-17 · 30/40 交付）：HITL 决策面接管——decide 200 → resume 秒回 200 携 `replay.cursor`（best-effort 契约 · 空串/缺失回退手动续看 FP-H1）→ `chaseResumedRun` 自动追帧（setTimeout 单次链 **≤10 次/≤120s 双界先到为准** · 代际守卫 · 复用 processFrame/extractFrameCursor 同一帧管线第四入口零新机制）；replay 在飞 409+Retry-After:2 按头秒数退避（缺头默认 2s · 不弹错误条）；409 分流钉死：resume 在飞→卡片「恢复进行中」（**禁**「已被处理」假相）、decide 重复→「已被处理」；终帧 `done{status:resumed, latency_ms:int, 无 model 键}`（FP-1 钉案）→ 徽标「耗时 Xms」/缺则「—」、模型段不渲染、永不伪造。live 实证：沉降窗 147s>墙钟 120s 超限降级「恢复仍在进行，可稍后手动续看」属**预期正确**（FP-T5 · 不盲目放大墙钟——轮询轰炸禁令优先）。真值：`docs/tasks/active/task_web_hitl_decision_surface.md` + invoke_20261017_40_live.md。
+
 ## 执行帽速链
 
 - Active tasks：`../tasks/active/`
