@@ -6,6 +6,7 @@ import HitlApprovalCard from '../components/chat/HitlApprovalCard.vue'
 import ChatHistoryPanel from '../components/chat-history/ChatHistoryPanel.vue'
 import { useAuthStore } from '../stores/auth'
 import { useChatStore } from '../stores/chat'
+import { localizeErrorStage } from '../stores/httpErrorI18n'
 
 const chat = useChatStore()
 const auth = useAuthStore()
@@ -276,7 +277,7 @@ function onToggleHistory(): void {
       type="error"
       show-icon
       :closable="false"
-      :title="`[${chat.error.stage}] ${chat.error.message}`"
+      :title="`[${localizeErrorStage(chat.error.stage)}] ${chat.error.message}`"
     >
       <div class="chat-page__alert-body">
         <span>{{
