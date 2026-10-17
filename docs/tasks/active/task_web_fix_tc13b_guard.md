@@ -38,8 +38,8 @@
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
 | HG-TASK-DRAFT | **approved** | 20-R1, 30 | 2026-10-17 维护者令「批准 · 另立 guard 修复 task」· 00 代录 |
-| HG-AUDIT-R1 | **pending** | **30** | 待人签（20-task-audit R1 审查文后维护者签认 · **禁代签** · pending 即 30 拒开工） |
-| HG-GRAPH-MODULES | **pending** | **30** | 待人签（图谱预判 n/a：仅 tests/ 与 docs 面 · 零 src/ · **禁代签**） |
+| HG-AUDIT-R1 | **approved** | **30** | 2026-10-17 维护者签（「双闸全签」）· 20 R1 PASS-with-NIT 在案 `docs/harness/reviews/task_web_fix_tc13b_guard_audit_R1_20261017.md` · 00 代录 |
+| HG-GRAPH-MODULES | **approved** | **30** | 2026-10-17 维护者签（同上）· n/a 预判经 20 核成立（仅 tests/ 与 docs 面 · 零 src/）· 00 代录 |
 
 ---
 
