@@ -15,6 +15,7 @@ import {
   RevealQueue,
 } from '../composables/useRevealQueue'
 import { useAuthStore } from './auth'
+import { localizeHttpErrorDetail } from './httpErrorI18n'
 
 /**
  * lg-rag thread_id 本地持久化键（T3 · 00 定夺：SoT=thread_id · 登出/401 清除）。
@@ -825,14 +826,14 @@ export const useChatStore = defineStore('chat', () => {
               message:
                 transportError.status === 404
                   ? '会话已失效，请重新发送'
-                  : '会话校验未通过，请重新发送（' + transportError.message + '）',
+                  : '会话校验未通过，请重新发送（' + localizeHttpErrorDetail(transportError.message) + '）',
               retryable: true,
             }
           } else {
             // T4：断网/超时 mid-stream —— active-run 已随帧推进保留，错误条 + 「续看」手动接力（不自动重试）
             error.value = {
               stage: transportError.kind,
-              message: transportError.message,
+              message: localizeHttpErrorDetail(transportError.message),
               retryable: true,
             }
           }
@@ -1072,14 +1073,14 @@ export const useChatStore = defineStore('chat', () => {
                 message:
                   transportError.status === 404
                     ? '已无法续看（对话记录不存在或已过期），请重新提问'
-                    : '续看请求校验未通过（' + transportError.message + '），请重新提问',
+                    : '续看请求校验未通过（' + localizeHttpErrorDetail(transportError.message) + '），请重新提问',
                 retryable: false,
               }
             } else {
               // 网络错/超时：保留 active-run 可手动续看（非 409 不自动退避重试）
               error.value = {
                 stage: transportError.kind,
-                message: transportError.message,
+                message: localizeHttpErrorDetail(transportError.message),
                 retryable: true,
               }
             }
@@ -1160,14 +1161,14 @@ export const useChatStore = defineStore('chat', () => {
               message:
                 transportError.status === 404
                   ? '已无法续看（对话记录不存在或已过期），请重新提问'
-                  : '续看请求校验未通过（' + transportError.message + '），请重新提问',
+                  : '续看请求校验未通过（' + localizeHttpErrorDetail(transportError.message) + '），请重新提问',
               retryable: false,
             }
           } else {
             // replay 网络错/超时：保留 active-run，可再点「续看」
             error.value = {
               stage: transportError.kind,
-              message: transportError.message,
+              message: localizeHttpErrorDetail(transportError.message),
               retryable: true,
             }
           }
@@ -1353,7 +1354,7 @@ export const useChatStore = defineStore('chat', () => {
       hitl.note = `${decidedNote} · 恢复失败，请稍后重试`
       error.value = {
         stage: 'resume',
-        message: apiError.message || '恢复失败，请稍后重试',
+        message: localizeHttpErrorDetail(apiError.message) || '恢复失败，请稍后重试',
         retryable: true,
       }
       void refreshHitlPending()
