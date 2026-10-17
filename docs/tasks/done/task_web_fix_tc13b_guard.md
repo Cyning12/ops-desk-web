@@ -31,7 +31,7 @@
 | **experience_capture** | `recommended` |
 | **kpi_aggregator** | `CLOSE` |
 | **freeze_id** | `lg-rag-sse-v1`（**只消费** · useLgRagSse.ts 本体零触达） |
-| **related_pr** | 待开（勿 auto-merge） |
+| **related_pr** | PR #81（squash 并 main `3e67bf0` · 2026-10-17 · CI check/frontend 双绿） |
 
 ### 人工闸
 
@@ -193,3 +193,4 @@ TC1 计数闸零红（机断）；TC2 双场景断言字面 + fixture 来源注�
 | 日期 | 说明 |
 |------|------|
 | 2026-10-17 | v0 · 10 落稿：维护者令「批准 · 另立 guard 修复 task」· 锚点全亲读核真（guard :54-153 全文 · 来源 task AC13/裁定 D-C · 20 帽 R1 实跑复证 283=282 绿+1 红）· R0–R5 思考轮（early_stop at R5）· HG-TASK-DRAFT approved · HG-AUDIT-R1/HG-GRAPH-MODULES pending 待人签 |
+| 2026-10-17 | v1 · CLOSE：PR #81 squash 并 main `3e67bf0`（RED a0c1523 → GREEN 3486638 · `evaluateTc13bDiff` 三态判定 · PR #73 真实 diff fixture 锁存 · 边界例 other-nonempty 不恒红）· main 本地亲验 296 绿+1 skip 零红（既有红消除）· CI check/frontend 双绿 · 10/20/30 invoke 齐 · 20 R1 审查文随支落 main（含标题机读化修正 51ca882 内容零改）· 00 迁 done |
