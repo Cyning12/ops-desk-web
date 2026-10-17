@@ -1,0 +1,12 @@
+event: run.start
+data: {"run_id": "eb427345bea7408ba05fe25ea963e403", "seq": 1, "ts_ms": 0, "agent_role": "system", "event_type": "run.start", "payload": {"run_id": "eb427345bea7408ba05fe25ea963e403", "thread_id": "336290e0072842c6ba4959eb7039b554", "mode": "basic", "query": "用一句话说明你现在能做什么"}, "cursor": "eb427345bea7408ba05fe25ea963e403:1"}
+
+event: node.progress
+data: {"run_id": "eb427345bea7408ba05fe25ea963e403", "seq": 2, "ts_ms": 651, "agent_role": "rag", "event_type": "node.progress", "payload": {"answer_preview": "未检索到足够依据，无法给出有根据的回答。"}, "cursor": "eb427345bea7408ba05fe25ea963e403:2"}
+
+event: answer
+data: {"run_id": "eb427345bea7408ba05fe25ea963e403", "seq": 3, "ts_ms": 651, "agent_role": "system", "event_type": "answer", "payload": {"content": "", "note": "no_aggregator"}, "cursor": "eb427345bea7408ba05fe25ea963e403:3"}
+
+event: done
+data: {"run_id": "eb427345bea7408ba05fe25ea963e403", "seq": 4, "ts_ms": 651, "agent_role": "system", "event_type": "done", "payload": {"run_id": "eb427345bea7408ba05fe25ea963e403", "thread_id": "336290e0072842c6ba4959eb7039b554", "latency_ms": 651}, "cursor": "eb427345bea7408ba05fe25ea963e403:4"}
+

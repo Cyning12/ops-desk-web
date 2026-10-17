@@ -1,0 +1,55 @@
+{
+ "results": [
+  [
+   "login tenant visible",
+   "ops-desk-pilot"
+  ],
+  [
+   "after switch tenant visible",
+   "ops-desk-pilot-b"
+  ],
+  [
+   "N-UI stream request count (expect 1)",
+   "1"
+  ],
+  [
+   "N-UI request tenant header",
+   "ops-desk-pilot"
+  ],
+  [
+   "N-UI error alert",
+   "[http] tenant_header_mismatch可重试：请重新发送消息"
+  ]
+ ],
+ "streamReqs": [
+  {
+   "phase": "P-A",
+   "tenant": "ops-desk-pilot",
+   "ts": 1792232069772
+  },
+  {
+   "phase": "P-B",
+   "tenant": "ops-desk-pilot-b",
+   "ts": 1792232134024
+  },
+  {
+   "phase": "N-UI",
+   "tenant": "ops-desk-pilot",
+   "ts": 1792232159506
+  }
+ ],
+ "streamResponses": [
+  {
+   "phase": "P-A",
+   "status": 200
+  },
+  {
+   "phase": "P-B",
+   "status": 200
+  },
+  {
+   "phase": "N-UI",
+   "status": 403
+  }
+ ]
+}

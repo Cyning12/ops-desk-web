@@ -1,6 +1,6 @@
 # Task：Web · 阶段 T · Chat 请求租户上下文
 
-> **状态**：`active` · **壳** · **NO-GO 30**（仅等 `HG-STAGE-T-DATA`；`HG-CONTRACT-FREEZE` ✅ · `HG-D5-UI-SCOPE` ✅；建议等 api T1 可联调）  
+> **状态**：`active` · **验收全勾** · **仅剩 CLOSE**（闸全 approved · 30 已完成 · 2026-10-17 hat 40 跨租户负样本 api 联调 PASS；CLOSE 归 00/维护者）  
 > **类型**：feature / 只读多租户客户端  
 > **统筹**：**web 00**；**禁止** api Agent 改本仓 Vue/TS  
 > **上游**：workspace `docs/contracts/api-v1-tenant-readonly-context-draft.md` · `docs/05-plan/06_stage_t_second_tenant_prep_v0_zh.md` · api `task_tenant_readonly_predicate`  
@@ -119,7 +119,7 @@ api 阶段 T 将拒绝「无租户 / 错租户」的只读查询。Web 主 Chat�
 - [x] W4：Agent Playwright 实操证据落盘（切换可见 + 请求租户正确）  
 - [x] 图谱备注 + `./scripts/graph-compile.sh` 绿（若改）  
 - [x] A/B 各至少一问 Chat（数据齐后 · 2026-09-18 retry · Playwright · stream 200）  
-- [ ] 跨租户负样本与 api 联调勾选  
+- [x] 跨租户负样本与 api 联调勾选（2026-10-17 hat 40 · invoke_20261017_40_cross_tenant_verify：N1a/N1b 403 tenant_header_mismatch · N2 422 unknown_tenant · N4 跨租户资源 fail-closed 无泄漏 · UI 明确错误不重试死循环）  
 - [x] `npx spec-wave task lint --file docs/tasks/active/task_web_tenant_context_chat.md` PASS
 
 ---
@@ -191,7 +191,7 @@ api 阶段 T 将拒绝「无租户 / 错租户」的只读查询。Web 主 Chat�
 | 检查 | 结果 |
 |------|------|
 | `npx spec-wave task lint --file docs/tasks/active/task_web_tenant_context_chat.md` | **待跑**（draft 占位 · close 前须回填） |
-| 结论 | **10 壳已落 · D5 UI+Playwright 已钉 · NO-GO 30** |
+| 结论 | **验收全勾（2026-10-17 hat 40 联调 PASS）· 仅剩 CLOSE** |
 
 ---
 
@@ -203,3 +203,4 @@ api 阶段 T 将拒绝「无租户 / 错租户」的只读查询。Web 主 Chat�
 | 2026-09-18 | D5 改为必做切换 UI · HG-D5 代签 · Playwright agent 验收 |
 | 2026-09-18 | 对齐契约 F1=C / F2 / F3 |
 | 2026-09-18 | F4 接受 · `HG-CONTRACT-FREEZE` approved |
+| 2026-10-17 | hat 40 跨租户负样本 api 联调 PASS（invoke_20261017_40_cross_tenant_verify）· 末项勾选 · 状态行刷新为仅剩 CLOSE（不 CLOSE · 归 00/维护者） |
