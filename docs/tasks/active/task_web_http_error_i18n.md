@@ -78,10 +78,10 @@
 
 ## 范围
 
-- [ ] **F1（30 · 裁定 A/B 落地 · 红测先行）**：新建 `localizeHttpErrorDetail` helper + 七枚举映射表（中文字面 30 定稿）→ chat.ts 六落点接入（三 else 分支 + 三拼接/短路面 · 见裁定 B）；新 spec（建议 `tests/chat-http-error-i18n.spec.ts`）直测 helper：逐枚举命中 · `unknown_tenant:evil-tenant` 前缀命中且 id 不回显 · 未知串 `brand_new_machine_string` → 原文兜底 · 空串进空出。
-- [ ] **F2（30 · 裁定 C 落地）**：`ChatView.vue:279` stage 前缀渲染层中文化映射（store state 不动）；chat-view.spec.ts 断言标题不含 `[http]` 字面 · 含中文标签。
-- [ ] **F3（30 · 现状锁存断言改写）**：`chat-store.spec.ts` http else 分支用例（403 mismatch / 409 in-flight 等）message 断言改中文字面；**stage/retryable/active-run/canResume/不自动重试断言零改动**；`chat-store-hitl.spec.ts:1050-1051`（chase 409 退避不弹错误条）与 `tests/lg-rag-sse.spec.ts`（detail 原文到 onError）零改动绿。
-- [ ] **F4（回执落盘）**：10/30 invoke 齐（`docs/harness/invokes/by-task/web-http-error-i18n/`）· 三裁定留痕（本 task 体）· `docs/coding_wiki/volatile.md` 短注。
+- [x] **F1（30 · 裁定 A/B 落地 · 红测先行）**：新建 `localizeHttpErrorDetail` helper + 七枚举映射表（中文字面 30 定稿）→ chat.ts 六落点接入（三 else 分支 + 三拼接/短路面 · 见裁定 B）；新 spec（建议 `tests/chat-http-error-i18n.spec.ts`）直测 helper：逐枚举命中 · `unknown_tenant:evil-tenant` 前缀命中且 id 不回显 · 未知串 `brand_new_machine_string` → 原文兜底 · 空串进空出。
+- [x] **F2（30 · 裁定 C 落地）**：`ChatView.vue:279` stage 前缀渲染层中文化映射（store state 不动）；chat-view.spec.ts 断言标题不含 `[http]` 字面 · 含中文标签。
+- [x] **F3（30 · 现状锁存断言改写）**：`chat-store.spec.ts` http else 分支用例（403 mismatch / 409 in-flight 等）message 断言改中文字面；**stage/retryable/active-run/canResume/不自动重试断言零改动**；`chat-store-hitl.spec.ts:1050-1051`（chase 409 退避不弹错误条）与 `tests/lg-rag-sse.spec.ts`（detail 原文到 onError）零改动绿。
+- [x] **F4（回执落盘）**：10/30 invoke 齐（`docs/harness/invokes/by-task/web-http-error-i18n/`）· 三裁定留痕（本 task 体）· `docs/coding_wiki/volatile.md` 短注。
 
 ## 非范围
 
@@ -112,12 +112,12 @@
 
 ## 验收标准
 
-- [ ] **TC1（30 · helper 单测 · 红测先行）**：新 spec 直测 `localizeHttpErrorDetail`——七枚举逐条命中中文字面（与映射表同源断言）· `unknown_tenant:evil-tenant` 前缀命中且输出不含 `evil-tenant` · 未知串 `brand_new_machine_string` → 原文兜底返回 · 空串进空出；RED（helper 不存在/未接）→ GREEN 时序 git 可查。
-- [ ] **TC2（30 · store 集成断言改写绿）**：`chat-store.spec.ts` http else 分支用例（403 `tenant_header_mismatch` · 409 `Run is still in flight;…`）message 断言 = 中文字面；stage（`'http'`）/retryable（`true`）/active-run 保留/canResume/不自动重试断言**零改动**；`chat-store-hitl.spec.ts` 与 `lg-rag-sse.spec.ts` 零改动绿。
-- [ ] **TC3（30 · 裁定 C）**：chat-view.spec.ts 断言 error{stage:'http'} 渲染标题**不含 `[http]` 字面** · 含中文 stage 标签；未知 stage 透传原值断言。
-- [ ] **TC4（30 · 回归闸）**：钉死 pnpm 路径 `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm`：`lint` EXIT=0 · `test` **零新增红**（基线 283 = 282 绿 + TC13(b) 既有红 1 例照登 · FP-7）· `build` EXIT=0。
-- [ ] **TC5（回执落盘）**：invoke 10/30 齐备（30 含 RED→GREEN 时序与三门实证）· 三裁定留痕 · `docs/coding_wiki/volatile.md` 短注落盘。
-- [ ] `npx spec-wave task lint --file docs/tasks/active/task_web_http_error_i18n.md` PASS。
+- [x] **TC1（30 · helper 单测 · 红测先行）**：新 spec 直测 `localizeHttpErrorDetail`——七枚举逐条命中中文字面（与映射表同源断言）· `unknown_tenant:evil-tenant` 前缀命中且输出不含 `evil-tenant` · 未知串 `brand_new_machine_string` → 原文兜底返回 · 空串进空出；RED（helper 不存在/未接）→ GREEN 时序 git 可查。
+- [x] **TC2（30 · store 集成断言改写绿）**：`chat-store.spec.ts` http else 分支用例（403 `tenant_header_mismatch` · 409 `Run is still in flight;…`）message 断言 = 中文字面；stage（`'http'`）/retryable（`true`）/active-run 保留/canResume/不自动重试断言**零改动**；`chat-store-hitl.spec.ts` 与 `lg-rag-sse.spec.ts` 零改动绿。
+- [x] **TC3（30 · 裁定 C）**：chat-view.spec.ts 断言 error{stage:'http'} 渲染标题**不含 `[http]` 字面** · 含中文 stage 标签；未知 stage 透传原值断言。
+- [x] **TC4（30 · 回归闸）**：钉死 pnpm 路径 `$HOME/.nvm/versions/node/v24.15.0/bin/pnpm`：`lint` EXIT=0 · `test` **零新增红**（基线 283 = 282 绿 + TC13(b) 既有红 1 例照登 · FP-7）· `build` EXIT=0。
+- [x] **TC5（回执落盘）**：invoke 10/30 齐备（30 含 RED→GREEN 时序与三门实证）· 三裁定留痕 · `docs/coding_wiki/volatile.md` 短注落盘。
+- [x] `npx spec-wave task lint --file docs/tasks/active/task_web_http_error_i18n.md` PASS。
 
 ---
 
