@@ -81,6 +81,14 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/CapabilityCatalogView.vue'),
         meta: { title: 'Capability' },
       },
+      {
+        // 独立 HITL 审批页（task_web-hitl-approval-page · D1 第四审批入口）：
+        // 未登录沿用既有 ensureMe 守卫跳 /login?redirect=/hitl，零新增守卫逻辑
+        path: 'hitl',
+        name: 'hitl',
+        component: () => import('../views/HitlApprovalView.vue'),
+        meta: { title: '审批' },
+      },
     ],
   },
 ]

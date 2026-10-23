@@ -48,6 +48,8 @@ async function onTenantChange(value: string): Promise<void> {
         <!-- F5 Capability 目录页：全登录用户可见（mine 端点任意登录用户）；
              maintainer 故障详情在页内按 /auth/me role 显隐，菜单层零 maintainer 探测面 -->
         <el-menu-item index="/capability">Capability</el-menu-item>
+        <!-- 独立 HITL 审批页（task_web-hitl-approval-page · D1 第四审批入口） -->
+        <el-menu-item index="/hitl">审批</el-menu-item>
       </el-menu>
     </el-aside>
     <el-container>
