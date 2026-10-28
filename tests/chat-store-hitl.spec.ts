@@ -987,13 +987,15 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
       expect(chat.lastDone?.model).toBe('')
       // hitl.resumed：default 忽略不崩不误渲（卡片仍 decided · 不重建 waiting）
       expect(assistant.hitl?.status).toBe('decided')
-      expect(assistant.hitl?.note).toBe('已批准 · 恢复进行中')
+      // web-hitl-resume-chase-ux 范围2 改钉（同 commit）：终帧即消——进度态撤回收官文案「已批准」
+      expect(assistant.hitl?.note).toBe('已批准')
       // 进度帧入 thinking · answer delta 渲染进同一 assistant 消息（processFrame 管线复用实证）
       expect(assistant.thinking.length).toBeGreaterThan(0)
       expect(assistant.content).toContain('恢复后的回答')
     })
 
-    it('TC7：干净结束未见终帧 ≥2s 再追 · 连追 10 次上限降级「恢复仍在进行，可稍后手动续看」+ active-run 保留', async () => {
+    it('TC7：干净结束未见终帧 → 递增退避 2s→3s→4.5s→6.75s→8s（顶）· 连追 10 次上限降级「恢复仍在进行，可稍后手动续看」+ active-run 保留', async () => {
+      // web-hitl-resume-chase-ux 范围3 改钉（同 commit）：固定 2s → 递增退避（起始 2s 钉死 · ×1.5 · 封顶 8s）
       vi.useFakeTimers()
       try {
         vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
@@ -1015,18 +1017,21 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
         await chat.decideHitl(assistant, 'req-1', 'approved')
         expect(replayLgRag).toHaveBeenCalledTimes(1)
 
-        // ≥2s 才再追：1999ms 不触发，+1ms 触发第二次
-        await vi.advanceTimersByTimeAsync(1999)
-        expect(replayLgRag).toHaveBeenCalledTimes(1)
-        await vi.advanceTimersByTimeAsync(1)
-        expect(replayLgRag).toHaveBeenCalledTimes(2)
+        // 阶梯逐档钉死：前一毫秒不触发、整档触发（2s 起始不变 · 后续单调递增）
+        const ladder = [2000, 3000, 4500, 6750, 8000]
+        for (const [index, wait] of ladder.entries()) {
+          await vi.advanceTimersByTimeAsync(wait - 1)
+          expect(replayLgRag).toHaveBeenCalledTimes(index + 1)
+          await vi.advanceTimersByTimeAsync(1)
+          expect(replayLgRag).toHaveBeenCalledTimes(index + 2)
+        }
         // 游标随帧推进（seq 2 → 10）
         expect(vi.mocked(replayLgRag).mock.calls[1][0]).toEqual({ run_id: 'r-1', after_seq: 10 })
 
-        // 连追至 10 次上限（墙钟 18s < 120s · 次数先到为准）
-        await vi.advanceTimersByTimeAsync(2000 * 8)
+        // 封顶 8s 续追至 10 次上限（墙钟 56.25s < 120s · 次数先到为准）
+        await vi.advanceTimersByTimeAsync(8000 * 4)
         expect(replayLgRag).toHaveBeenCalledTimes(10)
-        await vi.advanceTimersByTimeAsync(2000)
+        await vi.advanceTimersByTimeAsync(8000)
         expect(replayLgRag).toHaveBeenCalledTimes(10) // 第 11 次进入上限判定 → 降级不再发请求
 
         expect(assistant.hitl?.note).toBe('恢复仍在进行，可稍后手动续看')
@@ -1039,6 +1044,164 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
       } finally {
         vi.useRealTimers()
       }
+    })
+
+    it('TC-U1：同一 run 只允许一条 chase 链 —— replay 重放 hitl.waiting 不打回已决卡片 · decide/resume 恰一次 · 总追帧 ≤10（验收1/4 · 14>10 根因钉）', async () => {
+      // 根因实证（现行代码红）：attempts 单调用作用域完好（TC7 单链恰 10 顶）· 全仓 replay 仅 2 调用点，
+      // 14>10 唯有多链并发 —— 重放 waiting 帧重建卡片重置守卫 → 第二入口新链（repro-chase-overflow 实证 4+10=14）
+      vi.useFakeTimers()
+      try {
+        vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+        vi.mocked(resumeHitlRequest).mockResolvedValue(resumeOk('r-1:2'))
+        let call = 0
+        vi.mocked(replayLgRag).mockImplementation((_input, cb) => {
+          call += 1
+          if (call === 1) {
+            // 陈旧游标重放 hitl.waiting（seq 3）——已决卡片不得被打回 waiting
+            cb?.onEvent?.({
+              event_type: 'hitl.waiting',
+              run_id: 'r-1',
+              seq: 3,
+              payload: { reason: '需审批', requests: [{ id: 'req-1' }] },
+            })
+          }
+          cb?.onDone?.() // 干净结束未见终帧
+          return { abort: vi.fn(), done: Promise.resolve() }
+        })
+        const chat = seedWaitingCardWithRun()
+        const assistant = chat.messages[1]
+
+        await chat.decideHitl(assistant, 'req-1', 'approved')
+        expect(replayLgRag).toHaveBeenCalledTimes(1)
+        // 重放 waiting 帧后：本端已受理申请不重建（幂等守卫）
+        expect(assistant.hitl?.status).toBe('decided')
+
+        // 链 A 推进至第 4 次（递增退避 2s/3s/4.5s）
+        await vi.advanceTimersByTimeAsync(2000)
+        await vi.advanceTimersByTimeAsync(3000)
+        await vi.advanceTimersByTimeAsync(4500)
+        expect(replayLgRag).toHaveBeenCalledTimes(4)
+
+        // 已决单重入：哪怕卡片态被外部打回 waiting，也只发一次 decide+resume
+        assistant.hitl!.status = 'waiting'
+        await chat.decideHitl(assistant, 'req-1', 'approved')
+        expect(decideHitlRequest).toHaveBeenCalledTimes(1)
+        expect(resumeHitlRequest).toHaveBeenCalledTimes(1)
+        expect(replayLgRag).toHaveBeenCalledTimes(4) // 无第二条链
+
+        // 链 A 独享上限：全程恰 10 次后降级（4 + 6，总数不破 10）
+        await vi.advanceTimersByTimeAsync(120_000)
+        expect(replayLgRag).toHaveBeenCalledTimes(10)
+        expect(assistant.hitl?.note).toBe('恢复仍在进行，可稍后手动续看')
+        expect(chat.activeRun?.run_id).toBe('r-1')
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('TC-P1：追帧等待期进度双落点常驻（hitl.note + resumeHint）· 终帧即消且零续追（验收2/3）', async () => {
+      vi.useFakeTimers()
+      try {
+        vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+        vi.mocked(resumeHitlRequest).mockResolvedValue(resumeOk('r-1:2'))
+        mockChaseReplay([
+          (cb) => cb.onDone?.(), // 第 1 次干净结束 → 进入退避等待
+          (cb) => {
+            cb.onEvent?.({
+              event_type: 'done',
+              run_id: 'r-1',
+              seq: 6,
+              payload: { status: 'resumed', latency_ms: 68_000 },
+            })
+            cb.onDone?.() // 第 2 次携终帧
+          },
+        ])
+        const chat = seedWaitingCardWithRun()
+        const assistant = chat.messages[1]
+
+        await chat.decideHitl(assistant, 'req-1', 'approved')
+        // 进入退避等待：恢复段在长耗时执行，进度可见态常驻（双落点）
+        // （mock 同步回放压缩了网络在飞时间：首追帧瞬结即入等待期 · 「已批准 · 恢复进行中」初始文案由 TC4/TC5 悬挂 mock 存续钉死）
+        await vi.advanceTimersByTimeAsync(0)
+        expect(assistant.hitl?.note).toContain('恢复中')
+        expect(chat.resumeHint).toContain('恢复中')
+
+        // 终帧即消：done{resumed} 到达 → 进度态消失 · 不再有任何 replay
+        await vi.advanceTimersByTimeAsync(2000)
+        expect(chat.resumeHint).toBeNull()
+        expect(assistant.hitl?.note).toBe('已批准')
+        expect(chat.streaming).toBe(false)
+        expect(chat.activeRun).toBeNull()
+        await vi.advanceTimersByTimeAsync(120_000)
+        expect(replayLgRag).toHaveBeenCalledTimes(2)
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('TC-I1a：卡片连点（decide 在飞）只发一次 decide+resume · 重放打回后再入也被受理幂等拦（验收4）', async () => {
+      const chat = seedWaitingCardWithRun()
+      const assistant = chat.messages[1]
+
+      // 连点：decide 承诺悬挂期第二次点击被拦（acting 同步守卫 + 受理幂等双保险）
+      let resolveDecide!: (value: HitlDecideResponse) => void
+      vi.mocked(decideHitlRequest).mockImplementation(
+        () => new Promise<HitlDecideResponse>((resolve) => { resolveDecide = resolve }),
+      )
+      vi.mocked(resumeHitlRequest).mockResolvedValue(resumeOk('r-1:2'))
+      const first = chat.decideHitl(assistant, 'req-1', 'approved')
+      const second = chat.decideHitl(assistant, 'req-1', 'approved')
+      resolveDecide(decideOk)
+      await Promise.all([first, second])
+      expect(decideHitlRequest).toHaveBeenCalledTimes(1)
+      expect(resumeHitlRequest).toHaveBeenCalledTimes(1)
+      expect(assistant.hitl?.status).toBe('decided')
+    })
+
+    it('TC-I1b：decide 网络错回 waiting → 受理标记解除 · 同 id 合法重试照常成功（幂等不误伤重试 · 验收4）', async () => {
+      const chat = seedWaitingCardWithRun()
+      const assistant = chat.messages[1]
+
+      vi.mocked(decideHitlRequest).mockRejectedValueOnce(apiError(0, '网络异常'))
+      await chat.decideHitl(assistant, 'req-1', 'approved')
+      expect(assistant.hitl?.status).toBe('waiting')
+      expect(resumeHitlRequest).not.toHaveBeenCalled()
+
+      vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+      vi.mocked(resumeHitlRequest).mockResolvedValue(resumeOk('r-1:2'))
+      await chat.decideHitl(assistant, 'req-1', 'approved')
+      expect(decideHitlRequest).toHaveBeenCalledTimes(2) // 1（网络错）+1（重试）
+      expect(resumeHitlRequest).toHaveBeenCalledTimes(1)
+      expect(assistant.hitl?.status).toBe('decided')
+    })
+
+    it.each([
+      // detail 只消费（hitl-browser-decide-v1 冻结契约不改）· 后端文案真值 api router.py/resume.py
+      [
+        '申请里没有 thread_id —— 定位不到挂起的 checkpoint，无法恢复',
+        '该申请缺少会话定位信息，无法恢复，请重新开会话',
+      ],
+      [
+        'thread abc 有未完成任务但没有 interrupt 元数据 —— 多半是升级前旧版本格式的 checkpoint，无法恢复（只能作废重开）',
+        '该会话挂起点为旧版本残留，无法恢复，请作废重开',
+      ],
+      [
+        '已批准但拿不到待解锁的步骤（unlock_subtask_id 为空）',
+        '已批准但无可解锁步骤，无法恢复，请重新开会话',
+      ],
+      [
+        '申请状态为 pending，只有已决（approved/rejected）才能恢复',
+        '该会话已无法恢复，请重新开会话',
+      ],
+    ])('TC-D1：resume 409 detail 分类「%s」→「%s」（验收5）', async (detail, expected) => {
+      vi.mocked(decideHitlRequest).mockResolvedValue(decideOk)
+      vi.mocked(resumeHitlRequest).mockRejectedValue(apiError(409, detail))
+      const chat = seedWaitingCardWithRun()
+
+      await chat.decideHitl(chat.messages[1], 'req-1', 'approved')
+
+      expect(chat.error).toEqual({ stage: 'resume', message: expected, retryable: false })
+      expect(replayLgRag).not.toHaveBeenCalled() // 不可恢复面不自动重试
     })
 
     it('TC8：replay 409 + Retry-After 按头退避不弹错误条 · 缺头默认 2s · 连续 409 计入同上限', async () => {
