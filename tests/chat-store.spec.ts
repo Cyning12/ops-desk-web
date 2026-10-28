@@ -8,12 +8,20 @@ vi.mock('../src/api/chat', () => ({
   fetchLatestSession: vi.fn(),
 }))
 
+// D11/D12（task_web_hitl_approval_overlay_ux）：恢复历史全量加载钉测 mock 面（改钉与改码同 PR 可见）
+vi.mock('../src/api/chatHistory', () => ({
+  fetchChatThreads: vi.fn(),
+  fetchThreadHistory: vi.fn(),
+}))
+
 vi.mock('../src/composables/useLgRagSse', () => ({
   streamLgRag: vi.fn(),
   replayLgRag: vi.fn(),
 }))
 
 import { fetchLatestSession } from '../src/api/chat'
+import { fetchThreadHistory } from '../src/api/chatHistory'
+import type { ChatThreadHistoryPage } from '../src/api/chatHistory'
 import { replayLgRag, streamLgRag } from '../src/composables/useLgRagSse'
 import { useAuthStore } from '../src/stores/auth'
 import {
@@ -416,12 +424,38 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       warn.mockRestore()
     })
 
-    it('刷新/重进：已存 id 恢复 + 提示条；发送带该 id；不回显历史消息', async () => {
+    it('刷新/重进：已存 id 恢复 + 提示条；restoreThreadHistory 全量回显历史（D11/D12 改钉 · 原语义「不回显历史消息」废止）；发送带该 id', async () => {
+      vi.mocked(fetchThreadHistory).mockResolvedValue({
+        thread_id: 't-stored',
+        runs: [
+          {
+            run_id: 'r-old',
+            started_at: '2026-10-27T10:00:00',
+            query: '旧问',
+            answer: '旧答',
+            answer_truncated: false,
+            subtasks: [],
+            terminal_status: 'completed',
+            hitl: [],
+          },
+        ],
+        next_cursor: null,
+      })
       const chat = await createRestoredChat('t-stored')
 
       expect(chat.threadId).toBe('t-stored')
       expect(chat.restoredNotice).toBe(true)
+      // D12：loadLatestSession 仅恢复指针本身零加载；历史加载触发点 = 视图 onMounted → restoreThreadHistory
       expect(chat.messages).toHaveLength(0)
+      expect(fetchThreadHistory).not.toHaveBeenCalled()
+
+      await chat.restoreThreadHistory()
+      // D11：单页会话不多发请求；limit=100（契约上限 · 消除服务端默认首页 20 静默截断）
+      expect(fetchThreadHistory).toHaveBeenCalledTimes(1)
+      expect(fetchThreadHistory).toHaveBeenCalledWith('t-stored', { limit: 100 })
+      expect(chat.messages).toHaveLength(2)
+      expect(chat.messages[0]).toMatchObject({ role: 'user', content: '旧问' })
+      expect(chat.messages[1]).toMatchObject({ role: 'assistant', content: '旧答' })
 
       chat.sendMessage('恢复后第一问')
       expect(vi.mocked(streamLgRag).mock.calls[0][0]).toEqual({
@@ -432,6 +466,157 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
 
       chat.dismissRestoredNotice()
       expect(chat.restoredNotice).toBe(false)
+    })
+
+    it('D11：多页会话全量翻页循环（cursor 至 null · limit=100 · 消除首页 20 静默截断）', async () => {
+      const runA = {
+        run_id: 'r-1',
+        started_at: '2026-10-27T10:00:00',
+        query: '第一页问',
+        answer: '第一页答',
+        answer_truncated: false,
+        subtasks: [],
+        terminal_status: 'completed',
+        hitl: [],
+      }
+      const runB = { ...runA, run_id: 'r-2', query: '第二页问', answer: '第二页答' }
+      vi.mocked(fetchThreadHistory)
+        .mockResolvedValueOnce({ thread_id: 't-stored', runs: [runA], next_cursor: 'cur-2' })
+        .mockResolvedValueOnce({ thread_id: 't-stored', runs: [runB], next_cursor: null })
+      const chat = await createRestoredChat('t-stored')
+
+      await chat.restoreThreadHistory()
+
+      expect(fetchThreadHistory).toHaveBeenCalledTimes(2)
+      expect(vi.mocked(fetchThreadHistory).mock.calls[0]).toEqual(['t-stored', { limit: 100 }])
+      expect(vi.mocked(fetchThreadHistory).mock.calls[1]).toEqual(['t-stored', { limit: 100, cursor: 'cur-2' }])
+      expect(chat.messages).toHaveLength(4)
+      expect(chat.messages[0]).toMatchObject({ role: 'user', content: '第一页问' })
+      expect(chat.messages[2]).toMatchObject({ role: 'user', content: '第二页问' })
+      expect(chat.historyError).toBeNull()
+    })
+
+    it('D12：无已存 thread_id → restoreThreadHistory 零加载零打扰', async () => {
+      const chat = useChatStore()
+      await chat.restoreThreadHistory()
+      expect(fetchThreadHistory).not.toHaveBeenCalled()
+      expect(chat.messages).toHaveLength(0)
+      expect(chat.historyError).toBeNull()
+      expect(chat.historyLoading).toBe(false)
+    })
+
+    it('D12/FP-F8/F10：恢复加载失败 → historyError 降级（404「会话不存在或已过期」· 504「历史服务暂不可用」）+ 主路径可发新问', async () => {
+      vi.mocked(fetchThreadHistory).mockRejectedValueOnce({ status: 404, message: 'not found', raw: null } as ApiError)
+      const chat = await createRestoredChat('t-gone')
+      await chat.restoreThreadHistory()
+      expect(chat.historyError).toBe('会话不存在或已过期')
+      expect(chat.messages).toHaveLength(0)
+
+      vi.mocked(fetchThreadHistory).mockRejectedValueOnce({ status: 504, message: 'timeout', raw: null } as ApiError)
+      await chat.restoreThreadHistory()
+      expect(chat.historyError).toBe('历史服务暂不可用')
+
+      // 主路径不受影响：仍可发新问进入流式
+      chat.sendMessage('主路径仍可用')
+      expect(chat.streaming).toBe(true)
+      expect(chat.messages[chat.messages.length - 2]).toMatchObject({ role: 'user', content: '主路径仍可用' })
+    })
+
+    it('D12：恢复加载不自动 replay；最新 run waiting_approval → active-run 挂起（last_seq=0 手动续看 · 沿用 openHistoryThread 闭环）', async () => {
+      vi.mocked(fetchThreadHistory).mockResolvedValue({
+        thread_id: 't-stored',
+        runs: [
+          {
+            run_id: 'r-9',
+            started_at: '2026-10-27T10:00:00',
+            query: '高危操作',
+            answer: '半截回答',
+            answer_truncated: true,
+            subtasks: [],
+            terminal_status: 'waiting_approval',
+            hitl: [{ id: 'req-1', reason: '需审批' }],
+          },
+        ],
+        next_cursor: null,
+      })
+      const chat = await createRestoredChat('t-stored')
+
+      await chat.restoreThreadHistory()
+
+      expect(replayLgRag).not.toHaveBeenCalled() // active-run 不自动 replay 存续
+      expect(streamLgRag).not.toHaveBeenCalled()
+      expect(chat.activeRun).toMatchObject({ run_id: 'r-9', last_seq: 0, thread_id: 't-stored' })
+      expect(chat.canResume).toBe(true)
+      expect(chat.messages[1].hitl?.status).toBe('waiting')
+    })
+
+    it('D12/D14：T4 断线游标已恢复 → 恢复加载保留不覆盖（last_seq 精度优先），不自动 replay', async () => {
+      window.localStorage.setItem(LG_RAG_THREAD_ID_STORAGE_KEY, 't-stored')
+      window.localStorage.setItem(
+        LG_RAG_ACTIVE_RUN_STORAGE_KEY,
+        JSON.stringify({ run_id: 'r-9', last_seq: 7, thread_id: 't-stored', updated_at: '2026-10-27T00:00:00Z' }),
+      )
+      setActivePinia(createPinia())
+      vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
+      vi.mocked(fetchThreadHistory).mockResolvedValue({
+        thread_id: 't-stored',
+        runs: [
+          {
+            run_id: 'r-8',
+            started_at: '2026-10-27T09:00:00',
+            query: '旧问',
+            answer: '旧答',
+            answer_truncated: false,
+            subtasks: [],
+            terminal_status: 'completed',
+            hitl: [],
+          },
+        ],
+        next_cursor: null,
+      })
+      const chat = useChatStore()
+      await chat.loadLatestSession()
+      expect(chat.activeRun).toMatchObject({ run_id: 'r-9', last_seq: 7 })
+
+      await chat.restoreThreadHistory()
+
+      expect(chat.activeRun).toMatchObject({ run_id: 'r-9', last_seq: 7 }) // T4 游标保留不覆盖
+      expect(chat.resumeNotice).toBe(true) // 「上次回答未完成·续看」条存续
+      expect(replayLgRag).not.toHaveBeenCalled()
+      expect(chat.messages).toHaveLength(2)
+    })
+
+    it('D14/验收10：恢复加载中 messages 已有新内容（门控被绕过的理论面）→ 放弃覆盖，live 内容优先不双轨渲染', async () => {
+      const resolvers: Array<(page: ChatThreadHistoryPage) => void> = []
+      vi.mocked(fetchThreadHistory).mockImplementation(
+        () => new Promise<ChatThreadHistoryPage>((resolve) => { resolvers.push(resolve) }),
+      )
+      const chat = await createRestoredChat('t-stored')
+      const pending = chat.restoreThreadHistory()
+      expect(chat.historyLoading).toBe(true)
+
+      chat.sendMessage('加载中发新问')
+      resolvers[0]?.({
+        thread_id: 't-stored',
+        runs: [
+          {
+            run_id: 'r-1',
+            started_at: '2026-10-27T10:00:00',
+            query: '旧问',
+            answer: '旧答',
+            answer_truncated: false,
+            subtasks: [],
+            terminal_status: 'completed',
+            hitl: [],
+          },
+        ],
+        next_cursor: null,
+      })
+      await pending
+
+      expect(chat.historyLoading).toBe(false)
+      expect(chat.messages).toHaveLength(2) // live 问+答泡保留，未被历史覆盖
+      expect(chat.messages[0]).toMatchObject({ role: 'user', content: '加载中发新问' })
     })
 
     it('startNewSession：清 id + 清消息 + 清提示 + 清 localStorage；下轮 body 无 thread_id', async () => {
@@ -798,22 +983,52 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       expect(vi.mocked(replayLgRag).mock.calls[1][0]).toEqual({ run_id: 'r-1', after_seq: 4 })
     })
 
-    it('replay 空流（0 帧 onDone）：保留 active-run + 「暂无新进度」提示（N4）；部分帧无终态 → 接力提示', () => {
+    it('replay 空流（0 帧 onDone）：保留 active-run + 「暂无新进度」提示（N4）+ D1 空泡回收；部分帧无终态 → 接力提示且泡保留', () => {
       const chat = useChatStore()
       seedBrokenLive(chat)
+      expect(chat.messages).toHaveLength(2)
       chat.resumeFromCursor()
+      expect(chat.messages).toHaveLength(3) // 立即建泡承接语义存续（:657 同钉）
       replayCaptured.onDone?.()
 
       expect(chat.streaming).toBe(false)
       expect(chat.activeRun).toMatchObject({ run_id: 'r-1', last_seq: 3 })
+      // D1（验收1 · 维护者需求①）：零内容落墨 → 空泡回收不渲染；resumeHint 兜底存续
+      expect(chat.messages).toHaveLength(2)
       expect(chat.resumeHint).toBe('暂无新进度，稍后再点「续看」')
 
-      // 有部分新帧但未见终态：提示接力
+      // 有部分新帧但未见终态：提示接力；内容已落墨 → 泡保留不回收
       chat.resumeFromCursor()
       replayCaptured.onEvent?.({ event_type: 'answer', run_id: 'r-1', seq: 4, cursor: 'r-1:4', payload: { content: 'A4' } })
       replayCaptured.onDone?.()
       expect(chat.activeRun).toMatchObject({ run_id: 'r-1', last_seq: 4 })
       expect(chat.resumeHint).toBe('回答仍在生成中，可稍后再次「续看」接力')
+      expect(chat.messages).toHaveLength(3)
+    })
+
+    it('D1（R1-N1 不逃逸）：replay 携 done 终帧仅元信息零内容落墨 → 同属回收判据；done 徽标语义存续；replay 有内容帧 → 泡保留不回归', () => {
+      const chat = useChatStore()
+      seedBrokenLive(chat)
+      chat.resumeFromCursor()
+      expect(chat.messages).toHaveLength(3)
+
+      // done 终帧仅元信息（status/latency/model），零内容落墨
+      replayCaptured.onEvent?.({ event_type: 'done', run_id: 'r-1', seq: 4, cursor: 'r-1:4', payload: { status: 'completed', latency_ms: 1, model: 'm' } })
+      replayCaptured.onDone?.()
+
+      expect(chat.messages).toHaveLength(2) // 空泡回收
+      expect(chat.lastDone).toEqual({ latency_ms: 1, model: 'm' }) // done 徽标语义存续
+      expect(chat.activeRun).toBeNull() // 终帧清 active-run 语义存续
+
+      // 回归面：replay 有内容帧 → 泡保留（seedBrokenLive 追加语义：再播一对 live 消息）
+      seedBrokenLive(chat, 'r-2')
+      const baseline = chat.messages.length
+      chat.resumeFromCursor()
+      expect(chat.messages).toHaveLength(baseline + 1)
+      replayCaptured.onEvent?.({ event_type: 'answer', run_id: 'r-2', seq: 4, cursor: 'r-2:4', payload: { content: 'A4' } })
+      replayCaptured.onDone?.()
+      expect(chat.messages).toHaveLength(baseline + 1)
+      expect(chat.messages[baseline].content.length).toBeGreaterThan(0)
     })
 
     it('刷新/重进：有未完成 active-run → 「上次回答未完成·续看」条；续看渲染进新消息（N5）；终态后条不再出现', async () => {

@@ -543,7 +543,9 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
 
       await chat.openHistoryThread('t-9')
 
-      expect(fetchThreadHistory).toHaveBeenCalledWith('t-9')
+      // D11 改钉（task_web_hitl_approval_overlay_ux · 影响面清单声明项）：无参调用 → 携 limit=100 全量翻页首页请求
+      expect(fetchThreadHistory).toHaveBeenCalledWith('t-9', { limit: 100 })
+      expect(fetchThreadHistory).toHaveBeenCalledTimes(1) // next_cursor=null 单页不多发
       expect(chat.messages).toHaveLength(4)
       expect(chat.messages[0]).toMatchObject({ role: 'user', content: '为什么部署失败' })
       expect(chat.messages[1]).toMatchObject({ role: 'assistant', content: '因为配置缺失' })
@@ -555,6 +557,26 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
       // 完成态 run：无审批卡片 · activeRun 清除
       expect(chat.messages[1].hitl).toBeNull()
       expect(chat.activeRun).toBeNull()
+      expect(chat.historyError).toBeNull()
+    })
+
+    it('D11：openHistoryThread 全量翻页循环（cursor 至 null · limit=100）消除首页 20 静默截断', async () => {
+      vi.mocked(fetchThreadHistory)
+        .mockResolvedValueOnce({ thread_id: 't-9', runs: [RUN_COMPLETED], next_cursor: 'cur-2' })
+        .mockResolvedValueOnce({
+          thread_id: 't-9',
+          runs: [{ ...RUN_COMPLETED, run_id: 'r-2', query: '第二页问', answer: '第二页答' }],
+          next_cursor: null,
+        })
+      const chat = useChatStore()
+
+      await chat.openHistoryThread('t-9')
+
+      expect(fetchThreadHistory).toHaveBeenCalledTimes(2)
+      expect(vi.mocked(fetchThreadHistory).mock.calls[0]).toEqual(['t-9', { limit: 100 }])
+      expect(vi.mocked(fetchThreadHistory).mock.calls[1]).toEqual(['t-9', { limit: 100, cursor: 'cur-2' }])
+      expect(chat.messages).toHaveLength(4)
+      expect(chat.messages[2]).toMatchObject({ role: 'user', content: '第二页问' })
       expect(chat.historyError).toBeNull()
     })
 

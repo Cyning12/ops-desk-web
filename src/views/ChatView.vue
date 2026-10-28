@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import HitlApprovalCard from '../components/chat/HitlApprovalCard.vue'
+import HitlApprovalOverlay from '../components/chat/HitlApprovalOverlay.vue'
 import ChatHistoryPanel from '../components/chat-history/ChatHistoryPanel.vue'
 import { useAuthStore } from '../stores/auth'
 import { useChatStore } from '../stores/chat'
+import type { ChatMessage } from '../stores/chat'
 import { localizeErrorStage } from '../stores/httpErrorI18n'
 
 const chat = useChatStore()
@@ -15,13 +16,48 @@ const router = useRouter()
 
 const draft = ref('')
 const listEl = ref<HTMLElement | null>(null)
-// F1（裁定 F-B）：历史侧栏内嵌 Chat 页 · 可折叠 · 默认收起（单列 860px 布局最小增量）
-const historyOpen = ref(false)
+// D13（task_web_hitl_approval_overlay_ux · 维护者需求⑤）：Chat 页内「对话 | 历史」双 tab
+// 复用 ChatHistoryPanel（零新增路由 · /hitl 平铺先例）· history-toggle 侧栏形态废止
+const activeTab = ref<'conversation' | 'history'>('conversation')
+
+// D2–D4：审批浮层数据源 = 当前最新 hitl 态消息（waiting/acting/decided · 数据层零改 D3 单一数据源）；
+// 历史已决/不可操作（resolved/forbidden/unavailable）仅留消息流只读标记，不进浮层（failure_paths 多条并存条）
+const hitlOverlayMessage = computed<ChatMessage | null>(() => {
+  for (let i = chat.messages.length - 1; i >= 0; i -= 1) {
+    const candidate = chat.messages[i]
+    const status = candidate.hitl?.status
+    if (status === 'waiting' || status === 'acting' || status === 'decided') return candidate
+  }
+  return null
+})
+
+// D4：消息流轻量只读标记文案（一行 note · 无动作钮 · 数据源同 message.hitl）
+function hitlInlineText(message: ChatMessage): string {
+  const hitl = message.hitl
+  if (!hitl) return ''
+  if (hitl.note) return '人工审批 · ' + hitl.note
+  switch (hitl.status) {
+    case 'waiting':
+      return '人工审批 · 待审批（在下方浮层处理）'
+    case 'acting':
+      return '人工审批 · 提交审批中…'
+    case 'decided':
+      return hitl.decision === 'rejected' ? '人工审批 · 已驳回' : '人工审批 · 已批准'
+    case 'resolved':
+      return '人工审批 · 已处理'
+    case 'forbidden':
+      return '人工审批 · 无审批权限'
+    default:
+      return '人工审批 · 审批详情不可用'
+  }
+}
 
 onMounted(() => {
   void chat.loadLatestSession()
   // F1/D1-1（web-hitl-decision-surface）：进入 Chat 页一次性 pending 核对（第三消费点 · 承 done task AC16①/② · S1 事件驱动零定时器）
   void chat.refreshHitlPending()
+  // D11/D12：已存 thread_id → 自动全量加载历史回显（store 内零 id 零打扰守卫 · 不自动 replay 存续）
+  void chat.restoreThreadHistory()
 })
 
 onBeforeUnmount(() => {
@@ -84,33 +120,18 @@ function onContinueReply(message: (typeof chat.messages)[number]): void {
   chat.continueReply(message)
 }
 
-// F1：点击历史条目 → B1 history 加载渲染 + waiting_approval thread 续看挂起（store 内闭环）
+// F1 + D13：点击历史条目 → B1 history 加载渲染 + waiting_approval thread 续看挂起（store 内闭环）
+// + 选中后自动回对话 tab（D14 浮层随 messages 随迁不残留）
 function onSelectHistory(threadId: string): void {
   void chat.openHistoryThread(threadId)
-}
-
-function onToggleHistory(): void {
-  historyOpen.value = !historyOpen.value
+  activeTab.value = 'conversation'
 }
 </script>
 
 <template>
   <div class="chat-page">
-    <aside v-if="historyOpen" class="chat-page__sidebar">
-      <ChatHistoryPanel @select="onSelectHistory" />
-    </aside>
-
     <div class="chat-page__main">
       <header class="chat-page__header">
-        <el-button
-          class="chat-page__history-toggle"
-          size="small"
-          text
-          data-test="history-toggle"
-          @click="onToggleHistory"
-        >
-          {{ historyOpen ? '收起历史' : '历史' }}
-        </el-button>
         <h1 class="chat-page__title">Chat</h1>
         <p v-if="chat.session" class="chat-page__session">
           {{ chat.session.title || 'New Chat' }}
@@ -125,12 +146,35 @@ function onToggleHistory(): void {
         </el-button>
       </header>
 
+      <!-- D13：「对话 | 历史」双 tab（自绘水墨风 · 仓内零 el-tabs 先例 · data-test 落点） -->
+      <nav class="chat-page__tabs" data-test="chat-tabs">
+        <button
+          type="button"
+          class="chat-page__tab"
+          :class="{ 'chat-page__tab--active': activeTab === 'conversation' }"
+          data-test="chat-tab-conversation"
+          @click="activeTab = 'conversation'"
+        >
+          对话
+        </button>
+        <button
+          type="button"
+          class="chat-page__tab"
+          :class="{ 'chat-page__tab--active': activeTab === 'history' }"
+          data-test="chat-tab-history"
+          @click="activeTab = 'history'"
+        >
+          历史
+        </button>
+      </nav>
+
+    <template v-if="activeTab === 'conversation'">
     <el-alert
       v-if="chat.restoredNotice"
       class="chat-page__alert"
       type="info"
       show-icon
-      title="已恢复上次会话上下文（历史消息不回显）"
+      title="已恢复上次会话（历史消息已加载）"
       @close="chat.dismissRestoredNotice()"
     />
 
@@ -170,7 +214,8 @@ function onToggleHistory(): void {
     />
 
     <div ref="listEl" class="chat-page__messages">
-      <p v-if="!chat.messages.length" class="chat-page__empty">
+      <p v-if="chat.historyLoading" class="chat-page__empty">历史消息加载中…</p>
+      <p v-else-if="!chat.messages.length" class="chat-page__empty">
         向 Ops Desk 提问，例如「#545 这个 issue 在说什么？」
       </p>
 
@@ -264,7 +309,13 @@ function onToggleHistory(): void {
             <p v-if="message.truncated" class="chat-message__truncated" data-test="answer-truncated">
               内容过长已截断
             </p>
-            <HitlApprovalCard v-if="message.hitl" :message="message" />
+            <p
+              v-if="message.hitl"
+              class="chat-message__hitl-note"
+              data-test="hitl-inline-note"
+            >
+              {{ hitlInlineText(message) }}
+            </p>
           </template>
           <span v-else class="chat-message__text">{{ message.content }}</span>
         </div>
@@ -307,6 +358,9 @@ function onToggleHistory(): void {
       >
     </p>
 
+    <!-- D2/D10①：审批浮层恒居条带区之下、composer 正上方，纵向并列互不覆盖（非模态 · 不遮输入） -->
+    <HitlApprovalOverlay v-if="hitlOverlayMessage" :message="hitlOverlayMessage" />
+
     <footer class="chat-page__composer">
       <el-input
         v-model="draft"
@@ -314,7 +368,7 @@ function onToggleHistory(): void {
         :rows="2"
         resize="none"
         placeholder="输入消息，Enter 发送（Shift+Enter 换行）"
-        :disabled="!chat.session || chat.streaming"
+        :disabled="!chat.session || chat.streaming || chat.historyLoading"
         @keydown.enter.exact.prevent="onSend"
       />
       <el-button
@@ -330,12 +384,18 @@ function onToggleHistory(): void {
         v-else
         class="chat-page__send"
         type="primary"
-        :disabled="!chat.session || !draft.trim()"
+        :disabled="!chat.session || !draft.trim() || chat.historyLoading"
         @click="onSend"
       >
         发送
       </el-button>
     </footer>
+    </template>
+
+    <!-- D13：历史 tab 承载区（复用 ChatHistoryPanel · 分页/空态/降级文案零重写） -->
+    <div v-else class="chat-page__history">
+      <ChatHistoryPanel @select="onSelectHistory" />
+    </div>
     </div>
   </div>
 </template>
@@ -349,14 +409,42 @@ function onToggleHistory(): void {
   color: var(--ops-text);
 }
 
-/* F1（裁定 F-B）：内嵌历史侧栏（可折叠 · 不新开路由） */
-.chat-page__sidebar {
+/* D13（task_web_hitl_approval_overlay_ux）：「对话 | 历史」双 tab（自绘水墨风 · 克制边框/下划线） */
+.chat-page__tabs {
   flex: none;
-  width: 240px;
-  padding: 16px 12px;
-  border-right: 1px solid rgba(44, 44, 44, 0.1);
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+  border-bottom: 1px solid rgba(44, 44, 44, 0.1);
+}
+
+.chat-page__tab {
+  padding: 4px 14px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.chat-page__tab:hover {
+  opacity: 0.85;
+}
+
+.chat-page__tab--active {
+  opacity: 1;
+  border-bottom-color: #2c2c2c;
+  font-weight: 600;
+}
+
+/* D13：历史 tab 承载区（面板复用 · 通栏滚动） */
+.chat-page__history {
+  flex: 1;
   overflow-y: auto;
-  box-sizing: border-box;
+  padding: 12px 0;
 }
 
 .chat-page__main {
@@ -470,6 +558,14 @@ function onToggleHistory(): void {
   margin: 6px 0 0;
   font-size: 12px;
   opacity: 0.55;
+  font-style: italic;
+}
+
+/* D4 · hitl 消息流轻量只读标记（一行 note · 无动作钮 · 审批动作面在浮层） */
+.chat-message__hitl-note {
+  margin: 6px 0 0;
+  font-size: 12px;
+  opacity: 0.6;
   font-style: italic;
 }
 
