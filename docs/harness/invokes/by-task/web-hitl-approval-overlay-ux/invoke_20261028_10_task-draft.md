@@ -1,0 +1,14 @@
+# Invoke · web-hitl-approval-overlay-ux · 10（task 落稿 + R1 回填 + v0.3 新需求回填）
+
+- **hat**: 10-task
+- **at**: 2026-10-28
+- **input**: 维护者实测反馈原话（锚 m00171 · 00 转发）①「10次后无数据返回，点击"续看推进"返回空不要展示一个空对话气泡」②「replay出来的数据是从哪取出来的，replay没有数据返回，因为审核在对话框中，前后的内容被截断了，把审批作为单独弹窗放在对话框上方」③环境前提 approval-page 已并入（dd537d7 · 321 绿）；R1 审查退回（reviews/task_web_hitl_approval_overlay_ux_audit_R1_20261028.md · B1 旧测影响面实证补全 + B2 浮层新风险面 + NIT×5）；维护者 R2 通过后追加两需求（原话锚 m00231 · 00 转发）「1、修改展示，恢复上次会话加载所有历史消息 2、增加对话历史选择tab」；三闸授权锚 m00236（00 依授权代录 HG-TASK-DRAFT/HG-AUDIT-R1/HG-GRAPH-MODULES=approved · 本帽不签闸只落稿回填）。
+- **output**: `docs/tasks/active/task_web_hitl_approval_overlay_ux.md`（v0 落稿 → v0.1 HG-TASK-DRAFT 签收 → v0.2 R1 退回回填 → v0.3 m00231 新需求并入 · 全链只改本 task 文件）
+- **v0 落稿**: 现状钉案（空泡根因候选 `src/stores/chat.ts:1183` 无条件 pushMessage · chase 进度双落点绑卡片与浮层冲突 · replay 数据链五段可实证 · 旧测初扫）+ 范围三主项（①空 replay 不渲染空气泡 ②replay 无数据实证调查 ③审批浮层化）+ 非范围八项 + D1–D9 定夺 + R0–R3 early_stop。
+- **v0.2 R1 回填**: B1 旧测影响面实证补齐三处（`tests/chat-store.spec.ts:657` 条件命中+D1 形态预裁定 · `tests/chat-store-hitl.spec.ts` hitl.note 钉面归并 :991,:1037,:1095 · guards TC13(b):139-179/TC3 条件命中预声明处置路径）；B2 浮层新风险面封闭 = 新增 D10（条带共存 · 不遮消息流尾/自动滚动 · 窄屏通栏 · streaming 控件禁用随迁）+ failure_paths 补行；NIT×5 全采纳。
+- **v0.3 m00231 回填（本轮）**: §二新增三行实证钉案——恢复路径**零历史加载**（`src/views/ChatView.vue:21-25` onMounted → loadLatestSession `src/stores/chat.ts:541-553` → fetchLatestSession 元数据端点 · T3 只恢复 thread_id/activeRun 指针 `chat.ts:424-429`）；手动历史加载**截于服务端默认首页 20 runs**（chat.ts:1502 fetchThreadHistory 无参 + `src/api/chatHistory.ts:15` 默认 20/上限 100 · next_cursor 丢弃无翻页）；历史列表数据源已在仓在消费（`src/components/chat-history/ChatHistoryPanel.vue` 侧栏默认收起 · fetchChatThreads cursor 分页 · 仓内零 el-tabs 先例 · /hitl 平铺路由先例 `src/router/index.ts:84-91`）。范围扩④⑤ + 非范围补三项 + D 表新增 D11–D14（D11 恢复全量翻页默认可降级显式分页·两形态消除静默截断·红测先行 / D12 恢复边界 / D13 Chat 页内双 tab 复用面板·零新增路由·/hitl 存续 / D14 tab×streaming·chase 交叉中断语义）+ 验收补 8–10 + failure_paths 补两行 + 旧测影响面扩扫（`tests/chat-store.spec.ts:419`「不回显历史消息」钉必动 · `tests/chat-store-hitl.spec.ts:546` 无参调用钉必适配 · `tests/chat-view.spec.ts:263-380` history-toggle 系必适配）。
+- **graph_delta 重评估（v0.3）**: 不新增一级模块结论存续——tab 在 ChatView/pages + components/chat-history 既有面内（`docs/_tech_graph/l1/01_modules.md:16` 已有 chat-history 条目 · 零新行）· router 零新增（D13）；flow 增量 = `docs/_tech_graph/l1/10_flow_chat.graph.yaml`（恢复全量加载 + tab 形态描述）；HG-GRAPH-MODULES 回签路径不变（30 实证若新增模块停并回签）。
+- **思考轮**: R0–R3（v0.2 时点 early_stop）→ m00231 新需求重开 R4（新需求实证钉案）/R5（D11–D14 形态封闭 · early_stop）· actual_last_round=R5 · 追加轮次非伪造；修订记录 v0–v0.3 四行升序。
+- **lint**: `npx spec-wave task lint --file` PASS（exit 0 · 仅 W3 自检结论占位符 · draft 期合法）。
+- **verify**: `npx spec-wave verify --target . --task` BLOCKED（exit 2 · HG-AUDIT-R1/HG-GRAPH-MODULES pending 符合 draft 期预期 · 闸表已注 v0.3 须增量复审后再签 · 三闸 m00236 代录 approved 后由 00 复核 EXIT）。
+- **未做**: 未切分支、未改 src、未 commit（30 开工时才切 task/web-hitl-approval-overlay-ux）；本帽不签发 HG-AUDIT-R1（三闸由维护者授权 00 代录 · 锚 m00236）。
