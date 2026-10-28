@@ -1,7 +1,7 @@
 {
   "schema_version": "graph_v2",
-  "freeze_id": "OPS_DESK_WEB_TECH_GRAPH_FREEZE_20261017_V1",
-  "generated_at": "2026-10-17T08:20:48Z",
+  "freeze_id": "OPS_DESK_WEB_TECH_GRAPH_FREEZE_20261028_V1",
+  "generated_at": "2026-10-28T09:27:25Z",
   "graphs": [
     {
       "id": "00_main",
@@ -25,6 +25,12 @@
       "id": "10_flow_graph",
       "title": "Graph 图谱快照页加载流程（前端）",
       "source_yaml_path": "l1/10_flow_graph.graph.yaml",
+      "layer": "G-L1"
+    },
+    {
+      "id": "10_flow_hitl",
+      "title": "独立 HITL 审批页加载与决策流程（前端 · 第四审批入口 · task_web-hitl-approval-page）",
+      "source_yaml_path": "l1/10_flow_hitl.graph.yaml",
       "layer": "G-L1"
     },
     {
@@ -282,6 +288,31 @@
       "label": ">../../../ops-desk-api/docs/_tech_graph/l1/10_flow_chat.md"
     },
     {
+      "graph_id": "10_flow_chat",
+      "id": "restore_thread_history",
+      "label": "restoreThreadHistory"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "fetch_all_thread_runs",
+      "label": "fetchAllThreadRuns（全量翻页 · limit=100 · cursor 至 null）"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "thread_history_api",
+      "label": "fetchThreadHistory"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "hitl_overlay",
+      "label": "HitlApprovalOverlay（composer 上方浮层 · 包装 HitlApprovalCard · 数据层零改）"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "chat_history_panel",
+      "label": "ChatHistoryPanel（历史 tab 复用 · 零新增路由）"
+    },
+    {
       "graph_id": "10_flow_graph",
       "id": "user",
       "label": "用户"
@@ -315,6 +346,46 @@
       "graph_id": "10_flow_graph",
       "id": "ops_api",
       "label": "ops-desk-api"
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "id": "user",
+      "label": "用户（maintainer）"
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "id": "router_guard",
+      "label": "router（/hitl · ensureMe 守卫复用）"
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "id": "hitl_view",
+      "label": "HitlApprovalView"
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "id": "fetch_pending_api",
+      "label": "fetchHitlPending"
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "id": "decide_api",
+      "label": "decideHitlRequest（二次确认 · 防重 · resume_mode 三选）"
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "id": "resume_api",
+      "label": "resumeHitlRequest（显式第二步 · 非自动）"
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "id": "http_client",
+      "label": "http（axios · baseURL=/api · 401 拦截跳登录）"
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "id": "ops_api",
+      "label": "ops-desk-api（owner-only · TTL 3600s）"
     },
     {
       "graph_id": "10_flow_issues",
@@ -1139,6 +1210,66 @@
       "sync": true
     },
     {
+      "graph_id": "10_flow_chat",
+      "from": "chat_view",
+      "to": "restore_thread_history",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "onMounted（已存 thread_id → 自动全量回显 · 无 id 零加载）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "restore_thread_history",
+      "to": "fetch_all_thread_runs",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "calls",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "fetch_all_thread_runs",
+      "to": "thread_history_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "翻页循环（{limit:100, cursor} · 同 cursor 回环防御）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "thread_history_api",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "GET /ops/chat/threads/{id}/history",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "chat_view",
+      "to": "hitl_overlay",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "最新 hitl 消息（waiting/acting/decided）→ 浮层审批/续看推进",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "chat_view",
+      "to": "chat_history_panel",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "历史 tab 承载（选中 → openHistoryThread + 自动回对话 tab）",
+      "anchors": [],
+      "sync": true
+    },
+    {
       "graph_id": "10_flow_graph",
       "from": "user",
       "to": "graph_view",
@@ -1195,6 +1326,96 @@
       "mark": "->",
       "type": "depends_on",
       "label": "GET /api/ops/graph",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "from": "user",
+      "to": "router_guard",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "opens /hitl（主导航「审批」入口）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "from": "router_guard",
+      "to": "hitl_view",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "ensureMe 守卫复用（未登录 /login?redirect=/hitl）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "from": "hitl_view",
+      "to": "fetch_pending_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "onMounted 一次性 + 手动刷新 + visibilitychange 边沿（不轮询）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "from": "fetch_pending_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.get('/ops/hitl/pending')（六键字段族照登 · 空集渲染「无待审批」）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "from": "hitl_view",
+      "to": "decide_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "批准/驳回（二次确认 + 决策中 disabled · inherit 不送 resume_mode 键）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "from": "decide_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.post('/ops/hitl/requests/{id}/decide')（成功 ≠ 自动 resume · 409/404/400 行级提示）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "from": "hitl_view",
+      "to": "resume_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "显式点「续跑」（required=true 且非 auto_triggered · 两步钉死）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "from": "resume_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.post('/ops/hitl/requests/{id}/resume')（成功展示 replay run_id/cursor 摘要 + 回 /chat 入口）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_hitl",
+      "from": "http_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "GET pending · POST decide · POST resume（/api/ops/hitl/**）",
       "anchors": [],
       "sync": true
     },
