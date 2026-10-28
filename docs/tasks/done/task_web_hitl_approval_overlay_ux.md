@@ -1,6 +1,6 @@
 # Task：Web · HITL 审批浮层化 + 空 replay 不渲染空气泡 + replay/恢复数据链实证 + 会话历史全量加载 + 对话历史 tab
 
-> **状态**：`draft`
+> **状态**：`done`
 > **类型**：bugfix + 前端交互重构（Vitest 红测先行 · api-only-consume · 调查先行）
 > **统筹**：web 00；**禁止**改姐妹仓 ops-desk-api（replay 数据链调查若指向后端，只出观察报告上抛，不改）；**禁止**改 replay/resume 冻结契约帧形状
 > **分支**：新开 `task/web-hitl-approval-overlay-ux`，基于当前 `task/web-hitl-resume-chase-ux` 合并态（dd537d7 · 独立审批页 /hitl 已在仓 · 321 绿）；**30 开工才切** · 本棒不切分支、不改 src、不 commit
@@ -142,7 +142,15 @@
 
 ### 自检结论（执行者）
 
-（待 30/40 回填：逐项验收核对 + 三门实跑结果 + 根因实证结论 + 旧测处置清单 + invoke 留档指针。）
+CLOSE 回填（2026-10-28 · 00 代录 · 维护者授权 m00236 + 「验收通过后再CLOSE」）：
+
+- **逐项验收 1–10**：40 独立验收全 ✅（invoke_20261028_40_verify.md）：①sawInk 五型落墨判定+onDone 回收+resumeHint 存续 ②调查②报告五段链钉案+PG 实证+上抛后端 ③消息流仅只读标记 ④浮层包装 HitlApprovalCard 零分叉·hitl.note 数据源零改 ⑤chase 随迁浮层·超限降级存续 ⑥三入口同浮层+task lint PASS ⑦hitl-browser-decide-v1 零偏差 ⑧终帧浮层消失不残留 ⑨双 tab 复用面板·router diff=0 ⑩自动加载+historyLoading 门控。
+- **三门实跑**（npx pnpm@10.32.1 钉版 · 40 复跑与 30 一致）：lint EXIT=0 · test EXIT=0（334 passed/1 skipped/34 files · skip=guards TC13(b) diff 空留痕预期）· build EXIT=0 · ./scripts/graph-compile.sh EXIT=0。
+- **根因实证结论**（范围②调查）：后端面 · 时序窗口非丢数据——PG 实证 run 38cb1138 seq 1-19 连续无洞，恢复段后台异步实测 68–289s（router.py 自承 130–310s）> chase 预算 56s，在写窗口 replay 因 run_stream_closed 合法返回 200 零帧；前端防御（无气泡+resumeHint）已落地，「在写期 replay 409/Retry-After」语义化报告上抛 ops-desk-api 待维护者排期（40 抽查后端引用成立 · 小瑕疵 409 机制实在 event_store.py 非报告所写 sse_replay.py，不影响结论）。
+- **旧测处置清单**：chat-store.spec.ts:419 改写/:657 扩展、chat-store-hitl.spec.ts:546 适配、chat-view.spec.ts:311 废止+AC7 六钉适配浮层落点——全部在 commit 6223007 同 commit 带理由注释，独立 grep 零清单外静默改钉；guards TC13(b) 未触（范围②根因在后端 · useLgRagSse 零改动）。
+- **冻结面**：src/api/hitl.ts + src/composables/useLgRagSse.ts diff dd537d7..HEAD = 0 行；HitlApprovalCard.vue 仅头注 5 行；/hitl 页与 17 钉存续零改。
+- **commit 链**（分支 task/web-hitl-approval-overlay-ux · 本地零 push）：b375ab4 docs(v0.4+审查文+invoke) → 82b19c6 docs(approval-page 遗留档) → 6223007 feat → 2cbd3b3 docs(30 invoke+图谱) → ef13e36 docs(40 invoke) → ff1dbf4 docs(volatile 短注 · D9 补齐 · 40 退回单项关闭)。
+- **遗留（确认接受的非阻塞项）**：①后端 replay 在写窗口语义化上抛 api 仓 ②chase 预算 56s<恢复段 68–289s（超限靠手动续看 · 策略面）③大会话加载性能无大样本实证（风险低）。
 
 ## failure_paths
 
@@ -225,3 +233,4 @@ v0.2（R1 退回回填）：B2 指出的浮层新风险面（与既有条带共�
 | 2026-10-28 | v0.2 · R1 审查退回回填（reviews/task_web_hitl_approval_overlay_ux_audit_R1_20261028.md）：**B1** §二/§六旧测影响面实证补齐三处（`tests/chat-store.spec.ts:657` 条件命中+D1 形态预裁定 · `tests/chat-store-hitl.spec.ts` hitl.note 钉面归并补 :991,:1037,:1095 · guards TC13(b):139-179/TC3 条件命中预声明处置路径）+ 存续/适配预判注；**B2** 浮层新风险面封闭 = 新增 D10（条带共存层叠 · 不遮消息流尾/自动滚动不互踩 · 窄屏通栏 · streaming 控件禁用随迁）+ failure_paths 补行 + R3 early_stop 措辞补强；**NIT×5 全采纳**（N1 D1 判据零内容落墨主条件化 · N2 FP-14 悬指勘误+FP-H10 注明前作出处 · N3 D5 点名 message.hitl.note 数据源 · N4 m00171 锚父窗核验边界声明 · N5 闸表 22-R1→20-R1）· 三闸状态不动（HG-TASK-DRAFT=approved · HG-AUDIT-R1/HG-GRAPH-MODULES=pending）· 未改 src/未切分支/未 commit |
 | 2026-10-28 | v0.3 · 维护者 R2 通过后追加两需求（原话锚 m00231 · 00 转发）：①恢复上次会话加载所有历史消息 ②增加对话历史选择 tab。§一补第 4 条原话；§二新增三行实证钉案（恢复路径零历史加载 chat.ts:424-429,541-553 · 手动历史加载截于默认首页 20 runs chat.ts:1502+chatHistory.ts:15 · 历史数据源已在仓 ChatHistoryPanel 侧栏默认收起 + 仓内零 el-tabs 先例）+ 旧测影响面 v0.3 扩扫（chat-store.spec.ts:419 必动 · chat-store-hitl.spec.ts:546 必适配 · chat-view.spec.ts history-toggle 系必适配）；范围扩④⑤ + 非范围补三项；D 表新增 D11–D14（恢复加载完备性默认全量翻页可降级显式分页 · 恢复边界 · Chat 页内双 tab 复用面板不新增路由 · 交叉状态中断语义）；验收补 8–10；failure_paths 补两行（全量加载性能/大会话 · tab×streaming/chase 交叉）；思考轮 R4/R5 启用（R3 early_stop 为 v0.2 时点 · 追加轮次非伪造 · actual_last_round=R5）；graph_delta 重评估 = 不新增一级模块存续（01_modules.md:16 已有 chat-history 条目 · router 零新增 · HG-GRAPH-MODULES 回签路径不变）；HG-AUDIT-R1 注记须增量复审后再签 · 三闸状态不动（HG-TASK-DRAFT=approved · 其余 pending）· 未改 src/未切分支/未 commit |
 | 2026-10-28 | v0.4 · 00 代录双闸（维护者授权 m00236「授权00签收后续文档」· 承 m00230 先例）：HG-AUDIT-R1=approved（R1→v0.2→R2→v0.3→R3 审查链闭环 · R3 通过+NIT×1 随签带交 30）· HG-GRAPH-MODULES=approved（不新增一级模块 · flow 增量+graph-compile 绿为 30 验收硬条件）· 30 解锁（切分支 task/web-hitl-approval-overlay-ux · 红测先行）· 未改 src/未 commit |
+| 2026-10-28 | v1.0 · CLOSE（00 代录 · 维护者授权 m00236+「验收通过后再CLOSE」· close_pr_policy=required 偏差授权全程本地零 push/PR）：30 交付五项范围全 ✅（commit 6223007）→ 40 独立验收逐项 1–10 ✅ 三门绿 退回单项 volatile 短注 → ff1dbf4 补齐关闭 → task 迁 done/ · 状态 draft→done · 自检结论回填 · 遗留三项非阻塞记录 |
