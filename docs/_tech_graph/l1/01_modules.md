@@ -12,7 +12,7 @@
 |-----------|------|-----------|----------------------|-------------|
 | `entry` | 入口与配置 | `src/main.ts`, `vite.config.ts` | → `router`, `pinia` | Vue 应用实例、Vite 配置 |
 | `router` | 路由层 | `src/router/**` | → `pages` | Vue Router 路由定义 |
-| `pages` | 页面组件 | `src/views/**`, `src/pages/**` | → `components`, `api`, `pinia` | Login / Overview / Issues / Pulls / Graph / Chat / LC Evidence（`/lc-evidence`，LangChain 旁路实验页）/ LG RAG（`/lg-rag`，lg_rag 旁路实验页，LangGraph 三 mode · thread_id 续写）/ Obs（`/obs`，可观测性状态页 · Observability） |
+| `pages` | 页面组件 | `src/views/**`, `src/pages/**` | → `components`, `api`, `pinia` | Login / Overview / Issues / Pulls / Graph / Chat / LC Evidence（`/lc-evidence`，LangChain 旁路实验页）/ LG RAG（`/lg-rag`，lg_rag 旁路实验页，LangGraph 三 mode · thread_id 续写）/ Obs（`/obs`，可观测性状态页 · Observability）；2026-10-23 新增 HITL 审批页（`/hitl` · HitlApprovalView · 第四审批入口 · `api/hitl.ts` 冻结契约零分叉 · decide≠自动 resume 两步钉死 · 不轮询）（task_web_hitl_approval_page） |
 | `components` | 通用组件 | `src/components/**` | → — | Element Plus 封装、水墨风 UI 组件；2026-10-04 新增 `chat-history/ChatHistoryPanel.vue`（F1 历史侧栏 · 裁定 F-B）与 `chat/HitlApprovalCard.vue`（F2 消息流内联审批卡片 · 裁定 F-A）（task_web_chat_history_hitl_ux） |
 | `api` | API 客户端 | `src/api/**` | → — | 封装 fetch、SSE 消费、错误处理；2026-10-04 新增 `chatHistory.ts`（B1 threads/history 只读契约）与 `hitl.ts`（B2 pending/decide/resume · decide→resume 两步链）（task_web_chat_history_hitl_ux） |
 | `pinia` | 状态管理 | `src/stores/**` | → `api` | Pinia store；2026-10-04 chat store 扩展：`hitl.waiting` 分支（审批卡片态）/ `done` 按 `payload.status` 分支（waiting_approval ≠ 完成态 · 保留 active-run）/ `openHistoryThread` 历史加载映射既有 ChatMessage（F-C）/ `decideHitl` 两步动作链 + `refreshHitlPending` 两消费点（不轮询）（task_web_chat_history_hitl_ux）；2026-10-17 web-hitl-decision-surface：`decideHitl` resume 200 消费 `replay.cursor` 自动追帧（`chaseResumedRun` · setTimeout 单次链 ≤10 次/≤120s 墙钟 · replay 409 按 Retry-After 退避不弹错误条 · stopStreaming 清追帧定时器）；`refreshHitlPending` 三消费点（Chat 页挂载 + 动作链后 + 手动刷新入口 · 零轮询零定时器）；useLgRagSse 错误面 `LgRagSseTransportError.retryAfterSeconds` 可选增键（解析段零触 · 无新 event_type）（task_web_hitl_decision_surface）；2026-10-17 web-http-error-i18n：chat 错误条 detail 中文化映射 helper（`src/stores/httpErrorI18n.ts` · 七枚举 + unknown_tenant 前缀脱敏 · 未命中原文兜底 · 仅 error.value 呈现面） |
@@ -38,6 +38,7 @@
 | HG-GRAPH-MODULES | approved | web 00（预签 · 维护者授权代签文档闸） | 2026-08-31 | task_web_graph_l2_key_unify：**不新增一级模块**；仅 l2 by_symbol 18 裸键统一为 `path#symbol` 复合键（值不变 · G-L2 键形态迁移） |
 | HG-GRAPH-MODULES | approved | 00（代录 · 维护者授权「签收，后续文档授权00签收」） | 2026-10-04 | task_web_chat_history_hitl_ux：**不新增一级模块**；api/pinia/components 行增量备注（chatHistory/hitl client · chat store hitl.waiting/done-status/openHistoryThread 扩展 · chat-history/chat 组件目录）随 30 交付落盘 |
 | HG-GRAPH-MODULES | approved | web 00（代录 · 维护者授权 m00230「授权00签收后续文档」） | 2026-10-11 | task_web_capability_catalog（T-W3 **图谱先行** · 30 未开工）：新增 `capability` 一级模块行（目录页 · 规划路由 `/capability` + view + api + store）+ 新增 `10_flow_capability.graph.yaml`（G-L1）· `./scripts/graph-compile.sh` 绿 |
+| HG-GRAPH-MODULES | approved | web 00（代录 · 维护者授权 m00230「授权00签收后续文档」） | 2026-10-23 | task_web_hitl_approval_page：**不新增一级模块**；pages 行增量备注（HITL 审批页 `/hitl`）+ 新增 `10_flow_hitl.graph.yaml`（G-L1）+ 关联节补链接 · `./scripts/graph-compile.sh` 绿 |
 
 ## 关联
 
@@ -52,4 +53,5 @@
 - Obs flow：[`10_flow_obs.md`](./10_flow_obs.md)
 - Login flow：[`10_flow_login.md`](./10_flow_login.md)
 - Capability flow：[`10_flow_capability.md`](./10_flow_capability.md)
+- HITL 审批页 flow：[`10_flow_hitl.md`](./10_flow_hitl.md)
 - Mermaid 约定：[`../shared/99_mermaid_protocol.md`](../shared/99_mermaid_protocol.md)
