@@ -1,6 +1,6 @@
 # Task：Web · HITL 批准后追帧体验收口（chase 上限实证 + 进度可见 + 幂等）
 
-> **状态**：`draft`  
+> **状态**：`done`（2026-10-28 · 40 PASS · 维护者授权 00 代签本地 CLOSE · 未 push 未 PR）  
 > **类型**：bugfix / 前端交互（Vitest 假时钟红测先行 · api-only-consume）  
 > **统筹**：web 00；**禁止**改姐妹仓 ops-desk-api；**禁止**改 replay/resume 冻结契约帧形状  
 > **分支**：`task/web-hitl-resume-chase-ux`（30 开工时才切 · 本棒不切分支、不改 src、不 commit）  
@@ -182,3 +182,4 @@ run `1039c1a956f5463596ea29b9dd4e126c`（query「#2140 这个 issue 在说什么
 | 2026-10-28 | v0.2 · 按 20-task-audit R1 回填清单补验收 7（旧测 grep 影响面 · B1）+ 30 必读一行 + NIT 处置（N1/N2/N3 全采纳）；范围五项实质/非范围/failure_paths/思考轮 R0–R2/人工闸表均未动，HG-AUDIT-R1 保持 pending |
 | 2026-10-28 | v0.3 · HG-AUDIT-R1 维护者亲签 approved（R1 退回→v0.2 回填→R2 通过链完整 · 00 代录）；30 解锁 |
 | 2026-10-28 | v0.4 · 补思考轮 R3–R5 槽位（点名「未开 · early_stop at R2」，不伪造思考内容 · 控制表/闸表/范围/非范围/验收/failure_paths 均未动）；verify BLOCKED 清零 |
+| 2026-10-28 | v1.0 · CLOSE：30 根因实证（多链并发破上限 · 重放 waiting 再入第二链 · 4+10=14 与钉案一致）+ 双层修复（activeChaseRunId 唯一性 · hitlActed 幂等/重放守卫）+ 递增退避 2s×1.5 封顶 8s + 进度双落点 + 409 detail 四类；红测 7→51/51 绿；40 独立验收 PASS（钉版 pnpm@10.32.1 三门全绿 · 304 passed/1 skip · 验收 1–7 逐项核毕 · 冻结面零 diff）· 维护者授权「停留本地直接验收，验收通过后 CLOSE」· commit 584db64/d93b5d7/fbf55f1 于 task/web-hitl-resume-chase-ux（未 push 未 PR · close_pr_policy=required 偏差已授权）· 00 迁 done |
