@@ -104,7 +104,14 @@ run `1039c1a956f5463596ea29b9dd4e126c`（query「#2140 这个 issue 在说什么
 - 退避定稿（30 定稿项）：起始 2s 钉死 · ×1.5 · 封顶 8s（10 次墙钟 56.25s<120s · 次数先到）；FP-H2 409 Retry-After 优先不动阶梯。
 - 详录：`docs/harness/invokes/by-task/web-hitl-resume-chase-ux/invoke_20261028_30_implement.md`。
 
-**40 验收**：（留空 · 由 00 后续委派/代签）
+**40 验收（2026-10-28 · 40-verify · 全程本地授权不 push 不开 PR）**：**PASS**
+
+- 逐项核对：验收 1 ✅（TC-U1 同 run 单链总 replay ≤10 + TC7 阶梯 2/3/4.5/6.75/8s 逐档单调 · 10 次到顶降级）｜2 ✅（TC-P1 终帧后 120s 零续追 replay 恰 2 次 · TC6 存续）｜3 ✅（TC-P1 等待期 hitl.note+resumeHint 双落点含「恢复中」· 终帧即消 note=「已批准」hint=null）｜4 ✅（TC-I1a 连点恰一次 · TC-I1b 网络错解除受理标记合法重试不误伤 · TC-U1 重放打回再入 decide/resume 恰一次）｜5 ✅（TC-D1 it.each×4 detail 映射 · 未识别落存续默认）。
+- 三门 40 独立实跑：pnpm lint EXIT=0 · pnpm test 33 文件 **304 passed | 1 skipped** EXIT=0 · pnpm build EXIT=0 · 单文件补跑 chat-store-hitl.spec.ts 51/51 绿（环境注记：本机 pnpm shim 11.28.5 与 packageManager 10.32.1 不符致裸 pnpm 被 corepack 拒跑，按钉版 npx pnpm@10.32.1 实跑 · 仓面无需处置）。
+- 验收 7 ✅：git show 584db64 实证 TC7/TC6 改钉与改码同 commit（注释点名理由 · 非静默）；git diff f0c9700..HEAD 实证 chat-store.spec.ts 六处 120_000（:896/:1136/:1209/:1340/:1360/:1422）与 guards TC3 零改动。
+- 冻结 ✅：src/api/hitl.ts 与 src/composables/useLgRagSse.ts f0c9700..HEAD diff 空；HitlApprovalCard.vue 零改动；failure_paths 五条语义亲读未动（401 清游标跳登录 chat.ts:1108-1113 · 120s 降级文案 chat.ts:1053-1054 · stopStreaming 清定时器+活链释放 chat.ts:932-946）。
+- 根因复核 ✅：多链并发解释自洽（单链计数器完好 TC7 实证 · replay 仅 2 调用点 grep 实证 · 重放 waiting 重置守卫再入第二链与 14 次/~5s 钉案吻合）；双层修复（activeChaseRunId 唯一性 + hitlActedRequestIds 幂等/重放守卫）各自独立钉测。
+- 详录：`docs/harness/invokes/by-task/web-hitl-resume-chase-ux/invoke_20261028_40_verify.md`。
 
 ## failure_paths
 
