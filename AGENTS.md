@@ -25,7 +25,7 @@
 2. **核验人工闸**
    | 闸 | 阻塞 | 真值位置 |
    |---|---|---|
-   | `HG-GRAPH-MODULES` | 30 改码 | `docs/_tech_graph/l1/01_modules.md` |
+   | `HG-GRAPH-MODULES` | 30 改码 | `docs/_tech_graph/l1/01_struct.md` |
    | `HG-AUDIT-R1` | 30 开工 | `docs/tasks/active/task_*.md` 人工闸表 |
 
 3. **确认分支正确**
@@ -87,7 +87,7 @@ pnpm build        # 生产构建
 - 状态管理：**Pinia**
 - Chat SSE：原生 `fetch` + `ReadableStream`（不依赖 fetch-event-source）
 - 样式：水墨风（背景 `#F9F9F7`，文字 `#2C2C2C`）
-- 每次新增页面/接口必须同步更新 `docs/_tech_graph/`（模块表：`l1/01_modules.md`；flow：`l1/10_flow_*.graph.yaml`；compile：`./scripts/graph-compile.sh`）
+- 每次新增页面/接口必须同步更新 `docs/_tech_graph/`（模块表：`l1/01_struct.md`；flow：`l1/10_flow_*.graph.yaml`；compile：`./scripts/graph-compile.sh`）
 
 ---
 
@@ -131,7 +131,7 @@ pnpm build        # 生产构建
 ## Ops-desk-web · Harness 仓内定制（upgrade 不改写本块）
 
 - 质量门：`pnpm lint` → `pnpm test` → `pnpm build`
-- 图谱闸路径：`HG-GRAPH-MODULES` → `docs/_tech_graph/l1/01_modules.md`（profile `graph_modules_path`）
+- 图谱闸路径：`HG-GRAPH-MODULES` → `docs/_tech_graph/l1/01_struct.md`（profile `graph_modules_path` → `docs/_tech_graph/l1`）
 - 改码目录：业务源码在 `src/**`（FRAGMENT 默认 `packages/**` 以本仓为准）
 - WikiTrack：Obsidian vault 只开 `docs/coding_wiki/`；新 task 勿默认 `wiki_delta=n/a`
 <!-- cyning-harness-local:end -->

@@ -82,7 +82,7 @@ nodes:
     kind: external
 
   - id: "modules_doc"
-    label: ">../l1/01_modules.md"
+    label: ">../l1/01_struct.md"
     kind: external
 
   - id: "ops_api"

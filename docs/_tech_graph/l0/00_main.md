@@ -1,7 +1,7 @@
 ---
 graph_id: 00_main
 version: 2026-08-31
-generated_at: sha256-28c836500608ecdf
+generated_at: sha256-5d5be4fc876979f4
 source: 00_main.graph.yaml
 ---
 
@@ -31,7 +31,7 @@ flowchart TB
     lc_evidence_page["LC 证据页"]
     lg_rag_page["LG RAG 页"]
     chat_flow[">../l1/10_flow_chat.md"]
-    modules_doc[">../l1/01_modules.md"]
+    modules_doc[">../l1/01_struct.md"]
     ops_api["ops-desk-api"]
     api_doc[">../../../ops-desk-api/docs/_tech_graph/l0/00_main.md"]
 
@@ -90,7 +90,7 @@ flowchart TB
 | lc_evidence_page | LC 证据页 | flow |
 | lg_rag_page | LG RAG 页 | flow |
 | chat_flow | >../l1/10_flow_chat.md | external |
-| modules_doc | >../l1/01_modules.md | external |
+| modules_doc | >../l1/01_struct.md | external |
 | ops_api | ops-desk-api | external |
 | api_doc | >../../../ops-desk-api/docs/_tech_graph/l0/00_main.md | external |
 

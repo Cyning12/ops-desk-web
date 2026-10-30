@@ -12,7 +12,7 @@
 |---------------|--------------|-----------------|--------|-----------|------------|
 | HG-TASK-DRAFT | {读表} | {若有} | {Y/N} | {Y/N} | … |
 | HG-AUDIT-R1 | {读表} | {若有} | {Y/N} | Y | … |
-| HG-GRAPH-MODULES | {l1/01_modules或—} | — | — | … | … |
+| HG-GRAPH-MODULES | {l1/01_struct或—} | — | — | … | … |
 
 reviews：task_*_audit_R1_*.md 存在且 R1 通过？ {是/否}（**v2.5+**：`verify` 对 R<n> 审查文**存在性**机械强制 · 缺失即 `VERIFY: BLOCKED · missing R<n> review` · `--allow-no-review` 豁免留痕——**本包已接线**（src/cli.ts cmdVerify · findReview 与 status 同口径 · PRD_DEF-003 阶段二 T4 · test/cli-verify-review.test.ts 钉死）；结论通过与否仍由维护者签 `HG-AUDIT-R1` 覆盖）
 

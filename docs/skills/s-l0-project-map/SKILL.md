@@ -23,7 +23,7 @@ pdd_escalate_to: 1
 | 先读 | 路径 |
 |------|------|
 | 分层约定 | `docs/_tech_graph/LAYER_README.md` |
-| 模块表 | `docs/_tech_graph/l1/01_modules.md` |
+| 模块表 | `docs/_tech_graph/l1/01_struct.md` |
 | 规格长文 | `Projects/.../graph_skill_layering_v1/`（POINTER） |
 
 Phase：本仓为 **γ**；api=α；ios=δ 后置。
