@@ -11,7 +11,7 @@
 
 ## 命令
 
-    npx spec-wave@3.3.0 wiki export --json --target .
+    npx spec-wave@3.5.0 wiki export --json --target .
 
 ## 相关
 
