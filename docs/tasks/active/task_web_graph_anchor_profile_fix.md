@@ -1,6 +1,6 @@
 # Task：Web · 图谱锚点闸 profile 修复（graph_modules_path 指向 + 01_struct 词表源归位）
 
-> **状态**：`in_progress`（v0.5 · 30 实现+自检结论回填完毕 · 验收 1–8 全机断绿 · 待 40 复验）
+> **状态**：`in_progress`（v0.6 · 40 独立验收 PASS · 验收 1–8 逐项亲跑实证全绿 · 无阻塞项 · 待维护者 CLOSE）
 > **类型**：基础设施 / harness 过程轨修复（profile 配置 + 图谱词表源 plumbing · 业务源码零改动）
 > **前置**：spec-wave 3.5.0 升级 wave CLOSE（`docs/tasks/done/task_web_specwave_upgrade_3_5_0.md` · 分支 task/specwave-upgrade-3-5-0 · commit 32e2800）
 > **分支**：`task/web-graph-anchor-profile-fix`（base：3.5.0 升级落地后的 main 合并态 · **30 开工才切** · 本棒不切分支）
@@ -125,6 +125,23 @@
 
 **闸状态对实行影响**：三闸 approved 状态零改动；HG-GRAPH-MODULES 真值位置自 `l1/01_modules.md` 迁至 `l1/01_struct.md`（AGENTS.md local 块已同步 · CLAUDE.md 免改 N-5）。
 
+**40 独立验收（2026-10-30 · invoke `docs/harness/invokes/by-task/web-graph-anchor-profile-fix/invoke_20261030_40_verify.md`）**：不信 30 自报 · `git diff 1810be3..HEAD` 全量亲读（495 行 · 20 文件）+ 验收 1–8 逐项亲跑——全绿 PASS。
+
+| # | 40 亲跑实证 |
+|---|-------------|
+| ①diff | 与 v0.5 范围①②③ 逐点对齐：双 profile :5 同值改指 · `l1/01_struct.md` 58 行新建（节+单表+四节随迁）· `01_modules.md` 7 行指针 stub · 根 stub 一跳到底本体存续（D2）· graph-drift.yaml:4 随迁 · l0 三处 label 直指 · graph.json/shared graph.json:173 label+freeze_id/generated_at 噪声符合 D3 声明 · N-3 枚举面+AGENTS.md 三处+README 两处全落地；上游 spec-wave@3.5.0 源码亲读复核（graph-anchor.js:43 RE · cli-graph-drift.js「路径 glob」表头 · runGraphDrift path.join 定位）钉案全部属实 ✅ |
+| 1 | node 断言亲跑：双值 = `docs/_tech_graph/l1` · resolve 后 isDirectory=true 双份一致 ✅ |
+| 2 | 节标题 L9 匹配 RE；节内（L9→L22）恰 1 表；表头含「路径 glob」；首列反引号 8 词与旧 `l1/01_modules.md` 模块表逐字一致（git show 1810be3 对照）✅ |
+| 3 | 三指针一跳到底无链；grep `l1/01_modules` 171 处余量全属历史留痕/stub 自称/存量 task 历史叙述（该 task verify 仍 PASS）· 非阻塞观察项照登 ✅ |
+| 4 | verify 输出逐字复核「图谱锚点命中（checked=2 hits=2 · 命中: docs/_tech_graph/l1 · 01_modules · 01_struct）」· 不含「已跳过」· VERIFY: PASS EXIT=0 ✅ |
+| 5 | 存量回归零新 BLOCKED：active task_web_hitl_approval_page PASS；done 三件全 PASS EXIT=0 · FP-1 未触发 ✅ |
+| 6 | task lint --file PASS · lint-wiki-delta scanned=69 missing=0 · 图谱四闸全绿（yaml 12 OK · drift struct_layout: protocol drifts=0 · ib checked_ib=91 issues=0 · ast checked=55 issues=0）· graph-compile.sh EXIT=0 复跑 diff 仅 generated_at 时间戳噪声（已还原工作树）✅ |
+| 7 | 豁免零使用（diff 全量无 `--allow-no-graph-anchor`/`--allow-no-review` 痕）· `git status --short -- src tests` 空 ✅ |
+| 8 | `npx pnpm@10.32.1` lint EXIT=0 · test 34 文件 334 passed 1 skipped（= baseline 34/334/1）EXIT=0 · build ✓ built in 1.81s EXIT=0 ✅ |
+| ③落账 | 30 invoke 含 D5 面B 图谱锚点字面 ✓ · 自检回填逐项与 40 亲跑一致 ✓ · v0.5 在档 ✓ · 遗留四条照登合理（FRAGMENT overlay RUNBOOK:11 还原提醒 · 01_modules stub 存续 · 40 复验窗口本棒闭环 · D6 00_main 分层分歧照登）✓ |
+
+**40 结论：PASS** · 无阻塞项；非阻塞观察一项——存量 active `task_web_hitl_approval_page.md` 文内五处 `l1/01_modules` 历史叙述行（该 task verify 仍 PASS · 留待其自身维护周期处置 · 不属本 task 范围）。
+
 ## failure_paths
 
 | ID | 触发 | 行为（触发 → 行为 → 可重试 → 用户可见） |
@@ -193,3 +210,4 @@
 | 2026-10-30 | v0.3 · R1 退回回填（审查文 `docs/harness/reviews/task_web_graph_anchor_profile_fix_audit_R1_20261030.md` · untracked 留存未 commit）：**B-1** drift 输入随迁（范围 ③ 补列 `.spec-wave/graph-drift.yaml:4` struct_rel→`l1/01_struct.md` · 01_struct 节双兼容列形+单表约束落 范围②/D2/验收 2 · 验收 6 补 drift 机断口径）+ **B-2** l0 引用处置定夺写死 D3（随迁改 label 直指 01_struct · graph-compile label diff 声明预期 · graph_delta_note/非范围对齐）+ **NIT×6 全采纳**（N-1 probeGraphAnchor :13-44→:13-41 · N-2 flow yaml 10→11 份 · N-3 验收 3 引用面枚举五处 · N-4 节限单表 · N-5 CLAUDE.md 免改 · N-6 验收 5 回归判定点=存量 active `task_web_hitl_approval_page`）· 闸一律不动 |
 | 2026-10-30 | v0.4 · 闸代录：HG-AUDIT-R1 + HG-GRAPH-MODULES pending→approved（00 代录 · 授权锚 m00500 · R1 退回→v0.3 回填→R2 通过零阻塞 · 审查文 R1/R2 双件入库）；闸表头注与状态行「不代录/双闸 pending」字面同步修正对齐 m00500 授权 |
 | 2026-10-30 | v0.5 · 30 实现落账：范围①②③ 全落地（双 profile→`docs/_tech_graph/l1` · `l1/01_struct.md` 词表真值新建+表自 `l1/01_modules.md:11-20` 逐字平移 · 01_modules 指针化 · 根 stub 一跳到底 · drift `struct_rel`+l0 三处 label 随迁）+ 引用面 N-3 枚举全同步 + 30 invoke 落盘（D5 面B 义务）+ 自检结论验收 1–8 逐项机断回填（verify 真判定 `checked=2 hits=2` 不再 skip · 回归零新 BLOCKED · 四闸+drift protocol drifts=0 · 三件套全绿 = baseline 34/334/1）· 待 40 复验 |
+| 2026-10-30 | v0.6 · 40 独立验收落账：diff 1810be3..HEAD 全量亲读 + 验收 1–8 逐项亲跑实证全绿（上游 3.5.0 源码复核钉案属实 · verify 真判定 checked=2 hits=2 逐字复核 · 存量回归零新 BLOCKED · 四闸+drift protocol drifts=0 · graph-compile 复跑仅 generated_at 噪声 · 三件套全绿 = baseline 34/334/1）+ 30 落账抽核通过（D5 面B 字面 / 回填质量 / v0.5 在档 / 遗留四条照登合理）→ **结论 PASS · 无阻塞项** · 非阻塞观察一项（存量 active task_web_hitl_approval_page 文内五处 `l1/01_modules` 历史叙述行 · 该 task verify 仍 PASS）· 40 invoke 落盘 · 待维护者 CLOSE |
