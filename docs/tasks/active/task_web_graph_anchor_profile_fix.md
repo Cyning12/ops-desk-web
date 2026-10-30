@@ -1,6 +1,6 @@
 # Task：Web · 图谱锚点闸 profile 修复（graph_modules_path 指向 + 01_struct 词表源归位）
 
-> **状态**：`draft`（v0.4 · R2 通过零阻塞 · 双闸 approved（00 代录 · 授权锚 m00500）· 待 30 开工）
+> **状态**：`in_progress`（v0.5 · 30 实现+自检结论回填完毕 · 验收 1–8 全机断绿 · 待 40 复验）
 > **类型**：基础设施 / harness 过程轨修复（profile 配置 + 图谱词表源 plumbing · 业务源码零改动）
 > **前置**：spec-wave 3.5.0 升级 wave CLOSE（`docs/tasks/done/task_web_specwave_upgrade_3_5_0.md` · 分支 task/specwave-upgrade-3-5-0 · commit 32e2800）
 > **分支**：`task/web-graph-anchor-profile-fix`（base：3.5.0 升级落地后的 main 合并态 · **30 开工才切** · 本棒不切分支）
@@ -110,7 +110,20 @@
 
 ### 自检结论（执行者）
 
-（30/40 回填：逐项验收 1–8 + verify 输出原文 + 回归清单）
+**30 回填（2026-10-30 · invoke `docs/harness/invokes/by-task/web-graph-anchor-profile-fix/invoke_20261030_30_implement.md`）**：
+
+| # | 验收 | 机断结果 |
+|---|------|----------|
+| 1 | 双 profile 一致 + isDirectory | ✅ `.coding-kit/profile.json:5` 与 `.cyning-harness/profile.json:5` 均 = `docs/_tech_graph/l1` · node 断言 isDirectory=true 双份一致 |
+| 2 | 01_struct 节 RE + 单表 + 8 模块词逐字一致 | ✅ 「## 1. 模块边界表」行 9 匹配 MODULE_SECTION_HEAD_RE · 节内单表 10 行与旧 `l1/01_modules.md:11-20` 逐字一致（含「路径 glob」列 · drift protocol 双兼容） |
+| 3 | 引用面 grep 清单处置 | ✅ N-3 枚举面全落地：AGENTS.md 三处 · `docs/_tech_graph/README.md` · `.claude/skills/ops-desk-tech-graph.md:52,56,75` · `docs/skills/s-l0-project-map/SKILL.md:26` · `docs/skills/s-l1-tech-graph-ops/SKILL.md:15` · `docs/coding_wiki/context.md:25` · `FRAGMENT_30_gate_verify_v1_zh.md:15`（overlay 值照登 · RUNBOOK:11 还原提醒存续） |
+| 4 | verify 不含「已跳过」且 PASS | ✅ 输出原文逐字：`verify: INFO · 图谱锚点引用检查 · 图谱锚点命中（checked=2 hits=2 · 命中: docs/_tech_graph/l1 · 01_modules · 01_struct）` → `VERIFY: PASS · task_web_graph_anchor_profile_fix.md` · EXIT=0 |
+| 5 | 存量回归零新 BLOCKED | ✅ N-6 真实判定点 active `task_web_hitl_approval_page` PASS（命中 l1 · 01_modules · 10_flow_capability）；done 三件 `task_web_specwave_upgrade_3_5_0`（checked=0 不涉模块）/ `task_web_hitl_approval_overlay_ux` / `task_web_hitl_decision_surface` 全 PASS EXIT=0 · 零新增 BLOCKED · FP-1 未触发 |
+| 6 | task lint / lint-wiki-delta / 图谱四闸 / drift / graph-compile | ✅ `task lint --file` PASS（W3 warn 随本回填消除）；`lint-wiki-delta --scope all` PASS（scanned=69 missing=0）；`graph yaml check --all` 12 文件全 OK；`graph drift` PASS `struct_layout: protocol · dirs=1 anchors=0 drifts=0`（R1-B-1 机断口径达成 · 非 struct_unparseable）；`graph ib check` PASS checked_ib=91 issues=0；`graph ast check` PASS checked=55 issues=0；`graph-compile.sh` EXIT=0 · 除 D3 声明 l0 label 随迁预期 diff（`00_main.md:34,93` / `graph.json:173` / `shared/graph.json:173` · freeze_id 日期戳+generated_at 再生成照登）外零意外 diff |
+| 7 | 豁免零使用 + src/tests 零改动 | ✅ 全程未用 `--allow-no-graph-anchor` / `--allow-no-review`；`git status --short -- src tests` 空 |
+| 8 | pnpm 三件套 + volatile 短注 | ✅ `npx pnpm@10.32.1 lint` exit 0 · `test` 34 文件 334 绿 1 skip（= baseline 34/334/1）exit 0 · `build` ✓ built in 1.81s exit 0；`docs/coding_wiki/volatile.md` 短注已落 |
+
+**闸状态对实行影响**：三闸 approved 状态零改动；HG-GRAPH-MODULES 真值位置自 `l1/01_modules.md` 迁至 `l1/01_struct.md`（AGENTS.md local 块已同步 · CLAUDE.md 免改 N-5）。
 
 ## failure_paths
 
@@ -179,3 +192,4 @@
 | 2026-10-30 | v0.2 · 闸代录：HG-TASK-DRAFT pending→approved（00 代录 · 授权锚 m00500 · 维护者令「完成后开始 web 和 api 的后续 task，授权签收所有文档」）；HG-AUDIT-R1 / HG-GRAPH-MODULES 保持 pending 不动 |
 | 2026-10-30 | v0.3 · R1 退回回填（审查文 `docs/harness/reviews/task_web_graph_anchor_profile_fix_audit_R1_20261030.md` · untracked 留存未 commit）：**B-1** drift 输入随迁（范围 ③ 补列 `.spec-wave/graph-drift.yaml:4` struct_rel→`l1/01_struct.md` · 01_struct 节双兼容列形+单表约束落 范围②/D2/验收 2 · 验收 6 补 drift 机断口径）+ **B-2** l0 引用处置定夺写死 D3（随迁改 label 直指 01_struct · graph-compile label diff 声明预期 · graph_delta_note/非范围对齐）+ **NIT×6 全采纳**（N-1 probeGraphAnchor :13-44→:13-41 · N-2 flow yaml 10→11 份 · N-3 验收 3 引用面枚举五处 · N-4 节限单表 · N-5 CLAUDE.md 免改 · N-6 验收 5 回归判定点=存量 active `task_web_hitl_approval_page`）· 闸一律不动 |
 | 2026-10-30 | v0.4 · 闸代录：HG-AUDIT-R1 + HG-GRAPH-MODULES pending→approved（00 代录 · 授权锚 m00500 · R1 退回→v0.3 回填→R2 通过零阻塞 · 审查文 R1/R2 双件入库）；闸表头注与状态行「不代录/双闸 pending」字面同步修正对齐 m00500 授权 |
+| 2026-10-30 | v0.5 · 30 实现落账：范围①②③ 全落地（双 profile→`docs/_tech_graph/l1` · `l1/01_struct.md` 词表真值新建+表自 `l1/01_modules.md:11-20` 逐字平移 · 01_modules 指针化 · 根 stub 一跳到底 · drift `struct_rel`+l0 三处 label 随迁）+ 引用面 N-3 枚举全同步 + 30 invoke 落盘（D5 面B 义务）+ 自检结论验收 1–8 逐项机断回填（verify 真判定 `checked=2 hits=2` 不再 skip · 回归零新 BLOCKED · 四闸+drift protocol drifts=0 · 三件套全绿 = baseline 34/334/1）· 待 40 复验 |

@@ -22,7 +22,7 @@
 
 - 读序：[`../_tech_graph/README.md`](../_tech_graph/README.md)
 - G-L0：[`../_tech_graph/l0/00_main.md`](../_tech_graph/l0/00_main.md)
-- 模块：[`../_tech_graph/l1/01_modules.md`](../_tech_graph/l1/01_modules.md)
+- 模块：[`../_tech_graph/l1/01_struct.md`](../_tech_graph/l1/01_struct.md)
 - 编译：`./scripts/graph-compile.sh`（勿在 wiki 另写图谱正文）
 
 ## 部署 / 运维（真值）

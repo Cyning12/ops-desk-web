@@ -12,7 +12,7 @@ pdd_escalate_to: 1
 
 ## PDD-0 检查表
 
-1. 读 `l1/01_modules.md` 确认 module_id  
+1. 读 `l1/01_struct.md` 确认 module_id  
 2. 按需打开 `l1/10_flow_*.md`（禁止默认全开）  
 3. chat 域改入口/符号 → 查 `l2/indexes/by_path.yaml` / `by_symbol.yaml`  
 4. 改 yaml 后跑 `./scripts/graph-compile.sh`  

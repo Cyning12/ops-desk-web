@@ -49,11 +49,11 @@ npx @cyning/harness init --preset harness-only --ide cursor,claude,agents --yes
 物理分层（G-L0/G-L1/G-L2 · Phase γ）须存在：
 
 - `docs/_tech_graph/l0/00_main.graph.yaml` — 顶层总图
-- `docs/_tech_graph/l1/01_modules.md` — 模块边界表（**HG-GRAPH-MODULES** 人签真值）
+- `docs/_tech_graph/l1/01_struct.md` — 模块边界表（**HG-GRAPH-MODULES** 人签真值 · 2026-10-30 词表源归位）
 - `docs/_tech_graph/l1/10_flow_*.graph.yaml` — 至少一条主 flow（web 试点：chat）
 - `docs/_tech_graph/l2/indexes/` — path/symbol 倒排（chat 试点）
 - `docs/_tech_graph/shared/` — `02_version.md` · `99_mermaid_protocol.md` · **`graph.json`（C1）**
-- 根 `01_struct.md` 为过渡 stub → 指向 `l1/01_modules.md`
+- 根 `01_struct.md` 为过渡 stub → 指向 `l1/01_struct.md`；`l1/01_modules.md` 为过渡 stub → 同指
 - 操作规程真值：`docs/skills/`（S-L0 / S-L1）
 
 读序见 `docs/_tech_graph/README.md` · `LAYER_README.md`。
@@ -72,7 +72,7 @@ npx @cyning/harness init --preset harness-only --ide cursor,claude,agents --yes
 
 ### 1.6 人签 HG-GRAPH-MODULES
 
-在 `docs/_tech_graph/l1/01_modules.md` 中填写一级模块表，维护者签核后将 `HG-GRAPH-MODULES` 状态改为 `approved`。
+在 `docs/_tech_graph/l1/01_struct.md` 中填写一级模块表，维护者签核后将 `HG-GRAPH-MODULES` 状态改为 `approved`。
 
 ---
 
