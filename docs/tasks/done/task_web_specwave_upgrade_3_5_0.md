@@ -1,6 +1,6 @@
 # Task：spec-wave 升级 3.5.0（web · 3.3.0 → 3.5.0）
 
-> **状态**：`active`  
+> **状态**：`done`（2026-10-30 验收通过 · 全程本地零 push/PR · close_pr_policy=required 偏差授权 · 授权锚 m00236）  
 > **类型**：基础设施 / harness 过程轨 minor  
 > **前置**：3.3.0 wave done（`task_web_specwave_upgrade_3_3_0` · PR #55 MERGED）  
 > **分支**：`task/specwave-upgrade-3-5-0`（base：`main`）  
@@ -78,22 +78,37 @@
 
 ## 验收标准
 
-- [ ] `"spec-wave": "3.5.0"` · manifest version=3.5.0 · from_version=3.3.0
-- [ ] `--version`=3.5.0 · `check` 已是最新
-- [ ] `KIT_CLI=spec-wave@3.5.0` · graph-compile exit 0 · 产物零意外 diff
-- [ ] 钉位全仓 grep 复扫：3.3.0 活钉位清零（历史留痕目录除外）
-- [ ] `task lint --file` 现存 task 抽跑 PASS；`verify --task` 现存 active task 抽跑结果照登（含 3.5.0 图谱先读闸行为实证）
-- [ ] `pnpm lint` / `pnpm test` / `pnpm build` 全 exit 0
-- [ ] FEEDBACK 落盘 · RUNBOOK 历史行补齐
-- [ ] 全部 commit 在 `task/specwave-upgrade-3-5-0` · 零 push 零 PR
+- [x] `"spec-wave": "3.5.0"` · manifest version=3.5.0 · from_version=3.3.0
+- [x] `--version`=3.5.0 · `check` 已是最新
+- [x] `KIT_CLI=spec-wave@3.5.0` · graph-compile exit 0 · 产物零意外 diff（freeze_id/时间戳噪声已还原）
+- [x] 钉位全仓 grep 复扫：3.3.0 活钉位清零（历史留痕目录除外）
+- [x] `task lint --file` 现存 task 抽跑 PASS；`verify --task` 现存 active task（本 task）PASS（含 3.5.0 图谱先读闸行为实证 · 见自检结论）
+- [x] `pnpm lint` / `pnpm test` / `pnpm build` 全 exit 0
+- [x] FEEDBACK 落盘 · RUNBOOK 历史行补齐
+- [x] 全部 commit 在 `task/specwave-upgrade-3-5-0` · 零 push 零 PR
 
 ### 自检结论
 
-（执行后回填）
+| 命令 | 退出码 | 备注 |
+|------|--------|------|
+| `./node_modules/.bin/spec-wave --version` | 0 | 3.5.0 |
+| `npx spec-wave@3.5.0 upgrade --target . --yes` | 0 | 3.3.0 → 3.5.0 · 一把过 · 仅 manifest 三行 diff |
+| `npx spec-wave@3.5.0 sync prompts --target . --yes` | 0 | skip 3 · add 1（FRAGMENT_graph_first_read）· conflict 9 全部保留未覆盖 |
+| `npx spec-wave@3.5.0 check --target .` | 0 | 已是最新（包 3.5.0 · manifest 3.5.0） |
+| `npx spec-wave@3.5.0 task lint --file <本 task>` | 0 | LINT: PASS（W3/W4 draft 期合法豁免） |
+| `npx spec-wave@3.5.0 task lint --file <3_3_0 done task>` | 0 | LINT: PASS（存量抽跑零回归） |
+| `npx spec-wave@3.5.0 verify --task <本 task>` | 0→（R1 前 2） | R1 落盘前 BLOCKED · missing R<n> review（预期机检）；落盘后 **VERIFY: PASS** · **3.5.0 图谱锚点闸实证**：`INFO · 图谱锚点检查未生效（已跳过 · graph_path_unreachable · graph_modules_path=l1/01_modules）`（条件触发 · 不挡） |
+| `graph yaml check --all` | 0 | 10/10 OK |
+| `graph drift` | 0 | PASS · struct_layout=protocol · drifts=0 |
+| `graph ib check` | 0 | PASS · checked_ib=80 · issues=0 |
+| `graph ast check` | 0 | PASS · checked=49 · issues=0 · cross_path=29 inform |
+| `task lint-wiki-delta --scope all` | 0 | scanned=65 · missing=0 · issues=0 |
+| `./scripts/graph-compile.sh` | 0 | KIT_CLI=@3.5.0 · 10 graphs OK · 产物仅 freeze_id/时间戳噪声（已还原 · 零意外 diff） |
+| `npx pnpm@10.32.1 lint / test / build` | 0 | 三件套全绿（test：33 文件 · 296 passed / 1 skipped · 2026-10-30） |
 
 ### KPI
 
-Task_KPI%: 0（draft · 执行后回填）
+Task_KPI%: 100（三钉对齐 · 验证全绿 · 全程本地零 push/PR · close_pr_policy=required 偏差同 2026-10-28 先例已授权）
 
 ---
 

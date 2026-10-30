@@ -53,6 +53,7 @@
 | 2026-09-18 | [`task_web_specwave_upgrade_2_4_2.md`](./task_web_specwave_upgrade_2_4_2.md) | `dsh-coding-kit@1.10.0` → `spec-wave@2.4.2`（Wave A）· PR #45 MERGED |
 | 2026-09-18 | [`task_web_specwave_upgrade_3_0_0.md`](./task_web_specwave_upgrade_3_0_0.md) | `spec-wave@2.4.2` → `3.0.0`（Wave B major）· PR #47 MERGED · 2026-10-11 滞后关账 |
 | 2026-10-11 | [`task_web_specwave_upgrade_3_3_0.md`](./task_web_specwave_upgrade_3_3_0.md) | `spec-wave@3.0.2` → `3.3.0` · tech_graph IB 对象形固定 · 图谱四闸绿 · PR #55 MERGED |
+| 2026-10-30 | [`task_web_specwave_upgrade_3_5_0.md`](./task_web_specwave_upgrade_3_5_0.md) | `spec-wave@3.3.0` → `3.5.0`（跨 3.4/3.5 两 minor · 纯钉位）· sync prompts 增图谱先读 FRAGMENT · 四闸绿 · 全程本地零 push/PR（close_pr_policy 偏差授权 · m00236） |
 | 2026-10-12 | [`task_web_integration_regression.md`](./task_web_integration_regression.md) | SPEC web-integration T-W1 · 回归批 F1/F4/F6/F7 · S1/S4/S6/S7 全过 · PR #59 MERGED · 归位 #62 |
 | 2026-10-12 | [`task_web_sse_hitl_enhance.md`](./task_web_sse_hitl_enhance.md) | T-W2 · SSE/HITL 增强（帧型注释 7 型 · `resume_mode` 三选 · `done{resumed}` 终态钉）· S2/S3 全过 · PR #61 MERGED · 归位 #62 |
 | 2026-10-12 | [`task_web_capability_catalog.md`](./task_web_capability_catalog.md) | T-W3 · Capability 目录页（F5 · 九键投影 · role 显隐 · G-L1 图谱）· S5 双角色全过 · PR #60 MERGED · 归位 #62 |
@@ -122,6 +123,7 @@
 | 2026-10-12 | 归档 `task_web_integration_regression.md`（PR #59 · 落账归位 #62 · T-W1 回归批 S1/S4/S6/S7 全过 · main verify 252/252 · R2/R2.1 PASS） |
 | 2026-10-12 | 归档 `task_web_sse_hitl_enhance.md`（PR #61 · 落账归位 #62 · T-W2 SSE/HITL 增强 S2/S3 全过 · FP-5 闸 252/252 · NIT-R2-4 补尾已落） |
 | 2026-10-12 | 归档 `task_web_capability_catalog.md`（PR #60 · 落账归位 #62 · T-W3 Capability 目录页 S5 双角色全过 · 图谱先行已落 compile 绿） |
+| 2026-10-30 | 归档 `task_web_specwave_upgrade_3_5_0.md`（spec-wave 3.3.0→3.5.0 · 双闸 00 代录授权锚 m00236 · 全程本地零 push/PR · 图谱锚点闸 graph_path_unreachable 实证 dormant） |
 
 ## 给维护者
 
