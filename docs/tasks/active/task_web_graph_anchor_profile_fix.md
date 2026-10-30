@@ -1,6 +1,6 @@
 # Task：Web · 图谱锚点闸 profile 修复（graph_modules_path 指向 + 01_struct 词表源归位）
 
-> **状态**：`draft`（v0.1 · 双闸 pending 等维护者签收 · 未切分支 · 未 commit）
+> **状态**：`draft`（v0.3 · R1 退回回填 B-1/B-2+NIT×6 · 双闸 pending 等维护者签收 · 待 R2 复审）
 > **类型**：基础设施 / harness 过程轨修复（profile 配置 + 图谱词表源 plumbing · 业务源码零改动）
 > **前置**：spec-wave 3.5.0 升级 wave CLOSE（`docs/tasks/done/task_web_specwave_upgrade_3_5_0.md` · 分支 task/specwave-upgrade-3-5-0 · commit 32e2800）
 > **分支**：`task/web-graph-anchor-profile-fix`（base：3.5.0 升级落地后的 main 合并态 · **30 开工才切** · 本棒不切分支）
@@ -22,7 +22,7 @@
 | **code_quality_bar** | `not_applicable` |
 | **code_quality_bar_note** | 过程轨；不改业务 Vue（`src/` / `tests/` 零改动） |
 | **graph_delta** | `docs/_tech_graph/` |
-| **graph_delta_note** | **不改模块边界语义 / 不改业务拓扑**：l1/01_struct.md 新建（词表源归位 · 表内容自 01_modules.md 平移）· l1/01_modules.md 指针化 · 根 stub 指向更新；flow yaml 零改动；graph-compile 复跑预期零意外 diff |
+| **graph_delta_note** | **不改模块边界语义 / 不改业务拓扑**：l1/01_struct.md 新建（词表源归位 · 表内容自 01_modules.md 平移）· l1/01_modules.md 指针化 · 根 stub 指向更新；flow yaml 零改动；graph-compile 复跑除 D3 声明的 l0 label 随迁预期 diff（graph.json / shared/graph.json label 行 · R1-B-2）外零意外 diff |
 | **wiki_delta** | `docs/coding_wiki/volatile.md` |
 | **wiki_delta_note** | volatile 短注：3.5.0 图谱锚点闸自 dormant 修复为生效（profile 指向 l1 目录 + 01_struct 词表源归位）；真值指针 = 本 task。禁止无理由 `n/a`。 |
 | **wiki_promotion** | `volatile` |
@@ -60,13 +60,14 @@
 ## 范围
 
 1. **profile 指向修复**：`.coding-kit/profile.json` + `.cyning-harness/profile.json` 双份同步，`graph_modules_path` 改指可达目录（推荐 `docs/_tech_graph/l1` · 定夺见 D1；须先读 profile 结构 + `lib/checks/graph-anchor.js` 判定逻辑定夺，已亲读落 R1/R2）。
-2. **词表源 01_struct.md 归位**：新建 `docs/_tech_graph/l1/01_struct.md` 含 `## 1. 模块边界表` 节（首列反引号 module_id 表 · 内容自 `01_modules.md` 模块表逐字平移 · 8 模块全量：entry/router/pages/components/api/pinia/capability/styles）；`01_modules.md` 指针化（沿用仓内 stub 先例模式）；HG-GRAPH-MODULES 真值位置随迁（D2/D3）。
-3. **生效实测**：`npx spec-wave verify --task` 本 task，图谱锚点检查步**不再输出「已跳过」**且 VERIFY: PASS（面A = 本 task 验收/failure_paths 节内图谱锚点引用 · 面B = 30/40 invoke + 20 审查文锚点引用 · D5）。
-4. **存量回归**：闸生效后全量 active task + 近期 done task 抽跑 verify，无新 BLOCKED；新增 BLOCKED 逐项按 FP-1 处置（回退口实证留痕）。
+2. **词表源 01_struct.md 归位**：新建 `docs/_tech_graph/l1/01_struct.md` 含 `## 1. 模块边界表` 节（内容自 `01_modules.md` 模块表逐字平移 · 8 模块全量：entry/router/pages/components/api/pinia/capability/styles）。该节**双兼容两套机器读法**（R1-B-1）：graph-anchor 词表读法（首列反引号 module_id 词 · `graph-anchor.js:43` 节 RE + `:54-88` 吃节内全部表行首列词）+ drift protocol 列形（表头含「路径 glob」列 · `cli-graph-drift.js:95-97` 无此表头即 throw struct_unparseable）；**该节限单一模块表**（N-4：节内多表会多吃词入词表）；`01_modules.md` 指针化（沿用仓内 stub 先例模式）；HG-GRAPH-MODULES 真值位置随迁（D2/D3）。
+3. **drift 闸输入随迁（R1-B-1 补列）**：`.spec-wave/graph-drift.yaml:4` `struct_rel: l1/01_modules.md` → `l1/01_struct.md`（drift 闸 `cli-graph-drift.js:229` 以 `join(inputRoot, structRel)` 定位 struct 文件 · 配置硬读非文字引用面 · 01_modules 指针化后不改指则 drift 闸必 FAIL）；
+4. **生效实测**：`npx spec-wave verify --task` 本 task，图谱锚点检查步**不再输出「已跳过」**且 VERIFY: PASS（面A = 本 task 验收/failure_paths 节内图谱锚点引用 · 面B = 30/40 invoke + 20 审查文锚点引用 · D5）。
+5. **存量回归**：闸生效后全量 active task + 近期 done task 抽跑 verify，无新 BLOCKED；新增 BLOCKED 逐项按 FP-1 处置（回退口实证留痕）。
 
 ## 非范围
 
-- 图谱内容扩充（模块表语义增补 / flow yaml 拓扑改动 / l0/l2 层结构调整；`l0/00_main.md` 与上游 FRAGMENT 期望的 `<graphPath>/00_main` 分层分歧仅照登不强迁 · D6）
+- 图谱内容扩充（模块表语义增补 / flow yaml 拓扑改动 / l0/l2 层结构调整；`l0/00_main.md` 与上游 FRAGMENT 期望的 `<graphPath>/00_main` 分层分歧仅照登不强迁 · D6）；l0 label 随迁改指属引用内容同步（nodes/edges 拓扑零改动 · 非结构调整 · D3 定夺已列范围）
 - spec-wave 再升级 / 上游源码改动（`probeGraphAnchor` 不支持文件路径属上游设计 · 不改上游）
 - 业务源码 `src/` / `tests/`（零改动）；api / workspace 姐妹仓
 - 历史留痕（docs/tasks/done · reviews · invokes · 旧 FEEDBACK）旧字面值不改（含旧文中 `graph_modules_path=l1/01_modules` 记载）
@@ -78,8 +79,8 @@
 | ID | 定夺 |
 |----|------|
 | D1 | **指向 = `docs/_tech_graph/l1`**。候选 B（`docs/_tech_graph` 根）排除：flow yaml 不在目录面 → 锚点词表贫瘠（仅文件 stem），且根 01_struct.md 为 stub 无词表节 → 仍 skip；候选 C（指文件路径 `docs/_tech_graph/l1/01_modules`）排除：`probeGraphAnchor` 硬要求 isDirectory（改上游 = 非范围）。l1 目录面锚点词表最富（前缀 + 10_flow_*.graph.yaml nodes/edges id + 文件 stem）。 |
-| D2 | **词表源归位 = 真值迁移**：`l1/01_struct.md` 成为模块边界表唯一真值（含 `## 1. 模块边界表` 节 · 表自 01_modules.md 逐字平移）；`01_modules.md` 改指针 stub（沿用根 stub「真值已迁至」先例模式）。**禁止双真值并存镜像**（无防漂移机检 · FP-3）。备选（维护者可后改）：01_modules.md 留真值 + 01_struct.md 受管镜像——因缺漂移机检不推荐。 |
-| D3 | **闸路径随迁**：HG-GRAPH-MODULES 真值位置改指 `docs/_tech_graph/l1/01_struct.md`；AGENTS.md / CLAUDE.md 的 cyning-harness-local 块「图谱闸路径」行同步；根 stub `docs/_tech_graph/01_struct.md` 指向文案一跳到底改指 l1/01_struct.md（**禁指针链** root→01_modules→01_struct）；根 stub 本体按其自载保留策略「闸改指后 ≥1 Epic 再删」**存续不删**。 |
+| D2 | **词表源归位 = 真值迁移**：`l1/01_struct.md` 成为模块边界表唯一真值（含 `## 1. 模块边界表` 节 · 表自 01_modules.md 逐字平移 · **节内限单一模块表**（N-4：`extractGraphAnchorModuleVocab` :54-88 吃节内全部表行首列词 · 多表即多吃词）· **双兼容列形**（R1-B-1）：首列反引号 module_id + 表头含「路径 glob」列 · 模板约束写死进验收 2）；`01_modules.md` 改指针 stub（沿用根 stub「真值已迁至」先例模式）。**禁止双真值并存镜像**（无防漂移机检 · FP-3）。备选（维护者可后改）：01_modules.md 留真值 + 01_struct.md 受管镜像——因缺漂移机检不推荐。 |
+| D3 | **闸路径随迁 + l0 引用处置定夺**：HG-GRAPH-MODULES 真值位置改指 `docs/_tech_graph/l1/01_struct.md`；AGENTS.md :134 cyning-harness-local 块「图谱闸路径」行同步（**CLAUDE.md local 块实无闸路径行** · 仅指回 AGENTS.md · 免改 · N-5）；根 stub `docs/_tech_graph/01_struct.md` 指向文案一跳到底改指 l1/01_struct.md（**禁指针链** root→01_modules→01_struct）；根 stub 本体按其自载保留策略「闸改指后 ≥1 Epic 再删」**存续不删**。**l0 引用处置（R1-B-2 · 二选一写死 = 随迁改 label）**：`l0/00_main.graph.yaml:85` · `l0/00_main.md:34,93` 三处 `>../l1/01_modules.md` 随迁改指 `>../l1/01_struct.md`（不改则指针化后成 l0→01_modules 指针→01_struct **指针链** · 正面违反禁指针链）；graph-compile 产物 `graph.json:173` / `shared/graph.json:173` label 行随之 diff —— **声明为预期 diff**（验收 6 口径随迁 · graph_delta_note 已对齐）；label 随迁属引用内容同步，nodes/edges 拓扑零改动，不触非范围「l0 层结构调整」。 |
 | D4 | **回退口 = 还原 profile**：闸生效后若存量 task 突发不可解 BLOCKED，回退 = 双 profile `graph_modules_path` 还原 `"l1/01_modules"`（一行 revert 级 · 闸复归 dormant）；**严禁**以 `--allow-no-graph-anchor` 常态化绕过（维护者原则）。回退后须另立 task 回填根治。 |
 | D5 | **面B 锚点义务**：本 task 生效后，30/40 invoke 与 20 审查文必须含图谱锚点字面引用（`docs/_tech_graph/l1/01_struct.md` / `01_modules` / `10_flow_*` 级），否则 verify 面B 判 blocked；写入 30 必读。 |
 | D6 | **00_main 分层分歧照登**：上游 FRAGMENT_graph_first_read 期望 `<graphPath>/{00_main, 01_struct}`，仓内 00_main 在 `l0/`；闸机检不依赖 00_main（词表仅取 01_struct.md），FRAGMENT 为指导性条文——照登为已知差异，本 task 不强迁分层。 |
@@ -87,22 +88,23 @@
 
 ## 依赖
 
-- `node_modules/spec-wave/lib/checks/graph-anchor.js`（3.5.0 · probeGraphAnchor :13-44 目录判定 · extractGraphAnchorModuleVocab :62-87 词表节 RE · extractGraphAnchorAnchorVocab :91-145 锚点词表 · judgeGraphAnchor :218-248 面A/面B 判定）
-- `node_modules/spec-wave/lib/cli/verify.js:507`（inform 输出行实证）· `lib/cli-lifecycle.js:193`（lifecycle 守卫同口径）
+- `node_modules/spec-wave/lib/checks/graph-anchor.js`（3.5.0 · probeGraphAnchor :13-41 目录判定（N-1 校正 · 函数体至 :41）· extractGraphAnchorModuleVocab :54-88 词表节 RE · extractGraphAnchorAnchorVocab :91-145 锚点词表 · judgeGraphAnchor :214-248 面A/面B 判定）
+- `node_modules/spec-wave/lib/cli/verify.js:507`（inform 输出行实证）· `lib/cli-lifecycle.js:193`（lifecycle 守卫同口径）· `lib/cli/verify.js:564`（done 目录闸 blocked 降级 warn · N-6 回归判定口径）
+- `.spec-wave/graph-drift.yaml:4`（`struct_rel: l1/01_modules.md` · drift 闸 struct 文件定位真值 · **R1-B-1 补列**：`cli-graph-drift.js:229` `join(inputRoot, structRel)` 定位 · `parseStructModuleGlobs :95-97` 无「路径 glob」表头即 throw struct_unparseable · 随迁 `l1/01_struct.md`）
 - `.coding-kit/profile.json:5` · `.cyning-harness/profile.json:5`（双 profile · resolveLayoutFile 读序：.coding-kit 优先 · legacy 兜底）
 - `docs/_tech_graph/l1/01_modules.md`（模块表真值 · 8 模块 · 迁移源）· `docs/_tech_graph/01_struct.md`（根 stub · 保留策略自载）
 - `docs/harness/prompts/FRAGMENT_graph_first_read_v1_zh.md`（3.5.0 sync 新增 · verify 行为条文 + 豁免仅 `--allow-no-graph-anchor`）
 - 出处三件套：`docs/tasks/done/task_web_specwave_upgrade_3_5_0.md` · `docs/harness/reviews/task_web_specwave_upgrade_3_5_0_audit_R1_20261030.md`（G-1）· `docs/spec/doc-health/feedback/2026-10-30_3.5.0_web_upgrade.md`（摩擦点 1）
-- AGENTS.md / CLAUDE.md cyning-harness-local 块（HG-GRAPH-MODULES 闸路径表述行 · upgrade 不改写区）
+- AGENTS.md :134 cyning-harness-local 块（HG-GRAPH-MODULES 闸路径表述行 · upgrade 不改写区 · CLAUDE.md local 块无该行 · 免改 · N-5）
 
 ## 验收标准
 
 - [ ] 1. 双 profile（`.coding-kit/profile.json` + `.cyning-harness/profile.json`）`graph_modules_path` 值一致且 `path.resolve(仓根, 该值)` `statSync().isDirectory()=true`（node 一行断言可机断）。
-- [ ] 2. `docs/_tech_graph/l1/01_struct.md` 落盘：含 `## 1. 模块边界表` 节标题（匹配 `/^##\s+1\.\s*模块边界表/`）；节内首个 markdown 表首列反引号 module_id 集合 = 现 `01_modules.md` 模块表 8 项逐字一致（entry / router / pages / components / api / pinia / capability / styles · 迁移期逐行 diff 核对）。
-- [ ] 3. `01_modules.md` 指针化（真值落点一跳明确）；根 stub `docs/_tech_graph/01_struct.md` 指向改 `l1/01_struct.md`（一跳到底 · 无指针链）且本体存续；AGENTS.md / CLAUDE.md local 块 HG-GRAPH-MODULES 闸路径行同步；全仓 grep `l1/01_modules` 引用清单逐项处置（历史留痕目录除外并声明）。
+- [ ] 2. `docs/_tech_graph/l1/01_struct.md` 落盘：含 `## 1. 模块边界表` 节标题（匹配 `/^##\s+1\.\s*模块边界表/`）；**节内限单一模块表**（N-4 · 机断口径 = 该节标题至下一 `##` 节之间仅一张 markdown 表）；该表**双兼容两套机器读法**（R1-B-1）：① graph-anchor 词表读法 —— 首列反引号 module_id 集合 = 现 `01_modules.md` 模块表 8 项逐字一致（entry / router / pages / components / api / pinia / capability / styles · 迁移期逐行 diff 核对）；② drift protocol 列形 —— 表头含「路径 glob」列（`cli-graph-drift.js:95-97` 无此表头即 throw struct_unparseable）。
+- [ ] 3. `01_modules.md` 指针化（真值落点一跳明确）；根 stub `docs/_tech_graph/01_struct.md` 指向改 `l1/01_struct.md`（一跳到底 · 无指针链）且本体存续；AGENTS.md :134 local 块 HG-GRAPH-MODULES 闸路径行同步（CLAUDE.md local 块无该行 · 免改 · N-5）；**l0 三处引用随迁改 label 直指** `>../l1/01_struct.md`（`l0/00_main.graph.yaml:85` · `l0/00_main.md:34,93` · D3 定夺 · 无指针链）；全仓 grep `l1/01_modules` 引用清单逐项处置（历史留痕目录除外并声明），**枚举面**（N-3）：`.claude/skills/ops-desk-tech-graph.md:52,56,75` · `docs/skills/s-l0-project-map/SKILL.md:26` · `docs/skills/s-l1-tech-graph-ops/SKILL.md:15` · `docs/coding_wiki/context.md:25` · `docs/harness/prompts/FRAGMENT_30_gate_verify_v1_zh.md:15`（overlay 值 · 改动须留意下次 upgrade 的 overlay 还原流程 `docs/runbooks/RUNBOOK_harness_upgrade_v1_zh.md:11`）。
 - [ ] 4. `npx spec-wave verify --target . --task docs/tasks/active/task_web_graph_anchor_profile_fix.md`：图谱锚点检查步输出**不含「已跳过」**且 `VERIFY: PASS`（exit 0）；输出原文贴入自检结论。
-- [ ] 5. 存量回归：闸生效态下现存全部 active task + 至少 3 件近期 done task verify 抽跑，**零新增 BLOCKED**；若有新增 BLOCKED → FP-1 回退路径实跑 + 全量输出照登（含被挡 task 清单与缺失面点名）。
-- [ ] 6. `npx spec-wave task lint --file` 本 task PASS；`task lint-wiki-delta --scope all` 零新缺口；图谱四闸（yaml check / drift / ib / ast）复验零回归；`./scripts/graph-compile.sh` exit 0 零意外 diff。
+- [ ] 5. 存量回归：闸生效态下现存全部 active task + 至少 3 件近期 done task verify 抽跑，**零新增 BLOCKED**；若有新增 BLOCKED → FP-1 回退路径实跑 + 全量输出照登（含被挡 task 清单与缺失面点名）。**回归判定点**（N-6）：`verify.js:564` done 目录闸 blocked 降级 warn（done 抽跑不可能新 BLOCKED · 仅作观察面）；真实判定 = 存量 active task（现存 `task_web_hitl_approval_page`）verify 仍 PASS。
+- [ ] 6. `npx spec-wave task lint --file` 本 task PASS；`task lint-wiki-delta --scope all` 零新缺口；图谱四闸（yaml check / drift / ib / ast）复验零回归 —— **drift 输入随迁机断口径**（R1-B-1③）：`.spec-wave/graph-drift.yaml:4` `struct_rel` 已改指 `l1/01_struct.md`，`npx spec-wave graph drift` 输出 `struct_layout: protocol`（以新 01_struct.md「路径 glob」列形解析成功 · 非 struct_unparseable）· drifts=0 · exit 0；`./scripts/graph-compile.sh` exit 0，除 D3 声明的 l0 label 随迁预期 diff（graph.json / shared/graph.json label 行）外零意外 diff。
 - [ ] 7. 全程命令留痕可证：未使用 `--allow-no-graph-anchor` / `--allow-no-review`；`git status --short -- src tests` 空（业务源码零改动）。
 - [ ] 8. `pnpm lint` / `pnpm test` / `pnpm build` 全 exit 0（过程轨质量门）；wiki_delta volatile 短注落盘。
 
@@ -130,6 +132,7 @@
 4. `docs/harness/prompts/FRAGMENT_graph_first_read_v1_zh.md`（各帽义务 + verify 行为 + 豁免口径）
 5. D5：本 task 全部 invoke / 审查文必须引用图谱锚点字面（`docs/_tech_graph/l1/01_struct.md` 等）——本 task 是锚点闸生效后首件活体过闸任务，面B 义务自本 task 起算
 6. D4 回退口：一行 revert 双 profile 即复归 dormant；回退不是失败，是设计好的安全口
+7. `docs/harness/reviews/task_web_graph_anchor_profile_fix_audit_R1_20261030.md`（R1 退回审查 · B-1 drift 输入随迁 / B-2 l0 引用处置 / NIT×6 · 均已回填 v0.3 · 30 开工前核对落位节号）
 
 ## 思考轮控制
 
@@ -154,11 +157,11 @@
 
 ### R2
 
-指向三候选：A `docs/_tech_graph/l1`（锚点词表最富：10 份 flow yaml 的 nodes/edges id + `01_modules`/`10_flow_*` stem + 前缀）；B `docs/_tech_graph` 根（flow yaml 在子目录不入词表 · 根 01_struct 仍 stub → 双重不达标）；C 指文件（上游 isDirectory 硬拒）。选 A。词表源归位随之落在 l1/01_struct.md。
+指向三候选：A `docs/_tech_graph/l1`（锚点词表最富：11 份 flow yaml 的 nodes/edges id（N-2 校正 · 实测 11 份） + `01_modules`/`10_flow_*` stem + 前缀）；B `docs/_tech_graph` 根（flow yaml 在子目录不入词表 · 根 01_struct 仍 stub → 双重不达标）；C 指文件（上游 isDirectory 硬拒）。选 A。词表源归位随之落在 l1/01_struct.md。
 
 ### R3
 
-影响面：HG-GRAPH-MODULES 真值位置迁移 → AGENTS.md/CLAUDE.md local 块表述、根 stub 指向（禁指针链 · 一跳到底）、未来 task 闸表措辞；历史留痕不改（旧文 `l1/01_modules` 记载合法存续）。面A/面B 义务：本 task 生效后自身即被闸判——验收/failure_paths 节内已预埋锚点字面（`docs/_tech_graph/l1/01_struct.md`），面B 义务写入 30 必读（D5）。
+影响面：HG-GRAPH-MODULES 真值位置迁移 → AGENTS.md :134 local 块表述（CLAUDE.md local 块无闸路径行 · 免改 · N-5）、根 stub 指向（禁指针链 · 一跳到底）、未来 task 闸表措辞；（v0.3 回填：R1 指出原盘点漏列 `.spec-wave/graph-drift.yaml:4` 配置硬读面与 l0 层三处引用 —— 分别落范围 ③/依赖与 D3 定夺 · B-1/B-2）历史留痕不改（旧文 `l1/01_modules` 记载合法存续）。面A/面B 义务：本 task 生效后自身即被闸判——验收/failure_paths 节内已预埋锚点字面（`docs/_tech_graph/l1/01_struct.md`），面B 义务写入 30 必读（D5）。
 
 ### R4
 
@@ -174,3 +177,4 @@
 |------|------|
 | 2026-10-30 | v0.1 · 10-task 落稿：升级棒实证钉案（G-1 + FEEDBACK 摩擦点 1）+ graph-anchor.js 源码亲读复核（isDirectory / 词表节 RE / 面A面B 判定链）+ 范围四项 + 非范围六项 + D1–D7 定夺 + 验收 1–8 + failure_paths FP-1–FP-7（含回退口）+ R0–R5 early_stop · 三闸 pending 等维护者亲签（不代录 · 禁豁免）· 未改实现码 / 未切分支 / 未 commit |
 | 2026-10-30 | v0.2 · 闸代录：HG-TASK-DRAFT pending→approved（00 代录 · 授权锚 m00500 · 维护者令「完成后开始 web 和 api 的后续 task，授权签收所有文档」）；HG-AUDIT-R1 / HG-GRAPH-MODULES 保持 pending 不动 |
+| 2026-10-30 | v0.3 · R1 退回回填（审查文 `docs/harness/reviews/task_web_graph_anchor_profile_fix_audit_R1_20261030.md` · untracked 留存未 commit）：**B-1** drift 输入随迁（范围 ③ 补列 `.spec-wave/graph-drift.yaml:4` struct_rel→`l1/01_struct.md` · 01_struct 节双兼容列形+单表约束落 范围②/D2/验收 2 · 验收 6 补 drift 机断口径）+ **B-2** l0 引用处置定夺写死 D3（随迁改 label 直指 01_struct · graph-compile label diff 声明预期 · graph_delta_note/非范围对齐）+ **NIT×6 全采纳**（N-1 probeGraphAnchor :13-44→:13-41 · N-2 flow yaml 10→11 份 · N-3 验收 3 引用面枚举五处 · N-4 节限单表 · N-5 CLAUDE.md 免改 · N-6 验收 5 回归判定点=存量 active `task_web_hitl_approval_page`）· 闸一律不动 |
