@@ -1,0 +1,103 @@
+schema_version: "inform_graph.v3"
+graph_id: "10_flow_hitl"
+title: "独立 HITL 审批页加载与决策流程（前端 · 第四审批入口 · task_web-hitl-approval-page）"
+description: "用户打开审批页（/hitl）：router ensureMe 守卫（未登录跳 /login?redirect=/hitl · 401 由 http 全局拦截器承接）→ HitlApprovalView onMounted 一次性 fetchHitlPending（不轮询 · visibilitychange hidden→visible 边沿单次刷新 · 卸载移除监听）→ api/hitl → http axios → GET /api/ops/hitl/pending（仅本人 owner · 非 maintainer 403）。决策：批准/驳回二次确认 + 防重复提交 + resume_mode 三选（inherit 不送键 · 与 HitlApprovalCard 零分叉）→ POST decide（成功 ≠ 自动 resume · 两步钉死）；resume.required=true 且非 auto_triggered → 显式「续跑」→ POST resume；immediate 且 auto_triggered → 已自动续跑提示。「回到会话查看」仅跳 { name: 'chat' } 不携参。旁注：①冻结契约 src/api/hitl.ts 只消费禁改，字段族六键照登；②错误面 403 权限态 / 401 跳登录 / 409 已被处理 / 404 不存在 / 400 resume_mode 白名单 / TTL 3600s 过期行级提示；③本页不消费 replay 补帧（仅展示 run_id/cursor 摘要，补帧属 Chat 页既有机制）。"
+version: "2026-10-23"
+layer: "G-L1"
+primary_layer: "G-L1"
+depth: "method"
+direction: "TB"
+
+nodes:
+  - id: "user"
+    label: "用户（maintainer）"
+    kind: external
+
+  - id: "router_guard"
+    label: "router（/hitl · ensureMe 守卫复用）"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      path: "src/router/index.ts"
+      symbol: "router"
+
+  - id: "hitl_view"
+    label: "HitlApprovalView"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      path: "src/views/HitlApprovalView.vue"
+      symbol: "HitlApprovalView"
+
+  - id: "fetch_pending_api"
+    label: "fetchHitlPending"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      path: "src/api/hitl.ts"
+      symbol: "fetchHitlPending"
+
+  - id: "decide_api"
+    label: "decideHitlRequest（二次确认 · 防重 · resume_mode 三选）"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      path: "src/api/hitl.ts"
+      symbol: "decideHitlRequest"
+
+  - id: "resume_api"
+    label: "resumeHitlRequest（显式第二步 · 非自动）"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      path: "src/api/hitl.ts"
+      symbol: "resumeHitlRequest"
+
+  - id: "http_client"
+    label: "http（axios · baseURL=/api · 401 拦截跳登录）"
+    kind: flow
+    layer_hint: "G-L2"
+    implementedBy:
+      path: "src/api/http.ts"
+      symbol: "http"
+
+  - id: "ops_api"
+    label: "ops-desk-api（owner-only · TTL 3600s）"
+    kind: external
+
+edges:
+  - from: "user"
+    to: "router_guard"
+    label: "opens /hitl（主导航「审批」入口）"
+
+  - from: "router_guard"
+    to: "hitl_view"
+    label: "ensureMe 守卫复用（未登录 /login?redirect=/hitl）"
+
+  - from: "hitl_view"
+    to: "fetch_pending_api"
+    label: "onMounted 一次性 + 手动刷新 + visibilitychange 边沿（不轮询）"
+
+  - from: "fetch_pending_api"
+    to: "http_client"
+    label: "http.get('/ops/hitl/pending')（六键字段族照登 · 空集渲染「无待审批」）"
+
+  - from: "hitl_view"
+    to: "decide_api"
+    label: "批准/驳回（二次确认 + 决策中 disabled · inherit 不送 resume_mode 键）"
+
+  - from: "decide_api"
+    to: "http_client"
+    label: "http.post('/ops/hitl/requests/{id}/decide')（成功 ≠ 自动 resume · 409/404/400 行级提示）"
+
+  - from: "hitl_view"
+    to: "resume_api"
+    label: "显式点「续跑」（required=true 且非 auto_triggered · 两步钉死）"
+
+  - from: "resume_api"
+    to: "http_client"
+    label: "http.post('/ops/hitl/requests/{id}/resume')（成功展示 replay run_id/cursor 摘要 + 回 /chat 入口）"
+
+  - from: "http_client"
+    to: "ops_api"
+    label: "GET pending · POST decide · POST resume（/api/ops/hitl/**）"

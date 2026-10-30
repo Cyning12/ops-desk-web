@@ -460,6 +460,10 @@ export const useChatStore = defineStore('chat', () => {
   // 使在飞与待触发的追帧一并失效（FP-H10 不泄漏）
   let chaseTimer: ReturnType<typeof setTimeout> | null = null
   let chaseGeneration = 0
+  // web-hitl-resume-chase-ux 范围1：chase 链 run 级唯一性（同 run 活链在飞则新链入口直返 · 实测 14>10 根因=多链并发）
+  let activeChaseRunId: string | null = null
+  // 范围4：本端已受理的 HITL 申请 id（幂等）——已决单重入/重放 waiting 帧打回卡片后不得再发 decide+resume
+  const hitlActedRequestIds = new Set<string>()
   let messageSeq = 0
   // T4：per run_id 的 seq 去重基线（lastAppliedSeq）；run 切换即重置
   let currentRunId: string | null = null
@@ -731,7 +735,12 @@ export const useChatStore = defineStore('chat', () => {
         // （帧经 useLgRagSse 按 event_type 透传，仅 store 层新增消费分支）
         const payload = event.payload ?? {}
         const reason = typeof payload.reason === 'string' ? payload.reason : ''
-        assistant.hitl = buildHitlState(reason, extractHitlRequests(payload.requests))
+        const requests = extractHitlRequests(payload.requests)
+        // web-hitl-resume-chase-ux 范围4：replay 重放本端已受理的申请帧不得把已决卡片打回 waiting
+        // （陈旧游标重放 hitl.waiting → 守卫重置 → 再入第二 chase 链 = 实测 14>10 根因链路）
+        if (!requests.some((request) => request.id && hitlActedRequestIds.has(request.id))) {
+          assistant.hitl = buildHitlState(reason, requests)
+        }
         break
       }
       case 'done': {
@@ -927,6 +936,7 @@ export const useChatStore = defineStore('chat', () => {
       chaseTimer = null
     }
     chaseGeneration += 1
+    activeChaseRunId = null // 范围1：停流即释放活链（同 run 之后可重起 · 手动续看不阻）
     controller?.abort()
     controller = null
     // TC11：追帧间隙（退避定时器挂起 · 无在飞请求）abort 为 no-op，须本地复位 streaming/刷齐队列
@@ -968,8 +978,12 @@ export const useChatStore = defineStore('chat', () => {
   // D3 追帧上限（task 定稿 · 双界先到为准）：连续追帧 ≤10 次 且 墙钟 ≤120s
   const CHASE_MAX_ATTEMPTS = 10
   const CHASE_MAX_WALL_MS = 120_000
-  /** 干净结束未见终帧的再追间隔 / replay 409 缺 Retry-After 头的默认退避（毫秒） */
+  /** 递增退避起始间隔 / replay 409 缺 Retry-After 头的默认退避（毫秒 · web-hitl-resume-chase-ux：起始 2s 钉死） */
   const CHASE_INTERVAL_MS = 2_000
+  /** web-hitl-resume-chase-ux 范围3：干净结束未见终帧的递增退避（×1.5 · 封顶 8s）→ 阶梯 2s/3s/4.5s/6.75s/8s×5，
+   * 10 次墙钟 56.25s 远低于 120s 双界（次数先到为准）；FP-H2 409 Retry-After 优先于阶梯且不推进阶梯 */
+  const CHASE_BACKOFF_FACTOR = 1.5
+  const CHASE_MAX_DELAY_MS = 8_000
 
   /** 解析 resume 200 携 replay.cursor（"{run_id}:{seq}" · 与 extractFrameCursor :574-597 同兜底规则）；非法 → null（FP-H1 回退手动路径） */
   function parseReplayCursor(cursor: string): { run_id: string; after_seq: number } | null {
@@ -982,25 +996,57 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   /**
+   * web-hitl-resume-chase-ux 范围5：resume 409 detail 分类（detail 只消费 · hitl-browser-decide-v1 契约不改）。
+   * 判据 = 后端 api/app/ops/hitl/ 文案子串（router.py:553/561-572 · resume.py:249/329 · router.py:421）；
+   * 未识别一律落中性默认（裸 code 串面存续 · TC10「stranded_checkpoint」钉死）。
+   */
+  function resumeConflictMessage(detail: string): string {
+    if (detail.includes('没有 thread_id')) return '该申请缺少会话定位信息，无法恢复，请重新开会话'
+    if (detail.includes('没有 interrupt 元数据')) return '该会话挂起点为旧版本残留，无法恢复，请作废重开'
+    if (detail.includes('拿不到待解锁的步骤')) return '已批准但无可解锁步骤，无法恢复，请重新开会话'
+    return '该会话已无法恢复，请重新开会话'
+  }
+
+  /**
    * D3 · resume 受理后的自动追帧器（FP-H2/H3/H4 · 帧复用 processFrame 同一管线 · 渲染进当前 assistant 消息）：
    * - replay 干净结束未见终帧（恢复段在写）→ 携末帧 cursor 约 2s 再追（FP-H3）
    * - replay 409 + Retry-After → 按头秒数退避自动重试（缺头默认 2s · D-C retryAfterSeconds）· 不弹错误条（FP-H2）
    * - 上限：连续追帧 ≤10 次 且 墙钟 ≤120s（先到为准 · 409 并入同一上限）；超限降级
    *   「恢复仍在进行，可稍后手动续看」+ active-run 保留不清（canResume 为真 · 手动续看兜底 FP-H11/FP-T5）
+   * - web-hitl-resume-chase-ux 范围1：同一 run 只允许一条活链（activeChaseRunId 入口拦截 · 14>10 根因修复）；
+   *   范围2：退避等待期进度双落点常驻（hitl.note + resumeHint · 恢复段长耗时不再死等），终帧即消（回 settledNote 收官）；
+   *   范围3：干净结束未见终帧的再追为递增退避（2s 起 ×1.5 封顶 8s · 起始 2s 钉死）
    * - 传输层终断（401/404/422/网络错）语义沿用 resumeFromCursor · 不并入退避重试
-   * - stopStreaming/startNewSession → 清退避定时器 + 代际戳失效（FP-H10 不泄漏）
+   * - stopStreaming/startNewSession → 清退避定时器 + 代际戳失效 + 活链释放（FP-H10 不泄漏）
    */
   function chaseResumedRun(
     assistant: ChatMessage,
     start: { run_id: string; after_seq: number },
+    settledNote: string,
   ): void {
+    // 范围1：同 run 活链在飞 → 新链入口直返（单链计数器作用域完好 · 实测 14>10 唯多链并发可破 · 此处截断）
+    if (activeChaseRunId === start.run_id) return
+    activeChaseRunId = start.run_id
     const generation = ++chaseGeneration
     const startedAt = Date.now()
     let attempts = 0
     let cursor = start
+    // 范围3：递增退避阶梯游标（仅干净结束未见终帧推进；FP-H2 409 Retry-After 优先且不动阶梯）
+    let delayMs = CHASE_INTERVAL_MS
+
+    const releaseChase = (): void => {
+      if (activeChaseRunId === start.run_id) activeChaseRunId = null
+    }
+    // 范围2：追帧等待期（恢复段长耗时执行中）进度可见——卡片/提示条双落点常驻，终帧即消
+    const showProgress = (): void => {
+      const text = settledNote + " · 恢复中 · 正在获取进展（第 " + (attempts + 1) + " 次）…"
+      if (assistant.hitl) assistant.hitl.note = text
+      resumeHint.value = text
+    }
 
     const degrade = (): void => {
       // 超限降级：active-run 保留不清 · 卡片/提示条双落点 · 可手动续看
+      releaseChase()
       streaming.value = false
       flushRevealQueues()
       answerTerminal = true
@@ -1098,16 +1144,24 @@ export const useChatStore = defineStore('chat', () => {
         })
       })
 
-      if (generation !== chaseGeneration) return // 追帧期间 stopStreaming/startNewSession 已接管清理
+      if (generation !== chaseGeneration) return // 追帧期间 stopStreaming/startNewSession 已接管清理（活链随之释放）
       if (sawTerminal) {
         // 终帧/终断：done/error 帧由 handleEvent 收尾（streaming=false+clearActiveRun 等）；传输层错误已在 onError 落点
         streaming.value = false
         flushRevealQueues()
+        // 范围2 终帧即消：进度可见态撤回收官文案 · 恢复提示条清空 · 活链释放（验收2：零续追 · 同 run 手动续看不阻）
+        if (assistant.hitl) assistant.hitl.note = settledNote
+        resumeHint.value = null
+        releaseChase()
         return
       }
-      // FP-H3 干净结束未见终帧 → 携末帧 cursor 再追；FP-H2 409 → 按 Retry-After 退避
+      // FP-H3 干净结束未见终帧 → 携末帧 cursor 递增退避再追；FP-H2 409 → 按 Retry-After 退避（不动阶梯）
       cursor = { run_id: cursor.run_id, after_seq: lastSeq }
-      scheduleNext(backoffMs ?? CHASE_INTERVAL_MS)
+      scheduleNext(backoffMs ?? delayMs)
+      if (backoffMs === null) {
+        delayMs = Math.min(Math.round(delayMs * CHASE_BACKOFF_FACTOR), CHASE_MAX_DELAY_MS)
+      }
+      showProgress()
     }
 
     void step()
@@ -1234,7 +1288,10 @@ export const useChatStore = defineStore('chat', () => {
     const hitl = assistant.hitl
     if (!hitl || !requestId) return
     if (hitl.status !== 'waiting') return // acting/decided/resolved/forbidden/unavailable 不可重复触发
+    // web-hitl-resume-chase-ux 范围4 幂等：本端已受理的申请（连点/已决单重入/卡片态被重放帧打回 waiting 的再入）只发一次 decide+resume
+    if (hitlActedRequestIds.has(requestId)) return
     hitl.status = 'acting'
+    hitlActedRequestIds.add(requestId)
     hitl.note = null
     // D3：外 try 只包 decide；resume 失败不再混入 decide 分态（FP-H4 分流前提）
     let decideResp: HitlDecideResponse
@@ -1269,10 +1326,12 @@ export const useChatStore = defineStore('chat', () => {
       if (apiError.status === 401) {
         // 401 由 http.ts 拦截器全局跳登录；卡片回待审批态（登录后可重试）
         hitl.status = 'waiting'
+        hitlActedRequestIds.delete(requestId) // decide 未决：解除受理标记，登录后可重试（幂等不误伤合法重试）
         return
       }
       // 网络/其他错误：卡片回 waiting 可重试（不弹全局错误条 · 审批动作局部呈现）
       hitl.status = 'waiting'
+      hitlActedRequestIds.delete(requestId) // decide 未决：解除受理标记
       hitl.note = apiError.message || '审批操作失败，请重试'
       return
     }
@@ -1286,7 +1345,7 @@ export const useChatStore = defineStore('chat', () => {
       const run = activeRun.value
       if (run) {
         hitl.note = `${decidedNote} · 恢复进行中`
-        chaseResumedRun(assistant, { run_id: run.run_id, after_seq: run.last_seq })
+        chaseResumedRun(assistant, { run_id: run.run_id, after_seq: run.last_seq }, decidedNote)
       } else {
         hitl.note = `${decidedNote} · 点击续看推进`
       }
@@ -1302,7 +1361,7 @@ export const useChatStore = defineStore('chat', () => {
       const start = cursorText ? parseReplayCursor(cursorText) : null
       if (start) {
         hitl.note = `${decidedNote} · 恢复进行中`
-        chaseResumedRun(assistant, start)
+        chaseResumedRun(assistant, start, decidedNote)
       } else {
         hitl.note = `${decidedNote} · 点击续看推进`
       }
@@ -1315,7 +1374,7 @@ export const useChatStore = defineStore('chat', () => {
       if (apiError.status === 409 && apiError.message.includes('正在执行中')) {
         hitl.note = '恢复进行中'
         const run = activeRun.value
-        if (run) chaseResumedRun(assistant, { run_id: run.run_id, after_seq: run.last_seq })
+        if (run) chaseResumedRun(assistant, { run_id: run.run_id, after_seq: run.last_seq }, decidedNote)
         void refreshHitlPending()
         return
       }
@@ -1327,7 +1386,7 @@ export const useChatStore = defineStore('chat', () => {
           message:
             apiError.status === 503
               ? '恢复服务暂不可用，请稍后重试'
-              : '该会话已无法恢复，请重新开会话',
+              : resumeConflictMessage(apiError.message), // 范围5：409 detail 分类（只消费 · 契约不改）
           retryable: false,
         }
         void refreshHitlPending()
@@ -1346,8 +1405,9 @@ export const useChatStore = defineStore('chat', () => {
         return
       }
       if (apiError.status === 401) {
-        // 401 由 http.ts 拦截器全局跳登录；卡片回待审批态（登录后可重试）
+        // 401 由 http.ts 拦截器全局跳登录；卡片回待审批态（登录后可重试 · decide 幂等由后端 409 兜底）
         hitl.status = 'waiting'
+        hitlActedRequestIds.delete(requestId)
         return
       }
       // resume 网络/其他错误：decide 已决（不可回 waiting 重复 decide）· 错误条可重试提示 · 手动续看兜底
