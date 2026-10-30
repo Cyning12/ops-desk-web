@@ -1,6 +1,6 @@
 # Task：Web · 独立 HITL 审批页（/hitl · 第四审批入口 · 冻结契约零分叉）
 
-> **状态**：`draft`  
+> **状态**：`done`（v1.0 · 2026-10-30 CLOSE · 30/40 已交付（40 结论 approved-with-comments 零阻塞 · 三门复跑 EXIT=0）· 分支 `task/web-hitl-approval-page` 已完整合入 main（merge-base = 分支尖 c271761 · 实现 commit a34c626 已在位）· D9 volatile 短注已补 · **TC9 待维护者手测回填**（维护者定夺 2026-10-30）· 00 代签 · 授权锚 = 维护者当面定夺 2026-10-30 · 全程本地零 push）  
 > **类型**：feature / 前端新页面（Vitest 组件级 · api-only-consume）  
 > **统筹**：web 00；**禁止**改姐妹仓 ops-desk-api；**禁止**改 `src/api/hitl.ts` 契约语义；存量审批面（HitlApprovalCard / ChatView / chat store）零触碰  
 > **分支**：`task/web-hitl-approval-page`（30 开工时才切 · 本棒不切分支、不改 src、不 commit）  
@@ -222,9 +222,9 @@ TC1–TC3 锁列表/决策/三选语义；TC4–TC5 锁两步链两分支；TC6 
 
 | 项 | 状态 | 备注 |
 |----|------|------|
-| 视图/路由/菜单 | 待 30 | 建议 `src/views/HitlApprovalView.vue`；命名微调须 invoke 留痕 |
-| Vitest 组件级 | 待 30 | 建议 `tests/hitl-approval-page.spec.ts` 红测先行 |
-| 图谱增量 + wiki 短注 | 待 30 | pages 行增量备注 + `10_flow_hitl.graph.yaml` + graph-compile 绿 + volatile 短注 |
+| 视图/路由/菜单 | done | `src/views/HitlApprovalView.vue` 已落（采纳建议名）· `src/router/index.ts` `/hitl` 路由（name=hitl · AppLayout children · 守卫零改动复用）· `src/layouts/AppLayout.vue` 主导航「审批」菜单项 · 实现 commit a34c626 已随分支并入 main（30 invoke 2026-10-23 留痕） |
+| Vitest 组件级 | done | `tests/hitl-approval-page.spec.ts` 红测先行 · **17 用例**（40 复跑：hitl spec 单跑 17/17 · 全量 35 文件 324 passed 1 skipped） |
+| 图谱增量 + wiki 短注 | done | `docs/_tech_graph/l1/01_modules.md` pages 行增量备注 + 新增 `10_flow_hitl.graph.yaml`（inform_graph.v3 · 8 节点 10 边）+ 编译产物 `10_flow_hitl.md` + graph-compile EXIT=0 · 未新增一级模块 · volatile 短注 2026-10-30 本棒补落（D9 欠账清账） |
 
 ---
 
@@ -239,4 +239,29 @@ TC1–TC3 锁列表/决策/三选语义；TC4–TC5 锁两步链两分支；TC6 
 
 ### 自检结论（执行者）
 
-（draft 阶段为空 · 30/40 执行后回填，含 verify、pnpm 三门、task lint、TC1–TC9 逐项结果）
+> 回填 2026-10-30 · 00 代签 CLOSE（授权锚 = 维护者当面定夺 2026-10-30 · 全程本地零 push）
+> 30/40 执行证据真值：`docs/harness/invokes/by-task/web-hitl-approval-page/`（10/20/30/40 四帽齐备）+ 审查文 `docs/harness/reviews/task_web_hitl_approval_page_review_40_20261023.md`
+
+- **合并态**：分支 `task/web-hitl-approval-page` 已完整合入 main（merge-base = 分支尖 c271761 · 实现 commit a34c626 已在位 · 中途经 dd537d7 并入 web-hitl-resume-chase-ux 支再随该支合入 · 00 亲验 2026-10-30）。
+- **质量门（40 invoke 2026-10-23 载明复跑）**：`pnpm lint` EXIT=0 · `pnpm test` EXIT=0（35 文件 324 passed 1 skipped · hitl spec 单跑 17/17）· `pnpm build` EXIT=0 · `./scripts/graph-compile.sh` EXIT=0（重跑产物字节一致）· `npx spec-wave task lint` PASS。
+- **40 结论**：approved-with-comments（零阻塞 · NIT ×3 非阻塞：expired 正则优先级保守取舍 / D7 用例二次 unmount / 30 invoke「10 边」实为 9 边笔误——30 invoke 交付摘要自报「8 节点 10 边」，40 核定笔误不改注释仅留痕）。
+
+#### TC1–TC9 逐项落账
+
+| TC | 结果 | 承接依据 |
+|----|------|----------|
+| TC1 列表渲染三态 | ✅ | 17 用例承接（30 invoke 逐项表：2 行字段族断言 reason/blocked_by JSON/created_at+已等待/thread·run 截断 · 空态「暂无待审批的请求」· loading 态）· 40 复跑 17/17 |
+| TC2 决策确认 + 防重 | ✅ | 17 用例承接（二次确认出现 · decide 恰 1 次 decision='approved' · 决策中按钮 disabled · 连点无第二请求；防重提前到 confirm 前更严） |
+| TC3 resume_mode 零分叉 | ✅ | 17 用例承接（inherit → 第三参 undefined 不送键 · immediate/manual → 对应键 · 三文案与 HitlApprovalCard.vue:57-59 一致 · 无第四选项） |
+| TC4 两步链 | ✅ | 17 用例承接（required=true → 「续跑」按钮出现且 resumeHitlRequest 调用 0 次 · 点续跑调 1 次 · 「回到会话查看」toEqual({name:'chat'}) 无 query · D6） |
+| TC5 immediate 分支 | ✅ | 17 用例承接（auto_triggered=true → 无续跑按钮 · 「已批准并自动续跑」提示 + 回会话入口） |
+| TC6 错误态 | ✅ | 17 用例承接（403 权限态 · 网络失败错误条+重试 · decide 过期行级提示 · 409 已被处理行级提示） |
+| TC7 驳回路径 | ✅ | 17 用例承接（驳回二次确认 · decision='rejected' · 成功后刷新且无续跑按钮） |
+| TC8 质量门 + 过程 | ✅ | 40 invoke 2026-10-23 复跑：pnpm lint/test/build 三门 EXIT=0 · graph-compile EXIT=0 · pages 行增量备注已落 · `10_flow_hitl.graph.yaml` 新增且编译产物一致 · 未新增一级模块 · task lint PASS；**D9 volatile 短注 2026-10-30 本棒补落**（30 遗留#1 清账） |
+| TC9 手测 + PR 材料 | ⏸ **待维护者手测回填**（维护者定夺 2026-10-30：TC9 手测由维护者自行执行，通过后回报再回填；本 task 先行 CLOSE，本行如实挂起） | 手测需本地 ops-desk-api + 构造挂起 run（批准 → 显式续跑 → 「回到会话查看」链路 + 四态截图/语义对照表/闸表截图） |
+
+#### 遗留（非阻塞照登）
+
+1. **TC9 手测**：待维护者手测回填（维护者定夺 2026-10-30）。
+2. **graph.json 产物归属**（30 invoke 遗留#3）：2026-10-30 核查现状——`docs/_tech_graph/graph.json` 与 `docs/_tech_graph/shared/graph.json` 均已跟踪入库且工作树净（含 hitl flow 节点各 35 处命中 · 由后续提交 2cbd3b3「web-hitl-approval-overlay-ux 图谱增量」自然带入 · 与 30 预判「由后续提交自然带入」一致）；本棒不硬改产物归属，仅在 CLOSE invoke 如实记录。
+3. **close_pr_policy=required 偏差**：全程本地零 push/未开 PR（维护者当面定夺 2026-10-30 授权 00 代签 CLOSE · 承 246e8e0 / m00085 先例口径）。
