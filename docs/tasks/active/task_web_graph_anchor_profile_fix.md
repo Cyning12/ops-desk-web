@@ -1,6 +1,6 @@
 # Task：Web · 图谱锚点闸 profile 修复（graph_modules_path 指向 + 01_struct 词表源归位）
 
-> **状态**：`draft`（v0.3 · R1 退回回填 B-1/B-2+NIT×6 · 双闸 pending 等维护者签收 · 待 R2 复审）
+> **状态**：`draft`（v0.4 · R2 通过零阻塞 · 双闸 approved（00 代录 · 授权锚 m00500）· 待 30 开工）
 > **类型**：基础设施 / harness 过程轨修复（profile 配置 + 图谱词表源 plumbing · 业务源码零改动）
 > **前置**：spec-wave 3.5.0 升级 wave CLOSE（`docs/tasks/done/task_web_specwave_upgrade_3_5_0.md` · 分支 task/specwave-upgrade-3-5-0 · commit 32e2800）
 > **分支**：`task/web-graph-anchor-profile-fix`（base：3.5.0 升级落地后的 main 合并态 · **30 开工才切** · 本棒不切分支）
@@ -36,13 +36,13 @@
 
 ### 人工闸
 
-> 闸表 4 列。id 单元格不用粗体。真值在本表，不在 invoke 字面。**双闸保持 pending，等维护者亲签，任何人不得代录**（维护者 2026-10-30 原则）。
+> 闸表 4 列。id 单元格不用粗体。真值在本表，不在 invoke 字面。~~双闸保持 pending，等维护者亲签，任何人不得代录~~ → 2026-10-30 维护者授权锚 m00500「授权签收所有文档」，双闸由 00 代录 approved（见下表）。
 
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
 | HG-TASK-DRAFT | approved | 20-R1, 30 | 00 代录 · 授权锚 m00500（维护者令启动后续 task · 授权签收所有文档 · 不走 `--allow-no-review`） |
-| HG-AUDIT-R1 | pending | 30 | 20-task-audit R1 落盘后等维护者签收（不代录）；**30 在 pending 时拒开工** |
-| HG-GRAPH-MODULES | pending | 30 | 10 评估（2026-10-30 亲读）：**不新增/不改一级模块边界**（模块 id 集合与依赖方向逐字平移 · 纯 plumbing）；但本 task 迁移 HG-GRAPH-MODULES 真值文件位置（01_modules.md → 01_struct.md · D2），闸路径语义变更须维护者一并签收 |
+| HG-AUDIT-R1 | approved | 30 | 2026-10-30 · 00 代录 · 授权锚 m00500 · R1 退回→v0.3 回填→R2 通过零阻塞 · 审查文 R1/R2 双件 |
+| HG-GRAPH-MODULES | approved | 30 | 00 代录 · 授权锚 m00500 · 本 task 即图谱闸路径语义变更本体 · 闸路径随迁已入范围/D2/D3 · R2 审查文核闭 |
 
 ---
 
@@ -178,3 +178,4 @@
 | 2026-10-30 | v0.1 · 10-task 落稿：升级棒实证钉案（G-1 + FEEDBACK 摩擦点 1）+ graph-anchor.js 源码亲读复核（isDirectory / 词表节 RE / 面A面B 判定链）+ 范围四项 + 非范围六项 + D1–D7 定夺 + 验收 1–8 + failure_paths FP-1–FP-7（含回退口）+ R0–R5 early_stop · 三闸 pending 等维护者亲签（不代录 · 禁豁免）· 未改实现码 / 未切分支 / 未 commit |
 | 2026-10-30 | v0.2 · 闸代录：HG-TASK-DRAFT pending→approved（00 代录 · 授权锚 m00500 · 维护者令「完成后开始 web 和 api 的后续 task，授权签收所有文档」）；HG-AUDIT-R1 / HG-GRAPH-MODULES 保持 pending 不动 |
 | 2026-10-30 | v0.3 · R1 退回回填（审查文 `docs/harness/reviews/task_web_graph_anchor_profile_fix_audit_R1_20261030.md` · untracked 留存未 commit）：**B-1** drift 输入随迁（范围 ③ 补列 `.spec-wave/graph-drift.yaml:4` struct_rel→`l1/01_struct.md` · 01_struct 节双兼容列形+单表约束落 范围②/D2/验收 2 · 验收 6 补 drift 机断口径）+ **B-2** l0 引用处置定夺写死 D3（随迁改 label 直指 01_struct · graph-compile label diff 声明预期 · graph_delta_note/非范围对齐）+ **NIT×6 全采纳**（N-1 probeGraphAnchor :13-44→:13-41 · N-2 flow yaml 10→11 份 · N-3 验收 3 引用面枚举五处 · N-4 节限单表 · N-5 CLAUDE.md 免改 · N-6 验收 5 回归判定点=存量 active `task_web_hitl_approval_page`）· 闸一律不动 |
+| 2026-10-30 | v0.4 · 闸代录：HG-AUDIT-R1 + HG-GRAPH-MODULES pending→approved（00 代录 · 授权锚 m00500 · R1 退回→v0.3 回填→R2 通过零阻塞 · 审查文 R1/R2 双件入库）；闸表头注与状态行「不代录/双闸 pending」字面同步修正对齐 m00500 授权 |
