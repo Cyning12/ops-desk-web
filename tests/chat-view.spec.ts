@@ -33,17 +33,19 @@ vi.mock('../src/composables/useLgRagSse', () => ({
 }))
 
 import { fetchLatestSession } from '../src/api/chat'
-import { fetchThreadHistory } from '../src/api/chatHistory'
+import { fetchChatThreads, fetchThreadHistory } from '../src/api/chatHistory'
+import type { ChatThreadHistoryPage } from '../src/api/chatHistory'
 import { decideHitlRequest, fetchHitlPending, resumeHitlRequest } from '../src/api/hitl'
 import { replayLgRag, streamLgRag } from '../src/composables/useLgRagSse'
-import { useChatStore } from '../src/stores/chat'
+import { LG_RAG_THREAD_ID_STORAGE_KEY, useChatStore } from '../src/stores/chat'
 import ChatView from '../src/views/ChatView.vue'
 
 /**
- * ChatView 组件渲染断言（AC2/AC6/AC7 + F-A/F-B 裁定形态）：
- * hitl.waiting 帧 → 消息流内联审批卡片（reason + 申请 id + 双按钮）；
+ * ChatView 组件渲染断言（AC2/AC6/AC7 + F-A 裁定形态 + D1–D14 task_web_hitl_approval_overlay_ux）：
+ * hitl.waiting 帧 → 审批动作面渲染于 composer 上方浮层（data-test=hitl-overlay · D2/D4），
+ * 消息流仅留轻量只读标记（data-test=hitl-inline-note · D4）；
  * 历史 run 映射渲染（user/assistant/子任务/截断标记/待审批非完成态）；
- * 侧栏内嵌 + history 404 降级。
+ * 「对话 | 历史」双 tab 复用 ChatHistoryPanel（D13 · history-toggle 侧栏形态废止）+ history 404 降级。
  */
 
 const fakeSession = {
@@ -98,7 +100,10 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
     })
     await flushPromises()
 
-    const card = wrapper.find('[data-test="hitl-card"]')
+    // D2/D4 浮层落点（验收3 · 改钉与改码同 PR 可见）：审批动作面在 composer 上方浮层，不在消息流内
+    const overlay = wrapper.find('[data-test="hitl-overlay"]')
+    expect(overlay.exists()).toBe(true)
+    const card = overlay.find('[data-test="hitl-card"]')
     expect(card.exists()).toBe(true)
     expect(card.text()).toContain('人工审批')
     expect(card.text()).toContain('高危操作需人工审批')
@@ -111,6 +116,18 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
     expect(reject.text()).toContain('驳回')
     // 待审批徽标
     expect(card.find('.hitl-card__badge').text()).toContain('待审批')
+    // 消息流不再渲染审批动作面（D2 · 不被审批卡截断），仅留轻量只读标记（D4）
+    expect(wrapper.find('.chat-page__messages [data-test="hitl-card"]').exists()).toBe(false)
+    const inlineNote = wrapper.find('.chat-page__messages [data-test="hitl-inline-note"]')
+    expect(inlineNote.exists()).toBe(true)
+    expect(inlineNote.text()).toContain('人工审批')
+    expect(inlineNote.find('button').exists()).toBe(false)
+    // D10① 落位：浮层恒居 composer 正上方（DOM 序断言 · jsdom compareDocumentPosition）
+    const composer = wrapper.find('.chat-page__composer')
+    expect(composer.exists()).toBe(true)
+    expect(
+      overlay.element.compareDocumentPosition(composer.element) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy()
   })
 
   it('T-W2 AC：waiting 卡片渲染 resume_mode 三选（默认 inherit）；默认批准 → decide 精确 2 参（不送键）', async () => {
@@ -214,7 +231,7 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
     expect(chat.messages[1].hitl?.status).toBe('decided')
   })
 
-  it('AC7：FP-F11 降级卡片（缺 requests → 仅 reason + 审批详情不可用 · 无双按钮）', async () => {
+  it('AC7：FP-F11 降级（缺 requests → 不可操作 · 不进浮层 · 消息流仅只读标记「审批详情不可用」无双按钮 · D4/failure_paths）', async () => {
     const wrapper = mountView()
     await flushPromises()
     const chat = useChatStore()
@@ -226,12 +243,14 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
     })
     await flushPromises()
 
-    const card = wrapper.find('[data-test="hitl-card"]')
-    expect(card.exists()).toBe(true)
-    expect(card.text()).toContain('需要审批但详情缺失')
-    expect(card.text()).toContain('审批详情不可用')
-    expect(card.find('.hitl-card__approve').exists()).toBe(false)
-    expect(card.find('.hitl-card__reject').exists()).toBe(false)
+    // 浮层只承接 waiting/acting/decided（failure_paths 多条并存条）→ unavailable 仅只读标记
+    expect(wrapper.find('[data-test="hitl-overlay"]').exists()).toBe(false)
+    const note = wrapper.find('.chat-page__messages [data-test="hitl-inline-note"]')
+    expect(note.exists()).toBe(true)
+    expect(note.text()).toContain('审批详情不可用')
+    expect(note.find('button').exists()).toBe(false)
+    expect(wrapper.find('.hitl-card__approve').exists()).toBe(false)
+    expect(wrapper.find('.hitl-card__reject').exists()).toBe(false)
   })
 
   it('AC10 视觉：done{waiting_approval} 后卡片仍在；done{completed} 后无待审批形态', async () => {
@@ -292,31 +311,235 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
     expect(wrapper.text()).toContain('检索完成')
     // AC6 截断标记
     expect(wrapper.find('[data-test="answer-truncated"]').text()).toContain('内容过长已截断')
-    // 待审批形态（非完成态）
-    expect(wrapper.find('[data-test="hitl-card"]').exists()).toBe(true)
+    // 待审批形态（非完成态）· D4 历史入口同一浮层：卡片在浮层不在消息流
+    expect(wrapper.find('[data-test="hitl-overlay"] [data-test="hitl-card"]').exists()).toBe(true)
+    expect(wrapper.find('.chat-page__messages [data-test="hitl-card"]').exists()).toBe(false)
+    expect(wrapper.find('[data-test="hitl-inline-note"]').exists()).toBe(true)
     expect(wrapper.text()).not.toContain('完成 · 耗时')
   })
 
-  it('F-B：历史侧栏内嵌（默认收起 · 切换按钮展开）；AC13 history 404 → 降级提示不炸屏', async () => {
+  it('D13（F-B 改钉 · history-toggle 侧栏形态废止 → 「对话|历史」双 tab 复用 ChatHistoryPanel 零新增路由）；AC13 history 404 → 降级提示不炸屏', async () => {
     vi.mocked(fetchThreadHistory).mockRejectedValue({
       status: 404,
       message: 'not found',
       raw: null,
     } as ApiError)
+    vi.mocked(fetchChatThreads).mockResolvedValue({ threads: [], next_cursor: null })
     const wrapper = mountView()
     await flushPromises()
 
-    // 默认收起 → 展开
+    // 默认对话 tab：历史面板未渲染 · 对话区渲染 · 无侧栏
+    expect(wrapper.find('[data-test="chat-history-panel"]').exists()).toBe(false)
+    expect(wrapper.find('.chat-page__composer').exists()).toBe(true)
     expect(wrapper.find('.chat-page__sidebar').exists()).toBe(false)
-    await wrapper.find('[data-test="history-toggle"]').trigger('click')
-    expect(wrapper.find('.chat-page__sidebar').exists()).toBe(true)
+    expect(wrapper.find('[data-test="history-toggle"]').exists()).toBe(false)
+
+    // 切历史 tab → 复用 ChatHistoryPanel 呈现
+    await wrapper.find('[data-test="chat-tab-history"]').trigger('click')
+    await flushPromises()
+    expect(wrapper.find('[data-test="chat-history-panel"]').exists()).toBe(true)
+    expect(wrapper.find('.chat-page__composer').exists()).toBe(false)
 
     const chat = useChatStore()
     await chat.openHistoryThread('t-x')
     await flushPromises()
+    // 回对话 tab：404 降级提示呈现 · Chat 主路径不受影响 composer 仍可用
+    await wrapper.find('[data-test="chat-tab-conversation"]').trigger('click')
+    await flushPromises()
     expect(wrapper.find('[data-test="history-error"]').text()).toContain('会话不存在或已过期')
-    // Chat 主路径不受影响：composer 仍可用
     expect(wrapper.find('.chat-page__composer').exists()).toBe(true)
+  })
+
+  it('D11/D12 视图：已存 thread_id 挂载 → 自动全量加载历史渲染；无 id → 零加载零打扰', async () => {
+    // 无 id：零加载
+    const bare = mountView()
+    await flushPromises()
+    expect(fetchThreadHistory).not.toHaveBeenCalled()
+    bare.unmount()
+
+    // 有 id：重建 pinia（threadId 于 store 创建时自 localStorage 恢复）模拟刷新重进
+    window.localStorage.setItem(LG_RAG_THREAD_ID_STORAGE_KEY, 't-stored')
+    pinia = createPinia()
+    setActivePinia(pinia)
+    vi.mocked(fetchThreadHistory).mockResolvedValue({
+      thread_id: 't-stored',
+      runs: [
+        {
+          run_id: 'r-1',
+          started_at: '2026-10-27T10:00:00',
+          query: '旧问',
+          answer: '旧答',
+          answer_truncated: false,
+          subtasks: [],
+          terminal_status: 'completed',
+          hitl: [],
+        },
+      ],
+      next_cursor: null,
+    })
+    const wrapper = mountView()
+    await flushPromises()
+
+    expect(fetchThreadHistory).toHaveBeenCalledWith('t-stored', { limit: 100 })
+    expect(wrapper.find('.chat-message--user .chat-message__text').text()).toBe('旧问')
+    expect(wrapper.find('.chat-message--assistant .chat-message__text').text()).toBe('旧答')
+    // D12 restoredNotice 存续 · 文案随「真恢复历史」语义调整
+    expect(wrapper.text()).toContain('已恢复上次会话')
+    expect(wrapper.text()).not.toContain('历史消息不回显')
+  })
+
+  it('D13/验收9：历史 tab 选中条目 → openHistoryThread 闭环 + 自动回对话 tab + waiting_approval 浮层呈现', async () => {
+    vi.mocked(fetchChatThreads).mockResolvedValue({
+      threads: [
+        {
+          thread_id: 't-9',
+          title: '旧会话',
+          last_activity_at: '2026-10-27T10:00:00',
+          run_count: 1,
+          latest_run_status: 'waiting_approval',
+        },
+      ],
+      next_cursor: null,
+    })
+    vi.mocked(fetchThreadHistory).mockResolvedValue({
+      thread_id: 't-9',
+      runs: [
+        {
+          run_id: 'r-1',
+          started_at: '2026-10-27T10:00:00',
+          query: '高危操作',
+          answer: '半截回答',
+          answer_truncated: false,
+          subtasks: [],
+          terminal_status: 'waiting_approval',
+          hitl: [{ id: 'req-7', reason: '需审批' }],
+        },
+      ],
+      next_cursor: null,
+    })
+    const wrapper = mountView()
+    await flushPromises()
+
+    await wrapper.find('[data-test="chat-tab-history"]').trigger('click')
+    await flushPromises()
+    await wrapper.find('[data-test="chat-history-item"]').trigger('click')
+    await flushPromises()
+
+    expect(fetchThreadHistory).toHaveBeenCalledWith('t-9', { limit: 100 })
+    // 选中后自动回对话 tab
+    expect(wrapper.find('[data-test="chat-tab-conversation"]').classes()).toContain(
+      'chat-page__tab--active',
+    )
+    expect(wrapper.find('.chat-message--user .chat-message__text').text()).toBe('高危操作')
+    // 历史 waiting_approval → 浮层呈现（三入口同形态）
+    expect(wrapper.find('[data-test="hitl-overlay"] [data-test="hitl-card"]').exists()).toBe(true)
+    expect(wrapper.find('.chat-page__messages [data-test="hitl-card"]').exists()).toBe(false)
+  })
+
+  it('D5/D6/验收4：chase 进度落点随迁浮层（数据源 hitl.note · resumeHint 条带共存）；decided+canResume「续看推进」在浮层', async () => {
+    const wrapper = mountView()
+    await flushPromises()
+    const chat = useChatStore()
+
+    chat.sendMessage('部署生产服务')
+    captured.onEvent?.({
+      event_type: 'hitl.waiting',
+      run_id: 'r-1',
+      seq: 2,
+      payload: { reason: '需审批', requests: [{ id: 'req-1' }] },
+    })
+    captured.onEvent?.({
+      event_type: 'done',
+      run_id: 'r-1',
+      seq: 3,
+      payload: { status: 'waiting_approval' },
+    })
+    await flushPromises()
+
+    // chase 进度态（store 双落点钉面 chat-store-hitl.spec.ts TC-P1 存续 · 此处钉视图落点）
+    chat.messages[1].hitl!.status = 'decided'
+    chat.messages[1].hitl!.decision = 'approved'
+    chat.messages[1].hitl!.note = '已批准 · 恢复中（第 2 次）'
+    chat.resumeHint = '恢复仍在进行，可稍后手动续看'
+    chat.activeRun = { run_id: 'r-1', last_seq: 3, thread_id: 't-1', updated_at: '2026-10-28T00:00:00Z' }
+    await flushPromises()
+
+    const overlay = wrapper.find('[data-test="hitl-overlay"]')
+    expect(overlay.exists()).toBe(true)
+    expect(overlay.text()).toContain('恢复中（第 2 次）') // 浮层进度区承接 hitl.note
+    // resumeHint 条带原位共存（D10① 互不覆盖）
+    expect(wrapper.text()).toContain('恢复仍在进行，可稍后手动续看')
+
+    // D6：续看推进迁入浮层
+    const resumeBtn = overlay.find('.hitl-card__resume')
+    expect(resumeBtn.exists()).toBe(true)
+    await resumeBtn.trigger('click')
+    await flushPromises()
+    expect(replayLgRag).toHaveBeenCalledWith({ run_id: 'r-1', after_seq: 3 }, expect.any(Object))
+  })
+
+  it('D14/验收10：切换历史会话后浮层随迁不残留上一会话审批面', async () => {
+    const wrapper = mountView()
+    await flushPromises()
+    const chat = useChatStore()
+
+    chat.sendMessage('部署生产服务')
+    captured.onEvent?.({
+      event_type: 'hitl.waiting',
+      run_id: 'r-1',
+      seq: 2,
+      payload: { reason: '需审批', requests: [{ id: 'req-1' }] },
+    })
+    captured.onEvent?.({
+      event_type: 'done',
+      run_id: 'r-1',
+      seq: 3,
+      payload: { status: 'waiting_approval' },
+    })
+    await flushPromises()
+    expect(wrapper.find('[data-test="hitl-overlay"]').exists()).toBe(true)
+
+    // 切到完成态历史会话 → 浮层与只读标记均不残留
+    vi.mocked(fetchThreadHistory).mockResolvedValue({
+      thread_id: 't-9',
+      runs: [
+        {
+          run_id: 'r-9',
+          started_at: '2026-10-27T10:00:00',
+          query: '旧问',
+          answer: '旧答',
+          answer_truncated: false,
+          subtasks: [],
+          terminal_status: 'completed',
+          hitl: [],
+        },
+      ],
+      next_cursor: null,
+    })
+    await chat.openHistoryThread('t-9')
+    await flushPromises()
+
+    expect(wrapper.find('[data-test="hitl-overlay"]').exists()).toBe(false)
+    expect(wrapper.find('[data-test="hitl-inline-note"]').exists()).toBe(false)
+    expect(wrapper.find('.chat-message--assistant .chat-message__text').text()).toBe('旧答')
+  })
+
+  it('验收10：恢复历史加载中 composer 门控禁用（loading 门控 · 不双轨渲染）· 加载完成解锁', async () => {
+    window.localStorage.setItem(LG_RAG_THREAD_ID_STORAGE_KEY, 't-stored')
+    const resolvers: Array<(page: ChatThreadHistoryPage) => void> = []
+    vi.mocked(fetchThreadHistory).mockImplementation(
+      () => new Promise<ChatThreadHistoryPage>((resolve) => { resolvers.push(resolve) }),
+    )
+    const wrapper = mountView()
+    await flushPromises()
+
+    const textarea = wrapper.find('.chat-page__composer textarea')
+    expect(textarea.exists()).toBe(true)
+    expect((textarea.element as HTMLTextAreaElement).disabled).toBe(true)
+
+    resolvers[0]?.({ thread_id: 't-stored', runs: [], next_cursor: null })
+    await flushPromises()
+    expect((wrapper.find('.chat-page__composer textarea').element as HTMLTextAreaElement).disabled).toBe(false)
   })
 
   it('TC-W1/W2/W3 视图：running 半截+生成中无继续回复；error 半截+继续回复按钮（≠续看）', async () => {

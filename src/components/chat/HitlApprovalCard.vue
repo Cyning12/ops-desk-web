@@ -1,7 +1,10 @@
 <script setup lang="ts">
 /**
- * F2 · 消息流内联 HITL 审批卡片（裁定 F-A · web-chat-history-hitl-ux）。
+ * F2 · HITL 审批动作卡（裁定 F-A · web-chat-history-hitl-ux）。
  * live hitl.waiting 帧 / replay / 历史 waiting_approval run 三入口同一渲染形态零分叉。
+ * 渲染落点（D2–D4 · task_web_hitl_approval_overlay_ux）：自消息流内联迁移至 composer 上方
+ * 浮层 HitlApprovalOverlay（消息流侧仅留 data-test=hitl-inline-note 轻量只读标记）；
+ * 本卡动作语义/契约载荷零改。
  * 动作链：批准/驳回 → store decideHitl（POST decide → 成功 → POST resume · 契约两步链式）。
  * T-W2：decide 可选键 resume_mode 三选（inherit/immediate/manual · 默认 inherit 不送键 ·
  * 后端 router.py:184 白名单兜底 400 · 前端不臆造第四值）。

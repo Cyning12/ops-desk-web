@@ -1,13 +1,13 @@
 ---
 graph_id: 10_flow_hitl
-version: 2026-10-23
-generated_at: sha256-64b725ab0e359e9a
+version: 2026-10-28
+generated_at: sha256-c705d7a87f78654a
 source: 10_flow_hitl.graph.yaml
 ---
 
 # 独立 HITL 审批页加载与决策流程（前端 · 第四审批入口 · task_web-hitl-approval-page）
 
-用户打开审批页（/hitl）：router ensureMe 守卫（未登录跳 /login?redirect=/hitl · 401 由 http 全局拦截器承接）→ HitlApprovalView onMounted 一次性 fetchHitlPending（不轮询 · visibilitychange hidden→visible 边沿单次刷新 · 卸载移除监听）→ api/hitl → http axios → GET /api/ops/hitl/pending（仅本人 owner · 非 maintainer 403）。决策：批准/驳回二次确认 + 防重复提交 + resume_mode 三选（inherit 不送键 · 与 HitlApprovalCard 零分叉）→ POST decide（成功 ≠ 自动 resume · 两步钉死）；resume.required=true 且非 auto_triggered → 显式「续跑」→ POST resume；immediate 且 auto_triggered → 已自动续跑提示。「回到会话查看」仅跳 { name: 'chat' } 不携参。旁注：①冻结契约 src/api/hitl.ts 只消费禁改，字段族六键照登；②错误面 403 权限态 / 401 跳登录 / 409 已被处理 / 404 不存在 / 400 resume_mode 白名单 / TTL 3600s 过期行级提示；③本页不消费 replay 补帧（仅展示 run_id/cursor 摘要，补帧属 Chat 页既有机制）。
+用户打开审批页（/hitl）：router ensureMe 守卫（未登录跳 /login?redirect=/hitl · 401 由 http 全局拦截器承接）→ HitlApprovalView onMounted 一次性 fetchHitlPending（不轮询 · visibilitychange hidden→visible 边沿单次刷新 · 卸载移除监听）→ api/hitl → http axios → GET /api/ops/hitl/pending（仅本人 owner · 非 maintainer 403）。决策：批准/驳回二次确认 + 防重复提交 + resume_mode 三选（inherit 不送键 · 与 HitlApprovalCard 零分叉）→ POST decide（成功 ≠ 自动 resume · 两步钉死）；resume.required=true 且非 auto_triggered → 显式「续跑」→ POST resume；immediate 且 auto_triggered → 已自动续跑提示。「回到会话查看」仅跳 { name: 'chat' } 不携参。旁注：①冻结契约 src/api/hitl.ts 只消费禁改，字段族六键照登；②错误面 403 权限态 / 401 跳登录 / 409 已被处理 / 404 不存在 / 400 resume_mode 白名单 / TTL 3600s 过期行级提示；③本页不消费 replay 补帧（仅展示 run_id/cursor 摘要，补帧属 Chat 页既有机制）。Chat 页侧（2026-10-28 · task_web_hitl_approval_overlay_ux）：Chat 页审批动作面由消息流内联迁移为 composer 上方浮层 HitlApprovalOverlay（包装同一 HitlApprovalCard · decide/resume_mode 字段语义与本页零分叉 · 数据层 hitl.note 数据源不动）；本页（/hitl）存续不受影响。
 
 ## Mermaid
 

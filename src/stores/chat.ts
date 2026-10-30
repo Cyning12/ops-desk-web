@@ -985,6 +985,21 @@ export const useChatStore = defineStore('chat', () => {
   const CHASE_BACKOFF_FACTOR = 1.5
   const CHASE_MAX_DELAY_MS = 8_000
 
+  /** D11（task_web_hitl_approval_overlay_ux）：历史全量翻页 limit（契约上限 100 · src/api/chatHistory.ts:15 超限 422） */
+  const HISTORY_PAGE_LIMIT = 100
+
+  /** D1 空泡判据（task_web_hitl_approval_overlay_ux）：replay 帧中计入「内容落墨」的事件类型
+   * （answer→content · node.progress→thinking · subtask.progress→subtasks · hitl.waiting→hitl）；
+   * error 帧带 runTerminalStatus 徽标+继续回复 CTA 视为可见落墨（空泡回收不吞错误落点 · failure_paths）；
+   * run.start/done 等纯元信息帧不计（R1-N1：done 仅元信息零落墨同属回收判据不逃逸） */
+  const CONTENT_INK_EVENT_TYPES = new Set([
+    'answer',
+    'node.progress',
+    'subtask.progress',
+    'hitl.waiting',
+    'error',
+  ])
+
   /** 解析 resume 200 携 replay.cursor（"{run_id}:{seq}" · 与 extractFrameCursor :574-597 同兜底规则）；非法 → null（FP-H1 回退手动路径） */
   function parseReplayCursor(cursor: string): { run_id: string; after_seq: number } | null {
     const idx = cursor.lastIndexOf(':')
@@ -1185,6 +1200,9 @@ export const useChatStore = defineStore('chat', () => {
     currentRunId = run.run_id
     lastAppliedSeq = run.last_seq
     let sawTerminal = false
+    // D1 零内容落墨判据：字段态不可读（answer 帧进 RevealQueue 渐显，onDone 时 content 可能仍为空），
+    // 故在 onEvent 包装层按帧类型记落墨（CONTENT_INK_EVENT_TYPES）
+    let sawInk = false
 
     streaming.value = true
     answerTerminal = false // T5：replay 接力重置（渲染目标为新建 assistant 消息）
@@ -1195,6 +1213,7 @@ export const useChatStore = defineStore('chat', () => {
       {
         onEvent: (event) => {
           if (event.event_type === 'done' || event.event_type === 'error') sawTerminal = true
+          if (CONTENT_INK_EVENT_TYPES.has(event.event_type)) sawInk = true
           processFrame(event, assistant)
         },
         onError: (transportError) => {
@@ -1236,8 +1255,15 @@ export const useChatStore = defineStore('chat', () => {
         },
         onDone: () => {
           streaming.value = false
+          // D1（task_web_hitl_approval_overlay_ux · 维护者需求①）：replay 干净结束且零内容落墨
+          // → 回收空 assistant 泡（不渲染空气泡）；错误分态走 onError 不经本路径，回收不吞错误落点。
+          // 典型场景：chase 超限 / 挂起中点「续看推进」→ 服务端合法零新帧返回（范围②调查结论）。
+          if (!sawInk) {
+            const idx = messages.value.findIndex((m) => m.id === assistant.id)
+            if (idx !== -1) messages.value.splice(idx, 1)
+          }
           // R1-N4 空流/未完边界：replay 干净结束但未见终态帧 → run 仍在服务端推进；
-          // 保留 active-run，提示稍后再试（seq 已推进则提示接力）
+          // 保留 active-run，提示稍后再试（seq 已推进则提示接力）——resumeHint 兜底存续（D1 不受回收影响）
           if (!sawTerminal && activeRun.value) {
             resumeHint.value =
               activeRun.value.last_seq > run.last_seq
@@ -1488,7 +1514,30 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   /**
-   * F1-3/F1-4 · 点击历史 thread：B1 history → 映射进既有消息流渲染；
+   * D11（task_web_hitl_approval_overlay_ux）：历史全量翻页循环 —— fetchThreadHistory 携 cursor
+   * 翻至 next_cursor=null（limit=100 · 契约上限），消除「服务端默认首页 20 runs 静默截断」。
+   * 游标回环防御（后端异常同 cursor 复现）→ 中断不空转（无可见截断面：单 run 视图全量返回是常态）。
+   */
+  async function fetchAllThreadRuns(tid: string): Promise<ChatHistoryRun[]> {
+    const runs: ChatHistoryRun[] = []
+    let cursor: string | null = null
+    for (;;) {
+      const page = await fetchThreadHistory(
+        tid,
+        cursor ? { limit: HISTORY_PAGE_LIMIT, cursor } : { limit: HISTORY_PAGE_LIMIT },
+      )
+      if (Array.isArray(page.runs)) runs.push(...page.runs)
+      const next =
+        typeof page.next_cursor === 'string' && page.next_cursor ? page.next_cursor : null
+      if (!next || next === cursor) break
+      cursor = next
+    }
+    return runs
+  }
+
+  /**
+   * F1-3/F1-4 · 点击历史 thread：B1 history（D11 全量翻页 · 复用 fetchAllThreadRuns 同一数据链）
+   * → 映射进既有消息流渲染；
    * 最新 run 挂 waiting_approval → 以 active-run 语义挂起展示（last_seq 契约未提供 → 0 从头 replay），
    * 手动「续看」走既有 resumeFromCursor/replayLgRag（**不新造续看机制/端点**），
    * 并一次性 fetchHitlPending 核对（AC16② · 不轮询 · 403/404 降级不炸屏）。
@@ -1499,10 +1548,9 @@ export const useChatStore = defineStore('chat', () => {
     historyLoading.value = true
     historyError.value = null
     try {
-      const page = await fetchThreadHistory(tid)
+      const runs = await fetchAllThreadRuns(tid)
       stopStreaming() // 切换 thread 前中断在途流（abort 终态语义沿用）
       resetRevealQueues()
-      const runs = Array.isArray(page.runs) ? page.runs : []
       messages.value = mapHistoryRunsToMessages(runs)
       // 切入该 thread：续问带 thread_id（T3 语义沿用 · run.start 捕获点不受影响）
       threadId.value = tid
@@ -1543,6 +1591,57 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
+  /**
+   * D11/D12（task_web_hitl_approval_overlay_ux · 维护者需求④）：刷新/重进且 localStorage 已存
+   * thread_id 时，进入 Chat 页自动全量加载该会话历史回显（触发点 = ChatView onMounted ·
+   * 复用 openHistoryThread 数据链 fetchAllThreadRuns + mapHistoryRunsToMessages 同一实现 ·
+   * 不复制第二份映射逻辑）。
+   * 边界（D12）：无 thread_id 零加载零打扰；loadLatestSession 元数据调用存续；active-run
+   * 「不自动 replay」存续（T4 断线游标已恢复则保留不覆盖 · last_seq 精度优先；无 T4 游标且最新
+   * run waiting_approval → 沿用 openHistoryThread 挂起闭环 last_seq=0 手动续看）；
+   * 失败 → FP-F8/F10 降级（404「会话不存在或已过期」· 其余「历史服务暂不可用」）不阻塞主路径。
+   * 交叉（D14/验收10）：刷新后 streaming 必 false 不与在途流并存；加载完成时若 messages 已有
+   * 新内容（视图 loading 门控被绕过的理论面）→ 放弃覆盖，live 内容优先不双轨渲染。
+   */
+  async function restoreThreadHistory(): Promise<void> {
+    const tid = threadId.value
+    if (!tid || historyLoading.value) return
+    historyLoading.value = true
+    historyError.value = null
+    try {
+      const runs = await fetchAllThreadRuns(tid)
+      if (messages.value.length > 0) return // D14：live 内容优先，不双轨渲染（finally 仍复位 loading）
+      messages.value = mapHistoryRunsToMessages(runs)
+      const latest = runs[runs.length - 1]
+      if (
+        !activeRun.value &&
+        latest &&
+        latest.terminal_status === 'waiting_approval' &&
+        typeof latest.run_id === 'string' &&
+        latest.run_id
+      ) {
+        activeRun.value = {
+          run_id: latest.run_id,
+          last_seq: 0,
+          thread_id: tid,
+          updated_at: new Date().toISOString(),
+        }
+        writeStoredActiveRun(activeRun.value)
+        void refreshHitlPending() // AC16② 同口径：进入即一次性核对（不轮询）
+      }
+    } catch (err) {
+      const apiError = err as ApiError
+      if (apiError.status === 404) {
+        historyError.value = '会话不存在或已过期'
+      } else if (apiError.status !== 401) {
+        // 401 由 http.ts 拦截器全局跳登录；404/501/504/网络错 → FP-F8 降级不阻塞主路径
+        historyError.value = '历史服务暂不可用'
+      }
+    } finally {
+      historyLoading.value = false
+    }
+  }
+
   return {
     session,
     sessionLoading,
@@ -1573,5 +1672,6 @@ export const useChatStore = defineStore('chat', () => {
     refreshHitlPending,
     decideHitl,
     openHistoryThread,
+    restoreThreadHistory,
   }
 })

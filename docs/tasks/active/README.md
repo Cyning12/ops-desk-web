@@ -1,7 +1,7 @@
 # Active tasks
 
-> 当前活跃任务 0 件（本目录面 · 2026-10-28 task_web_hitl_resume_chase_ux CLOSE · 40 PASS · 维护者授权本地直验未 PR · commit 链在 task/web-hitl-resume-chase-ux 支）。
+> 当前活跃任务 1 件：task_web_hitl_approval_page.md（代码已随 dd537d7 并入 task/web-hitl-resume-chase-ux 支 · 40 留档在 invokes · CLOSE 与否待维护者裁决 · 2026-10-28）。
 >
-> 旁注：另有两任务在各自专属分支进行中（文件不入本目录）：task_web_hitl_approval_page（支 task/web-hitl-approval-page）、task_web_lg_rag_sse_tab_hide_resume（支 task/web-lg-rag-sse-tab-hide-resume · WIP 2785300）。
+> 旁注：2026-10-28 task_web_hitl_approval_overlay_ux CLOSE（30/40 全过 · 40 退回单项 volatile 短注已补 · 维护者授权本地直验未 PR · commit 链在 task/web-hitl-approval-overlay-ux 支）；task_web_lg_rag_sse_tab_hide_resume 在其支 WIP 2785300。
 >
 > 新工作请先走 10-task 落稿（见 AGENTS.md 新会话启动纪律）。

@@ -52,3 +52,7 @@
 ## HITL resume chase 上限/退避/进度可见（web-hitl-resume-chase-ux · 2026-10-28）
 
 - **`web-hitl-resume-chase-ux`**（2026-10-28 · 30 交付）：chase 上限 10 次/120s、递增退避阶梯（起始 2s 钉死 · ×1.5 · 封顶 8s）、退避等待期「恢复中 · 正在获取进展（第 n 次）」双落点常驻均为**前端自定 UX 面**（非冻结契约语义）；恢复中可见态常驻、终帧即消。实测 14>10 根因=replay 重放 hitl.waiting 帧重建卡片重置守卫 → 已决单再入起第二 chase 链（多链并发 · 单链计数器完好）；修法=activeChaseRunId run 级活链唯一性 + hitlActedRequestIds 受理幂等 + hitl.waiting 重放守卫 + resume 409 detail 子串分类（只消费）。真值指针：`docs/tasks/active/task_web_hitl_resume_chase_ux.md` + `docs/harness/invokes/by-task/web-hitl-resume-chase-ux/invoke_20261028_30_implement.md`。
+
+## HITL 审批浮层化 + 空 replay 无气泡 + 全量历史加载 + 对话历史 tab（web-hitl-approval-overlay-ux · 2026-10-28）
+
+- **`web-hitl-approval-overlay-ux`**（2026-10-28 · 30 交付）：HITL 审批动作面自消息流内联卡片迁移为 **composer 上方浮层**（`HitlApprovalOverlay` 包装同一 `HitlApprovalCard` · data-test=hitl-card 存续 · **渲染层迁移、数据层 message.hitl 不动** · chase 进度随迁浮层 · 消息流仅一行只读标记 · /hitl 页存续）；replay/续看干净结束零新帧**不产空气泡**（sawInk 落墨判定 · onDone 零落墨回收新建泡 · resumeHint 兜底存续 · onError 不回收）；恢复会话**全量历史翻页加载**（`fetchAllThreadRuns` limit=100 cursor 循环至 null · onMounted `restoreThreadHistory` 自动回显 · T3「不回显」旧裁定废止）；Chat 页**「对话|历史」双 tab**（复用 ChatHistoryPanel · 零新增路由 · history-toggle 侧栏开关废止）。真值指针：`docs/tasks/active/task_web_hitl_approval_overlay_ux.md` + `docs/harness/invokes/by-task/web-hitl-approval-overlay-ux/invoke_20261028_30_implement.md`。
