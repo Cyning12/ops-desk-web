@@ -1,6 +1,6 @@
 # Task：Web · 图谱锚点闸 profile 修复（graph_modules_path 指向 + 01_struct 词表源归位）
 
-> **状态**：`in_progress`（v0.6 · 40 独立验收 PASS · 验收 1–8 逐项亲跑实证全绿 · 无阻塞项 · 待维护者 CLOSE）
+> **状态**：`done`（v1.0 · 2026-10-30 CLOSE · 40 独立验收 PASS（留痕 ecf07e7）· 验收 1–8 逐项亲跑实证全绿 · 无阻塞项 · 00 代签 CLOSE · 授权锚 m00085/m00500 · 全程本地零 push）
 > **类型**：基础设施 / harness 过程轨修复（profile 配置 + 图谱词表源 plumbing · 业务源码零改动）
 > **前置**：spec-wave 3.5.0 升级 wave CLOSE（`docs/tasks/done/task_web_specwave_upgrade_3_5_0.md` · 分支 task/specwave-upgrade-3-5-0 · commit 32e2800）
 > **分支**：`task/web-graph-anchor-profile-fix`（base：3.5.0 升级落地后的 main 合并态 · **30 开工才切** · 本棒不切分支）
@@ -201,6 +201,19 @@
 
 验收全机断化：1（isDirectory 断言）2（节 RE + 表逐行 diff）3（grep 清单）4（verify 输出不含「已跳过」+ PASS）5（存量回归零新 BLOCKED）7（豁免零使用留痕）。failure_paths 七条含回退口/词表失败/漂移/半改/失同步/词表过宽/上游行为漂移。early_stop：R6 不增新决策。
 
+## CLOSE 落账（2026-10-30 · 00 代签）
+
+- **授权锚**：m00085（00 代签 CLOSE · 验收过才 CLOSE · 全程本地 commit 可 · push/PR 禁）+ m00500（授权签收所有文档）。
+- **验收真值**：40 独立验收 PASS（2026-10-30 · invoke `docs/harness/invokes/by-task/web-graph-anchor-profile-fix/invoke_20261030_40_verify.md` · diff 1810be3..HEAD 全量亲读 + 验收 1–8 逐项亲跑全绿 · 无阻塞项）· 验收落账 commit `ecf07e7`。
+- **关账动作**：状态 `in_progress`→`done` · task 自 `docs/tasks/active/` 迁 `docs/tasks/done/` · `docs/tasks/active/README.md` 关账行同步（活跃余件 = task_web_hitl_approval_page.md · CLOSE 待维护者裁决）。
+- **close_pr_policy=required 偏差**：全程本地零 push/PR（授权锚 m00085 明授权 · 承 3.5.0 升级棒 m00236 先例）。
+- **遗留四条照登**（非阻塞）：
+  1. FRAGMENT overlay 值改动（`docs/harness/prompts/FRAGMENT_30_gate_verify_v1_zh.md:15`）—— 下次 upgrade 留意 overlay 还原流程提醒存续（`docs/runbooks/RUNBOOK_harness_upgrade_v1_zh.md:11`）；
+  2. `docs/_tech_graph/l1/01_modules.md` 指针 stub 存续（单一真值 = `l1/01_struct.md` · D2）；根 stub `docs/_tech_graph/01_struct.md` 按其自载保留策略「闸改指后 ≥1 Epic 再删」存续不删（D3）；
+  3. 40 复验窗口本棒闭环（diff 全量亲读 + 验收 1–8 逐项亲跑 · 无遗留 40 债）；
+  4. D6 `l0/00_main` 与上游 FRAGMENT 期望 `<graphPath>/00_main` 分层分歧照登不强迁（闸机检不依赖 00_main）。
+- **非阻塞观察**（40 留档）：存量 active `task_web_hitl_approval_page.md` 文内五处 `l1/01_modules` 历史叙述行（该 task verify 仍 PASS · 留待其自身维护周期处置 · 不属本 task 范围）。
+
 ## 修订记录
 
 | 日期 | 摘要 |
@@ -211,3 +224,4 @@
 | 2026-10-30 | v0.4 · 闸代录：HG-AUDIT-R1 + HG-GRAPH-MODULES pending→approved（00 代录 · 授权锚 m00500 · R1 退回→v0.3 回填→R2 通过零阻塞 · 审查文 R1/R2 双件入库）；闸表头注与状态行「不代录/双闸 pending」字面同步修正对齐 m00500 授权 |
 | 2026-10-30 | v0.5 · 30 实现落账：范围①②③ 全落地（双 profile→`docs/_tech_graph/l1` · `l1/01_struct.md` 词表真值新建+表自 `l1/01_modules.md:11-20` 逐字平移 · 01_modules 指针化 · 根 stub 一跳到底 · drift `struct_rel`+l0 三处 label 随迁）+ 引用面 N-3 枚举全同步 + 30 invoke 落盘（D5 面B 义务）+ 自检结论验收 1–8 逐项机断回填（verify 真判定 `checked=2 hits=2` 不再 skip · 回归零新 BLOCKED · 四闸+drift protocol drifts=0 · 三件套全绿 = baseline 34/334/1）· 待 40 复验 |
 | 2026-10-30 | v0.6 · 40 独立验收落账：diff 1810be3..HEAD 全量亲读 + 验收 1–8 逐项亲跑实证全绿（上游 3.5.0 源码复核钉案属实 · verify 真判定 checked=2 hits=2 逐字复核 · 存量回归零新 BLOCKED · 四闸+drift protocol drifts=0 · graph-compile 复跑仅 generated_at 噪声 · 三件套全绿 = baseline 34/334/1）+ 30 落账抽核通过（D5 面B 字面 / 回填质量 / v0.5 在档 / 遗留四条照登合理）→ **结论 PASS · 无阻塞项** · 非阻塞观察一项（存量 active task_web_hitl_approval_page 文内五处 `l1/01_modules` 历史叙述行 · 该 task verify 仍 PASS）· 40 invoke 落盘 · 待维护者 CLOSE |
+| 2026-10-30 | v1.0 · CLOSE（00 代签 · 授权锚 m00085「验收过 CLOSE · 全程本地零 push」+ m00500「签收所有文档 · CLOSE 00 代签」）：40 独立验收 PASS（ecf07e7 · v0.6 落账 · 验收 1–8 逐项亲跑全绿 · 无阻塞项）→ 状态 in_progress→done · task 迁 docs/tasks/done/ · 全程本地零 push · 遗留一项非阻塞（存量 active task_web_hitl_approval_page.md 文内五处 l1/01_modules 历史叙述行 · 该 task verify 仍 PASS · 留待其自身维护周期处置）· active README 关账行同步（活跃 1 件 = task_web_hitl_approval_page · CLOSE 待维护者裁决 表述承前）· CLOSE 落账节新增（授权锚 / 验收真值 / 遗留四条照登 · 见上节）|
