@@ -1,6 +1,6 @@
 # Task：web · HITL resume 错误路径过期映射（镜像薄壳）
 
-> **状态**：`draft`（2026-11-02 · 10 落壳 · 四闸 pending · **以 api 仓 task 闸为真值 · 本壳不重复签** · NO-GO 30）
+> **状态**：`active`（2026-11-02 · 四闸 approved（镜像同步 · api 仓 task 维护者三闸同签+设计四决策 · 00 代录）· **GO 30**）
 > **类型**：fix / 薄改（单组件 catch 分支补映射）
 > **真值指针**：api 仓 `../ops-desk-api/docs/tasks/active/task_api_w_join_gap_fix.md`（**W-fix-1-web 条 · 范围/钉死契约/验收以彼为准**）· 20-R2 审查文 `../ops-desk-api/docs/harness/reviews/task_api_w_join_gap_fix_audit_R2_20261102.md`
 > **分支**：`task/web-hitl-resume-expired-mapping`（base：`main`）
@@ -35,10 +35,10 @@
 
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
-| HG-TASK-DRAFT | **pending** | 30 | **镜像**：真值 = api 仓 `task_api_w_join_gap_fix` 同闸（已 approved 2026-11-02 · 00 代录）；本壳仅登记，签收 api 侧为准 |
-| HG-AUDIT-R1 | **pending** | **30** | **镜像**：真值 = api 仓同闸；api 侧 R2 已 PASS-WITH-MINOR（M4 即本壳）· 维护者签 api 侧后本壳视同同步 |
-| HG-GRAPH-MODULES | **pending** | **30**（条件触发） | **镜像**：真值 = api 仓同闸；本壳预计零图谱 diff |
-| HG-W-FIX-DESIGN | **pending** | **30** | **镜像**：真值 = api 仓同闸（TTL 出口语义 · 单据终态 · freeze 增补 · 作用面四决策）；web 映射文案与 api 出口「过期」字样联动 |
+| HG-TASK-DRAFT | **approved**（2026-11-02 镜像同步 · 00 代录） | 30 | **镜像**：真值 = api 仓 `task_api_w_join_gap_fix` 同闸（approved 2026-11-02 维护者签）；本壳仅登记 |
+| HG-AUDIT-R1 | **approved**（2026-11-02 镜像同步 · 00 代录） | **30** | **镜像**：真值 = api 仓同闸（approved 2026-11-02 维护者签 · api 侧 R2 PASS-WITH-MINOR） |
+| HG-GRAPH-MODULES | **approved**（2026-11-02 镜像同步 · 00 代录） | **30**（条件触发） | **镜像**：真值 = api 仓同闸（approved 2026-11-02 维护者签）；本壳预计零图谱 diff |
+| HG-W-FIX-DESIGN | **approved**（2026-11-02 镜像同步 · 00 代录） | **30** | **镜像**：真值 = api 仓同闸（approved 2026-11-02 维护者签 · 四决策：409+approval_expired · freeze 增补 · resume/消费环 · STATUS_EXPIRED 启用）；web 映射文案与 api 出口「过期」字样联动 |
 
 ---
 
