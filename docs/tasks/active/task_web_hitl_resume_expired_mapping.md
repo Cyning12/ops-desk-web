@@ -35,10 +35,10 @@
 
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
-| HG-TASK-DRAFT | **approved**（2026-11-02 镜像同步 · 00 代录） | 30 | **镜像**：真值 = api 仓 `task_api_w_join_gap_fix` 同闸（approved 2026-11-02 维护者签）；本壳仅登记 |
-| HG-AUDIT-R1 | **approved**（2026-11-02 镜像同步 · 00 代录） | **30** | **镜像**：真值 = api 仓同闸（approved 2026-11-02 维护者签 · api 侧 R2 PASS-WITH-MINOR） |
-| HG-GRAPH-MODULES | **approved**（2026-11-02 镜像同步 · 00 代录） | **30**（条件触发） | **镜像**：真值 = api 仓同闸（approved 2026-11-02 维护者签）；本壳预计零图谱 diff |
-| HG-W-FIX-DESIGN | **approved**（2026-11-02 镜像同步 · 00 代录） | **30** | **镜像**：真值 = api 仓同闸（approved 2026-11-02 维护者签 · 四决策：409+approval_expired · freeze 增补 · resume/消费环 · STATUS_EXPIRED 启用）；web 映射文案与 api 出口「过期」字样联动 |
+| HG-TASK-DRAFT | approved | 30 | 镜像同步（2026-11-02 · 00 代录）· **镜像**：真值 = api 仓 `task_api_w_join_gap_fix` 同闸（approved 2026-11-02 维护者签）；本壳仅登记 |
+| HG-AUDIT-R1 | approved | **30** | 镜像同步（2026-11-02 · 00 代录）· **镜像**：真值 = api 仓同闸（approved 2026-11-02 维护者签 · api 侧 R2 PASS-WITH-MINOR） |
+| HG-GRAPH-MODULES | approved | **30**（条件触发） | 镜像同步（2026-11-02 · 00 代录）· **镜像**：真值 = api 仓同闸（approved 2026-11-02 维护者签）；本壳预计零图谱 diff · 闸路径锚点 `docs/_tech_graph/l1/01_modules.md` |
+| HG-W-FIX-DESIGN | approved | **30** | 镜像同步（2026-11-02 · 00 代录）· **镜像**：真值 = api 仓同闸（approved 2026-11-02 维护者签 · 四决策：409+approval_expired · freeze 增补 · resume/消费环 · STATUS_EXPIRED 启用）；web 映射文案与 api 出口「过期」字样联动 |
 
 ---
 
@@ -133,7 +133,23 @@ api 侧修复 task（`api-w-join-gap-fix` W-fix-1）将在手动 resume 链补 T
 
 web 仓纪律「无 active task 不改码」，故为 api task 的 W-fix-1-web 条立镜像薄壳。壳的全部语义（改点 :173-180 · 同文案红线 · 联动约束）引用 api 侧，不自造第二真值。
 
-### R1–R5 ·（未开 · early_stop）
+### R1 ·（未开 · early_stop）
+
+本轮不展开。
+
+### R2 ·（未开 · early_stop）
+
+本轮不展开。
+
+### R3 ·（未开 · early_stop）
+
+本轮不展开。
+
+### R4 ·（未开 · early_stop）
+
+本轮不展开。
+
+### R5 ·（未开 · early_stop）
 
 不展开。
 
