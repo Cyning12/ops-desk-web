@@ -1,6 +1,6 @@
 # Task：Web · 独立 HITL 审批页（/hitl · 第四审批入口 · 冻结契约零分叉）
 
-> **状态**：`done`（v1.0 · 2026-10-30 CLOSE · 30/40 已交付（40 结论 approved-with-comments 零阻塞 · 三门复跑 EXIT=0）· 分支 `task/web-hitl-approval-page` 已完整合入 main（merge-base = 分支尖 c271761 · 实现 commit a34c626 已在位）· D9 volatile 短注已补 · **TC9 待维护者手测回填**（维护者定夺 2026-10-30）· 00 代签 · 授权锚 = 维护者当面定夺 2026-10-30 · 全程本地零 push）  
+> **状态**：`done`（v1.0 · 2026-10-30 CLOSE · 30/40 已交付（40 结论 approved-with-comments 零阻塞 · 三门复跑 EXIT=0）· 分支 `task/web-hitl-approval-page` 已完整合入 main（merge-base = 分支尖 c271761 · 实现 commit a34c626 已在位）· D9 volatile 短注已补 · **TC9 已回填 2026-11-02**（阶段 W 双轨联调实证承接 · 证据锚 workspace `docs/harness/invokes/by-task/stage-w-e2e-join-acceptance/invoke_20261102_10_c8_evidence_archive.md` + api 仓 `docs/harness/invokes/by-task/stage-w-e2e-join-acceptance/screenshots/`；**过期态子项如实标注**：api 面无过期错误出口 · 不可达 · 见 F12）· 00 代签 · 授权锚 = 维护者当面定夺 2026-10-30 · 全程本地零 push）  
 > **类型**：feature / 前端新页面（Vitest 组件级 · api-only-consume）  
 > **统筹**：web 00；**禁止**改姐妹仓 ops-desk-api；**禁止**改 `src/api/hitl.ts` 契约语义；存量审批面（HitlApprovalCard / ChatView / chat store）零触碰  
 > **分支**：`task/web-hitl-approval-page`（30 开工时才切 · 本棒不切分支、不改 src、不 commit）  
@@ -258,10 +258,10 @@ TC1–TC3 锁列表/决策/三选语义；TC4–TC5 锁两步链两分支；TC6 
 | TC6 错误态 | ✅ | 17 用例承接（403 权限态 · 网络失败错误条+重试 · decide 过期行级提示 · 409 已被处理行级提示） |
 | TC7 驳回路径 | ✅ | 17 用例承接（驳回二次确认 · decision='rejected' · 成功后刷新且无续跑按钮） |
 | TC8 质量门 + 过程 | ✅ | 40 invoke 2026-10-23 复跑：pnpm lint/test/build 三门 EXIT=0 · graph-compile EXIT=0 · pages 行增量备注已落 · `10_flow_hitl.graph.yaml` 新增且编译产物一致 · 未新增一级模块 · task lint PASS；**D9 volatile 短注 2026-10-30 本棒补落**（30 遗留#1 清账） |
-| TC9 手测 + PR 材料 | ⏸ **待维护者手测回填**（维护者定夺 2026-10-30：TC9 手测由维护者自行执行，通过后回报再回填；本 task 先行 CLOSE，本行如实挂起） | 手测需本地 ops-desk-api + 构造挂起 run（批准 → 显式续跑 → 「回到会话查看」链路 + 四态截图/语义对照表/闸表截图） |
+| TC9 手测 + PR 材料 | ✅ **已回填 2026-11-02**（阶段 W 双轨联调承接 · 维护者真人手测：批准 → 显式续跑 → 「回到会话查看」链路跑通 · decide ×7 全真人）；四态截图：列表/空/403 三态已拍（api 仓 `docs/harness/invokes/by-task/stage-w-e2e-join-acceptance/screenshots/` · `tc9-list-approved.jpg` / `tc9-empty.jpg` / `tc9-403-page.jpg`+`tc9-403-network.jpg`+`tc9-403-response-body.jpg`）；**过期态：api 面无过期错误出口（`STATUS_EXPIRED` 无人赋值 · decide/resume 无过期分支）→ FP-5「审批已过期」态不可达，如实标注见 workspace invoke §5 F12**（维护者定夺：api 补 TTL 分支 or freeze/web 摘态）；语义对照表 + 闸表截图（`gate-table.jpg`）在 workspace invoke §4/§3 | 手测需本地 ops-desk-api + 构造挂起 run（批准 → 显式续跑 → 「回到会话查看」链路 + 四态截图/语义对照表/闸表截图） |
 
 #### 遗留（非阻塞照登）
 
-1. **TC9 手测**：待维护者手测回填（维护者定夺 2026-10-30）。
+1. **TC9 手测**：~~待维护者手测回填~~ → **已清账 2026-11-02**（联调实证承接回填 · 过期态子项按 F12 如实标注不可达 · 证据锚见状态行与 TC9 行）。
 2. **graph.json 产物归属**（30 invoke 遗留#3）：2026-10-30 核查现状——`docs/_tech_graph/graph.json` 与 `docs/_tech_graph/shared/graph.json` 均已跟踪入库且工作树净（含 hitl flow 节点各 35 处命中 · 由后续提交 2cbd3b3「web-hitl-approval-overlay-ux 图谱增量」自然带入 · 与 30 预判「由后续提交自然带入」一致）；本棒不硬改产物归属，仅在 CLOSE invoke 如实记录。
 3. **close_pr_policy=required 偏差**：全程本地零 push/未开 PR（维护者当面定夺 2026-10-30 授权 00 代签 CLOSE · 承 246e8e0 / m00085 先例口径）。
