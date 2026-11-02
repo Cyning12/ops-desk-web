@@ -4,7 +4,7 @@
 > **类型**：fix / 薄改（单组件 catch 分支补映射）
 > **真值指针**：api 仓 `../ops-desk-api/docs/tasks/active/task_api_w_join_gap_fix.md`（**W-fix-1-web 条 · 范围/钉死契约/验收以彼为准**）· 20-R2 审查文 `../ops-desk-api/docs/harness/reviews/task_api_w_join_gap_fix_audit_R2_20261102.md`
 > **分支**：`task/web-hitl-resume-expired-mapping`（base：`main`）
-> **10 注**：2026-11-02 · 20-R2 M4 闭环棒（维护者裁决路线=「镜像薄壳」· 满足 web 仓纪律「无 active task 不改码」· 维护者签闸时可推翻）；本棒仅落壳 + lint · **禁止**改 `src/`
+> **10 注**：2026-11-02 · 20-R2 M4 闭环棒（维护者裁决路线=「镜像薄壳」· 满足 web 仓纪律「无 active task 不改码」· 维护者签闸时可推翻）；本棒仅落壳 + lint · **禁止**改 `src/`（**例外**：freeze 本体 `src/api/hitl.ts` 头注释注释-only 增补 TTL 条随 30 棒，见范围 W-web-2 · 维护者 2026-11-02 裁决）
 
 ---
 
@@ -29,7 +29,7 @@
 | **experience_capture** | `recommended` |
 | **kpi_aggregator** | `CLOSE` |
 | **orchestration** | api 仓 task `api-w-join-gap-fix` 四闸签收 → 本壳镜像确认（不重复签）→ 30（本分支单 PR）→ 40 → 与 api 修复合流后联调 A5 复测（workspace `task_stage_w_e2e_join_acceptance`） |
-| **freeze_id** | `hitl-browser-decide-v1`（**D2 零分叉**：只消费既有 decide/resume 契约；resume 路径渲染语义增量随 api 侧 HG-W-FIX-DESIGN 评估 · 本壳不改 freeze 文件） |
+| **freeze_id** | `hitl-browser-decide-v1`（**D2 零分叉**：只消费既有 decide/resume 契约；resume 路径渲染语义增量随 api 侧 HG-W-FIX-DESIGN 评估 · freeze 本体 `src/api/hitl.ts` 头注释增补 TTL 条属本壳范围（注释-only · 维护者 2026-11-02 裁决 · 依据 api 侧 HG-W-FIX-DESIGN 决策②已签「freeze 增补 TTL 条」· 增补正文真值=api 仓 `docs/tasks/done/task_hitl_browser_decide.md`「freeze 增补条款（hitl-browser-decide-v1）」节）） |
 
 ### 人工闸（镜像 · 以 api 仓 task 闸为真值 · 本壳不重复签）
 
@@ -63,12 +63,13 @@ api 侧修复 task（`api-w-join-gap-fix` W-fix-1）将在手动 resume 链补 T
 ## 范围（薄改 · 一条）
 
 - [ ] **W-web-1 · onResume 过期映射**：`src/views/HitlApprovalView.vue` `onResume` catch（:173-180）补 `if (/过期|expired/i.test(error.message))` → 行级提示「审批已过期，请刷新列表」（与 :111 同文案同呈现）；Vitest 补命中用例 + 非过期路径回归
+- [ ] **W-web-2 · hitl.ts 头注释增补 TTL 条**（注释-only · 零行为 diff）：`src/api/hitl.ts` 头注释增补 freeze `hitl-browser-decide-v1` 增补 TTL 条，与 api 侧增补节六要素一致——触发=resume 遇 `approved` 且 `now - decided_at > TTL` / 出口 **409** + `approval_expired`（文案含「过期」）/ 终态 `expired`（approved→expired 单向）/ 单旋钮 `OPS_HITL_APPROVAL_CONSUMPTION_TTL_SECONDS`（默认 3600s · 禁第二旋钮）/ 作用面 resume+消费环 · decide 不拒超龄 pending / web 渲染语义增量（onResume catch `/过期|expired/i` mapping）；增补正文真值=api 仓 `docs/tasks/done/task_hitl_browser_decide.md`「freeze 增补条款（hitl-browser-decide-v1）」节
 
 ### 非范围
 
 - api 仓一切（TTL 闸 · 出口 · 谓词 · 见 api task）
 - decide 路径（`decideErrorText` / `onDecide`）**零 diff**
-- 其余 UI 组件 / 路由 / store · SSE freeze · freeze 文件本体
+- 其余 UI 组件 / 路由 / store · SSE freeze · freeze 文件本体（**例外**：`src/api/hitl.ts` 头注释注释-only 增补 TTL 条，见范围 W-web-2 · 维护者 2026-11-02 裁决）
 - 联调 A5 复测执行（归 workspace 联调 task 回接 · 本壳只交付可复测条件）
 - `tenant_id` / 跨租户任何语义
 
@@ -91,6 +92,7 @@ api 侧修复 task（`api-w-join-gap-fix` W-fix-1）将在手动 resume 链补 T
 - [ ] 镜像闸确认：api 仓 `task_api_w_join_gap_fix` 四闸 approved（本壳不重复签）
 - [ ] `onResume` catch 命中含「过期」错误 → 行级提示「审批已过期，请刷新列表」（Vitest 用例绿）
 - [ ] decide 路径（:109-111/:150）与 409 透传（:176）、泛化（:179）回归零变化
+- [ ] `src/api/hitl.ts` 头注释增补 TTL 条落地（注释-only · 与 api 侧增补节六要素一致：触发/出口 409+`approval_expired`/终态 `expired`/单旋钮 `OPS_HITL_APPROVAL_CONSUMPTION_TTL_SECONDS`/作用面 resume+消费环 · decide 不拒/web 渲染语义增量 · 正文真值=api 仓 `task_hitl_browser_decide.md`「freeze 增补条款」节）· 注释外零 diff
 - [ ] `pnpm lint` · `pnpm test` · `pnpm build` 全绿
 - [ ] 回接条件具备：api 修复合入后，联调 A5（TTL=90 短窗复现）可在本页面复现行级过期提示（证据归 workspace 联调 task）
 - [ ] `npx spec-wave task lint --file docs/tasks/active/task_web_hitl_resume_expired_mapping.md` PASS
@@ -160,6 +162,7 @@ web 仓纪律「无 active task 不改码」，故为 api task 的 W-fix-1-web �
 | 命令 | 退出码 | 摘要 |
 |------|--------|------|
 | `npx spec-wave task lint --file docs/tasks/active/task_web_hitl_resume_expired_mapping.md` | 0 | LINT: PASS（2026-11-02 · 10 落壳自检） |
+| `npx spec-wave task lint` + `npx spec-wave verify --target . --task <本壳>` | 0 | LINT: PASS · VERIFY: PASS（2026-11-02 · 解冻 freeze 注释行修订自检 · 图谱锚点 2/2 命中 · 闸表四闸 approved 未动） |
 
 ---
 
@@ -168,3 +171,4 @@ web 仓纪律「无 active task 不改码」，故为 api task 的 W-fix-1-web �
 | 日期 | 说明 |
 |------|------|
 | 2026-11-02 | 10 落壳（20-R2 M4 闭环棒 · 镜像薄壳路线 · 真值指针=api 仓 task_api_w_join_gap_fix）· 四闸镜像 pending（以 api 侧为真值 · 本壳不重复签）· R0 early_stop · lint PASS |
+| 2026-11-02 | **解冻 freeze 注释行**：删「本壳不改 freeze 文件」钉死，freeze 本体 `src/api/hitl.ts` 头注释增补 TTL 条（注释-only）入本壳范围（W-web-2 + 验收补一条）· 依据=维护者 2026-11-02 裁决「freeze 本体同步镜像增补 TTL 条」+ api 侧 HG-W-FIX-DESIGN 决策②已签「freeze 增补 TTL 条」（增补正文真值=api 仓 `task_hitl_browser_decide.md`「freeze 增补条款」节）· 闸表不动（四闸 approved 保持 · 注释-only 改动在已签决策②覆盖内） |
