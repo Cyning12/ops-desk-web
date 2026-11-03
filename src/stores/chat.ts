@@ -451,6 +451,12 @@ export const useChatStore = defineStore('chat', () => {
   const hitlPending = ref<HitlPendingItem[]>([])
   /** pending 核对降級文案（403 无审批权限 / 404·501·网络错 审批服务暂不可用 · FP-F4/F8） */
   const hitlPendingError = ref<string | null>(null)
+  /**
+   * web-ux-state-sync D2：「fetch 成功过」标志位（卡片对账判据之一 · FP-4/FP-5 防误对账）。
+   * 仅 refreshHitlPending 成功路径置 true；403/网络/401 一律不置位 → 取回前或取回失败的空列表
+   * 不等于「服务端已无该申请」，不做对账。
+   */
+  const hitlPendingFetched = ref(false)
 
   /** 可点「续看」：有未完成 run 且当前无流在进行 */
   const canResume = computed(() => activeRun.value !== null && !streaming.value)
@@ -1285,6 +1291,7 @@ export const useChatStore = defineStore('chat', () => {
       const resp = await fetchHitlPending()
       hitlPending.value = resp.items
       hitlPendingError.value = null
+      hitlPendingFetched.value = true // D2：fetch 成功过 → 卡片对账判据生效（FP-4/5：失败路径不置位）
     } catch (err) {
       const apiError = err as ApiError
       if (apiError.status === 403) {
@@ -1293,6 +1300,21 @@ export const useChatStore = defineStore('chat', () => {
         hitlPendingError.value = '审批服务暂不可用'
       }
     }
+  }
+
+  /**
+   * web-ux-state-sync D2 · chat 卡片对账（零轮询零新端点 · 复用 refreshHitlPending 既有刷新点 ·
+   * ChatView 挂载/动作链后已自动刷新）：渲染 waiting 卡时以本函数判定「已被服务端处理而本端未感知」。
+   * - true（转只读「已被处理或已失效」）：已成功取回（hitlPendingFetched 且 hitlPendingError===null）
+   *   且 request id 不在 pending 列；
+   * - false（不做对账）：fetch 未成功/未跑过（FP-4 403 · FP-5 网络错 · 取回前空列表）；
+   *   本地已动作（FP-6 · hitlActedRequestIds 优先 · 已决单不得被「不在列」误判回 waiting）。
+   */
+  function isHitlRequestReconciled(requestId: string): boolean {
+    if (!requestId) return false
+    if (hitlActedRequestIds.has(requestId)) return false // FP-6：本地已动作优先
+    if (!hitlPendingFetched.value || hitlPendingError.value !== null) return false // FP-4/FP-5：fetch 未成功
+    return !hitlPending.value.some((item) => item.id === requestId)
   }
 
   /**
@@ -1661,6 +1683,8 @@ export const useChatStore = defineStore('chat', () => {
     historyError,
     hitlPending,
     hitlPendingError,
+    hitlPendingFetched, // D2：「fetch 成功过」标志位（卡片对账判据 · 测试/渲染可读）
+    isHitlRequestReconciled, // D2：waiting 卡对账（true=服务端已无 → 转只读）
     loadLatestSession,
     sendMessage,
     continueReply,

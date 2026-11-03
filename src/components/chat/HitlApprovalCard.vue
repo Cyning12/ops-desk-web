@@ -9,7 +9,7 @@
  * T-W2：decide 可选键 resume_mode 三选（inherit/immediate/manual · 默认 inherit 不送键 ·
  * 后端 router.py:184 白名单兜底 400 · 前端不臆造第四值）。
  */
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useChatStore } from '../../stores/chat'
 import type { ChatMessage } from '../../stores/chat'
 import type { HitlDecision, HitlResumeMode } from '../../api/hitl'
@@ -17,6 +17,19 @@ import type { HitlDecision, HitlResumeMode } from '../../api/hitl'
 const props = defineProps<{ message: ChatMessage }>()
 
 const chat = useChatStore()
+
+/**
+ * web-ux-state-sync D2 · 卡片对账（零轮询零新端点 · 复用 store refreshHitlPending 既有刷新点）：
+ * 已成功取回 hitlPending 且本卡 request id 不在列 → 服务端已处理/失效而本端未感知 →
+ * 转只读「已被处理或已失效」（批准/驳回/resume_mode 不渲染）；403/网络错/本地已动作不做对账
+ * （FP-4/5/6 · 判据在 store isHitlRequestReconciled）。
+ */
+const primaryRequestId = computed(() => props.message.hitl?.requests.find((r) => r.id)?.id ?? '')
+const reconciledAway = computed(
+  () => props.message.hitl?.status === 'waiting' && chat.isHitlRequestReconciled(primaryRequestId.value),
+)
+/** 可动作（真 waiting 且未对账走） */
+const actionable = computed(() => props.message.hitl?.status === 'waiting' && !reconciledAway.value)
 
 // T-W2：decide 卡片 resume_mode 三选（默认 inherit = 跟随后端全局 env · 不送键）
 const resumeMode = ref<HitlResumeMode>('inherit')
@@ -35,12 +48,12 @@ function onResume(): void {
   <div
     v-if="message.hitl"
     class="hitl-card"
-    :class="`hitl-card--${message.hitl.status}`"
+    :class="[`hitl-card--${message.hitl.status}`, { 'hitl-card--reconciled': reconciledAway }]"
     data-test="hitl-card"
   >
     <div class="hitl-card__header">
       <span class="hitl-card__title">人工审批</span>
-      <span v-if="message.hitl.status === 'waiting'" class="hitl-card__badge">待审批</span>
+      <span v-if="actionable" class="hitl-card__badge">待审批</span>
     </div>
     <p v-if="message.hitl.reason" class="hitl-card__reason">{{ message.hitl.reason }}</p>
     <ul v-if="message.hitl.requests.length" class="hitl-card__requests">
@@ -50,7 +63,7 @@ function onResume(): void {
     </ul>
 
     <el-radio-group
-      v-if="message.hitl.status === 'waiting'"
+      v-if="actionable"
       v-model="resumeMode"
       size="small"
       class="hitl-card__resume-mode"
@@ -61,7 +74,7 @@ function onResume(): void {
       <el-radio-button value="immediate">批准即续跑</el-radio-button>
       <el-radio-button value="manual">手动续跑</el-radio-button>
     </el-radio-group>
-    <div v-if="message.hitl.status === 'waiting'" class="hitl-card__actions">
+    <div v-if="actionable" class="hitl-card__actions">
       <el-button
         class="hitl-card__approve"
         size="small"
@@ -82,6 +95,9 @@ function onResume(): void {
         驳回
       </el-button>
     </div>
+    <p v-else-if="reconciledAway" class="hitl-card__note" data-test="hitl-card-reconciled">
+      已被处理或已失效
+    </p>
     <p v-else-if="message.hitl.status === 'acting'" class="hitl-card__note">提交审批中…</p>
     <template v-else>
       <p class="hitl-card__note">{{ message.hitl.note }}</p>
@@ -118,7 +134,8 @@ function onResume(): void {
 
 .hitl-card--resolved,
 .hitl-card--forbidden,
-.hitl-card--unavailable {
+.hitl-card--unavailable,
+.hitl-card--reconciled {
   border-color: rgba(44, 44, 44, 0.18);
   border-left-color: rgba(44, 44, 44, 0.35);
   background: rgba(44, 44, 44, 0.04);

@@ -150,8 +150,12 @@ describe('HitlApprovalView · TC1 列表渲染三态', () => {
     expect(text).toContain('"op": "deploy"')
     expect(text).toContain('"target": "prod"')
     expect(text).toContain('db.drop')
-    // created_at 与已等待时长
-    expect(text).toContain('2026-10-20T01:00:00Z')
+    // created_at 本地化渲染（D3/web-ux-state-sync · FP-9 title 保 UTC 原文 · 文本不再直出 ISO）
+    const createdAt = rows[0].find('[data-test="hitl-created-at"]')
+    expect(createdAt.exists()).toBe(true)
+    expect(createdAt.attributes('title')).toBe('2026-10-20T01:00:00Z')
+    expect(createdAt.text()).not.toContain('2026-10-20T01:00:00Z')
+    expect(createdAt.text()).toContain('创建时间')
     expect(text).toContain('已等待')
     // thread_id / run_id 截断展示（文本内不出现完整 id）
     expect(text).toContain('run-abcdef12…')
@@ -493,7 +497,9 @@ describe('HitlApprovalView · TC8 resume 错误态过期映射（task_web-hitl-r
     expect(rowError.text()).toBe('审批已过期，请刷新列表')
   })
 
-  it('resume 409 写窗错误（Resume is writing new events）→ 不命中过期映射 · 维持 409 透传', async () => {
+  // NIT-1 影响面（web-ux-state-sync）：本用例原断言「续跑失败：Resume is writing new events」409 透传，
+  // 与 task_web_ux_state_sync D4/TC5 写窗中性化直接冲突 → 按 D4 改写（30 交付 · invoke 留痕）。
+  it('resume 409 写窗错误（Resume is writing new events）→ D4 中性化「恢复写入中，请稍后重试」', async () => {
     vi.mocked(resumeHitlRequest).mockRejectedValue({
       status: 409,
       message: 'Resume is writing new events',
@@ -506,7 +512,7 @@ describe('HitlApprovalView · TC8 resume 错误态过期映射（task_web-hitl-r
 
     const rowError = wrapper.find('[data-test="hitl-row-error"]')
     expect(rowError.exists()).toBe(true)
-    expect(rowError.text()).toBe('续跑失败：Resume is writing new events')
+    expect(rowError.text()).toBe('恢复写入中，请稍后重试')
   })
 
   it('resume 其他错误（网络异常）→ 泛化文案「续跑失败（网络/服务异常），可重试」不变', async () => {
@@ -562,3 +568,294 @@ describe('HitlApprovalView · D7 刷新纪律（不轮询 · visibilitychange �
     hiddenSpy.mockRestore()
   })
 })
+
+/* ==================== task_web_ux_state_sync（30 · 红测先行） ==================== */
+
+/** sessionStorage 已决区键（D1 · FP-3 版本字段 · FIFO 20） */
+const DECIDED_KEY = 'ops.hitl.decided.v1'
+
+interface DecidedSnapshotFixture {
+  v: number
+  id: string
+  item: typeof ITEM_A
+  decision: 'approved' | 'rejected' | null
+  status: string
+  replay: { run_id: string; cursor: string } | null
+  decidedAt: number
+}
+
+function makeSnapshot(i: number, status = 'await_resume'): DecidedSnapshotFixture {
+  return {
+    v: 1,
+    id: `req-s${i}`,
+    item: {
+      id: `req-s${i}`,
+      run_id: `run-s${i}`,
+      thread_id: `thread-s${i}`,
+      reason: `历史审批 ${i}`,
+      blocked_by: { op: 'snapshot', target: 'fixture' },
+      created_at: '2026-10-20T01:00:00Z',
+    },
+    decision: 'approved',
+    status,
+    replay: null,
+    decidedAt: 1_730_000_000_000 + i,
+  }
+}
+
+function readDecidedStorage(): DecidedSnapshotFixture[] {
+  const raw = window.sessionStorage.getItem(DECIDED_KEY)
+  return raw ? (JSON.parse(raw) as DecidedSnapshotFixture[]) : []
+}
+
+describe('HitlApprovalView · state-sync TC1 已决区回灌（D1 · F1 会话内保留）', () => {
+  beforeEach(() => {
+    window.sessionStorage.clear()
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    vi.restoreAllMocks()
+    vi.mocked(fetchHitlPending).mockResolvedValue({ items: [], count: 0 })
+    vi.mocked(resumeHitlRequest).mockResolvedValue(RESUME_OK)
+  })
+
+  it('mount 回灌：预置 v=1 快照（approved·待续跑）→ 已决区分组渲染 · 显式「续跑」入口在 → 点击走 resumeHitlRequest 一次', async () => {
+    window.sessionStorage.setItem(DECIDED_KEY, JSON.stringify([makeSnapshot(0)]))
+
+    const wrapper = mountView()
+    await flushPromises()
+
+    expect(wrapper.find('[data-test="hitl-decided"]').exists()).toBe(true)
+    const decidedRows = wrapper.findAll('[data-test="hitl-decided-row"]')
+    expect(decidedRows).toHaveLength(1)
+    expect(decidedRows[0].text()).toContain('历史审批 0')
+    const resumeBtn = wrapper.find('[data-test="hitl-decided-resume"]')
+    expect(resumeBtn.exists()).toBe(true)
+
+    await resumeBtn.trigger('click')
+    await flushPromises()
+
+    expect(resumeHitlRequest).toHaveBeenCalledTimes(1)
+    expect(resumeHitlRequest).toHaveBeenCalledWith('req-s0')
+  })
+
+  it('快照版本字段校验：v 非 1 → 整键丢弃（FP-3）· 页面不炸', async () => {
+    const bad = { ...makeSnapshot(0), v: 2 }
+    window.sessionStorage.setItem(DECIDED_KEY, JSON.stringify([bad]))
+
+    const wrapper = mountView()
+    await flushPromises()
+
+    expect(wrapper.find('[data-test="hitl-decided"]').exists()).toBe(false)
+    expect(window.sessionStorage.getItem(DECIDED_KEY)).toBeNull()
+  })
+})
+
+describe('HitlApprovalView · state-sync TC2 已决区落盘 + 重挂载可见（D1 · F2）', () => {
+  beforeEach(() => {
+    window.sessionStorage.clear()
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    vi.restoreAllMocks()
+    vi.mocked(fetchHitlPending).mockResolvedValue({ items: [ITEM_A], count: 1 })
+    mockConfirmPass()
+  })
+
+  it('decide 成功 → sessionStorage 快照（id+六键 item+决策+两步链态+版本字段）；卸载重挂已决区仍在', async () => {
+    vi.mocked(decideHitlRequest).mockResolvedValue(DECIDE_REQUIRED)
+
+    const wrapper = mountView()
+    await flushPromises()
+    await approveRow(wrapper)
+
+    const stored = readDecidedStorage()
+    expect(stored).toHaveLength(1)
+    expect(stored[0].v).toBe(1)
+    expect(stored[0].id).toBe('req-a1')
+    expect(stored[0].decision).toBe('approved')
+    expect(stored[0].status).toBe('await_resume')
+    expect(stored[0].item).toMatchObject({
+      id: 'req-a1',
+      run_id: 'run-abcdef1234567890',
+      thread_id: 'thread-xyz9876543210',
+      reason: '部署生产环境需审批',
+      created_at: '2026-10-20T01:00:00Z',
+    })
+
+    // 会话内保留：卸载重挂（同 tab · sessionStorage 存续）→ 已决区仍渲染 + 续跑入口在
+    wrapper.unmount()
+    const remounted = mountView()
+    await flushPromises()
+
+    expect(remounted.find('[data-test="hitl-decided"]').exists()).toBe(true)
+    expect(remounted.findAll('[data-test="hitl-decided-row"]')).toHaveLength(1)
+    expect(remounted.find('[data-test="hitl-decided-resume"]').exists()).toBe(true)
+  })
+})
+
+describe('HitlApprovalView · state-sync TC3 已决区降级三态（D1 · FP-2/3/12）', () => {
+  beforeEach(() => {
+    window.sessionStorage.clear()
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    vi.restoreAllMocks()
+    vi.mocked(fetchHitlPending).mockResolvedValue({ items: [ITEM_A], count: 1 })
+    mockConfirmPass()
+    vi.mocked(decideHitlRequest).mockResolvedValue(DECIDE_REQUIRED)
+  })
+
+  it('FP-2 写失败静默降级：setItem 抛错 → 不炸屏 · 已决区内存态仍渲染 · 键未写入', async () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota exceeded')
+    })
+
+    const wrapper = mountView()
+    await flushPromises()
+    await approveRow(wrapper)
+
+    // 页面未崩 · 内存降级态可渲染已决区（等同现状不劣化）
+    expect(wrapper.find('[data-test="hitl-decided"]').exists()).toBe(true)
+    expect(window.sessionStorage.getItem(DECIDED_KEY)).toBeNull()
+  })
+
+  it('FP-3 损坏 JSON → 整键丢弃 · 已决区不渲染 · 页面正常', async () => {
+    vi.mocked(fetchHitlPending).mockResolvedValue({ items: [], count: 0 })
+    window.sessionStorage.setItem(DECIDED_KEY, '{corrupted')
+
+    const wrapper = mountView()
+    await flushPromises()
+
+    expect(wrapper.find('[data-test="hitl-decided"]').exists()).toBe(false)
+    expect(window.sessionStorage.getItem(DECIDED_KEY)).toBeNull()
+    expect(wrapper.find('[data-test="hitl-empty"]').exists()).toBe(true)
+  })
+
+  it('FP-12 FIFO 20：预置 21 条 → 回灌后仅存最新 20 条（最旧被挤掉）', async () => {
+    window.sessionStorage.setItem(
+      DECIDED_KEY,
+      JSON.stringify(Array.from({ length: 21 }, (_, i) => makeSnapshot(i))),
+    )
+
+    const wrapper = mountView()
+    await flushPromises()
+
+    const decidedRows = wrapper.findAll('[data-test="hitl-decided-row"]')
+    expect(decidedRows).toHaveLength(20)
+    // 最旧的 req-s0 被挤掉 · 最新 req-s20 在列
+    expect(decidedRows[0].text()).not.toContain('历史审批 0')
+    expect(wrapper.text()).not.toContain('历史审批 0')
+    expect(wrapper.text()).toContain('历史审批 20')
+  })
+})
+
+describe('HitlApprovalView · state-sync TC4 created_at 本地化（D3 · NIT-3）', () => {
+  beforeEach(() => {
+    window.sessionStorage.clear()
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    vi.restoreAllMocks()
+  })
+
+  it('合法 ISO → Intl 本地时区渲染 · title 保 UTC 原文 · 文本不直出 ISO', async () => {
+    const iso = '2026-11-03T06:51:59+00:00'
+    vi.mocked(fetchHitlPending).mockResolvedValue({
+      items: [{ ...ITEM_A, created_at: iso }],
+      count: 1,
+    })
+
+    const wrapper = mountView()
+    await flushPromises()
+
+    const createdAt = wrapper.find('[data-test="hitl-created-at"]')
+    expect(createdAt.exists()).toBe(true)
+    // 期望值与组件同参 Intl 计算（不钉 TZ · 避免环境时区脆弱）
+    const expected = new Intl.DateTimeFormat(undefined, {
+      dateStyle: 'medium',
+      timeStyle: 'medium',
+    }).format(new Date(iso))
+    expect(createdAt.text()).toContain(expected)
+    expect(createdAt.attributes('title')).toBe(iso)
+    expect(createdAt.text()).not.toContain(iso)
+  })
+
+  it('非法 created_at → 回退原文渲染（不炸 · title 同原文）', async () => {
+    vi.mocked(fetchHitlPending).mockResolvedValue({
+      items: [{ ...ITEM_A, created_at: 'not-a-date' }],
+      count: 1,
+    })
+
+    const wrapper = mountView()
+    await flushPromises()
+
+    const createdAt = wrapper.find('[data-test="hitl-created-at"]')
+    expect(createdAt.exists()).toBe(true)
+    expect(createdAt.text()).toContain('not-a-date')
+    expect(createdAt.attributes('title')).toBe('not-a-date')
+  })
+})
+
+describe('HitlApprovalView · state-sync TC5 resume 409 写窗中性化（D4）', () => {
+  beforeEach(() => {
+    window.sessionStorage.clear()
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    vi.restoreAllMocks()
+    vi.mocked(fetchHitlPending).mockResolvedValue({ items: [ITEM_A], count: 1 })
+    mockConfirmPass()
+    vi.mocked(decideHitlRequest).mockResolvedValue(DECIDE_REQUIRED)
+  })
+
+  it("子串 'settles'（blocked until the run settles）→「恢复写入中，请稍后重试」", async () => {
+    vi.mocked(resumeHitlRequest).mockRejectedValue({
+      status: 409,
+      message: 'blocked until the run settles',
+      raw: null,
+    })
+
+    const wrapper = mountView()
+    await flushPromises()
+    await approveRow(wrapper)
+    await wrapper.find('[data-test="hitl-resume"]').trigger('click')
+    await flushPromises()
+
+    const rowError = wrapper.find('[data-test="hitl-row-error"]')
+    expect(rowError.exists()).toBe(true)
+    expect(rowError.text()).toBe('恢复写入中，请稍后重试')
+  })
+
+  it('D4 未命中维持透传：409 非写窗（generic conflict）→「续跑失败：generic conflict」', async () => {
+    vi.mocked(resumeHitlRequest).mockRejectedValue({
+      status: 409,
+      message: 'generic conflict',
+      raw: null,
+    })
+
+    const wrapper = mountView()
+    await flushPromises()
+    await approveRow(wrapper)
+    await wrapper.find('[data-test="hitl-resume"]').trigger('click')
+    await flushPromises()
+
+    const rowError = wrapper.find('[data-test="hitl-row-error"]')
+    expect(rowError.exists()).toBe(true)
+    expect(rowError.text()).toBe('续跑失败：generic conflict')
+  })
+
+  it('已决区续跑 409 写窗 → 同样中性化（resumeErrorText 共享落点）', async () => {
+    vi.mocked(resumeHitlRequest).mockRejectedValue({
+      status: 409,
+      message: 'Resume is writing new events',
+      raw: null,
+    })
+    window.sessionStorage.setItem(DECIDED_KEY, JSON.stringify([makeSnapshot(0)]))
+
+    const wrapper = mountView()
+    await flushPromises()
+    await wrapper.find('[data-test="hitl-decided-resume"]').trigger('click')
+    await flushPromises()
+
+    const decidedError = wrapper.find('[data-test="hitl-decided-error"]')
+    expect(decidedError.exists()).toBe(true)
+    expect(decidedError.text()).toBe('恢复写入中，请稍后重试')
+  })
+})
+

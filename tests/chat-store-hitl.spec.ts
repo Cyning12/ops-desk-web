@@ -1429,3 +1429,99 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
     })
   })
 })
+
+/* ==================== task_web_ux_state_sync（30 · 红测先行 · D2 卡片对账） ==================== */
+
+describe('stores/chat · state-sync TC6/TC7 HITL 卡片对账（web-ux-state-sync · D2）', () => {
+  beforeEach(async () => {
+    window.localStorage.clear()
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+
+    vi.mocked(streamLgRag).mockImplementation((_input, callbacks) => {
+      captured = callbacks ?? {}
+      return { abort: vi.fn(), done: Promise.resolve() }
+    })
+    vi.mocked(replayLgRag).mockImplementation(() => ({
+      abort: vi.fn(),
+      done: Promise.resolve(),
+    }))
+    vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
+    vi.mocked(fetchHitlPending).mockResolvedValue({ items: [], count: 0 })
+
+    const chat = useChatStore()
+    await chat.loadLatestSession()
+  })
+
+  it("TC6 两向：成功取回且 id 不在列 → true（卡片转只读「已被处理或已失效」）；id 在列 → false（保持可点）", async () => {
+    const chat = useChatStore()
+    vi.mocked(fetchHitlPending).mockResolvedValue({
+      items: [
+        {
+          id: 'req-on-list',
+          run_id: 'r-1',
+          thread_id: 't-1',
+          reason: '高危操作需人工审批',
+          blocked_by: { op: 'deploy' },
+          created_at: '2026-11-03T01:00:00Z',
+        },
+      ],
+      count: 1,
+    })
+    await chat.refreshHitlPending()
+
+    expect(chat.isHitlRequestReconciled('req-on-list')).toBe(false) // 在列 → 保持可点
+    expect(chat.isHitlRequestReconciled('req-gone')).toBe(true) // 成功取回且不在列 → 只读
+  })
+
+  it('TC7 三向之一（FP-4）：403 权限错 → fetch 未成功 → 不做对账（false）', async () => {
+    const chat = useChatStore()
+    vi.mocked(fetchHitlPending).mockRejectedValue(apiError(403, 'Forbidden'))
+    await chat.refreshHitlPending()
+
+    expect(chat.hitlPendingError).toBe('无审批权限')
+    expect(chat.isHitlRequestReconciled('req-gone')).toBe(false)
+  })
+
+  it('TC7 三向之二（FP-5）：网络错 → fetch 未成功 → 不做对账（false）', async () => {
+    const chat = useChatStore()
+    vi.mocked(fetchHitlPending).mockRejectedValue({ status: null, message: 'Network Error', raw: null })
+    await chat.refreshHitlPending()
+
+    expect(chat.hitlPendingError).toBe('审批服务暂不可用')
+    expect(chat.isHitlRequestReconciled('req-gone')).toBe(false)
+  })
+
+  it('TC7 三向之三（FP-6）：本地已动作 → 优先不对账（false · 不被「不在列」误判回 waiting）', async () => {
+    const chat = useChatStore()
+    // seed waiting 卡 → 本地 decide 成功（ acted 集合入账 ）
+    chat.sendMessage('部署服务')
+    captured.onEvent?.({
+      event_type: 'hitl.waiting',
+      run_id: 'r-1',
+      seq: 2,
+      payload: { reason: '高危操作需人工审批', requests: [{ id: 'req-1', reason: '高危操作需人工审批' }] },
+    })
+    const assistant = chat.messages[1]
+    vi.mocked(decideHitlRequest).mockResolvedValue({
+      ok: true,
+      request: { id: 'req-1', status: 'approved' },
+      resume: { required: false, method: 'POST', endpoint: '' },
+    })
+    await chat.decideHitl(assistant, 'req-1', 'approved')
+    expect(assistant.hitl?.status).toBe('decided')
+
+    // 服务端 pending 列表已不含 req-1（动作链后刷新）→ 仍不得对账误判
+    vi.mocked(fetchHitlPending).mockResolvedValue({ items: [], count: 0 })
+    await chat.refreshHitlPending()
+    expect(chat.isHitlRequestReconciled('req-1')).toBe(false) // FP-6：本地已动作优先
+  })
+
+  it('守卫：取回前（refresh 未跑过）→ 不做对账（false · 空列表≠成功取回）', async () => {
+    const chat = useChatStore()
+    // beforeEach 的 loadLatestSession 不触发 refreshHitlPending（消费点在 ChatView 挂载）
+    expect(chat.hitlPending).toEqual([])
+    expect(chat.isHitlRequestReconciled('req-gone')).toBe(false)
+  })
+})
+
