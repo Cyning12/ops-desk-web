@@ -158,6 +158,13 @@ async function onDecide(row: RowVm, decision: HitlDecision): Promise<void> {
   }
 }
 
+/** resume 失败行级文案（与 decide 路径 decideErrorText 同机制 · W-web-1：FP-5 过期映射增量，文案同 :111） */
+function resumeErrorText(error: ApiError): string {
+  if (/过期|expired/i.test(error.message)) return '审批已过期，请刷新列表'
+  if (error.status === 404 || error.status === 409) return `续跑失败：${error.message}`
+  return '续跑失败（网络/服务异常），可重试'
+}
+
 async function onResume(row: RowVm): Promise<void> {
   if (row.deciding || row.resuming) return
   row.resuming = true
@@ -171,11 +178,10 @@ async function onResume(row: RowVm): Promise<void> {
     void refresh()
   } catch (error) {
     const apiError = error as ApiError
-    if (apiError.status === 404 || apiError.status === 409) {
-      row.error = `续跑失败：${apiError.message}`
+    row.error = resumeErrorText(apiError)
+    // FP-5/6/7：过期/不存在/409 → 联动刷新列表（与 decide 路径 :153 同机制）
+    if (apiError.status === 404 || apiError.status === 409 || /过期|expired/i.test(apiError.message)) {
       void refresh()
-    } else {
-      row.error = '续跑失败（网络/服务异常），可重试'
     }
   } finally {
     row.resuming = false

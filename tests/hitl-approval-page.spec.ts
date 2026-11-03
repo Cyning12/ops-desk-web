@@ -455,6 +455,77 @@ describe('HitlApprovalView · TC7 驳回路径', () => {
   })
 })
 
+describe('HitlApprovalView · TC8 resume 错误态过期映射（task_web-hitl-resume-expired-mapping · W-web-1）', () => {
+  // W-web-1：onResume catch 补 /过期|expired/i 映射，文案与 decide 路径（decideErrorText）同
+  // 「审批已过期，请刷新列表」；非过期 409 透传与其余错误泛化既有行为零回归。
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    vi.restoreAllMocks()
+    vi.mocked(fetchHitlPending).mockResolvedValue({ items: [ITEM_A], count: 1 })
+    mockConfirmPass()
+    vi.mocked(decideHitlRequest).mockResolvedValue(DECIDE_REQUIRED)
+  })
+
+  /** 推进到 await_resume 行态并点「续跑」（resumeHitlRequest 由各用例 mock 拒绝） */
+  async function triggerResume(wrapper: ReturnType<typeof mountView>) {
+    await approveRow(wrapper)
+    const resumeBtn = wrapper.find('[data-test="hitl-resume"]')
+    expect(resumeBtn.exists()).toBe(true)
+    await resumeBtn.trigger('click')
+    await flushPromises()
+  }
+
+  it('resume 错误含「审批已过期」→ 行级提示「审批已过期，请刷新列表」（与 decide 路径同文案）', async () => {
+    vi.mocked(resumeHitlRequest).mockRejectedValue({
+      status: 409,
+      message: '审批已过期（approval_expired）',
+      raw: null,
+    })
+
+    const wrapper = mountView()
+    await flushPromises()
+    await triggerResume(wrapper)
+
+    expect(resumeHitlRequest).toHaveBeenCalledTimes(1)
+    const rowError = wrapper.find('[data-test="hitl-row-error"]')
+    expect(rowError.exists()).toBe(true)
+    expect(rowError.text()).toBe('审批已过期，请刷新列表')
+  })
+
+  it('resume 409 写窗错误（Resume is writing new events）→ 不命中过期映射 · 维持 409 透传', async () => {
+    vi.mocked(resumeHitlRequest).mockRejectedValue({
+      status: 409,
+      message: 'Resume is writing new events',
+      raw: null,
+    })
+
+    const wrapper = mountView()
+    await flushPromises()
+    await triggerResume(wrapper)
+
+    const rowError = wrapper.find('[data-test="hitl-row-error"]')
+    expect(rowError.exists()).toBe(true)
+    expect(rowError.text()).toBe('续跑失败：Resume is writing new events')
+  })
+
+  it('resume 其他错误（网络异常）→ 泛化文案「续跑失败（网络/服务异常），可重试」不变', async () => {
+    vi.mocked(resumeHitlRequest).mockRejectedValue({
+      status: null,
+      message: 'Network Error',
+      raw: null,
+    })
+
+    const wrapper = mountView()
+    await flushPromises()
+    await triggerResume(wrapper)
+
+    const rowError = wrapper.find('[data-test="hitl-row-error"]')
+    expect(rowError.exists()).toBe(true)
+    expect(rowError.text()).toBe('续跑失败（网络/服务异常），可重试')
+  })
+})
+
 describe('HitlApprovalView · D7 刷新纪律（不轮询 · visibilitychange 边沿）', () => {
   beforeEach(() => {
     setActivePinia(createPinia())

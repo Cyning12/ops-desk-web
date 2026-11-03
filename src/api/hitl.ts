@@ -16,6 +16,23 @@ import { http } from './http'
  *   重复/已决 → 409 · 未知/跨用户 → 404（不泄露存在性）· 非法 decision → 422
  * - POST /api/ops/hitl/requests/{id}/resume —— 既有端点复用（零改动 · 只新增 client 封装）
  *
+ * freeze `hitl-browser-decide-v1` 增补 TTL 条（2026-11-02 `HG-W-FIX-DESIGN` 决策②签署生效 · 上游真值
+ * api 仓 `docs/tasks/done/task_hitl_browser_decide.md`「freeze 增补条款」节 · 六要素逐字对齐）：
+ * - **触发**：`POST /hitl/requests/{id}/resume` 遇 `approved` 单据且 `now - decided_at > TTL`
+ *   （或 `decided_at` 不可解析 · fail-closed 视同过期）；
+ * - **出口**：**409** + detail 含 `approval_expired` 字样（中文文案含「**过期**」二字，
+ *   命中 web mapping `/过期|expired/i`）；
+ * - **终态**：拒绝同时单据置 **`expired`**（`STATUS_EXPIRED` · approved→expired 单向迁移，
+ *   不覆写 rejected/已 expired 终态）；
+ * - **TTL 单一旋钮**：`OPS_HITL_APPROVAL_CONSUMPTION_TTL_SECONDS`（默认 **3600s** · 合法域 [1,86400] ·
+ *   越界/非法回退默认 · 真源 `app/ops/lg_rag/multi/nodes.py:328`）——手动 resume 闸与消费环
+ *   `_match_fresh_approved` 同一判据，**禁第二旋钮**；
+ * - **作用面收窄**：闸只罩 resume/消费环；**decide 不拒超龄 pending**（「批准不过期，执行权过期」）；
+ *   **rejected 单据 resume 豁免**；
+ * - **渲染语义增量（web 侧承接）**：resume 错误路径新增「过期」触发面，
+ *   `HitlApprovalView.vue` `onResume` catch 按 `/过期|expired/i` mapping 行级渲染
+ *   「审批已过期，请刷新列表」（W-web-1）。
+ *
  * OA 签名面（GET /hitl/requests · GET /hitl/runtime · POST /hitl/callback）零触碰。
  */
 
