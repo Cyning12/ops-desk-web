@@ -152,6 +152,7 @@
 - [ ] **TC6（卡片对账转只读 · F10/F14）**：store `hitlPending` 成功取回且不含该 request id → waiting 卡渲染「已被处理或已失效」只读态，批准/驳回/resume_mode 三选不渲染；id 在列 → 保持可点。两向断言。
 - [ ] **TC7（对账不误判）**：`hitlPendingError`='无审批权限'（403）→ 卡片态不被对账改动；网络错同理；本地已动作（`hitlActedRequestIds` 含 id 且卡片 acting/decided）→ 不被对账打回 waiting。三向断言。
 - [ ] **TC8（质量门 + 过程 + 冻结零分叉）**：仓根 `pnpm lint` / `pnpm test` / `pnpm build` 退出码均 0；`./scripts/graph-compile.sh` 退出码 0；`01_modules.md` hitl 行备注（或零 diff 留痕）与 `10_flow_hitl.graph.yaml`（若变化）已同步；`docs/coding_wiki/volatile.md` 短注已落；`npx spec-wave task lint --file docs/tasks/active/task_web_ux_state_sync.md` PASS；diff 审查证明 decide/resume 请求面零变更（HG-CONTRACT-FREEZE 佐证）。
+- [ ] **旧测影响面 grep（20-R1 NIT-1 · 40 NIT-2 CLOSE 回填）**：红测前 grep 旧测影响面 2 处既有断言随 D3/D4 必改——① TC1 原断言 UTC 直出与 D3 冲突 → `title` 保原文 + 正文不含 ISO；② TC8 镜像用例 409 透传与 D4 冲突 → 写窗中性化文案——另全量回归暴露 chat-view 3 用例 fixture 与 D2 语义冲突 → 补真值修复、断言零放宽（30 invoke §2 留痕 · 40 逐行核对 = 语义对齐非放宽）。
 
 ---
 
@@ -266,3 +267,4 @@ TC1–TC3 锁已决区三态（回灌/重挂载存续/降级 · F1 红线 = TC2�
 | 2026-11-03 | 10 帽起草棒：派工锚 v0 落稿（D1–D8 · FP-1~FP-12 · TC1–TC8 · R0–R5 early_stop）· 证据锚 workspace 联调 invoke §2 + backlog B10/B11 · 四闸 pending 起 |
 | 2026-11-03 | 维护者签收 HG-TASK-DRAFT（m00085）· 00 代录 · 状态 draft→pending · 转派 20-task-audit R1 |
 | 2026-11-03 | 20-R1 PASS-WITH-MINOR（NIT×4）· 维护者签收 HG-AUDIT-R1/HG-GRAPH-MODULES/HG-CONTRACT-FREEZE（m00105）· 00 代录 · 状态 pending→active · GO 30 |
+| 2026-11-03 | 30 棒 D1–D4 落码（`51d1201`）+ 30 invoke（`e3c41b7`）· 40 验收 approved-with-comments（TC1–TC8 全 PASS · 五门全 0 · freeze 零分叉独立证实）· 40 NIT-2 回填：验收标准补「旧测影响面 grep」行（40 核对 = 语义对齐非放宽）· 40 审查文 + invoke 落盘待入库 |
