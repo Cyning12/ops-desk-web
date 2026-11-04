@@ -1,6 +1,6 @@
 # Task：web · 文档卫生 sweep（volatile 滞留 + Hub 缺登 + 断链 + 页清单 + by_path 缺口 · B9 ①–⑥）
 
-> **状态**：`active`（2026-11-04 · 维护者三闸同签 · **GO 30**）  
+> **状态**：`done`（2026-11-04 CLOSE · PR #91 合入 de3ed60 · 40 验收 AC-1~7 全绿 · B9 ①–⑥ 全落地）  
 > **类型**：docs / 纯文档轨（零 `src/` 触碰 · 零业务语义变化）  
 > **统筹**：web 00；**禁止**改姐妹仓 ops-desk-api 任何文件；**禁止**改 `src/` 任何文件  
 > **分支**：`task/web-doc-health-sweep`（30 开工时已切 · 本棒仅落 task 档）  
@@ -169,3 +169,5 @@
 |------|------|
 | 2026-11-04 | 10 落稿（B9 立项 · 维护者 invoke 选定 · 六条现状锚点亲验 · R0–R2 收敛 early_stop）· 四闸 pending · lint PASS |
 | 2026-11-04 | 维护者三闸同签（HG-TASK-DRAFT / HG-AUDIT-R1 / HG-GRAPH-MODULES · m00649 · 00 代录）· 状态 draft→active · GO 30 |
+| 2026-11-04 | 30 交付 PR #91（f7641ff 内容 + verify 硬闸合规五连补 cherry-pick · CI 2/2 绿 → squash merge de3ed60）：①volatile 全清（12 done 档在位核验 · N1 空态注记）②Hub 补 6 笔 20→26 ③_views/done.md 活指针 ④README 补 5 页 ⑤by_path 补 2 条（node_id 与 flow id 逐字对齐 · compile 绿）⑥CHECKLIST 双指针纠 done/ |
+| 2026-11-04 | 40 验收：AC-1~7 断言 PR head 实跑全绿 · task lint PASS · verify PASS · compile done · 零 src/ diff 实证 · **CLOSE** 归档 done/ |
