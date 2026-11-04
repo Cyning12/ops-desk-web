@@ -136,6 +136,18 @@
 - ⑤ 条目格式：抄既有 `src/views/...` 条目样板（path/kind/symbols 字段对齐）。
 - ⑥ api 侧指针：目标 `../../../ops-desk-api/docs/tasks/done/task_lg_rag_sse_stream_updates.md`——30 先 `test -f` 确认存在再改。
 
+### R3（预留 · early_stop 已停于 R2）
+
+按规程点名预留：若 20 审查轮或 30 实扫发现设计分叉（如 FP-4 人裁触发 / legacy 缺口改判纳入），在此槽位回填并重启轮次；无则空转。
+
+### R4（预留 · early_stop 已停于 R2）
+
+供 40 观察项回填（关账配套 checklist 化建议 / legacy 33 笔 Hub 缺口定夺结果）。
+
+### R5（预留 · early_stop 已停于 R2）
+
+供 CLOSE 前终轮收口（残余风险销项）。
+
 ### 思考轮控制
 
 | 轮 | 结论 | early_stop |
