@@ -45,6 +45,154 @@ const loading = ref(false)
 const rows = ref<RowVm[]>([])
 const listError = ref<ApiError | null>(null)
 
+/* ==================== web-ux-state-sync D1 · 已决区会话内保留（sessionStorage · F1/F2） ==================== */
+
+/** 已决区存储键（版本化 · FP-3 损坏/版本不符整键丢弃） */
+const DECIDED_STORAGE_KEY = 'ops.hitl.decided.v1'
+/** 快照版本字段（D1 定值 · 校验用） */
+const DECIDED_SNAPSHOT_VERSION = 1
+/** FIFO 上限（FP-12） */
+const DECIDED_FIFO_LIMIT = 20
+
+/** 已决行快照（sessionStorage 序列化面 · 版本字段 v 校验 · item 照登 HitlPendingItem 六键） */
+interface DecidedSnapshot {
+  v: number
+  id: string
+  item: HitlPendingItem
+  decision: HitlDecision | null
+  status: RowStatus
+  replay: { run_id: string; cursor: string } | null
+  decidedAt: number
+}
+
+/** 已决区行 VM（快照 + 本会话交互态 · resuming/error 为内存态不落盘） */
+interface DecidedRowVm extends DecidedSnapshot {
+  resuming: boolean
+  error: string
+}
+
+const decidedRows = ref<DecidedRowVm[]>([])
+
+function isValidDecidedSnapshot(value: unknown): value is DecidedSnapshot {
+  if (typeof value !== 'object' || value === null) return false
+  const snap = value as Record<string, unknown>
+  return (
+    snap.v === DECIDED_SNAPSHOT_VERSION &&
+    typeof snap.id === 'string' &&
+    typeof snap.item === 'object' &&
+    snap.item !== null &&
+    ['await_resume', 'auto_resumed', 'done', 'rejected', 'resumed'].includes(snap.status as string)
+  )
+}
+
+/** 读盘回灌：损坏/版本不符 → 整键丢弃（FP-3）· 读取异常静默（sessionStorage 可能不可用） */
+function loadDecidedSnapshots(): DecidedSnapshot[] {
+  try {
+    const raw = window.sessionStorage.getItem(DECIDED_STORAGE_KEY)
+    if (!raw) return []
+    const parsed: unknown = JSON.parse(raw)
+    if (!Array.isArray(parsed) || !parsed.every(isValidDecidedSnapshot)) {
+      window.sessionStorage.removeItem(DECIDED_STORAGE_KEY)
+      return []
+    }
+    // FP-12 双向：回灌即裁 FIFO 上限（历史超容数据入列前最旧被挤掉）
+    return parsed.slice(-DECIDED_FIFO_LIMIT)
+  } catch {
+    try {
+      window.sessionStorage.removeItem(DECIDED_STORAGE_KEY)
+    } catch {
+      /* 静默：sessionStorage 不可用时页面不炸 */
+    }
+    return []
+  }
+}
+
+/** 写盘 best-effort：失败静默降级内存态（FP-2 · 等同现状不劣化） */
+function persistDecidedSnapshots(list: DecidedSnapshot[]): void {
+  try {
+    window.sessionStorage.setItem(DECIDED_STORAGE_KEY, JSON.stringify(list))
+  } catch {
+    /* FP-2 静默降级：内存态仍可渲染已决区 */
+  }
+}
+
+/** pending 行 → 已决快照（decision 由行态推定 · rejected 专属 · 其余已决态=approved） */
+function toDecidedSnapshot(row: RowVm): DecidedSnapshot {
+  return {
+    v: DECIDED_SNAPSHOT_VERSION,
+    id: row.item.id,
+    item: row.item,
+    decision: row.status === 'rejected' ? 'rejected' : 'approved',
+    status: row.status,
+    replay: row.replay,
+    decidedAt: Date.now(),
+  }
+}
+
+/** VM → 纯快照（落盘/回灌边界剥离交互态） */
+function toSnapshotOfVm(row: DecidedRowVm): DecidedSnapshot {
+  return {
+    v: row.v,
+    id: row.id,
+    item: row.item,
+    decision: row.decision,
+    status: row.status,
+    replay: row.replay,
+    decidedAt: row.decidedAt,
+  }
+}
+
+/** 落盘合并：同 id 去重替换（FP-11）+ FIFO 20（FP-12） */
+function upsertDecidedSnapshot(snapshot: DecidedSnapshot): void {
+  const rest = decidedRows.value
+    .filter((row) => row.id !== snapshot.id)
+    .map((row) => toSnapshotOfVm(row))
+  const next = [...rest, snapshot].slice(-DECIDED_FIFO_LIMIT)
+  decidedRows.value = next.map((snap) => ({ ...snap, resuming: false, error: '' }))
+  persistDecidedSnapshots(next)
+}
+
+function decidedStatusLabel(status: RowStatus): string {
+  switch (status) {
+    case 'await_resume':
+      return '已批准 · 待显式续跑'
+    case 'auto_resumed':
+      return '已批准并自动续跑'
+    case 'done':
+      return '已批准'
+    case 'rejected':
+      return '已驳回'
+    case 'resumed':
+      return '已续跑'
+    default:
+      return status
+  }
+}
+
+/** D1：已决区显式续跑（approved·待续跑入口 · 两步钉死存续 · 失败文案与 pending 行同 resumeErrorText） */
+async function onDecidedResume(row: DecidedRowVm): Promise<void> {
+  if (row.resuming) return
+  row.resuming = true
+  row.error = ''
+  try {
+    const resp = await resumeHitlRequest(row.id)
+    upsertDecidedSnapshot({
+      ...toSnapshotOfVm(row),
+      status: 'resumed',
+      replay: resp.replay ? { run_id: resp.replay.run_id, cursor: resp.replay.cursor } : null,
+    })
+    void refresh()
+  } catch (error) {
+    const apiError = error as ApiError
+    row.error = resumeErrorText(apiError)
+    if (apiError.status === 404 || apiError.status === 409 || /过期|expired/i.test(apiError.message)) {
+      void refresh()
+    }
+  } finally {
+    row.resuming = false
+  }
+}
+
 function toVm(item: HitlPendingItem): RowVm {
   return {
     item,
@@ -98,6 +246,12 @@ function onVisibilityChange(): void {
 }
 
 onMounted(() => {
+  // D1：会话内保留回灌（损坏/版本不符整键丢弃 · FP-3）
+  decidedRows.value = loadDecidedSnapshots().map((snap) => ({
+    ...snap,
+    resuming: false,
+    error: '',
+  }))
   document.addEventListener('visibilitychange', onVisibilityChange)
   void refresh()
 })
@@ -145,6 +299,7 @@ async function onDecide(row: RowVm, decision: HitlDecision): Promise<void> {
     } else {
       row.status = 'done'
     }
+    upsertDecidedSnapshot(toDecidedSnapshot(row)) // D1：decide 成功 → 已决区快照落盘（含两步链态）
     void refresh()
   } catch (error) {
     const apiError = error as ApiError
@@ -158,9 +313,16 @@ async function onDecide(row: RowVm, decision: HitlDecision): Promise<void> {
   }
 }
 
-/** resume 失败行级文案（与 decide 路径 decideErrorText 同机制 · W-web-1：FP-5 过期映射增量，文案同 :111） */
+/**
+ * resume 失败行级文案（与 decide 路径 decideErrorText 同机制 · W-web-1：FP-5 过期映射增量，文案同 :111）。
+ * web-ux-state-sync D4：resume 409 写窗冲突中性化——子串判据 = 后端恢复写面文案
+ * （"writing new events" / "settles"）→「恢复写入中，请稍后重试」；未命中维持 409 透传（FP-8）。
+ */
 function resumeErrorText(error: ApiError): string {
   if (/过期|expired/i.test(error.message)) return '审批已过期，请刷新列表'
+  if (error.status === 409 && /writing new events|settles/i.test(error.message)) {
+    return '恢复写入中，请稍后重试'
+  }
   if (error.status === 404 || error.status === 409) return `续跑失败：${error.message}`
   return '续跑失败（网络/服务异常），可重试'
 }
@@ -175,6 +337,7 @@ async function onResume(row: RowVm): Promise<void> {
     row.replay = resp.replay
       ? { run_id: resp.replay.run_id, cursor: resp.replay.cursor }
       : null
+    upsertDecidedSnapshot(toDecidedSnapshot(row)) // D1：resume 成功 → 快照链态推进为 resumed + replay 摘要
     void refresh()
   } catch (error) {
     const apiError = error as ApiError
@@ -200,6 +363,18 @@ function blockedBySnapshot(value: unknown): string {
   } catch {
     return String(value)
   }
+}
+
+/**
+ * web-ux-state-sync D3：created_at 本地化渲染（Intl 本地时区 · title 保 UTC 原文 ·
+ * FP-9 非法值回退原文直出不炸）。验收面 = /hitl 行 meta（NIT-3 · 浮层卡不渲染 created_at）。
+ */
+function formatCreatedAt(createdAt: string): string {
+  const ts = Date.parse(createdAt)
+  if (Number.isNaN(ts)) return createdAt
+  return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'medium' }).format(
+    new Date(ts),
+  )
 }
 
 function formatWait(createdAt: string): string {
@@ -294,7 +469,9 @@ function formatWait(createdAt: string): string {
           <span class="hitl-row__wait">{{ formatWait(row.item.created_at) }}</span>
         </div>
         <div class="hitl-row__meta">
-          <span>创建时间 {{ row.item.created_at }}</span>
+          <span data-test="hitl-created-at" :title="row.item.created_at"
+            >创建时间 {{ formatCreatedAt(row.item.created_at) }}</span
+          >
           <span :title="row.item.thread_id">thread {{ truncateId(row.item.thread_id) }}</span>
           <span :title="row.item.run_id">run {{ truncateId(row.item.run_id) }}</span>
         </div>
@@ -382,6 +559,57 @@ function formatWait(createdAt: string): string {
         </template>
       </li>
     </ul>
+
+    <!-- web-ux-state-sync D1 · 已决区（sessionStorage 会话内保留 · 刷新/重挂后仍在 · 真源以服务端为准） -->
+    <section v-if="decidedRows.length > 0" class="hitl-decided" data-test="hitl-decided">
+      <h3 class="hitl-decided__title">已决单（本会话内保留 · 刷新后仍在 · 真源以服务端为准）</h3>
+      <ul class="hitl-page__list">
+        <li
+          v-for="row in decidedRows"
+          :key="`decided-${row.id}`"
+          class="hitl-row hitl-row--decided"
+          data-test="hitl-decided-row"
+        >
+          <div class="hitl-row__head">
+            <span class="hitl-row__reason">{{ row.item.reason || '（无 reason）' }}</span>
+            <span class="hitl-row__status">{{ decidedStatusLabel(row.status) }}</span>
+          </div>
+          <div class="hitl-row__meta">
+            <span data-test="hitl-created-at" :title="row.item.created_at"
+              >创建时间 {{ formatCreatedAt(row.item.created_at) }}</span
+            >
+            <span :title="row.item.thread_id">thread {{ truncateId(row.item.thread_id) }}</span>
+            <span :title="row.item.run_id">run {{ truncateId(row.item.run_id) }}</span>
+          </div>
+          <pre class="hitl-row__snapshot">{{ blockedBySnapshot(row.item.blocked_by) }}</pre>
+
+          <p v-if="row.error" class="hitl-row__error" data-test="hitl-decided-error">{{ row.error }}</p>
+
+          <!-- 两步钉死存续：approved·待续跑保留显式续跑入口（走 resumeHitlRequest） -->
+          <template v-if="row.status === 'await_resume'">
+            <p class="hitl-row__note">已批准。按两步链需显式续跑：</p>
+            <el-button
+              size="small"
+              type="primary"
+              plain
+              data-test="hitl-decided-resume"
+              :disabled="row.resuming"
+              :loading="row.resuming"
+              @click="onDecidedResume(row)"
+            >
+              续跑
+            </el-button>
+          </template>
+          <template v-else-if="row.status === 'resumed'">
+            <p class="hitl-row__note">已续跑。</p>
+            <p v-if="row.replay" class="hitl-row__replay">run {{ row.replay.run_id }} · cursor {{ row.replay.cursor }}</p>
+          </template>
+          <p v-else-if="row.status === 'rejected'" class="hitl-row__note">已驳回。</p>
+          <p v-else-if="row.status === 'auto_resumed'" class="hitl-row__note">已批准并自动续跑。</p>
+          <p v-else class="hitl-row__note">已批准。</p>
+        </li>
+      </ul>
+    </section>
   </div>
 </template>
 
@@ -419,6 +647,29 @@ function formatWait(createdAt: string): string {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.hitl-decided {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(44, 44, 44, 0.18);
+}
+
+.hitl-decided__title {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ops-text-secondary);
+}
+
+.hitl-row--decided {
+  opacity: 0.92;
+}
+
+.hitl-row__status {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--ops-text-secondary);
 }
 
 .hitl-row {

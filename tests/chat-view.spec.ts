@@ -56,6 +56,17 @@ const fakeSession = {
   updated_at: '2026-07-24T01:00:00',
 }
 
+// state-sync D2 真值 fixture：waiting 卡 req-42 须在服务端 pending 列表内才可操作
+// （对账后：成功取回且 id 不在列 → 只读「已被处理或已失效」· task_web_ux_state_sync D2）
+const PENDING_REQ_42 = {
+  id: 'req-42',
+  run_id: 'r-1',
+  thread_id: 't-1',
+  reason: '需审批',
+  blocked_by: { op: 'deploy', target: 'prod' },
+  created_at: '2026-10-20T01:00:00Z',
+}
+
 let pinia: Pinia
 let captured: LgRagSseCallbacks
 
@@ -89,6 +100,7 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
   })
 
   it('AC7：注入 hitl.waiting 帧 → 渲染审批卡片（reason + 申请 id + 批准/驳回双按钮）', async () => {
+    vi.mocked(fetchHitlPending).mockResolvedValue({ items: [PENDING_REQ_42], count: 1 })
     const wrapper = mountView()
     await flushPromises()
     const chat = useChatStore()
@@ -131,6 +143,7 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
   })
 
   it('T-W2 AC：waiting 卡片渲染 resume_mode 三选（默认 inherit）；默认批准 → decide 精确 2 参（不送键）', async () => {
+    vi.mocked(fetchHitlPending).mockResolvedValue({ items: [PENDING_REQ_42], count: 1 })
     vi.mocked(decideHitlRequest).mockResolvedValue({
       ok: true,
       request: { id: 'req-42', status: 'approved' },
@@ -187,6 +200,7 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
   })
 
   it('T-W2 AC：选「批准即续跑」→ decide 携 resume_mode=immediate；响应 auto_triggered → 不再链 resume', async () => {
+    vi.mocked(fetchHitlPending).mockResolvedValue({ items: [PENDING_REQ_42], count: 1 })
     vi.mocked(decideHitlRequest).mockResolvedValue({
       ok: true,
       request: { id: 'req-42', status: 'approved' },
