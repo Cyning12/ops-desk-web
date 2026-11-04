@@ -14,7 +14,7 @@ Ops Desk Kimi Code 的 Web 前端。
 
 ## 仓库职责
 
-- Ops Desk 各页面实现：Login / Overview / Issues / Pulls / Graph / Chat
+- Ops Desk 各页面实现：Login / Overview / Issues / Pulls / Graph / Chat / Capability（目录）/ HITL 审批 / LcEvidence / LgRag / Obs（11 页 · `ls src/views/` 实扫 · 2026-11-04 web-doc-health-sweep ④ 补登）
 - Chat lg-rag SSE 流式消费与思考过程展示（旧 chat stream 已弃用）
 - 水墨风 UI（延续现有视觉风格）
 

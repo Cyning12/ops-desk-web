@@ -25,7 +25,7 @@
 | **invoke_retention_profile** | `default` |
 | **required_invoke_hats** | `10,20,30,40` |
 | **review_hat** | `20` |
-| **graph_delta** | `docs/_tech_graph/l2/indexes/by_path.yaml`（补 HitlApprovalView.vue / CapabilityCatalogView 两 path 条目）· 交付时跑 `./scripts/graph-compile.sh` 使产物一致 |
+| **graph_delta** | `docs/_tech_graph/l2/indexes/by_path.yaml`（补 HitlApprovalView.vue / CapabilityCatalogView.vue 两 path 条目）· 交付时跑 `./scripts/graph-compile.sh` 使产物一致；`docs/_tech_graph/l1/01_modules.md`（预计零 diff · 30 实扫留痕核对） |
 | **graph_delta_note** | 10 亲验（2026-11-04）：`by_path.yaml` 缺 `src/views/HitlApprovalView.vue` 与 `src/views/CapabilityCatalogView.vue` 两条目（grep 空集实证），其余图谱文件零改动。不新增一级模块/路由。 |
 | **wiki_delta** | `docs/coding_wiki/volatile.md`（本波 active 节滞留清理） |
 | **wiki_delta_note** | volatile「本波 active」节当前 ≥11 条已 CLOSE 滞留（13 处 `docs/tasks/active/` 断链指针 · :22 progressive-reveal「30 实现中」误写）；30 清理后该节只留真 active 条目（关账时本 task 自身）。真值指针 = 本 task。 |
@@ -135,6 +135,18 @@
 - ① 执行顺序：先 `ls docs/tasks/active/` 取真集 → 再逐条比对 volatile 节 → 删非交集。防 FP-1 的机械护栏。
 - ⑤ 条目格式：抄既有 `src/views/...` 条目样板（path/kind/symbols 字段对齐）。
 - ⑥ api 侧指针：目标 `../../../ops-desk-api/docs/tasks/done/task_lg_rag_sse_stream_updates.md`——30 先 `test -f` 确认存在再改。
+
+### R3（预留 · early_stop 已停于 R2）
+
+按规程点名预留：若 20 审查轮或 30 实扫发现设计分叉（如 FP-4 人裁触发 / legacy 缺口改判纳入），在此槽位回填并重启轮次；无则空转。
+
+### R4（预留 · early_stop 已停于 R2）
+
+供 40 观察项回填（关账配套 checklist 化建议 / legacy 33 笔 Hub 缺口定夺结果）。
+
+### R5（预留 · early_stop 已停于 R2）
+
+供 CLOSE 前终轮收口（残余风险销项）。
 
 ### 思考轮控制
 

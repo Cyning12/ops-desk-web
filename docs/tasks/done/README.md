@@ -124,6 +124,12 @@
 | 2026-10-12 | 归档 `task_web_sse_hitl_enhance.md`（PR #61 · 落账归位 #62 · T-W2 SSE/HITL 增强 S2/S3 全过 · FP-5 闸 252/252 · NIT-R2-4 补尾已落） |
 | 2026-10-12 | 归档 `task_web_capability_catalog.md`（PR #60 · 落账归位 #62 · T-W3 Capability 目录页 S5 双角色全过 · 图谱先行已落 compile 绿） |
 | 2026-10-30 | 归档 `task_web_specwave_upgrade_3_5_0.md`（spec-wave 3.3.0→3.5.0 · 双闸 00 代录授权锚 m00236 · 全程本地零 push/PR · 图谱锚点闸 graph_path_unreachable 实证 dormant） |
+| 2026-10-30 | 归档 `task_web_hitl_approval_page.md`（CLOSE 2026-10-30 · 40 approved-with-comments 零阻塞 · TC9 2026-11-02 回填 · 分支完整合入 main） |
+| 2026-10-30 | 归档 `task_web_graph_anchor_profile_fix.md`（CLOSE 2026-10-30 · 40 独立验收 PASS 全绿 · 全程本地零 push · 归档随本批补登） |
+| 2026-10-30 | 归档 `task_web_hitl_approval_overlay_ux.md`（CLOSE 2026-10-30 波次 · 30/40 交付 · 本地合入 · 归档随本批补登） |
+| 2026-10-30 | 归档 `task_web_hitl_resume_chase_ux.md`（2026-10-28 交付 · 40 PASS · 00 代签本地 CLOSE · 归档随本批补登） |
+| 2026-11-04 | 归档 `task_web_ux_state_sync.md`（PR #87 关账 · web-ux-state-sync 40 验收全过合入 main 36d42e1 · B10 关账） |
+| 2026-11-04 | 归档 `task_web_hitl_resume_expired_mapping.md`（PR #88 关账 · 过期 mapping 修复 40 全过 · B11 关账） |
 
 ## 给维护者
 
