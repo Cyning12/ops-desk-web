@@ -25,7 +25,7 @@
 | **invoke_retention_profile** | `default` |
 | **required_invoke_hats** | `10,20,30,40` |
 | **review_hat** | `20` |
-| **graph_delta** | `docs/_tech_graph/l2/indexes/by_path.yaml`（补 HitlApprovalView.vue / CapabilityCatalogView 两 path 条目）· 交付时跑 `./scripts/graph-compile.sh` 使产物一致 |
+| **graph_delta** | `docs/_tech_graph/l2/indexes/by_path.yaml`（补 HitlApprovalView.vue / CapabilityCatalogView.vue 两 path 条目）· 交付时跑 `./scripts/graph-compile.sh` 使产物一致；`docs/_tech_graph/l1/01_modules.md`（预计零 diff · 30 实扫留痕核对） |
 | **graph_delta_note** | 10 亲验（2026-11-04）：`by_path.yaml` 缺 `src/views/HitlApprovalView.vue` 与 `src/views/CapabilityCatalogView.vue` 两条目（grep 空集实证），其余图谱文件零改动。不新增一级模块/路由。 |
 | **wiki_delta** | `docs/coding_wiki/volatile.md`（本波 active 节滞留清理） |
 | **wiki_delta_note** | volatile「本波 active」节当前 ≥11 条已 CLOSE 滞留（13 处 `docs/tasks/active/` 断链指针 · :22 progressive-reveal「30 实现中」误写）；30 清理后该节只留真 active 条目（关账时本 task 自身）。真值指针 = 本 task。 |
