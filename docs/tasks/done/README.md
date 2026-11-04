@@ -130,6 +130,7 @@
 | 2026-10-30 | 归档 `task_web_hitl_resume_chase_ux.md`（2026-10-28 交付 · 40 PASS · 00 代签本地 CLOSE · 归档随本批补登） |
 | 2026-11-04 | 归档 `task_web_ux_state_sync.md`（PR #87 关账 · web-ux-state-sync 40 验收全过合入 main 36d42e1 · B10 关账） |
 | 2026-11-04 | 归档 `task_web_hitl_resume_expired_mapping.md`（PR #88 关账 · 过期 mapping 修复 40 全过 · B11 关账） |
+| 2026-11-04 | 归档 `task_web_doc_health_sweep.md`（PR #91 关账 · B9 ①–⑥ 全落地 · 40 AC-1~7 全绿 · volatile/Hub/断链/页清单/by_path/CHECKLIST 六面清扫） |
 
 ## 给维护者
 
