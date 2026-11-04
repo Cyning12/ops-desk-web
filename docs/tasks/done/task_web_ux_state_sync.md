@@ -1,6 +1,6 @@
 # Task：web · UX 状态同步族（已决单可见性 + chat 卡片联动 + 时区本地化 · F1/F10/F14/F15/F8-web）
 
-> **状态**：`active`（2026-11-03 · **四闸 approved**（HG-TASK-DRAFT m00085 · HG-AUDIT-R1 / HG-GRAPH-MODULES / HG-CONTRACT-FREEZE m00105 · 均维护者签收 · 00 代录）· 20-R1 = PASS-WITH-MINOR（NIT×4 不阻塞）· **GO 30** · 派工锚 = `../ops-desk-workspace/docs/tmp/web-ux-state-sync-baton-prompt_v0_zh.md` v0）  
+> **状态**：`done`（2026-11-04 · 维护者关账 · 30 D1–D4 + 40 验收 approved-with-comments 全绿 · PR #86 merge `36d42e1` · 合入后双栈 main 冒烟 200）  
 > **类型**：fix / 前端 UX（api-only-consume · 冻结契约零分叉）  
 > **统筹**：web 00；**禁止**改姐妹仓 ops-desk-api 任何文件；**禁止**改 `src/api/hitl.ts` 请求面；**禁止**改 SSE event_type  
 > **分支**：`task/web-ux-state-sync`（30 开工时才切 · 本棒不切分支、不改 `src/`、不 commit）  
@@ -268,3 +268,4 @@ TC1–TC3 锁已决区三态（回灌/重挂载存续/降级 · F1 红线 = TC2�
 | 2026-11-03 | 维护者签收 HG-TASK-DRAFT（m00085）· 00 代录 · 状态 draft→pending · 转派 20-task-audit R1 |
 | 2026-11-03 | 20-R1 PASS-WITH-MINOR（NIT×4）· 维护者签收 HG-AUDIT-R1/HG-GRAPH-MODULES/HG-CONTRACT-FREEZE（m00105）· 00 代录 · 状态 pending→active · GO 30 |
 | 2026-11-03 | 30 棒 D1–D4 落码（`51d1201`）+ 30 invoke（`e3c41b7`）· 40 验收 approved-with-comments（TC1–TC8 全 PASS · 五门全 0 · freeze 零分叉独立证实）· 40 NIT-2 回填：验收标准补「旧测影响面 grep」行（40 核对 = 语义对齐非放宽）· 40 审查文 + invoke 落盘待入库 |
+| 2026-11-04 | **维护者关账**（auth311 令「验收并开始下一个任务」）· 40 棒落盘入库（`ea49791`：审查文 + invoke + graph-compile 产物 + NIT-2 回填）· **PR #86 merge `36d42e1`**（CI check/frontend 绿）· 合入后 web main 重启 vite 冒烟 200 · 状态 active→done · 档迁 `docs/tasks/done/` · 40 NIT-1（已决区窄竞态 · resuming/error 迁按 id Map 建议）登记下波处置 · workspace backlog B10/B11 同步关账 |
