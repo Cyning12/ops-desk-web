@@ -2,7 +2,7 @@
 
 > **用途**：T2 联合发版 **人工闸门**；维护者打印或复制勾选。  
 > **真值索引**：api [`05_lg_rag_transport_and_session_plan_v0.md`](../../../ops-desk-api/docs/spec/agent-infra/05_lg_rag_transport_and_session_plan_v0.md) §10–§11  
-> **关 task**：web [`task_web_lg_rag_sse_t2`](../tasks/active/task_web_lg_rag_sse_t2.md) · api [`task_lg_rag_sse_stream_updates`](../../../ops-desk-api/docs/tasks/active/task_lg_rag_sse_stream_updates.md)
+> **关 task**：web [`task_web_lg_rag_sse_t2`](../tasks/done/task_web_lg_rag_sse_t2.md) · api [`task_lg_rag_sse_stream_updates`](../../../ops-desk-api/docs/tasks/done/task_lg_rag_sse_stream_updates.md)（2026-11-04 web-doc-health-sweep ③ 纠偏：双档均已归档 done/）
 
 ---
 

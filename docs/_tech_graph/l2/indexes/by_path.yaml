@@ -265,3 +265,13 @@ by_path:
     - node_id: logout_api
       symbol: logout
       kind: method
+  # ── hitl 域（10_flow_hitl）──
+  "src/views/HitlApprovalView.vue":
+    - node_id: hitl_view
+      symbol: HitlApprovalView
+      kind: component
+  # ── capability 域（10_flow_capability）──
+  "src/views/CapabilityCatalogView.vue":
+    - node_id: capability_view
+      symbol: CapabilityCatalogView
+      kind: component
