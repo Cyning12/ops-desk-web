@@ -1,6 +1,6 @@
 # Task：web · 文档卫生 sweep（volatile 滞留 + Hub 缺登 + 断链 + 页清单 + by_path 缺口 · B9 ①–⑥）
 
-> **状态**：`draft`（2026-11-04 · 10 落稿 · 待维护者签 HG-TASK-DRAFT）  
+> **状态**：`active`（2026-11-04 · 维护者三闸同签 · **GO 30**）  
 > **类型**：docs / 纯文档轨（零 `src/` 触碰 · 零业务语义变化）  
 > **统筹**：web 00；**禁止**改姐妹仓 ops-desk-api 任何文件；**禁止**改 `src/` 任何文件  
 > **分支**：`task/web-doc-health-sweep`（30 开工时已切 · 本棒仅落 task 档）  
@@ -41,9 +41,9 @@
 
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
-| HG-TASK-DRAFT | pending | 20-task-audit R1, 30 | 10 落稿待签 |
-| HG-AUDIT-R1 | pending | 30 | 20-task-audit R1 审查文落盘后待签 |
-| HG-GRAPH-MODULES | pending | 30 | by_path.yaml 补条（图谱文件改动）· 10 评估不新增一级模块/路由 · 待签 |
+| HG-TASK-DRAFT | approved | 20-task-audit R1, 30 | 2026-11-04 · 10 落稿 · 维护者签收（m00649 · 00 代录） |
+| HG-AUDIT-R1 | approved | 30 | 2026-11-04 · 20-task-audit R1 PASS 零阻塞（`docs/harness/reviews/task_web_doc_health_sweep_audit_R1_20261104.md` · NIT×1 非阻塞）· 维护者签收（m00649 · 00 代录） |
+| HG-GRAPH-MODULES | approved | 30 | 2026-11-04 · by_path.yaml 补条属图谱文件改动 · 10 评估不新增一级模块/路由 · 20-R1 亲验合理 · 维护者签收（m00649 · 00 代录） |
 
 ---
 
@@ -156,3 +156,4 @@
 | 日期 | 说明 |
 |------|------|
 | 2026-11-04 | 10 落稿（B9 立项 · 维护者 invoke 选定 · 六条现状锚点亲验 · R0–R2 收敛 early_stop）· 四闸 pending · lint PASS |
+| 2026-11-04 | 维护者三闸同签（HG-TASK-DRAFT / HG-AUDIT-R1 / HG-GRAPH-MODULES · m00649 · 00 代录）· 状态 draft→active · GO 30 |
