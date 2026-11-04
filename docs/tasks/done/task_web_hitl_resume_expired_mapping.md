@@ -1,6 +1,6 @@
 # Task：web · HITL resume 错误路径过期映射（镜像薄壳）
 
-> **状态**：`active`（2026-11-02 · 四闸 approved（镜像同步 · api 仓 task 维护者三闸同签+设计四决策 · 00 代录）· **GO 30**）
+> **状态**：`done`（2026-11-04 关账 · PR #85 merge · A5 过期态 web 行级红字渲染实证 invoke_20261103_10_final_acceptance · 2026-11-02 · 四闸 approved（镜像同步 · api 仓 task 维护者三闸同签+设计四决策 · 00 代录）· GO 30 已交付）
 > **类型**：fix / 薄改（单组件 catch 分支补映射）
 > **真值指针**：api 仓 `../ops-desk-api/docs/tasks/active/task_api_w_join_gap_fix.md`（**W-fix-1-web 条 · 范围/钉死契约/验收以彼为准**）· 20-R2 审查文 `../ops-desk-api/docs/harness/reviews/task_api_w_join_gap_fix_audit_R2_20261102.md`
 > **分支**：`task/web-hitl-resume-expired-mapping`（base：`main`）
@@ -172,3 +172,4 @@ web 仓纪律「无 active task 不改码」，故为 api task 的 W-fix-1-web �
 |------|------|
 | 2026-11-02 | 10 落壳（20-R2 M4 闭环棒 · 镜像薄壳路线 · 真值指针=api 仓 task_api_w_join_gap_fix）· 四闸镜像 pending（以 api 侧为真值 · 本壳不重复签）· R0 early_stop · lint PASS |
 | 2026-11-02 | **解冻 freeze 注释行**：删「本壳不改 freeze 文件」钉死，freeze 本体 `src/api/hitl.ts` 头注释增补 TTL 条（注释-only）入本壳范围（W-web-2 + 验收补一条）· 依据=维护者 2026-11-02 裁决「freeze 本体同步镜像增补 TTL 条」+ api 侧 HG-W-FIX-DESIGN 决策②已签「freeze 增补 TTL 条」（增补正文真值=api 仓 `task_hitl_browser_decide.md`「freeze 增补条款」节）· 闸表不动（四闸 approved 保持 · 注释-only 改动在已签决策②覆盖内） |
+| 2026-11-04 | **维护者关账**（auth311 令「验收并开始下一个任务」· 清 active 板滞留）· PR #85 已合入 main · A5 过期态复测：web 行级红字「审批已过期，请刷新列表」渲染实证（invoke_20261103_10_final_acceptance §A5 · 截图 a5-expired-row-prompt.jpg）· 状态 active→done · 档迁 done/ |
