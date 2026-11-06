@@ -93,11 +93,11 @@ Chat 页审批浮层存在**对账竞态**（issue #95 · #93 联调验证时上
 
 ## 范围
 
-- [ ] **HG-DESIGN-FORM 定夺后**按所选形态修 `src/stores/chat.ts` 对账判据/时机（A=键口径/纪元判据；B=帧消费后一次性刷新 + 幂等防抖；C=回签后圈定），消除「快照 T₀ 后新到 hitl.waiting 被误判转只读」。
-- [ ] **正样本零回归**：服务端真已处理（快照确证不在列）→ 转只读「已被处理或已失效」语义不变；403/网络错/本地已动作不做对账（FP-4/5/6 语义）不变。
-- [ ] **Vitest 红测先行**：负样本先红——构造「快照先于 hitl.waiting 帧」时序 → 卡片保持可动作（`hitl-card-reconciled` 不渲染、批准/驳回可点）；正样本/防误判既有断言零放宽（`tests/hitl-card-reconcile.spec.ts` 扩充）。
-- [ ] **图谱 + wiki**：30 交付时 `01_struct.md` 实扫备注（或零 diff 留痕）；flow 语义变化则同步 `10_flow_hitl.graph.yaml` + `graph-compile`；`docs/coding_wiki/volatile.md` 补对账纪元/竞态判据短注。
-- [ ] **红线佐证**：diff 审查证明 api 仓零触碰、SSE 事件表零 diff、`src/api/hitl.ts` 请求面零变更、改码面 ⊆ HG-DESIGN-FORM 圈定面。
+- [x] **HG-DESIGN-FORM 定夺后**按所选形态修 `src/stores/chat.ts` 对账判据/时机（A=键口径/纪元判据；B=帧消费后一次性刷新 + 幂等防抖；C=回签后圈定），消除「快照 T₀ 后新到 hitl.waiting 被误判转只读」。
+- [x] **正样本零回归**：服务端真已处理（快照确证不在列）→ 转只读「已被处理或已失效」语义不变；403/网络错/本地已动作不做对账（FP-4/5/6 语义）不变。
+- [x] **Vitest 红测先行**：负样本先红——构造「快照先于 hitl.waiting 帧」时序 → 卡片保持可动作（`hitl-card-reconciled` 不渲染、批准/驳回可点）；正样本/防误判既有断言零放宽（`tests/hitl-card-reconcile.spec.ts` 扩充）。
+- [x] **图谱 + wiki**：30 交付时 `01_struct.md` 实扫备注（或零 diff 留痕）；flow 语义变化则同步 `10_flow_hitl.graph.yaml` + `graph-compile`；`docs/coding_wiki/volatile.md` 补对账纪元/竞态判据短注。
+- [x] **红线佐证**：diff 审查证明 api 仓零触碰、SSE 事件表零 diff、`src/api/hitl.ts` 请求面零变更、改码面 ⊆ HG-DESIGN-FORM 圈定面。
 
 ## 非范围
 
@@ -130,13 +130,13 @@ Chat 页审批浮层存在**对账竞态**（issue #95 · #93 联调验证时上
 
 ## 验收标准
 
-- [ ] **TC1（负样本 · 红测先行 · 维护者建议形态）**：构造「pending 快照成功取回（T₀）→ `hitl.waiting` 帧后至（实体键滞后）」时序 → 浮层 waiting 卡**保持可动作**：`hitl-card-reconciled` 不渲染、批准/驳回按钮在且不陷任何死态。测试**先红后绿**（先于实现合入）。
-- [ ] **TC2（正样本零回归 · FP-8）**：快照成功取回且确证 id 不在列（服务端真已处理）→ 卡片转只读「已被处理或已失效」照常生效；既有 `tests/hitl-card-reconcile.spec.ts` 全绿、断言零放宽。
-- [ ] **TC3（防误判三向 · FP-6/7）**：403 / 网络错 / 本地已动作三种态下不做对账、卡片态不被改动（沿用既有断言，语义不漂移）。
-- [ ] **TC4（形态一致性）**：按 HG-DESIGN-FORM 选定形态落断言——形态 A：早于最近一次成功快照的已知 id 缺席→转只读、快照后首见 id 不参账；形态 B：帧消费后恰好触发一次 pending 刷新、重复/重放帧不引发刷新风暴（计数断言）；形态 C：按回签书落。
-- [ ] **TC5（红线锁 + 质量门）**：diff 审查证明 api 仓零触碰、SSE 事件表零 diff、`src/api/hitl.ts` 请求面零变更、改码面 ⊆ 设计闸圈定面；仓根 `pnpm lint` / `pnpm test` / `pnpm build` 退出码均 0；`01_struct.md` 实扫（或零 diff 留痕），flow 变化时 `10_flow_hitl.graph.yaml` + `./scripts/graph-compile.sh` 绿；`docs/coding_wiki/volatile.md` 短注已落；`npx spec-wave task lint --file` PASS。
-- [ ] **TC6（10 帽本棒 · 即立案 PR）**：task 档 + 10 invoke 落盘；`npx spec-wave task lint --file docs/tasks/active/task_web_hitl_overlay_reconcile_race.md` PASS；`npx spec-wave task lint-wiki-delta --target .` PASS；`pnpm lint` 退出码 0；PR 出票待审（维护者 trigger 要求 4）。
-- [ ] **TC7（旧测影响面 · NIT-1 · 30 开工首步）**：grep `tests/hitl-card-reconcile.spec.ts` 4 枚用例 + `tests/chat-store-hitl.spec.ts:1495`（FP-6 面）fixture 时序与形态 A「帧首见」口径相容性——正样本「id 不在列 → 转只读」（:77）fixture 帧先于 fetch 成功存在，按形态 A 口径仍应转只读（保持绿）；翻红=真值对齐断言零放宽。结果回填 30 invoke。
+- [x] **TC1（负样本 · 红测先行 · 维护者建议形态）**：构造「pending 快照成功取回（T₀）→ `hitl.waiting` 帧后至（实体键滞后）」时序 → 浮层 waiting 卡**保持可动作**：`hitl-card-reconciled` 不渲染、批准/驳回按钮在且不陷任何死态。测试**先红后绿**（先于实现合入）。
+- [x] **TC2（正样本零回归 · FP-8）**：快照成功取回且确证 id 不在列（服务端真已处理）→ 卡片转只读「已被处理或已失效」照常生效；既有 `tests/hitl-card-reconcile.spec.ts` 全绿、断言零放宽。
+- [x] **TC3（防误判三向 · FP-6/7）**：403 / 网络错 / 本地已动作三种态下不做对账、卡片态不被改动（沿用既有断言，语义不漂移）。
+- [x] **TC4（形态一致性）**：按 HG-DESIGN-FORM 选定形态落断言——形态 A：早于最近一次成功快照的已知 id 缺席→转只读、快照后首见 id 不参账；形态 B：帧消费后恰好触发一次 pending 刷新、重复/重放帧不引发刷新风暴（计数断言）；形态 C：按回签书落。
+- [x] **TC5（红线锁 + 质量门）**：diff 审查证明 api 仓零触碰、SSE 事件表零 diff、`src/api/hitl.ts` 请求面零变更、改码面 ⊆ 设计闸圈定面；仓根 `pnpm lint` / `pnpm test` / `pnpm build` 退出码均 0；`01_struct.md` 实扫（或零 diff 留痕），flow 变化时 `10_flow_hitl.graph.yaml` + `./scripts/graph-compile.sh` 绿；`docs/coding_wiki/volatile.md` 短注已落；`npx spec-wave task lint --file` PASS。
+- [x] **TC6（10 帽本棒 · 即立案 PR）**：task 档 + 10 invoke 落盘；`npx spec-wave task lint --file docs/tasks/active/task_web_hitl_overlay_reconcile_race.md` PASS；`npx spec-wave task lint-wiki-delta --target .` PASS；`pnpm lint` 退出码 0；PR 出票待审（维护者 trigger 要求 4）。
+- [x] **TC7（旧测影响面 · NIT-1 · 30 开工首步）**：grep `tests/hitl-card-reconcile.spec.ts` 4 枚用例 + `tests/chat-store-hitl.spec.ts:1495`（FP-6 面）fixture 时序与形态 A「帧首见」口径相容性——正样本「id 不在列 → 转只读」（:77）fixture 帧先于 fetch 成功存在，按形态 A 口径仍应转只读（保持绿）；翻红=真值对齐断言零放宽。结果回填 30 invoke。
 
 ---
 
@@ -224,7 +224,8 @@ TC1 负样本先红（构造 T₀ 快照后至帧时序 · 维护者建议：早
 
 ### 自检结论（执行者）
 
-（30/40 回填）
+- **30（2026-11-06）**：形态 A 落地（见实现备忘）；红测先红 2 例后全绿（359 tests）；质量门 lint/test/build 全 0；红线三锁佐证齐（diff 自查）。
+- **40（2026-11-06）**：独立复跑验收 **PASS（零阻塞 · 零 NIT 新增）**——五门独立复跑全 0（359 tests）；TC1–TC7 逐条复验全过；红线三锁独立证实（hitl.ts / useLgRagSse.ts / 事件分支零 diff）；HG-DESIGN-FORM 五条款对拍一致；NIT×3 + 20-R1 偏差登记闭环；闸语义对拍一致。审查文 `docs/harness/reviews/task_web_hitl_overlay_reconcile_race_review_40_20261106.md`。实机时序手测留维护者联调复测回填（sibling TC9 模式 · 不阻塞）。交 lead 关账。
 
 ---
 
@@ -251,3 +252,4 @@ TC1 负样本先红（构造 T₀ 快照后至帧时序 · 维护者建议：早
 | 2026-11-06 | lead 随档签 HG-AUDIT-R1 / HG-DESIGN-FORM / HG-GRAPH-MODULES / HG-CONTRACT-FREEZE approved（PR #98 merge `dcef6a7` · 依据 19:04 大授权窗口 + 13:40 授权）· 设计闸锁 DP-1 形态 A「帧首见」口径（NIT-2/NIT-3）· 验收标准补 TC7 旧测影响面（NIT-1）· 状态 pending→active · GO 30 |
 | 2026-11-06 | 偏差登记：20-R1 审查文「spec 5 用例在位」实= `hitl-card-reconcile.spec.ts` 4 枚 it() + `chat-store-hitl.spec.ts:1495` FP-6 一枚（跨文件 bundling 不精确 · 覆盖实质不缺失 · 30 以本登记为准） |
 | 2026-11-06 | **30 棒交付**（分支 `task/web-hitl-overlay-reconcile-race` · 授权=issue #95 30 GO 评论 · 19:04 大授权窗口）：形态 A 落地（见实现备忘 · 红测先红 2 例后全绿 359 tests · TC7 两处 fixture 真值对齐零放宽）· 质量门 lint/test/build 全 0 · task lint / lint-wiki-delta PASS · graph-compile 绿 · `01_struct.md` 增量备注 + volatile 短注已落 · PR 出票待审 |
+| 2026-11-06 | **40 棒验收 PASS**（分支 `verify-40/fix-task-95-ea7283fb4881` · docs-only · 授权=issue #95 40 评论）：五门独立复跑全 0（359 tests）· TC1–TC7 逐条复验 · 红线三锁独立证实 · 裁定对拍一致 · NIT×3+偏差登记闭环（审查文 `docs/harness/reviews/task_web_hitl_overlay_reconcile_race_review_40_20261106.md`）· 零阻塞零 NIT 新增 · 交 lead 关账（实机时序手测留维护者回填 · sibling TC9 模式） |
