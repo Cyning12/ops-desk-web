@@ -1,6 +1,6 @@
 # Task：web · Chat 审批浮层对账竞态修复（快照时点滞后误判「已被处理或已失效」· issue #95）
 
-> **状态**：`pending`（2026-11-06 · HG-TASK-DRAFT approved · 待 20-R1 出货后 lead 随档签余下四闸）
+> **状态**：`active`（2026-11-06 · 五闸全 approved · HG-TASK-DRAFT=PR #96 `692f268` · 余下四闸=lead 随档签 PR #98 `dcef6a7` · GO 30）
 > **类型**：fix / 前端 UX 状态同步（issue #95 backlog 立案 · #93 联调验证缺陷上报）
 > **统筹**：web 00；**禁止**改姐妹仓 ops-desk-api 任何文件；**禁止**改 SSE 事件表（api 仓零 diff 红线）；**禁止**动 freeze `hitl-browser-decide-v1`（`src/api/hitl.ts` 请求面只消费禁改）
 > **分支**：`task/web-hitl-overlay-reconcile-race`（30 开工时才切；**10 棒 PR 走 ticket 分支 `agent/fix-task-95-ea7283fb4881`，纯文档轨**）
@@ -43,10 +43,10 @@
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
 | HG-TASK-DRAFT | approved | 20-task-audit R1, 30 | 2026-11-06 · lead 签认（PR #96 review · 窗口授权 2026-11-06 13:40 · 依据 #95 受理评论 · merge `692f268` · 00 代录） |
-| HG-AUDIT-R1 | pending | 30 | 20-task-audit R1 PASS 后人签 |
-| HG-DESIGN-FORM | pending | 30 | **设计闸**（维护者 trigger 明示决策点）：修复形态三选一（键口径统一 / 对账时机 / 其他）+ SSE 流改动边界圈定（见「设计闸决策点」节） |
-| HG-GRAPH-MODULES | pending | 30 | 10 评估零新增一级模块/路由/事件管线（30 实扫回签） |
-| HG-CONTRACT-FREEZE | pending | 30 | 红线三锁：api 仓零触碰 / SSE 事件表零 diff / `hitl-browser-decide-v1` 请求面零变更（30 diff 审查佐证） |
+| HG-AUDIT-R1 | approved | 30 | 2026-11-06 · lead 签认（PR #98 review · R1 结论 PASS-WITH-MINOR 零内容阻塞 · merge `dcef6a7` · 偏差登记：审查文「5 用例」实=本文件 4 枚 it() + `tests/chat-store-hitl.spec.ts:1495` FP-6 一枚） |
+| HG-DESIGN-FORM | approved | 30 | 2026-11-06 · lead 签认 · **裁决=DP-1 形态 A**（键口径统一·对账纪元不晚于最近一次成功快照）· **首见口径锁「帧首见」**（NIT-2：本端经 hitl.waiting 首次见到 id 的时点 · 不依赖后端 created_at 新字段 · 与 SSE 事件表零 diff 自洽）· 回签书引用 DP-1 A 原文（NIT-3） |
+| HG-GRAPH-MODULES | approved | 30 | 2026-11-06 · lead 签认（20-R1 亲验 10 评估合理 · 零新增一级模块/路由/事件管线；30 实扫出图谱面须回签） |
+| HG-CONTRACT-FREEZE | approved | 30 | 2026-11-06 · lead 随档签（红线三锁佐证链完整 · FP-2/3/4 + TC5；30 diff 审查佐证闭环） |
 
 ---
 
@@ -136,6 +136,7 @@ Chat 页审批浮层存在**对账竞态**（issue #95 · #93 联调验证时上
 - [ ] **TC4（形态一致性）**：按 HG-DESIGN-FORM 选定形态落断言——形态 A：早于最近一次成功快照的已知 id 缺席→转只读、快照后首见 id 不参账；形态 B：帧消费后恰好触发一次 pending 刷新、重复/重放帧不引发刷新风暴（计数断言）；形态 C：按回签书落。
 - [ ] **TC5（红线锁 + 质量门）**：diff 审查证明 api 仓零触碰、SSE 事件表零 diff、`src/api/hitl.ts` 请求面零变更、改码面 ⊆ 设计闸圈定面；仓根 `pnpm lint` / `pnpm test` / `pnpm build` 退出码均 0；`01_struct.md` 实扫（或零 diff 留痕），flow 变化时 `10_flow_hitl.graph.yaml` + `./scripts/graph-compile.sh` 绿；`docs/coding_wiki/volatile.md` 短注已落；`npx spec-wave task lint --file` PASS。
 - [ ] **TC6（10 帽本棒 · 即立案 PR）**：task 档 + 10 invoke 落盘；`npx spec-wave task lint --file docs/tasks/active/task_web_hitl_overlay_reconcile_race.md` PASS；`npx spec-wave task lint-wiki-delta --target .` PASS；`pnpm lint` 退出码 0；PR 出票待审（维护者 trigger 要求 4）。
+- [ ] **TC7（旧测影响面 · NIT-1 · 30 开工首步）**：grep `tests/hitl-card-reconcile.spec.ts` 4 枚用例 + `tests/chat-store-hitl.spec.ts:1495`（FP-6 面）fixture 时序与形态 A「帧首见」口径相容性——正样本「id 不在列 → 转只读」（:77）fixture 帧先于 fetch 成功存在，按形态 A 口径仍应转只读（保持绿）；翻红=真值对齐断言零放宽。结果回填 30 invoke。
 
 ---
 
@@ -247,3 +248,5 @@ TC1 负样本先红（构造 T₀ 快照后至帧时序 · 维护者建议：早
 | 2026-11-06 | 10 帽起草棒（ticket `fix-task-95` · 维护者 trigger 2026-11-06 13:40 授权 · lead 代行签收与验收）：issue #95 立案落稿——设计闸 DP-1 三形态 + DP-2 SSE 边界 · FP-1~FP-11 · TC1–TC6 · R0–R5 early_stop · 五闸 pending 起 |
 | 2026-11-06 | lead 签 HG-TASK-DRAFT approved（PR #96 review · 窗口授权 2026-11-06 13:40 · 依据 #95 受理评论 · merge `692f268` · 00 代录）· 状态 draft→pending |
 | 2026-11-06 | 20-task-audit R1 PASS-WITH-MINOR（NIT×3 · 审查文 `docs/harness/reviews/task_web_hitl_overlay_reconcile_race_audit_R1_20261106.md`）：零内容阻塞，余下四闸可随档签；lead 预告 HG-DESIGN-FORM=DP-1 形态 A（键口径统一·对账纪元不晚于快照 · 正式签时锁「帧首见」口径 = NIT-2）· 30 开工首步旧测 grep 影响面（NIT-1） |
+| 2026-11-06 | lead 随档签 HG-AUDIT-R1 / HG-DESIGN-FORM / HG-GRAPH-MODULES / HG-CONTRACT-FREEZE approved（PR #98 merge `dcef6a7` · 依据 19:04 大授权窗口 + 13:40 授权）· 设计闸锁 DP-1 形态 A「帧首见」口径（NIT-2/NIT-3）· 验收标准补 TC7 旧测影响面（NIT-1）· 状态 pending→active · GO 30 |
+| 2026-11-06 | 偏差登记：20-R1 审查文「spec 5 用例在位」实= `hitl-card-reconcile.spec.ts` 4 枚 it() + `chat-store-hitl.spec.ts:1495` FP-6 一枚（跨文件 bundling 不精确 · 覆盖实质不缺失 · 30 以本登记为准） |
