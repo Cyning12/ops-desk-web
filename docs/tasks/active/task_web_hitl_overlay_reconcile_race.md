@@ -1,6 +1,6 @@
 # Task：web · Chat 审批浮层对账竞态修复（快照时点滞后误判「已被处理或已失效」· issue #95）
 
-> **状态**：`draft`
+> **状态**：`pending`（2026-11-06 · HG-TASK-DRAFT approved · 待 20-R1 出货后 lead 随档签余下四闸）
 > **类型**：fix / 前端 UX 状态同步（issue #95 backlog 立案 · #93 联调验证缺陷上报）
 > **统筹**：web 00；**禁止**改姐妹仓 ops-desk-api 任何文件；**禁止**改 SSE 事件表（api 仓零 diff 红线）；**禁止**动 freeze `hitl-browser-decide-v1`（`src/api/hitl.ts` 请求面只消费禁改）
 > **分支**：`task/web-hitl-overlay-reconcile-race`（30 开工时才切；**10 棒 PR 走 ticket 分支 `agent/fix-task-95-ea7283fb4881`，纯文档轨**）
@@ -42,7 +42,7 @@
 
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
-| HG-TASK-DRAFT | pending | 20-task-audit R1, 30 | 初稿人扫（维护者 trigger 2026-11-06 受理授权 · lead 代行） |
+| HG-TASK-DRAFT | approved | 20-task-audit R1, 30 | 2026-11-06 · lead 签认（PR #96 review · 窗口授权 2026-11-06 13:40 · 依据 #95 受理评论 · merge `692f268` · 00 代录） |
 | HG-AUDIT-R1 | pending | 30 | 20-task-audit R1 PASS 后人签 |
 | HG-DESIGN-FORM | pending | 30 | **设计闸**（维护者 trigger 明示决策点）：修复形态三选一（键口径统一 / 对账时机 / 其他）+ SSE 流改动边界圈定（见「设计闸决策点」节） |
 | HG-GRAPH-MODULES | pending | 30 | 10 评估零新增一级模块/路由/事件管线（30 实扫回签） |
@@ -245,3 +245,5 @@ TC1 负样本先红（构造 T₀ 快照后至帧时序 · 维护者建议：早
 | 日期 | 说明 |
 |------|------|
 | 2026-11-06 | 10 帽起草棒（ticket `fix-task-95` · 维护者 trigger 2026-11-06 13:40 授权 · lead 代行签收与验收）：issue #95 立案落稿——设计闸 DP-1 三形态 + DP-2 SSE 边界 · FP-1~FP-11 · TC1–TC6 · R0–R5 early_stop · 五闸 pending 起 |
+| 2026-11-06 | lead 签 HG-TASK-DRAFT approved（PR #96 review · 窗口授权 2026-11-06 13:40 · 依据 #95 受理评论 · merge `692f268` · 00 代录）· 状态 draft→pending |
+| 2026-11-06 | 20-task-audit R1 PASS-WITH-MINOR（NIT×3 · 审查文 `docs/harness/reviews/task_web_hitl_overlay_reconcile_race_audit_R1_20261106.md`）：零内容阻塞，余下四闸可随档签；lead 预告 HG-DESIGN-FORM=DP-1 形态 A（键口径统一·对账纪元不晚于快照 · 正式签时锁「帧首见」口径 = NIT-2）· 30 开工首步旧测 grep 影响面（NIT-1） |
