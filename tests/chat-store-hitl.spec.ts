@@ -1455,6 +1455,14 @@ describe('stores/chat · state-sync TC6/TC7 HITL 卡片对账（web-ux-state-syn
 
   it("TC6 两向：成功取回且 id 不在列 → true（卡片转只读「已被处理或已失效」）；id 在列 → false（保持可点）", async () => {
     const chat = useChatStore()
+    // 形态 A 真值对齐（TC7/NIT-1）：req-gone 须经 hitl.waiting 帧首见（首见纪元 < 快照纪元）方可参账
+    chat.sendMessage('部署服务')
+    captured.onEvent?.({
+      event_type: 'hitl.waiting',
+      run_id: 'r-1',
+      seq: 2,
+      payload: { reason: '高危操作需人工审批', requests: [{ id: 'req-gone', reason: '高危操作需人工审批' }] },
+    })
     vi.mocked(fetchHitlPending).mockResolvedValue({
       items: [
         {
@@ -1471,7 +1479,23 @@ describe('stores/chat · state-sync TC6/TC7 HITL 卡片对账（web-ux-state-syn
     await chat.refreshHitlPending()
 
     expect(chat.isHitlRequestReconciled('req-on-list')).toBe(false) // 在列 → 保持可点
-    expect(chat.isHitlRequestReconciled('req-gone')).toBe(true) // 成功取回且不在列 → 只读
+    expect(chat.isHitlRequestReconciled('req-gone')).toBe(true) // 首见早于快照且不在列 → 只读
+  })
+
+  it('TC1/TC4 形态 A：快照后首见的 id 不参账（false）；下一次成功刷新确证后才参账（true）', async () => {
+    const chat = useChatStore()
+    await chat.refreshHitlPending() // 快照纪元 T₀
+    chat.sendMessage('部署服务')
+    captured.onEvent?.({
+      event_type: 'hitl.waiting',
+      run_id: 'r-1',
+      seq: 2,
+      payload: { reason: '高危操作需人工审批', requests: [{ id: 'req-late', reason: '高危操作需人工审批' }] },
+    })
+    expect(chat.isHitlRequestReconciled('req-late')).toBe(false) // 首见纪元 = T₀ · 非早于快照 → 不参账
+
+    await chat.refreshHitlPending() // 下一次成功刷新 → 纪元 T₀+1
+    expect(chat.isHitlRequestReconciled('req-late')).toBe(true) // 首见纪元 < 快照纪元且不在列 → 参账转只读
   })
 
   it('TC7 三向之一（FP-4）：403 权限错 → fetch 未成功 → 不做对账（false）', async () => {
