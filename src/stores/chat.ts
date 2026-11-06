@@ -457,6 +457,15 @@ export const useChatStore = defineStore('chat', () => {
    * 不等于「服务端已无该申请」，不做对账。
    */
   const hitlPendingFetched = ref(false)
+  /**
+   * web-hitl-overlay-reconcile-race · DP-1 形态 A（HG-DESIGN-FORM · NIT-2 帧首见锁）：
+   * 对账纪元。每次 refreshHitlPending 成功 +1；hitlFirstSeenStamps 记录各 request id
+   * 「本端经 hitl.waiting 帧 / 历史 / replay 首见」时的纪元值。仅首见纪元早于最近一次
+   * 成功快照的 id 参账；快照后首见（SSE 新到 · 实体键滞后 · issue #95）不参账，待下一次
+   * 成功刷新确证。零轮询 · 不依赖后端 created_at（SSE 事件表零 diff 自洽）。
+   */
+  const hitlSnapshotStamp = ref(0)
+  const hitlFirstSeenStamps = new Map<string, number>()
 
   /** 可点「续看」：有未完成 run 且当前无流在进行 */
   const canResume = computed(() => activeRun.value !== null && !streaming.value)
@@ -746,6 +755,7 @@ export const useChatStore = defineStore('chat', () => {
         // （陈旧游标重放 hitl.waiting → 守卫重置 → 再入第二 chase 链 = 实测 14>10 根因链路）
         if (!requests.some((request) => request.id && hitlActedRequestIds.has(request.id))) {
           assistant.hitl = buildHitlState(reason, requests)
+          stampHitlFirstSeen(requests) // DP-1 形态 A：帧首见登记（对账纪元判据）
         }
         break
       }
@@ -1292,6 +1302,7 @@ export const useChatStore = defineStore('chat', () => {
       hitlPending.value = resp.items
       hitlPendingError.value = null
       hitlPendingFetched.value = true // D2：fetch 成功过 → 卡片对账判据生效（FP-4/5：失败路径不置位）
+      hitlSnapshotStamp.value += 1 // 形态 A：快照纪元 +1（对账键口径统一的分水岭）
     } catch (err) {
       const apiError = err as ApiError
       if (apiError.status === 403) {
@@ -1302,19 +1313,36 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
+  /** DP-1 形态 A：登记请求 id 首见（live 帧 / 历史 / replay 三入口统一 · 仅首写幂等） */
+  function stampHitlFirstSeen(requests: ChatHitlRequest[]): void {
+    const stamp = hitlSnapshotStamp.value
+    for (const request of requests) {
+      if (request.id && !hitlFirstSeenStamps.has(request.id)) {
+        hitlFirstSeenStamps.set(request.id, stamp)
+      }
+    }
+  }
+
   /**
    * web-ux-state-sync D2 · chat 卡片对账（零轮询零新端点 · 复用 refreshHitlPending 既有刷新点 ·
-   * ChatView 挂载/动作链后已自动刷新）：渲染 waiting 卡时以本函数判定「已被服务端处理而本端未感知」。
+   * ChatView 挂载/动作链后已自动刷新）；web-hitl-overlay-reconcile-race · DP-1 形态 A 修订判据
+   * （键口径统一 · 帧首见纪元锁）：渲染 waiting 卡时以本函数判定「已被服务端处理而本端未感知」。
    * - true（转只读「已被处理或已失效」）：已成功取回（hitlPendingFetched 且 hitlPendingError===null）
-   *   且 request id 不在 pending 列；
+   *   且 request id 不在 pending 列，且**首见纪元早于最近一次成功快照**（形态 A：快照后首见的
+   *   SSE 新到 id 不参账，待下一次成功刷新确证——修 issue #95 实体键滞后误转死态）；
    * - false（不做对账）：fetch 未成功/未跑过（FP-4 403 · FP-5 网络错 · 取回前空列表）；
-   *   本地已动作（FP-6 · hitlActedRequestIds 优先 · 已决单不得被「不在列」误判回 waiting）。
+   *   本地已动作（FP-6 · hitlActedRequestIds 优先 · 已决单不得被「不在列」误判回 waiting）；
+   *   id 在列（保持可点）；本端未经帧/历史首见（渲染卡的 id 必经首见登记，防御性 false）。
    */
   function isHitlRequestReconciled(requestId: string): boolean {
     if (!requestId) return false
     if (hitlActedRequestIds.has(requestId)) return false // FP-6：本地已动作优先
     if (!hitlPendingFetched.value || hitlPendingError.value !== null) return false // FP-4/FP-5：fetch 未成功
-    return !hitlPending.value.some((item) => item.id === requestId)
+    if (hitlPending.value.some((item) => item.id === requestId)) return false // 在列 → 保持可点
+    // DP-1 形态 A：仅首见纪元 < 当前快照纪元的 id 参账（首见晚于最近一次成功快照 = 实体键滞后，不参账）
+    const firstSeen = hitlFirstSeenStamps.get(requestId)
+    if (firstSeen === undefined) return false
+    return firstSeen < hitlSnapshotStamp.value
   }
 
   /**
@@ -1523,6 +1551,7 @@ export const useChatStore = defineStore('chat', () => {
           typeof firstReason?.reason === 'string' ? firstReason.reason : '',
           requests,
         )
+        stampHitlFirstSeen(requests) // DP-1 形态 A：历史/replay 首见登记（口径同 live 帧）
       } else if (terminal === 'error' || terminal === 'disconnected') {
         // D3：失败/补偿中止 →「继续回复」= 新 stream（禁 HITL resume · 禁假续算）
         assistant.allowContinueReply = true
@@ -1684,7 +1713,8 @@ export const useChatStore = defineStore('chat', () => {
     hitlPending,
     hitlPendingError,
     hitlPendingFetched, // D2：「fetch 成功过」标志位（卡片对账判据 · 测试/渲染可读）
-    isHitlRequestReconciled, // D2：waiting 卡对账（true=服务端已无 → 转只读）
+    hitlSnapshotStamp, // DP-1 形态 A：对账纪元（每次成功刷新 +1 · 测试可读）
+    isHitlRequestReconciled, // D2 + 形态 A：waiting 卡对账（true=服务端已无 → 转只读）
     loadLatestSession,
     sendMessage,
     continueReply,

@@ -207,9 +207,9 @@ TC1 负样本先红（构造 T₀ 快照后至帧时序 · 维护者建议：早
 
 | 项 | 状态 | 备注 |
 |----|------|------|
-| 对账竞态修复（形态依 HG-DESIGN-FORM） | ⏳ | |
-| 负样本红测 + 既有断言零放宽 | ⏳ | |
-| 图谱实扫 + wiki 短注 | ⏳ | |
+| 对账竞态修复（DP-1 形态 A · 帧首见锁） | ✅ | `chat.ts`：`hitlSnapshotStamp`（成功刷新 +1）+ `hitlFirstSeenStamps`（`stampHitlFirstSeen` 三入口统一登记 · live 帧 / 历史 replay · 仅首写幂等）；`isHitlRequestReconciled` 加「在列→false」与「首见纪元 < 快照纪元」双判据；`hitlSnapshotStamp` 入 store 导出（测试可读）。零轮询 · 不动事件管线（useLgRagSse/processFrame 零 diff） |
+| 负样本红测 + 既有断言零放宽 | ✅ | 新增 2 红测（先红后绿）：TC1 组件负样本（快照 T₀ → 帧后至 → 可动作 + 二次刷新转只读）· TC1/TC4 store 纪元往返。TC7 两处 fixture 真值对齐（零放宽）：`hitl-card-reconcile.spec.ts` 正样本改「帧首见→确认快照」生产时序并经 store 帧路径 seed；`chat-store-hitl.spec.ts` TC6 先帧首见 req-gone 再断言。全量 359 绿 |
+| 图谱实扫 + wiki 短注 | ✅ | `01_struct.md` pinia 行增量备注（形态 A 纪元化）· graph-compile 绿 · `docs/coding_wiki/volatile.md` 短注已落 |
 
 ---
 
@@ -250,3 +250,4 @@ TC1 负样本先红（构造 T₀ 快照后至帧时序 · 维护者建议：早
 | 2026-11-06 | 20-task-audit R1 PASS-WITH-MINOR（NIT×3 · 审查文 `docs/harness/reviews/task_web_hitl_overlay_reconcile_race_audit_R1_20261106.md`）：零内容阻塞，余下四闸可随档签；lead 预告 HG-DESIGN-FORM=DP-1 形态 A（键口径统一·对账纪元不晚于快照 · 正式签时锁「帧首见」口径 = NIT-2）· 30 开工首步旧测 grep 影响面（NIT-1） |
 | 2026-11-06 | lead 随档签 HG-AUDIT-R1 / HG-DESIGN-FORM / HG-GRAPH-MODULES / HG-CONTRACT-FREEZE approved（PR #98 merge `dcef6a7` · 依据 19:04 大授权窗口 + 13:40 授权）· 设计闸锁 DP-1 形态 A「帧首见」口径（NIT-2/NIT-3）· 验收标准补 TC7 旧测影响面（NIT-1）· 状态 pending→active · GO 30 |
 | 2026-11-06 | 偏差登记：20-R1 审查文「spec 5 用例在位」实= `hitl-card-reconcile.spec.ts` 4 枚 it() + `chat-store-hitl.spec.ts:1495` FP-6 一枚（跨文件 bundling 不精确 · 覆盖实质不缺失 · 30 以本登记为准） |
+| 2026-11-06 | **30 棒交付**（分支 `task/web-hitl-overlay-reconcile-race` · 授权=issue #95 30 GO 评论 · 19:04 大授权窗口）：形态 A 落地（见实现备忘 · 红测先红 2 例后全绿 359 tests · TC7 两处 fixture 真值对齐零放宽）· 质量门 lint/test/build 全 0 · task lint / lint-wiki-delta PASS · graph-compile 绿 · `01_struct.md` 增量备注 + volatile 短注已落 · PR 出票待审 |
