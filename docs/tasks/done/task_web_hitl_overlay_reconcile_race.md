@@ -1,6 +1,6 @@
 # Task：web · Chat 审批浮层对账竞态修复（快照时点滞后误判「已被处理或已失效」· issue #95）
 
-> **状态**：`active`（2026-11-06 · 五闸全 approved · HG-TASK-DRAFT=PR #96 `692f268` · 余下四闸=lead 随档签 PR #98 `dcef6a7` · GO 30）
+> **状态**：`done`（2026-11-06 · lead 关账 · 30 D 形态 A 落地 + 40 独立复跑验收 PASS 零阻塞零 NIT 新增 · PR #100 merge `e39c404`（30）· PR #101 merge `393fdc4`（40）· 实机时序手测遗留=维护者联调回填 sibling TC9 模式）
 > **类型**：fix / 前端 UX 状态同步（issue #95 backlog 立案 · #93 联调验证缺陷上报）
 > **统筹**：web 00；**禁止**改姐妹仓 ops-desk-api 任何文件；**禁止**改 SSE 事件表（api 仓零 diff 红线）；**禁止**动 freeze `hitl-browser-decide-v1`（`src/api/hitl.ts` 请求面只消费禁改）
 > **分支**：`task/web-hitl-overlay-reconcile-race`（30 开工时才切；**10 棒 PR 走 ticket 分支 `agent/fix-task-95-ea7283fb4881`，纯文档轨**）
@@ -253,3 +253,4 @@ TC1 负样本先红（构造 T₀ 快照后至帧时序 · 维护者建议：早
 | 2026-11-06 | 偏差登记：20-R1 审查文「spec 5 用例在位」实= `hitl-card-reconcile.spec.ts` 4 枚 it() + `chat-store-hitl.spec.ts:1495` FP-6 一枚（跨文件 bundling 不精确 · 覆盖实质不缺失 · 30 以本登记为准） |
 | 2026-11-06 | **30 棒交付**（分支 `task/web-hitl-overlay-reconcile-race` · 授权=issue #95 30 GO 评论 · 19:04 大授权窗口）：形态 A 落地（见实现备忘 · 红测先红 2 例后全绿 359 tests · TC7 两处 fixture 真值对齐零放宽）· 质量门 lint/test/build 全 0 · task lint / lint-wiki-delta PASS · graph-compile 绿 · `01_struct.md` 增量备注 + volatile 短注已落 · PR 出票待审 |
 | 2026-11-06 | **40 棒验收 PASS**（分支 `verify-40/fix-task-95-ea7283fb4881` · docs-only · 授权=issue #95 40 评论）：五门独立复跑全 0（359 tests）· TC1–TC7 逐条复验 · 红线三锁独立证实 · 裁定对拍一致 · NIT×3+偏差登记闭环（审查文 `docs/harness/reviews/task_web_hitl_overlay_reconcile_race_review_40_20261106.md`）· 零阻塞零 NIT 新增 · 交 lead 关账（实机时序手测留维护者回填 · sibling TC9 模式） |
+| 2026-11-06 | **CLOSE 关账**（[00] 帽 · 授权=issue #95 CLOSE 评论 · 照 api#337 CLOSE 先例）：active→done 迁档 · 全链 SHA——10=PR #96 `692f268` · 20-R1=PR #98 `dcef6a7` · 30=PR #100 `e39c404` · 40=PR #101 `393fdc4` · 裁定链终态=DP-1 形态 A 键口径统一（帧首见锁 · 纪元戳+首见 Map 选型）· NIT×3 全闭环 · 20-R1 偏差登记闭环 · volatile 本分节移除（要点由本 done 档承载）· issue #95 由 lead 关 |
