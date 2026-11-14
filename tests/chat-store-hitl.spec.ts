@@ -4,10 +4,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ApiError } from '../src/api/http'
 import type { LgRagSseCallbacks } from '../src/composables/useLgRagSse'
 
-vi.mock('../src/api/chat', () => ({
-  fetchLatestSession: vi.fn(),
-}))
-
 vi.mock('../src/api/chatHistory', () => ({
   fetchChatThreads: vi.fn(),
   fetchThreadHistory: vi.fn(),
@@ -24,7 +20,6 @@ vi.mock('../src/composables/useLgRagSse', () => ({
   replayLgRag: vi.fn(),
 }))
 
-import { fetchLatestSession } from '../src/api/chat'
 import { fetchThreadHistory } from '../src/api/chatHistory'
 import type { ChatHistoryRun, ChatThreadHistoryPage } from '../src/api/chatHistory'
 import { decideHitlRequest, fetchHitlPending, resumeHitlRequest } from '../src/api/hitl'
@@ -34,14 +29,6 @@ import {
   LG_RAG_ACTIVE_RUN_STORAGE_KEY,
   useChatStore,
 } from '../src/stores/chat'
-
-const fakeSession = {
-  id: 's-1',
-  user_id: 'u-1',
-  title: 'New Chat',
-  created_at: '2026-07-24T01:00:00',
-  updated_at: '2026-07-24T01:00:00',
-}
 
 let captured: LgRagSseCallbacks
 
@@ -74,11 +61,9 @@ describe('stores/chat · F2 HITL 审批形态 + F1 历史（web-chat-history-hit
       abort: vi.fn(),
       done: Promise.resolve(),
     }))
-    vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
     vi.mocked(fetchHitlPending).mockResolvedValue({ items: [], count: 0 })
 
-    const chat = useChatStore()
-    await chat.loadLatestSession()
+    useChatStore()
   })
 
   describe('AC7 · hitl.waiting 帧 → 审批卡片态（现状 default 忽略 → 改后入列）', () => {
@@ -1446,11 +1431,9 @@ describe('stores/chat · state-sync TC6/TC7 HITL 卡片对账（web-ux-state-syn
       abort: vi.fn(),
       done: Promise.resolve(),
     }))
-    vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
     vi.mocked(fetchHitlPending).mockResolvedValue({ items: [], count: 0 })
 
-    const chat = useChatStore()
-    await chat.loadLatestSession()
+    useChatStore()
   })
 
   it("TC6 两向：成功取回且 id 不在列 → true（卡片转只读「已被处理或已失效」）；id 在列 → false（保持可点）", async () => {
@@ -1543,7 +1526,7 @@ describe('stores/chat · state-sync TC6/TC7 HITL 卡片对账（web-ux-state-syn
 
   it('守卫：取回前（refresh 未跑过）→ 不做对账（false · 空列表≠成功取回）', async () => {
     const chat = useChatStore()
-    // beforeEach 的 loadLatestSession 不触发 refreshHitlPending（消费点在 ChatView 挂载）
+    // 注：refreshHitlPending 消费点在 ChatView 挂载（store 初始化不触发）
     expect(chat.hitlPending).toEqual([])
     expect(chat.isHitlRequestReconciled('req-gone')).toBe(false)
   })

@@ -4,27 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { LgRagSseCallbacks } from '../src/composables/useLgRagSse'
 
-vi.mock('../src/api/chat', () => ({
-  fetchLatestSession: vi.fn(),
-}))
-
 vi.mock('../src/composables/useLgRagSse', () => ({
   streamLgRag: vi.fn(),
   replayLgRag: vi.fn(),
 }))
 
-import { fetchLatestSession } from '../src/api/chat'
 import { replayLgRag, streamLgRag } from '../src/composables/useLgRagSse'
 import { useChatStore } from '../src/stores/chat'
 import { REVEAL_TICK_MS } from '../src/composables/useRevealQueue'
-
-const fakeSession = {
-  id: 's-1',
-  user_id: 'u-1',
-  title: 'New Chat',
-  created_at: '2026-07-24T01:00:00',
-  updated_at: '2026-07-24T01:00:00',
-}
 
 let captured: LgRagSseCallbacks
 
@@ -42,9 +29,7 @@ describe('stores/chat · 实流响应式回归（web-fix-chat-live-reactivity）
       abort: vi.fn(),
       done: Promise.resolve(),
     }))
-    vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
-    const chat = useChatStore()
-    await chat.loadLatestSession()
+    useChatStore()
   })
 
   afterEach(() => {

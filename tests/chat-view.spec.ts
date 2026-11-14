@@ -12,10 +12,6 @@ vi.mock('vue-router', () => ({
   useRouter: () => ({ push: vi.fn() }),
 }))
 
-vi.mock('../src/api/chat', () => ({
-  fetchLatestSession: vi.fn(),
-}))
-
 vi.mock('../src/api/chatHistory', () => ({
   fetchChatThreads: vi.fn(),
   fetchThreadHistory: vi.fn(),
@@ -32,7 +28,6 @@ vi.mock('../src/composables/useLgRagSse', () => ({
   replayLgRag: vi.fn(),
 }))
 
-import { fetchLatestSession } from '../src/api/chat'
 import { fetchChatThreads, fetchThreadHistory } from '../src/api/chatHistory'
 import type { ChatThreadHistoryPage } from '../src/api/chatHistory'
 import { decideHitlRequest, fetchHitlPending, resumeHitlRequest } from '../src/api/hitl'
@@ -47,14 +42,6 @@ import ChatView from '../src/views/ChatView.vue'
  * 历史 run 映射渲染（user/assistant/子任务/截断标记/待审批非完成态）；
  * 「对话 | 历史」双 tab 复用 ChatHistoryPanel（D13 · history-toggle 侧栏形态废止）+ history 404 降级。
  */
-
-const fakeSession = {
-  id: 's-1',
-  user_id: 'u-1',
-  title: 'New Chat',
-  created_at: '2026-07-24T01:00:00',
-  updated_at: '2026-07-24T01:00:00',
-}
 
 // state-sync D2 真值 fixture：waiting 卡 req-42 须在服务端 pending 列表内才可操作
 // （对账后：成功取回且 id 不在列 → 只读「已被处理或已失效」· task_web_ux_state_sync D2）
@@ -95,7 +82,6 @@ describe('views/ChatView（F1 历史 + F2 HITL 渲染断言）', () => {
       return { abort: vi.fn(), done: Promise.resolve() }
     })
     vi.mocked(replayLgRag).mockImplementation(() => ({ abort: vi.fn(), done: Promise.resolve() }))
-    vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
     vi.mocked(fetchHitlPending).mockResolvedValue({ items: [], count: 0 })
   })
 
