@@ -1,6 +1,6 @@
 # Task：web · 摘除旧 chat session 门控（P0' T2b-W1 · issue #23）
 
-> **状态**：`active`（2026-11-14 开工 · 30 实施完成待 PR）  
+> **状态**：`done`（2026-11-14 CLOSE · PR #103 合入 a7c8b42 · 验收 6 条全绿 · Vitest 358 passed/1 skipped）  
 > **类型**：refactor / 前端轨  
 > **统筹**：web 00；**禁止**改姐妹仓任何文件  
 > **分支**：`task/web-t2b-session-removal`
@@ -29,7 +29,7 @@
 | **experience_capture** | `recommended` |
 | **kpi_aggregator** | `CLOSE` |
 | **freeze_id** | `lg-rag-sse-v1`（**只消费**；不改 event 表） |
-| **related_pr** | 待回填 |
+| **related_pr** | `#103`（MERGED 2026-11-14 · a7c8b42） |
 
 ### 人工闸
 
@@ -119,14 +119,18 @@ iOS 仅图谱 TODO 引用无活跃消费；freeze lg-rag-sse-v1 零 diff；无�
 
 ### 自检结论
 
-<!-- CLOSE 前回填 -->
+六条验收全过（api/chat.ts 删除零引用 · 门控单一化 · composer 无 session 依赖 · Vitest 358 passed/1 skipped · eslint/tsc 双绿 · freeze 零 diff）。rebase 后复跑全绿（#100 对账竞态修复同区合并，hitlSnapshotStamp 保留 + loadLatestSession 摘除语义正确并入）。
 
 ## 实现备忘
 
-<!-- CLOSE 前回填 -->
+- session 摘除面：store refs/门控/exports + ChatView 挂载调用/头部块/错误条/composer 2 处 disabled + api/chat.ts 整删 + 5 测试文件去 mock（含 #100 新增 hitl-card-reconcile.spec.ts rebase 后适配）
+- 坑位三条：① web 默认分支是 `main`（非 master）——切分支命令以 master 为基静默失败，提交误落 main 本地（branch -f 复位修复）；② composer disabled 模板绑定首轮漏改，被验收10 + vue-tsc 双拦截；③ rebase 撞上 #100 同区改动（return 块 hitlSnapshotStamp），手动解冲突保留两侧语义
+- 经验：模板内 `chat.xxx` 绑定不走 store 类型导出面，摘除类改动必须 grep 视图模板 + tsc 双查
 
 ## 修订记录
 
 | 日期 | 变更 |
 |---|---|
 | 2026-11-14 | 创建 task（P0' 衍生卡 T2b-W1 · 维护者 m01326「继续」· goal-24fc4112） |
+
+| 2026-11-14 | CLOSE：PR #103 合入 a7c8b42（rebase 解 #100 同区冲突 · CI frontend+check 双绿）· task 迁 done · W2（api 410 化+drop 三表）前置解除 |
