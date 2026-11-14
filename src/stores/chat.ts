@@ -1,8 +1,6 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
-import { fetchLatestSession } from '../api/chat'
-import type { ChatSession } from '../api/chat'
 import { fetchThreadHistory } from '../api/chatHistory'
 import type { ChatHistoryRun } from '../api/chatHistory'
 import { decideHitlRequest, fetchHitlPending, resumeHitlRequest } from '../api/hitl'
@@ -382,7 +380,7 @@ function extractSubtaskDoneText(payload: Record<string, unknown> | undefined): {
 
 /**
  * Chat 会话状态（T3 · freeze lg-rag-sse-v1）：
- * - 进入页面 loadLatestSession() 获取/创建 session（元数据端点，仅 T2 门控，非 lg-rag SoT）
+ * - （T2b-W1 起）旧 chat session 门控已摘除：SoT=thread_id（T3 起），不再有 session 元数据端点调用
  * - sendMessage() 追加 user/assistant 消息并启动 lg-rag SSE 流（POST /api/ops/lg-rag/stream）；
  *   node.progress → thinking（编排进度）；subtask.progress → subtasks（子任务过程）；
  *   answer 整段/delta 填入 content、done/error 收尾
@@ -416,11 +414,6 @@ function extractSubtaskDoneText(payload: Record<string, unknown> | undefined): {
  *   切流史见 docs/tasks/done/task_web_lg_rag_sse_t2.md）
  */
 export const useChatStore = defineStore('chat', () => {
-  const session = ref<ChatSession | null>(null)
-  const sessionLoading = ref(false)
-  /** latest session 获取失败的提示文案（401 由全局拦截跳登录） */
-  const sessionError = ref<string | null>(null)
-
   // T3：刷新/重进恢复已存 thread_id（仅恢复后端上下文，不回显历史消息）
   const initialThreadId = readStoredThreadId()
   /** lg-rag 会话 SoT（禁止当 chat session_id 用）；null = 下轮由 api 生成 */
@@ -551,20 +544,6 @@ export const useChatStore = defineStore('chat', () => {
     queue.setSpeedMultiplier(revealSpeedMultiplier)
     subtaskReveals.set(key, queue)
     queue.enqueue(fullText)
-  }
-
-  async function loadLatestSession(): Promise<void> {
-    if (sessionLoading.value) return
-    sessionLoading.value = true
-    sessionError.value = null
-    try {
-      session.value = await fetchLatestSession()
-    } catch (err) {
-      const apiError = err as ApiError
-      sessionError.value = apiError.message || '获取会话失败'
-    } finally {
-      sessionLoading.value = false
-    }
   }
 
   function pushMessage(role: ChatMessage['role']): ChatMessage {
@@ -879,7 +858,7 @@ export const useChatStore = defineStore('chat', () => {
 
   function sendMessage(text: string): void {
     const content = text.trim()
-    if (!content || streaming.value || !session.value) return
+    if (!content || streaming.value) return
 
     error.value = null
     lastDone.value = null
@@ -910,7 +889,7 @@ export const useChatStore = defineStore('chat', () => {
    * **禁** HITL resume · **禁** replay 当 LLM 续算。query 字面钉 CONTINUE_REPLY_QUERY。
    */
   function continueReply(fromAssistant: ChatMessage): void {
-    if (!fromAssistant.allowContinueReply || streaming.value || !session.value) return
+    if (!fromAssistant.allowContinueReply || streaming.value) return
     const tid = threadId.value
     if (!tid) {
       error.value = {
@@ -1647,7 +1626,7 @@ export const useChatStore = defineStore('chat', () => {
    * thread_id 时，进入 Chat 页自动全量加载该会话历史回显（触发点 = ChatView onMounted ·
    * 复用 openHistoryThread 数据链 fetchAllThreadRuns + mapHistoryRunsToMessages 同一实现 ·
    * 不复制第二份映射逻辑）。
-   * 边界（D12）：无 thread_id 零加载零打扰；loadLatestSession 元数据调用存续；active-run
+   * 边界（D12）：无 thread_id 零加载零打扰；active-run
    * 「不自动 replay」存续（T4 断线游标已恢复则保留不覆盖 · last_seq 精度优先；无 T4 游标且最新
    * run waiting_approval → 沿用 openHistoryThread 挂起闭环 last_seq=0 手动续看）；
    * 失败 → FP-F8/F10 降级（404「会话不存在或已过期」· 其余「历史服务暂不可用」）不阻塞主路径。
@@ -1694,9 +1673,6 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   return {
-    session,
-    sessionLoading,
-    sessionError,
     threadId,
     restoredNotice,
     activeRun,
@@ -1715,7 +1691,6 @@ export const useChatStore = defineStore('chat', () => {
     hitlPendingFetched, // D2：「fetch 成功过」标志位（卡片对账判据 · 测试/渲染可读）
     hitlSnapshotStamp, // DP-1 形态 A：对账纪元（每次成功刷新 +1 · 测试可读）
     isHitlRequestReconciled, // D2 + 形态 A：waiting 卡对账（true=服务端已无 → 转只读）
-    loadLatestSession,
     sendMessage,
     continueReply,
     stopStreaming,

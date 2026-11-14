@@ -53,7 +53,6 @@ function hitlInlineText(message: ChatMessage): string {
 }
 
 onMounted(() => {
-  void chat.loadLatestSession()
   // F1/D1-1（web-hitl-decision-surface）：进入 Chat 页一次性 pending 核对（第三消费点 · 承 done task AC16①/② · S1 事件驱动零定时器）
   void chat.refreshHitlPending()
   // D11/D12：已存 thread_id → 自动全量加载历史回显（store 内零 id 零打扰守卫 · 不自动 replay 存续）
@@ -133,11 +132,6 @@ function onSelectHistory(threadId: string): void {
     <div class="chat-page__main">
       <header class="chat-page__header">
         <h1 class="chat-page__title">Chat</h1>
-        <p v-if="chat.session" class="chat-page__session">
-          {{ chat.session.title || 'New Chat' }}
-          <span class="chat-page__session-id">#{{ chat.session.id }}</span>
-        </p>
-        <p v-else-if="chat.sessionLoading" class="chat-page__session">加载会话中…</p>
         <span v-if="chat.threadId" class="chat-page__thread-id" :title="chat.threadId">
           thread {{ chat.threadId.slice(0, 8) }}
         </span>
@@ -193,15 +187,6 @@ function onSelectHistory(threadId: string): void {
         </el-button>
       </div>
     </el-alert>
-
-    <el-alert
-      v-if="chat.sessionError"
-      class="chat-page__alert"
-      type="error"
-      :title="`获取会话失败：${chat.sessionError}`"
-      :closable="false"
-      show-icon
-    />
 
     <el-alert
       v-if="chat.historyError"
@@ -368,7 +353,7 @@ function onSelectHistory(threadId: string): void {
         :rows="2"
         resize="none"
         placeholder="输入消息，Enter 发送（Shift+Enter 换行）"
-        :disabled="!chat.session || chat.streaming || chat.historyLoading"
+        :disabled="chat.streaming || chat.historyLoading"
         @keydown.enter.exact.prevent="onSend"
       />
       <el-button
@@ -384,7 +369,7 @@ function onSelectHistory(threadId: string): void {
         v-else
         class="chat-page__send"
         type="primary"
-        :disabled="!chat.session || !draft.trim() || chat.historyLoading"
+        :disabled="!draft.trim() || chat.historyLoading"
         @click="onSend"
       >
         发送

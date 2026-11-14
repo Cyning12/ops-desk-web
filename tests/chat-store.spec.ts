@@ -4,10 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ApiError } from '../src/api/http'
 import type { LgRagSseCallbacks } from '../src/composables/useLgRagSse'
 
-vi.mock('../src/api/chat', () => ({
-  fetchLatestSession: vi.fn(),
-}))
-
 // D11/D12（task_web_hitl_approval_overlay_ux）：恢复历史全量加载钉测 mock 面（改钉与改码同 PR 可见）
 vi.mock('../src/api/chatHistory', () => ({
   fetchChatThreads: vi.fn(),
@@ -19,7 +15,6 @@ vi.mock('../src/composables/useLgRagSse', () => ({
   replayLgRag: vi.fn(),
 }))
 
-import { fetchLatestSession } from '../src/api/chat'
 import { fetchThreadHistory } from '../src/api/chatHistory'
 import type { ChatThreadHistoryPage } from '../src/api/chatHistory'
 import { replayLgRag, streamLgRag } from '../src/composables/useLgRagSse'
@@ -35,14 +30,6 @@ import {
   REVEAL_REPLAY_SPEED_MULTIPLIER,
   REVEAL_TICK_MS,
 } from '../src/composables/useRevealQueue'
-
-const fakeSession = {
-  id: 's-1',
-  user_id: 'u-1',
-  title: 'New Chat',
-  created_at: '2026-07-24T01:00:00',
-  updated_at: '2026-07-24T01:00:00',
-}
 
 let captured: LgRagSseCallbacks
 let abortMock: ReturnType<typeof vi.fn>
@@ -66,26 +53,6 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       return { abort: replayAbortMock, done: Promise.resolve() }
     })
 
-    vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
-    const chat = useChatStore()
-    await chat.loadLatestSession()
-  })
-
-  it('loadLatestSession 成功：写入 session；失败：写入 sessionError', async () => {
-    const chat = useChatStore()
-    expect(chat.session).toEqual(fakeSession)
-    expect(chat.sessionError).toBeNull()
-
-    vi.mocked(fetchLatestSession).mockRejectedValueOnce({
-      status: 500,
-      message: 'server boom',
-      raw: null,
-    } as ApiError)
-    const fresh = useChatStore()
-    fresh.session = null
-    await fresh.loadLatestSession()
-    expect(fresh.session).toBeNull()
-    expect(fresh.sessionError).toBe('server boom')
   })
 
   it('sendMessage 走 lg-rag stream：query/mode=supervisor，thread_id 留空（T2）', () => {
@@ -351,7 +318,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
     expect(chat.messages).toHaveLength(4)
   })
 
-  it('streaming 中忽略重复发送；无 session 时忽略发送', async () => {
+  it('streaming 中忽略重复发送', async () => {
     const chat = useChatStore()
     chat.sendMessage('第一条')
     expect(streamLgRag).toHaveBeenCalledTimes(1)
@@ -359,13 +326,6 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
     chat.sendMessage('第二条（应被忽略）')
     expect(streamLgRag).toHaveBeenCalledTimes(1)
     expect(chat.messages).toHaveLength(2)
-
-    // 无 session
-    setActivePinia(createPinia())
-    vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
-    const empty = useChatStore()
-    empty.sendMessage('没有 session')
-    expect(empty.messages).toHaveLength(0)
   })
 
   describe('T3 · thread_id 会话连续性', () => {
@@ -373,9 +333,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
     async function createRestoredChat(id: string) {
       window.localStorage.setItem(LG_RAG_THREAD_ID_STORAGE_KEY, id)
       setActivePinia(createPinia())
-      vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
       const chat = useChatStore()
-      await chat.loadLatestSession()
       return chat
     }
 
@@ -445,7 +403,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
 
       expect(chat.threadId).toBe('t-stored')
       expect(chat.restoredNotice).toBe(true)
-      // D12：loadLatestSession 仅恢复指针本身零加载；历史加载触发点 = 视图 onMounted → restoreThreadHistory
+      // D12：store 初始化零加载（T2b-W1 起无 session 元数据调用）；历史加载触发点 = 视图 onMounted → restoreThreadHistory
       expect(chat.messages).toHaveLength(0)
       expect(fetchThreadHistory).not.toHaveBeenCalled()
 
@@ -557,7 +515,6 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
         JSON.stringify({ run_id: 'r-9', last_seq: 7, thread_id: 't-stored', updated_at: '2026-10-27T00:00:00Z' }),
       )
       setActivePinia(createPinia())
-      vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
       vi.mocked(fetchThreadHistory).mockResolvedValue({
         thread_id: 't-stored',
         runs: [
@@ -575,7 +532,6 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
         next_cursor: null,
       })
       const chat = useChatStore()
-      await chat.loadLatestSession()
       expect(chat.activeRun).toMatchObject({ run_id: 'r-9', last_seq: 7 })
 
       await chat.restoreThreadHistory()
@@ -730,7 +686,6 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
       expect(chat.threadId).toBeNull() // 读降级为 null
       expect(chat.restoredNotice).toBe(false)
 
-      chat.session = fakeSession
       chat.sendMessage('你好')
       captured.onEvent?.({ event_type: 'run.start', payload: { run_id: 'r-1', thread_id: 't-mem' } })
       expect(chat.threadId).toBe('t-mem') // 内存态仍生效
@@ -1037,7 +992,6 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
         JSON.stringify({ run_id: 'r-9', last_seq: 7, thread_id: 't-9', updated_at: '2026-08-31T00:00:00Z' }),
       )
       setActivePinia(createPinia())
-      vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
       const chat = useChatStore()
 
       expect(chat.activeRun).toMatchObject({ run_id: 'r-9', last_seq: 7, thread_id: 't-9' })
@@ -1066,9 +1020,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
     it('刷新/重进：仅有 thread_id 无 active-run → 沿用 T3 恢复提示，无续看条', async () => {
       window.localStorage.setItem(LG_RAG_THREAD_ID_STORAGE_KEY, 't-stored')
       setActivePinia(createPinia())
-      vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
       const chat = useChatStore()
-      await chat.loadLatestSession()
 
       expect(chat.restoredNotice).toBe(true)
       expect(chat.resumeNotice).toBe(false)
@@ -1081,9 +1033,7 @@ describe('stores/chat（T2 · lg-rag SSE）', () => {
         JSON.stringify({ run_id: 'r-9', last_seq: 7, thread_id: 't-9', updated_at: 'x' }),
       )
       setActivePinia(createPinia())
-      vi.mocked(fetchLatestSession).mockResolvedValue(fakeSession)
       const chat = useChatStore()
-      await chat.loadLatestSession()
       expect(chat.resumeNotice).toBe(true)
 
       chat.startNewSession()

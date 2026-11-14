@@ -10,16 +10,11 @@ vi.mock('../src/api/hitl', () => ({
   resumeHitlRequest: vi.fn(),
 }))
 
-vi.mock('../src/api/chat', () => ({
-  fetchLatestSession: vi.fn(),
-}))
-
 vi.mock('../src/composables/useLgRagSse', () => ({
   streamLgRag: vi.fn(),
   replayLgRag: vi.fn(),
 }))
 
-import { fetchLatestSession } from '../src/api/chat'
 import { fetchHitlPending } from '../src/api/hitl'
 import type { LgRagSseCallbacks } from '../src/composables/useLgRagSse'
 import { replayLgRag, streamLgRag } from '../src/composables/useLgRagSse'
@@ -87,13 +82,6 @@ describe('HitlApprovalCard · state-sync 对账渲染（web-ux-state-sync · D2 
     window.localStorage.clear()
     setActivePinia(createPinia())
     vi.clearAllMocks()
-    vi.mocked(fetchLatestSession).mockResolvedValue({
-      id: 's-1',
-      user_id: 'u-1',
-      title: 'New Chat',
-      created_at: '2026-07-24T01:00:00',
-      updated_at: '2026-07-24T01:00:00',
-    })
     vi.mocked(streamLgRag).mockImplementation((_input, callbacks) => {
       captured = callbacks ?? {}
       return { abort: vi.fn(), done: Promise.resolve() }
@@ -125,7 +113,6 @@ describe('HitlApprovalCard · state-sync 对账渲染（web-ux-state-sync · D2 
 
   it('成功取回且 id 不在列 → 只读「已被处理或已失效」：批准/驳回/resume_mode 不渲染', async () => {
     const chat = useChatStore()
-    await chat.loadLatestSession()
     // 形态 A 真值对齐（TC7/NIT-1）：帧首见先于确认快照（生产时序）——首见登记须经 store 帧路径
     const message = seedWaitingFrame(chat, 'req-a1')
     vi.mocked(fetchHitlPending).mockResolvedValue({ items: [], count: 0 })
@@ -142,7 +129,6 @@ describe('HitlApprovalCard · state-sync 对账渲染（web-ux-state-sync · D2 
 
   it('TC1 负样本（issue #95 · 形态 A）：快照 T₀ 成功取回后 hitl.waiting 帧后至（实体键滞后）→ 保持可动作 · 不误转只读；下一次成功刷新确证后才转只读', async () => {
     const chat = useChatStore()
-    await chat.loadLatestSession()
     vi.mocked(fetchHitlPending).mockResolvedValue({ items: [], count: 0 })
     await chat.refreshHitlPending() // T₀ 快照成功（空列）
 
