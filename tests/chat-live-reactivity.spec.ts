@@ -4,6 +4,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { LgRagSseCallbacks } from '../src/composables/useLgRagSse'
 
+vi.mock('../src/api/goals', () => ({
+  listThreadGoals: vi.fn().mockResolvedValue([]),
+  patchGoalStatus: vi.fn(),
+}))
+
 vi.mock('../src/composables/useLgRagSse', () => ({
   streamLgRag: vi.fn(),
   replayLgRag: vi.fn(),

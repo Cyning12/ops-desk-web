@@ -12,6 +12,11 @@ vi.mock('vue-router', () => ({
   useRouter: () => ({ push: vi.fn() }),
 }))
 
+vi.mock('../src/api/goals', () => ({
+  listThreadGoals: vi.fn().mockResolvedValue([]),
+  patchGoalStatus: vi.fn(),
+}))
+
 vi.mock('../src/api/chatHistory', () => ({
   fetchChatThreads: vi.fn(),
   fetchThreadHistory: vi.fn(),

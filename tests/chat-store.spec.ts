@@ -5,6 +5,11 @@ import type { ApiError } from '../src/api/http'
 import type { LgRagSseCallbacks } from '../src/composables/useLgRagSse'
 
 // D11/D12（task_web_hitl_approval_overlay_ux）：恢复历史全量加载钉测 mock 面（改钉与改码同 PR 可见）
+vi.mock('../src/api/goals', () => ({
+  listThreadGoals: vi.fn().mockResolvedValue([]),
+  patchGoalStatus: vi.fn(),
+}))
+
 vi.mock('../src/api/chatHistory', () => ({
   fetchChatThreads: vi.fn(),
   fetchThreadHistory: vi.fn(),
