@@ -4,6 +4,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ApiError } from '../src/api/http'
 import type { LgRagSseCallbacks } from '../src/composables/useLgRagSse'
 
+vi.mock('../src/api/goals', () => ({
+  listThreadGoals: vi.fn().mockResolvedValue([]),
+  patchGoalStatus: vi.fn(),
+}))
+
 vi.mock('../src/api/chatHistory', () => ({
   fetchChatThreads: vi.fn(),
   fetchThreadHistory: vi.fn(),

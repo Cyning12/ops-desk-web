@@ -2,6 +2,8 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 import { fetchThreadHistory } from '../api/chatHistory'
+import { listThreadGoals, patchGoalStatus } from '../api/goals'
+import type { GoalItem, GoalStatus } from '../api/goals'
 import type { ChatHistoryRun } from '../api/chatHistory'
 import { decideHitlRequest, fetchHitlPending, resumeHitlRequest } from '../api/hitl'
 import type { HitlDecision, HitlDecideResponse, HitlPendingItem, HitlResumeMode } from '../api/hitl'
@@ -851,6 +853,7 @@ export const useChatStore = defineStore('chat', () => {
         },
         onDone: () => {
           streaming.value = false
+          void loadThreadGoal(threadId.value) // T5b：run 收尾刷新 goal（首轮懒创建覆盖点 · best-effort 不阻塞）
         },
       },
     )
@@ -945,6 +948,7 @@ export const useChatStore = defineStore('chat', () => {
     threadId.value = null
     restoredNotice.value = false
     clearStoredThreadId()
+    currentGoal.value = null // T5b：thread 上下文消失即清 goal chip
   }
 
   /** 新会话：清 thread_id + 清消息 + 清提示 + 清 active-run；下轮发送 body 不带 thread_id（api 生成新 id） */
@@ -958,6 +962,7 @@ export const useChatStore = defineStore('chat', () => {
     lastDone.value = null
     interrupted.value = false
     resumeHint.value = null
+    currentGoal.value = null // T5b：新会话无 goal（下轮懒创建后 onDone 刷新）
   }
 
   /** 关闭「已恢复上次会话上下文」提示条 */
@@ -1585,6 +1590,7 @@ export const useChatStore = defineStore('chat', () => {
       // 切入该 thread：续问带 thread_id（T3 语义沿用 · run.start 捕获点不受影响）
       threadId.value = tid
       writeStoredThreadId(tid)
+      void loadThreadGoal(tid) // T5b：切入历史会话即载 goal（降级静默）
       restoredNotice.value = false
       error.value = null
       lastDone.value = null
@@ -1638,6 +1644,7 @@ export const useChatStore = defineStore('chat', () => {
     if (!tid || historyLoading.value) return
     historyLoading.value = true
     historyError.value = null
+    void loadThreadGoal(tid) // T5b：刷新回显即载 goal（与 openHistoryThread 同口径 · 降级静默）
     try {
       const runs = await fetchAllThreadRuns(tid)
       if (messages.value.length > 0) return // D14：live 内容优先，不双轨渲染（finally 仍复位 loading）
@@ -1672,6 +1679,58 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
+  /**
+   * T5b · goal chip 状态（P1-T5 · 07 §5 · issue web#104）：
+   * currentGoal=当前 thread 最新非终态 goal（无则最新终态 · 皆无 null → chip 隐藏）。
+   * 闸 off 场景 api 无 goal 行 → 恒 null 零打扰；加载失败静默降级不阻塞 Chat 主路径。
+   */
+  const currentGoal = ref<GoalItem | null>(null)
+  const goalActionError = ref<string | null>(null)
+
+  /** 载入 thread goal（best-effort · 403/404/网络静默 null · 401 交 http 拦截器） */
+  async function loadThreadGoal(tid: string | null): Promise<void> {
+    if (!tid) {
+      currentGoal.value = null
+      return
+    }
+    try {
+      const goals = await listThreadGoals(tid)
+      const nonTerminal = goals.filter((g) => g.status === 'active' || g.status === 'paused')
+      currentGoal.value = nonTerminal[nonTerminal.length - 1] ?? goals[goals.length - 1] ?? null
+    } catch {
+      // 降级：chip 隐藏不炸屏（FP-F8 同口径）
+      currentGoal.value = null
+    }
+  }
+
+  /**
+   * 人工状态流转（O-1：paused→active 唯一复活通道 · 迁移矩阵上游执行）。
+   * 409=状态已变化/终态 → 提示并重新拉取对账；404=不存在/跨租户 → 隐藏 chip。
+   */
+  async function patchCurrentGoalStatus(status: GoalStatus): Promise<void> {
+    const goal = currentGoal.value
+    if (!goal) return
+    goalActionError.value = null
+    try {
+      currentGoal.value = await patchGoalStatus(goal.goal_id, status)
+    } catch (err) {
+      const apiError = err as ApiError
+      if (apiError.status === 409) {
+        goalActionError.value = '目标状态已变化，正在刷新'
+        await loadThreadGoal(goal.thread_id)
+      } else if (apiError.status === 404) {
+        currentGoal.value = null
+        goalActionError.value = '目标不存在或已过期'
+      } else if (apiError.status !== 401) {
+        goalActionError.value = '目标操作暂不可用，请稍后重试'
+      }
+    }
+  }
+
+  function dismissGoalActionError(): void {
+    goalActionError.value = null
+  }
+
   return {
     threadId,
     restoredNotice,
@@ -1702,5 +1761,10 @@ export const useChatStore = defineStore('chat', () => {
     decideHitl,
     openHistoryThread,
     restoreThreadHistory,
+    currentGoal,
+    goalActionError,
+    loadThreadGoal,
+    patchCurrentGoalStatus,
+    dismissGoalActionError,
   }
 })

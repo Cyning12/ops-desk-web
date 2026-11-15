@@ -4,6 +4,11 @@ import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 
+vi.mock('../src/api/goals', () => ({
+  listThreadGoals: vi.fn().mockResolvedValue([]),
+  patchGoalStatus: vi.fn(),
+}))
+
 vi.mock('../src/api/hitl', () => ({
   fetchHitlPending: vi.fn(),
   decideHitlRequest: vi.fn(),

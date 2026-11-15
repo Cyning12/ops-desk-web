@@ -7,6 +7,7 @@ import ChatHistoryPanel from '../components/chat-history/ChatHistoryPanel.vue'
 import { useAuthStore } from '../stores/auth'
 import { useChatStore } from '../stores/chat'
 import type { ChatMessage } from '../stores/chat'
+import type { GoalStatus } from '../api/goals'
 import { localizeErrorStage } from '../stores/httpErrorI18n'
 
 const chat = useChatStore()
@@ -50,6 +51,31 @@ function hitlInlineText(message: ChatMessage): string {
     default:
       return '人工审批 · 审批详情不可用'
   }
+}
+
+// T5b · goal chip（P1-T5 · 07 §5 · web#104）：文案裁定「修订目标」禁用「重命名」；
+// 动作面=上游状态机迁移矩阵（active→暂停/完成/废弃 · paused→恢复/完成/废弃 · 终态仅展示无动作）
+const goalChipText = computed(() => {
+  const objective = chat.currentGoal?.objective ?? ''
+  return objective.length > 24 ? objective.slice(0, 24) + '…' : objective
+})
+const goalStatusLabel = computed(() => {
+  switch (chat.currentGoal?.status) {
+    case 'paused':
+      return '已暂停'
+    case 'done':
+      return '已完成'
+    case 'abandoned':
+      return '已废弃'
+    default:
+      return ''
+  }
+})
+const goalNonTerminal = computed(
+  () => chat.currentGoal?.status === 'active' || chat.currentGoal?.status === 'paused',
+)
+function onGoalCommand(status: GoalStatus): void {
+  void chat.patchCurrentGoalStatus(status)
 }
 
 onMounted(() => {
@@ -135,6 +161,52 @@ function onSelectHistory(threadId: string): void {
         <span v-if="chat.threadId" class="chat-page__thread-id" :title="chat.threadId">
           thread {{ chat.threadId.slice(0, 8) }}
         </span>
+        <el-dropdown
+          v-if="chat.currentGoal"
+          class="chat-page__goal"
+          trigger="click"
+          data-test="goal-chip"
+          @command="onGoalCommand"
+        >
+          <span
+            class="chat-page__goal-chip"
+            :class="`is-${chat.currentGoal.status}`"
+            :title="'修订目标 · ' + chat.currentGoal.objective"
+          >
+            目标 · {{ goalChipText }}
+            <span v-if="chat.currentGoal.status !== 'active'" class="chat-page__goal-status">
+              {{ goalStatusLabel }}
+            </span>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item
+                v-if="chat.currentGoal.status === 'paused'"
+                command="active"
+                data-test="goal-cmd-active"
+              >
+                恢复目标
+              </el-dropdown-item>
+              <el-dropdown-item
+                v-if="chat.currentGoal.status === 'active'"
+                command="paused"
+                data-test="goal-cmd-paused"
+              >
+                暂停目标
+              </el-dropdown-item>
+              <el-dropdown-item v-if="goalNonTerminal" command="done" data-test="goal-cmd-done">
+                完成目标
+              </el-dropdown-item>
+              <el-dropdown-item
+                v-if="goalNonTerminal"
+                command="abandoned"
+                data-test="goal-cmd-abandoned"
+              >
+                废弃目标
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
         <el-button class="chat-page__new-session" size="small" plain @click="onNewSession">
           新会话
         </el-button>
@@ -196,6 +268,16 @@ function onSelectHistory(threadId: string): void {
       :title="chat.historyError"
       data-test="history-error"
       @close="chat.historyError = null"
+    />
+
+    <el-alert
+      v-if="chat.goalActionError"
+      class="chat-page__alert"
+      type="warning"
+      show-icon
+      :title="chat.goalActionError"
+      data-test="goal-action-error"
+      @close="chat.dismissGoalActionError()"
     />
 
     <div ref="listEl" class="chat-page__messages">
@@ -643,5 +725,41 @@ function onSelectHistory(threadId: string): void {
 
 .chat-page__send {
   flex: none;
+}
+
+.chat-page__goal-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 320px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 20px;
+  cursor: pointer;
+  color: var(--el-color-primary);
+  background: var(--el-color-primary-light-9);
+  border: 1px solid var(--el-color-primary-light-7);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.chat-page__goal-chip.is-paused {
+  color: var(--el-color-warning);
+  background: var(--el-color-warning-light-9);
+  border-color: var(--el-color-warning-light-7);
+}
+
+.chat-page__goal-chip.is-done,
+.chat-page__goal-chip.is-abandoned {
+  color: var(--el-text-color-secondary);
+  background: var(--el-fill-color-light);
+  border-color: var(--el-border-color);
+}
+
+.chat-page__goal-status {
+  font-size: 11px;
+  opacity: 0.85;
 }
 </style>
