@@ -32,6 +32,14 @@ vi.mock('../src/composables/useLgRagSse', () => ({
   replayLgRag: vi.fn(),
 }))
 
+// P3-T8：ChatView 挂载触发任务面板首拉 · 静默降级不打穿既有断言
+vi.mock('../src/api/taskPanel', () => ({
+  listThreadRuns: vi.fn().mockResolvedValue({ runs: [], next_cursor: null }),
+  fetchRunEvents: vi.fn(),
+  listThreadSchedules: vi.fn().mockResolvedValue([]),
+  patchSchedule: vi.fn(),
+}))
+
 import { listThreadGoals, patchGoalStatus } from '../src/api/goals'
 import { useChatStore } from '../src/stores/chat'
 import ChatView from '../src/views/ChatView.vue'

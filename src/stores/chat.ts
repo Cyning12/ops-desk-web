@@ -15,6 +15,7 @@ import {
   RevealQueue,
 } from '../composables/useRevealQueue'
 import { useAuthStore } from './auth'
+import { useTaskPanelStore } from './taskPanel'
 import { localizeHttpErrorDetail } from './httpErrorI18n'
 
 /**
@@ -625,6 +626,12 @@ export const useChatStore = defineStore('chat', () => {
       writeStoredActiveRun(activeRun.value)
     }
     handleEvent(event, assistant)
+    // P3-T8：任务面板 SSE 增量（既有帧挂点 · 零新帧 · replay 重放同管线幂等，终态粘滞由面板 store 守卫）
+    try {
+      useTaskPanelStore().applySseFrame(event)
+    } catch {
+      // 面板幂等更新失败不阻塞主消息管线（FP-F8 静默降级同口径）
+    }
   }
 
   function handleEvent(event: LgRagSseEvent, assistant: ChatMessage): void {
