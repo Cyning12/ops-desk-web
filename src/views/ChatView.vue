@@ -9,6 +9,11 @@ import { useChatStore } from '../stores/chat'
 import type { ChatMessage } from '../stores/chat'
 import type { GoalStatus } from '../api/goals'
 import { localizeErrorStage } from '../stores/httpErrorI18n'
+import { ElMessage } from 'element-plus'
+import TaskPanel from '../components/chat/TaskPanel.vue'
+import RunReplayDrawer from '../components/chat/RunReplayDrawer.vue'
+import { useTaskPanelStore } from '../stores/taskPanel'
+import type { ThreadRunItem } from '../api/taskPanel'
 
 const chat = useChatStore()
 const auth = useAuthStore()
@@ -78,9 +83,48 @@ function onGoalCommand(status: GoalStatus): void {
   void chat.patchCurrentGoalStatus(status)
 }
 
+// P3-T8：任务面板（14 §2.2/§2.3 · 数据源 = taskPanel store · REST 全量拉 + SSE 既有帧增量）
+const taskPanel = useTaskPanelStore()
+const replayVisible = ref(false)
+const replayRun = ref<ThreadRunItem | null>(null)
+
+function openReplayDrawer(run: ThreadRunItem): void {
+  replayRun.value = run
+  replayVisible.value = true
+}
+
+function onTaskActivate(run: ThreadRunItem, action: 'resume' | 'scroll-hitl' | 'replay'): void {
+  if (action === 'scroll-hitl') {
+    // 待审批：锚定滚动至 composer 上方审批浮层（数据层零改 · 浮层 = 既有 hitl 态消息单一数据源）
+    activeTab.value = 'conversation'
+    void nextTick().then(() => {
+      const overlay = document.querySelector('[data-test="hitl-overlay"]')
+      if (overlay) {
+        overlay.scrollIntoView({ block: 'nearest' })
+      } else {
+        ElMessage.info('当前没有待审批请求')
+      }
+    })
+    return
+  }
+  if (action === 'resume') {
+    // 续看仅当本机持有该 run 的活动游标（resumeFromCursor 走 activeRun · 不新造续看机制 · 实现备忘）；
+    // 非本机活动 run → 静态降级回放 drawer（回放 = 只读）
+    if (chat.activeRun && chat.activeRun.run_id === run.run_id) {
+      chat.resumeFromCursor()
+      return
+    }
+    openReplayDrawer(run)
+    return
+  }
+  openReplayDrawer(run)
+}
+
 onMounted(() => {
   // F1/D1-1（web-hitl-decision-surface）：进入 Chat 页一次性 pending 核对（第三消费点 · 承 done task AC16①/② · S1 事件驱动零定时器）
   void chat.refreshHitlPending()
+  // P3-T8：任务面板首拉（404/失败静默降级空态 · 不阻塞 Chat 主路径）
+  void taskPanel.loadPanel(chat.threadId)
   // D11/D12：已存 thread_id → 自动全量加载历史回显（store 内零 id 零打扰守卫 · 不自动 replay 存续）
   void chat.restoreThreadHistory()
 })
@@ -88,6 +132,14 @@ onMounted(() => {
 onBeforeUnmount(() => {
   chat.stopStreaming()
 })
+
+// P3-T8：thread 切换/恢复后面板幂等重拉（restoreThreadHistory 异步回填亦覆盖）
+watch(
+  () => chat.threadId,
+  (tid) => {
+    void taskPanel.loadPanel(tid)
+  },
+)
 
 // SSE 流 401 时 store 已清空本地会话；这里负责跳登录（对齐 axios 拦截器语义）
 watch(
@@ -235,6 +287,8 @@ function onSelectHistory(threadId: string): void {
       </nav>
 
     <template v-if="activeTab === 'conversation'">
+    <!-- P3-T8：任务面板（goal chip 下方 · el-collapse 默认收起 · 徽标「任务 · N 进行中」常显） -->
+    <TaskPanel class="chat-page__task-panel" @activate="onTaskActivate" />
     <el-alert
       v-if="chat.restoredNotice"
       class="chat-page__alert"
@@ -464,6 +518,8 @@ function onSelectHistory(threadId: string): void {
       <ChatHistoryPanel @select="onSelectHistory" />
     </div>
     </div>
+    <!-- P3-T8：轨迹回放抽屉（只读 · el-timeline 八值帧 · 静态不回放光标动画） -->
+    <RunReplayDrawer v-model="replayVisible" :run="replayRun" />
   </div>
 </template>
 

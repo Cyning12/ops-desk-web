@@ -1,7 +1,7 @@
 {
   "schema_version": "graph_v2",
   "freeze_id": "OPS_DESK_WEB_TECH_GRAPH_FREEZE_20261116_V1",
-  "generated_at": "2026-11-16T15:15:17Z",
+  "generated_at": "2026-11-16T15:34:54Z",
   "graphs": [
     {
       "id": "00_main",
@@ -367,6 +367,26 @@
       "graph_id": "10_flow_chat",
       "id": "chat_history_panel",
       "label": "ChatHistoryPanel（历史 tab 复用 · 零新增路由）"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "task_panel",
+      "label": "TaskPanel（会话顶任务面板 · el-collapse 内嵌 · 徽标计数 · 卡片+定时任务子区）"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "task_replay_drawer",
+      "label": "RunReplayDrawer（轨迹回放抽屉 · el-drawer + el-timeline 八值帧）"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "task_panel_store",
+      "label": "useTaskPanelStore（runs+schedules · applySseFrame 增量 · STICKY_TERMINAL）"
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "id": "task_panel_api",
+      "label": "taskPanel api（listThreadRuns/fetchRunEvents/listThreadSchedules/patchSchedule）"
     },
     {
       "graph_id": "10_flow_graph",
@@ -1462,6 +1482,76 @@
       "mark": "->",
       "type": "depends_on",
       "label": "历史 tab 承载（选中 → openHistoryThread + 自动回对话 tab）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "chat_view",
+      "to": "task_panel",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "conversation tab 内嵌（onMounted/threadId watch → loadPanel · @activate 三分支路由）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "task_panel",
+      "to": "task_panel_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "binds（inProgressCount 徽标 · schedules 子区动作）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "task_panel_store",
+      "to": "task_panel_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "calls（双拉静默降级 · 404 重拉对账）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "task_panel_api",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "GET /ops/lg-rag/threads/{id}/runs · GET /ops/lg-rag/runs/{id}/events · GET+PATCH /ops/schedules",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "chat_store",
+      "to": "task_panel_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "processFrame 每帧扇出 applySseFrame（run.start/done/hitl.waiting · 零新帧 · 静默）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "chat_view",
+      "to": "task_replay_drawer",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "activate(replay / 非本机 resume 静态降级) → 轨迹回放",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_chat",
+      "from": "task_replay_drawer",
+      "to": "task_panel_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "fetchRunEvents 翻页（after_seq keyset · 去重 by seq）",
       "anchors": [],
       "sync": true
     },
