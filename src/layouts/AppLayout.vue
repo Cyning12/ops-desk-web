@@ -11,6 +11,8 @@ const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
 const activePath = computed(() => route.path)
+// P3-T9 记忆治理页：maintainer 菜单条件渲染（普通用户零探测面 · 页内同判定 · 首个条件渲染菜单先例）
+const isMaintainer = computed(() => auth.user?.role === 'maintainer')
 
 async function onLogout(): Promise<void> {
   await auth.logout()
@@ -50,6 +52,8 @@ async function onTenantChange(value: string): Promise<void> {
         <el-menu-item index="/capability">Capability</el-menu-item>
         <!-- 独立 HITL 审批页（task_web-hitl-approval-page · D1 第四审批入口） -->
         <el-menu-item index="/hitl">审批</el-menu-item>
+        <!-- P3-T9 记忆治理页（task_web_p3_t9_admin_memory）：maintainer 条件渲染（零探测面 · 页内同判定） -->
+        <el-menu-item v-if="isMaintainer" index="/admin/memory">记忆治理</el-menu-item>
       </el-menu>
     </el-aside>
     <el-container>
