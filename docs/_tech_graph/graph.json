@@ -1,13 +1,19 @@
 {
   "schema_version": "graph_v2",
-  "freeze_id": "OPS_DESK_WEB_TECH_GRAPH_FREEZE_20261106_V1",
-  "generated_at": "2026-11-06T11:37:40Z",
+  "freeze_id": "OPS_DESK_WEB_TECH_GRAPH_FREEZE_20261116_V1",
+  "generated_at": "2026-11-16T15:15:17Z",
   "graphs": [
     {
       "id": "00_main",
       "title": "ops-desk-web 顶层流程总图",
       "source_yaml_path": "l0/00_main.graph.yaml",
       "layer": "G-L0"
+    },
+    {
+      "id": "10_flow_admin_memory",
+      "title": "admin memory 管理页浏览/撤销/历程流程（前端 · P3-T9 · task_web_p3_t9_admin_memory · 14 §4 D-D + 15 §5）",
+      "source_yaml_path": "l1/10_flow_admin_memory.graph.yaml",
+      "layer": "G-L1"
     },
     {
       "id": "10_flow_capability",
@@ -181,6 +187,56 @@
       "graph_id": "00_main",
       "id": "api_doc",
       "label": ">../../../ops-desk-api/docs/_tech_graph/l0/00_main.md"
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "id": "user",
+      "label": "用户（maintainer · 非 maintainer 页内 403 态零请求）"
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "id": "router_guard",
+      "label": "router（/admin/memory · ensureMe 守卫复用 · 无 role 守卫先例零新增）"
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "id": "menu_gate",
+      "label": "AppLayout 菜单条件渲染（v-if isMaintainer · 首个先例）"
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "id": "memory_view",
+      "label": "AdminMemoryView（页内 isMaintainer 判定 · el-tabs 双区 · 双确认撤销）"
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "id": "memory_store",
+      "label": "adminMemory store（cursor 栈翻页 · revoke 成功重拉 · 403 照登）"
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "id": "facts_api",
+      "label": "fetchMemoryFacts（{ok,data} 解包 · 十二字段投影）"
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "id": "revoke_api",
+      "label": "revokeMemoryFact（幂等 200 affected=0/N 正常态）"
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "id": "episodes_api",
+      "label": "fetchMemoryEpisodes（只读 · 十一字段无 updated_at）"
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "id": "http_client",
+      "label": "http（axios · baseURL=/api · 401 拦截跳登录）"
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "id": "ops_api",
+      "label": "ops-desk-api（app/ops/admin/memory.py · cookie maintainer · 非 maintainer 403）"
     },
     {
       "graph_id": "10_flow_capability",
@@ -966,6 +1022,146 @@
       "mark": "->",
       "type": "depends_on",
       "label": "模块边界",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "user",
+      "to": "menu_gate",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "主导航「记忆治理」入口（maintainer 条件渲染）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "user",
+      "to": "router_guard",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "opens /admin/memory（含深链直达）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "router_guard",
+      "to": "memory_view",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "ensureMe 守卫复用（未登录 /login?redirect=/admin/memory）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "memory_view",
+      "to": "memory_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "onMounted 一次性 applyFactsFilters（isMaintainer 门控 · 不轮询）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "memory_store",
+      "to": "facts_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "loadFacts（tenant_id 必填闸 · cursor 栈顶 · limit 50/200）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "facts_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.get('/ops/admin/memory/facts')（{ok,data} 解包 · 缺键兜底空页）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "memory_view",
+      "to": "memory_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "行级「撤销」ElMessageBox.confirm 双确认后 revokeFact（取消静默）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "memory_store",
+      "to": "revoke_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "revokeMemoryFact（body {tenant_id, user_id=行值 · 空不出站}）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "revoke_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.post('/ops/admin/memory/facts/{key}/revoke')（key encodeURIComponent）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "memory_store",
+      "to": "memory_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "revoke 成功重拉当前页（cursor 栈不动）· affected=0/N ElMessage 正常态",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "memory_view",
+      "to": "memory_store",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "episodes tab 首次切入懒加载 applyEpisodesFilters（之后过滤/翻页驱动）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "memory_store",
+      "to": "episodes_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "loadEpisodes（tenant_id 必填 · run_id/status/outcome 过滤 · 只读）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "episodes_api",
+      "to": "http_client",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "http.get('/ops/admin/memory/episodes')（十一字段无 updated_at）",
+      "anchors": [],
+      "sync": true
+    },
+    {
+      "graph_id": "10_flow_admin_memory",
+      "from": "http_client",
+      "to": "ops_api",
+      "mark": "->",
+      "type": "depends_on",
+      "label": "GET facts · POST revoke · GET episodes（/api/ops/admin/memory/** · 403「Maintainer role required」错误条照登）",
       "anchors": [],
       "sync": true
     },

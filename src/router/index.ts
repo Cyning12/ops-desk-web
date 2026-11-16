@@ -89,6 +89,16 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HitlApprovalView.vue'),
         meta: { title: '审批' },
       },
+      {
+        // P3-T9 admin memory 管理页（task_web_p3_t9_admin_memory · 14 §4 D-D）：
+        // admin 面=跨租户运维面 · maintainer 可达非租户管理员；守卫复用 ensureMe 零新增
+        // （仓内无 role 守卫先例 · 最小形态=独立路由+页内 maintainer 判定 · 深链直达
+        // 非 maintainer 由页内 403 权限态承接 · 零探测面不请求 admin 端点）
+        path: 'admin/memory',
+        name: 'admin-memory',
+        component: () => import('../views/AdminMemoryView.vue'),
+        meta: { title: '记忆治理' },
+      },
     ],
   },
 ]
