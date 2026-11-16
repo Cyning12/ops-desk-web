@@ -1,6 +1,6 @@
-# Task：web · admin memory 管理页（P3-T9 · issue web#23）
+# Task：web · admin memory 管理页（P3-T9 · issue web#106 · 派单所指 #23 为已 MERGED 旧 T2 单 · 偏差登记）
 
-> **状态**：`in_progress`（2026-11-16 开工）  
+> **状态**：`done`（2026-11-16 开工 · 2026-11-16 关账 · PR #107 squash c939408）  
 > **类型**：feature / 前端轨  
 > **统筹**：web 00；**禁止**改姐妹仓任何文件  
 > **分支**：`task/web-p3-t9-admin-memory`
@@ -29,7 +29,7 @@
 | **experience_capture** | `recommended` |
 | **kpi_aggregator** | `CLOSE` |
 | **freeze_id** | `lg-rag-sse-v1`（**只消费**；本页零 SSE） |
-| **related_pr** | 待建 |
+| **related_pr** | web#107（squash merge c939408 · CI frontend+check 双绿） |
 
 ### 人工闸
 
@@ -72,12 +72,12 @@ ChatView/任务面板（T8 并行 · 文件面正交）· 三开关放量 · pro
 
 ## 验收标准
 
-- [ ] /admin/memory 路由注册 · maintainer 菜单条件渲染 · 非 maintainer 零请求渲染权限提示
-- [ ] facts 表：十二字段投影 · tenant_id 必填 · status/kind 过滤 · limit 50/200 · keyset 翻页
-- [ ] revoke：行级按钮 ElMessageBox 双确认 · 200 affected=0/N 正常态呈现 · 成功重拉当前页
-- [ ] episodes 只读：十一字段 · tenant_id/run_id/status/outcome 过滤 · 同分页形态
-- [ ] 403 态（页内判定与服务端 403 两路）呈现
-- [ ] Vitest 全绿 + vue-tsc 0 + eslint 0 + task lint PASS + graph-compile.sh 绿
+- [x] /admin/memory 路由注册 · maintainer 菜单条件渲染 · 非 maintainer 零请求渲染权限提示（tests/admin-memory-view.spec.ts 零探测面三件）
+- [x] facts 表：十二字段投影 · tenant_id 必填 · status/kind 过滤 · limit 50/200 · keyset 翻页（api spec 键集合 sort 对齐 · store/view 翻页用例）
+- [x] revoke：行级按钮 ElMessageBox 双确认 · 200 affected=0/N 正常态呈现 · 成功重拉当前页（view spec 双确认流程四件 + store revoke 三件）
+- [x] episodes 只读：十一字段 · tenant_id/run_id/status/outcome 过滤 · 同分页形态（api spec 十一字段无 updated_at · view spec 懒加载渲染）
+- [x] 403 态（页内判定与服务端 403 两路）呈现（view spec 权限态 + 403 错误条 · store spec 403 照登不抛）
+- [x] Vitest 全绿 + vue-tsc 0 + eslint 0 + task lint PASS + graph-compile.sh 绿（39 files 397 passed/1 skipped · 新 3 spec 31 件）
 
 ## 必读列表
 
@@ -124,11 +124,16 @@ ChatView/任务面板（T8 并行 · 文件面正交）· 三开关放量 · pro
 
 ### 自检结论
 
-（CLOSE 回填）
+范围 7 条全交付（api client / store / view / router / 菜单 / 图谱 / 测试），非范围 5 条零触碰（ChatView 面未碰 · 三开关未碰 · propose→confirm 未做 · api 仓未碰 · registry.yaml 未臆造）。验证面全绿：Vitest 全量 39 files 397 passed/1 skipped（新增 admin-memory-{api,store,view}.spec.ts 共 31 件）；vue-tsc 0 · eslint 0；`npx spec-wave@3.5.0 verify` 三闸 approved + `task lint --file` PASS；`./scripts/graph-compile.sh` 绿（10_flow_admin_memory.md 生成）。CI（frontend 54s · check 35s）双绿后 squash merge main（c939408）。偏差三处已登记（issue #23→#106 · registry 簿 api 专属以图谱+invoke 承继 · router 无 role 守卫先例采用页内判定最小形态），均为「最小改动+如实登记」口径。
 
 ## 实现备忘
 
-（CLOSE 回填）
+- **{ok,data} 包裹壳**：admin memory 三端点为 http.ts「无包装」惯例之例外——client 内 `OkEnvelope<T>` 解包取 `data` 键，缺键兜底空页/0（api spec 钉死）。
+- **可达性最小形态**：router guard 仅 ensureMe 复用零新增（仓内无 role 守卫先例）；页内 `isMaintainer` 判定先行（非 maintainer 渲染 403 权限态零请求）；AppLayout 菜单 `v-if isMaintainer` 为仓内首个条件渲染菜单先例（判定逻辑与 view 同源）。
+- **分页**：keyset 无总数——store 管 cursor 栈（首页 null），上一页弹栈/下一页推栈，`next_cursor=null` 禁用下一页；revoke 成功重拉当前页（栈不动）。
+- **revoke 幂等**：200 affected=0 为正常态（ElMessage.info「无匹配记忆或已撤销」）非错误；双确认 ElMessageBox.confirm 文案含 key+tenant+用户 scope；revoke 请求失败 ElMessage.error 且不冒泡刷新。
+- **episodes**：tab 首切懒加载（之后过滤/翻页驱动 · 不重复拉）；十一字段无 updated_at；tool_sequence 数组 join(' → ') 呈现；只读无操作列。
+- **类型坑**：测试 mock `ElMessageBox.confirm` resolved 'confirm' 报 TS2345（非 MessageBoxData）→ `const CONFIRM_YES = 'confirm' as unknown as MessageBoxData`。
 
 ## 测试策略
 
@@ -139,3 +144,4 @@ tests/admin-memory-api.spec.ts（路径钉死 · {ok,data} 解包 · 十二/十�
 | 日期 | 内容 |
 |------|------|
 | 2026-11-16 | 初稿（P3 夜间波派单 m00002 · issue web#23） |
+| 2026-11-16 | 30 交付 + CLOSE：PR #107 squash merge c939408（CI 双绿）· 验收勾选 · 自检结论/实现备忘回填 · issue #106 替代登记 · 迁档 done |
