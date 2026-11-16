@@ -129,18 +129,22 @@ feature 轨 · 设计真源 14 §2/§3/§10 T8 行 + 契约 15 §1/§3 逐字 ·
 
 ### 自检结论
 
-（CLOSE 回填）
+验收十条全过：六态映射+计数徽标+锚定滚动+回放分页截断+双确认+humanized 展示逐条 Vitest 断言（新增 28 例：api 6 + store 9 + 组件/联动 13）；SSE 帧扇出幂等 upsert + 终态粘滞 + 跨 thread 忽略断言在案；404 双区降级文案断言在案；质量门 pnpm lint 0 err / Vitest 425 passed+1 skipped（rebase T9 后复跑）/ vue-tsc 0 err / build ✓；graph-compile 绿；spec-wave task lint PASS。
 
 ## 实现备忘
 
-（CLOSE 回填）
+- 交付面：api/taskPanel.ts（契约 15 四端点 · 宽松拆壳）+ stores/taskPanel.ts（六态元数据 · 双拉静默降级 · applySseFrame 零新帧 · 422 逐字/404 对账）+ chat store processFrame 扇出 + TaskCard/TaskPanel/RunReplayDrawer 三组件 + ChatView 内嵌集成 + 图谱登记（01_struct 三行+人签 · 10_flow_chat 4 节点 6 边 · 不新增一级模块）
+- 决策：running/disconnected 卡 resume 仅当 run_id===chat.activeRun?.run_id 走 resumeFromCursor 续看，否则回放抽屉静态降级（resumeFromCursor 仅认 localStorage activeRun · 不新造机制）
+- 坑位三条：① EP 2.14.3 drawer 初始可见时 @open 永不触发（emit('open') 仅在 watch(modelValue) 回调内）→ watch(visible, immediate) 自载；② ElMessageBox.confirm mockResolvedValue('confirm') 过不了 vue-tsc（MessageBoxData 型不合）→ mockImplementation + as Awaited<ReturnType<...>>（hitl-approval-page.spec.ts:92 先例）；③ spec-wave 闸机四连（HG-AUDIT-R1 行必在 task 闸表 · R0–R5 须 ### 子节+控制表 · reviews 文须 ## 结论/签收+通过词+审查行为词 · pre-30 invoke 须 20 帽文件）
+- rebase：T9（web#107）先合并 → 图谱三文件冲突（01_struct 人签行 · 双 graph.json 编译产物）→ 人签行双侧保留 · graph.json 重跑 compile 消解 · 全量门复跑绿
 
 ## 测试策略
 
-tests/task-panel-store.spec.ts（六态映射/计数徽标/增量 upsert/分页/404 降级/schedules patch 流）；tests/task-panel.spec.ts（渲染/点击行为/双确认/归因徽标/humanized 展示）；tests/run-replay-drawer.spec.ts（八值帧渲染/分页/截断/空态）；既有 chat spec 补 mock 零回归；全量 Vitest + vue-tsc + eslint。
+tests/task-panel-store.spec.ts（六态映射/计数徽标/增量 upsert/分页/404 降级/schedules patch 流）；tests/task-panel.spec.ts（渲染/点击行为/双确认/归因徽标/humanized 展示）；drawer 用例并入 tests/task-panel.spec.ts（八值帧渲染/翻页/404 中性化 · 未单建 run-replay-drawer.spec.ts · 偏差见 invoke_50）；既有 chat spec 补 mock 零回归；全量 Vitest + vue-tsc + eslint。
 
 ## 修订记录
 
 | 日期 | 内容 |
 |------|------|
 | 2026-11-16 | 初稿（P3-T8 派单 · exec-p3-t8 夜间自动执行） |
+| 2026-11-16 | CLOSE：PR #108 squash 合入 53dd4d3（CI frontend 49s+check 11s 双绿 · rebase 解 T9 图谱冲突双侧保留）· task 迁 done · 验收十条全过 |
